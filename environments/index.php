@@ -1,5 +1,10 @@
 <?php
 /**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
+/**
  * The manifest of files that are local to specific environment.
  * This file returns a list of environments that the application
  * may be installed under. The returned data must be in the following
@@ -32,8 +37,8 @@ return [
     'Development' => [
         'path' => 'dev',
         'setWritable' => [
-            'api/runtime',
-            'api/web/assets',
+            'rest/runtime',
+            'rest/web/assets',
             'backend/runtime',
             'backend/web/assets',
             'frontend/runtime',
@@ -52,8 +57,8 @@ return [
     'Production' => [
         'path' => 'prod',
         'setWritable' => [
-            'api/runtime',
-            'api/web/assets',
+            'rest/runtime',
+            'rest/web/assets',
             'backend/runtime',
             'backend/web/assets',
             'frontend/runtime',
@@ -63,7 +68,6 @@ return [
             'yii',
         ],
         'setCookieValidationKey' => [
-            'api/config/main-local.php',
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
         ],

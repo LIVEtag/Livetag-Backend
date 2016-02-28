@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 defined('YII_ENV') or define('YII_ENV', 'prod');
 

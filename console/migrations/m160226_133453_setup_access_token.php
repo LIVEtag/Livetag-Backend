@@ -4,9 +4,9 @@
  * See LICENSE.txt for license details.
  */
 
-use api\models\AccessToken;
-use api\models\User;
 use common\components\db\Migration;
+use rest\common\models\AccessToken;
+use rest\common\models\User;
 
 /**
  * Class m160226_133453_setup_access_token
