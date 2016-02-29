@@ -6,6 +6,7 @@
 namespace rest\common\models;
 
 use common\models\User as CommonUser;
+use rest\common\models\queries\User\UserQuery;
 use Yii;
 use yii\web\IdentityInterface;
 
@@ -34,10 +35,21 @@ class User extends CommonUser implements IdentityInterface
             )->one();
 
         if ($accessToken !== null) {
-            return $accessToken->getUser()->one();
+            return $accessToken->getUser()
+                ->andWhere('status = :status', [':status' => self::STATUS_ACTIVE])
+                ->one();
         }
 
         return null;
+    }
+
+    /**
+     * @inheritdoc
+     * @return UserQuery
+     */
+    public static function find()
+    {
+        return Yii::createObject(UserQuery::class, [get_called_class()]);
     }
 
     /**
@@ -46,10 +58,8 @@ class User extends CommonUser implements IdentityInterface
     public function fields()
     {
         return [
-            'id',
             'username',
             'email',
-            'created_at',
         ];
     }
 }

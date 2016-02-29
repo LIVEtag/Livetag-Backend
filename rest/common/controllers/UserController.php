@@ -7,7 +7,7 @@ namespace rest\common\controllers;
 
 use rest\common\controllers\actions\User\SignupAction;
 use rest\common\models\User;
-use rest\common\models\User\Signup;
+use rest\common\models\views\User\SignupUser;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -57,14 +57,11 @@ class UserController extends Controller
      */
     public function actions()
     {
-        return ArrayHelper::merge(
-            parent::actions(),
-            [
-                'create' => [
-                    'class' => SignupAction::class,
-                    'modelClass' => Signup::class,
-                ],
-            ]
-        );
+        return [
+            'create' => [
+                'class' => SignupAction::class,
+                'modelClass' => SignupUser::class,
+            ],
+        ];
     }
 }

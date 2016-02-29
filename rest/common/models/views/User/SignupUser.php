@@ -3,15 +3,15 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace rest\common\models\User;
+namespace rest\common\models\views\User;
 
 use rest\common\models\User;
 use yii\base\Model;
 
 /**
- * Class Signup
+ * Class SignupUser
  */
-class Signup extends Model
+class SignupUser extends Model
 {
     /**
      * @var string

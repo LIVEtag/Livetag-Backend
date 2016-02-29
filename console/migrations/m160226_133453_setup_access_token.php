@@ -21,11 +21,11 @@ class m160226_133453_setup_access_token extends Migration
                 'id' => $this->primaryKey(),
                 'user_id' => $this->integer(),
                 'token' => $this->string(128)->notNull(),
-                'is_verify_ip' => $this->boolean()->defaultValue(false),
                 // @link http://stackoverflow.com/a/20473371
                 'user_ip' => $this->string(46),
                 // @link http://stackoverflow.com/a/20746656
                 'user_agent' => $this->text(),
+                'is_verify_ip' => $this->boolean()->defaultValue(false),
                 'is_frozen_expire'  => $this->boolean()->defaultValue(true),
                 'created_at' => $this->integer()->notNull(),
                 'expired_at' => $this->integer()->notNull(),

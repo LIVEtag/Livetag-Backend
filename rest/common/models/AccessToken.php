@@ -5,7 +5,8 @@
  */
 namespace rest\common\models;
 
-use yii\db\ActiveQuery;
+use rest\common\models\queries\User\UserQuery;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -14,9 +15,9 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property integer $user_id
  * @property string $token
- * @property boolean $is_verify_ip
  * @property string $user_ip
  * @property string $user_agent
+ * @property boolean $is_verify_ip
  * @property boolean $is_frozen_expire
  * @property integer $created_at
  * @property integer $expired_at
@@ -26,20 +27,14 @@ class AccessToken extends ActiveRecord
     /**
      * One week
      */
-    const REMEMBER_TIME = 604800;
+    const REMEMBER_ME_TIME = 604800;
 
     /**
      * One hour
      */
-    const NOT_REMEMBER_TIME = 3600;
+    const NOT_REMEMBER_ME_TIME = 3600;
 
-    const YES_VALUE = 'yes';
-
-    const NO_VALUE = 'no';
-
-    const IS_REMEMBER_FIELD = 'is_remember';
-
-    const IS_VERIFY_IP_FIELD = 'is_verify_ip';
+    const TOKEN_LENGTH = 128;
 
     /**
      * @inheritdoc
@@ -50,10 +45,59 @@ class AccessToken extends ActiveRecord
     }
 
     /**
-     * @return ActiveQuery|null
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false
+            ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['user_id', 'token'], 'required'],
+            [['user_id'], 'integer'],
+            [['user_agent'], 'string'],
+            [['created_at', 'expired_at'], 'safe'],
+            [['token'], 'string', 'max' => self::TOKEN_LENGTH],
+            [['user_ip'], 'string', 'max' => 46],
+            [['is_frozen_expire', 'is_verify_ip'], 'boolean'],
+        ];
+    }
+
+    /**
+     * @return UserQuery|null
      */
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        return [
+            'token',
+            'expired_at',
+        ];
     }
 }

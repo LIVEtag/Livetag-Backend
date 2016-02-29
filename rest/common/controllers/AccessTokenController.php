@@ -7,7 +7,7 @@ namespace rest\common\controllers;
 
 use rest\common\controllers\actions\AccessToken\CreateAction;
 use rest\common\models\AccessToken;
-use rest\common\models\AccessToken\Create;
+use rest\common\models\views\AccessToken\CreateToken;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -55,7 +55,7 @@ class AccessTokenController extends Controller
         return [
             'create' => [
                 'class' => CreateAction::class,
-                'modelClass' => Create::class,
+                'modelClass' => CreateToken::class,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
         ];

@@ -6,12 +6,12 @@
 namespace rest\modules\v2\controllers;
 
 use rest\common\controllers\AccessTokenController as CommonAccessTokenController;
-use rest\modules\v2\models\AccessToken\Create;
+use rest\modules\v2\models\views\AccessToken\CreateToken;
 
 /**
  * Class AccessTokenController
  */
 class AccessTokenController extends CommonAccessTokenController
 {
-    public $modelClass = Create::class;
+    public $modelClass = CreateToken::class;
 }

@@ -5,7 +5,7 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use rest\common\models\User\Signup;
+use rest\common\models\views\User\SignupUser;
 use rest\components\api\actions\Action;
 use Yii;
 use yii\helpers\Url;
@@ -21,7 +21,7 @@ class SignupAction extends Action
      */
     public function run()
     {
-        /* @var $signupUser Signup */
+        /* @var $signupUser SignupUser */
         $signupUser = new $this->modelClass();
         $signupUser->load($this->request->getBodyParams(), '');
 

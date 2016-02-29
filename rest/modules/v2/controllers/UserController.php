@@ -6,12 +6,12 @@
 namespace rest\modules\v2\controllers;
 
 use rest\common\controllers\UserController as CommonUserController;
-use rest\modules\v1\models\User\Signup;
+use rest\modules\v1\models\views\User\SignupUser;
 
 /**
  * Class UserController
  */
 class UserController extends CommonUserController
 {
-    public $modelClass = Signup::class;
+    public $modelClass = SignupUser::class;
 }
