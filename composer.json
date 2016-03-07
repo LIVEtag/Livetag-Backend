@@ -3,7 +3,7 @@
     "description": "Yii 2 Base",
     "type": "project",
     "license": "MTI",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
         "yiisoft/yii2": ">=2.0.6",
