@@ -21,7 +21,7 @@
         "yiisoft/yii2-gii": "*",
         "yiisoft/yii2-faker": "*",
         "andres-montanez/magallanes": "~1.0.1",
-        "phpmd/phpmd" : "@stable"
+        "phpmd/phpmd" : "*"
     },
     "config": {
         "process-timeout": 1800
