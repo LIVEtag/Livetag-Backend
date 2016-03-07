@@ -1,21 +1,12 @@
 {
-    "name": "yiisoft/yii2-app-advanced",
-    "description": "Yii 2 Advanced Project Template",
-    "keywords": ["yii2", "framework", "advanced", "project template"],
-    "homepage": "http://www.yiiframework.com/",
+    "name": "gbksoft/yii2-base",
+    "description": "Yii 2 Base",
     "type": "project",
-    "license": "BSD-3-Clause",
-    "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
-    },
+    "license": "MTI",
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.4.0",
-        "yiisoft/yii2": ">=2.0.6",
+        "php": "~5.5.0|~5.6.0|~7.0.0",
+        "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "duccio/apns-php" : "dev-master",
@@ -29,7 +20,8 @@
         "yiisoft/yii2-debug": "*",
         "yiisoft/yii2-gii": "*",
         "yiisoft/yii2-faker": "*",
-        "andres-montanez/magallanes": "~1.0.1"
+        "andres-montanez/magallanes": "~1.0.1",
+        "phpmd/phpmd" : "@stable"
     },
     "config": {
         "process-timeout": 1800
