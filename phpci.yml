@@ -14,3 +14,6 @@ test:
         allow_failures: true
     php_parallel_lint:
         allow_failures: true
+    codeception:
+        config: "."
+        path: "tests/_log"
