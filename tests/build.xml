@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="yii2-base-gbksoft" default="phpmd-ci">
+    <property name="phpmd" value="${basedir}/../vendor/bin/phpmd"/>
+
+    <target name="phpmd-ci"
+            unless="phpmd.done"
+            description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${phpmd}" taskname="phpmd">
+            <arg path="${basedir}/../backend,${basedir}/../common,${basedir}/../console,${basedir}/../environments,${basedir}/../frontend,${basedir}/../rest" />
+            <arg value="text" />
+            <arg value="codesize,unusedcode,naming" />
+        </exec>
+        <property name="phpmd.done" value="true"/>
+    </target>
+</project>
