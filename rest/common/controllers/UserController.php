@@ -5,6 +5,7 @@
  */
 namespace rest\common\controllers;
 
+use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\SignupAction;
 use rest\common\models\User;
 use rest\common\models\views\User\SignupUser;
@@ -43,7 +44,7 @@ class UserController extends Controller
                         ],
                         [
                             'allow' => true,
-                            'actions' => ['index', 'view', 'update', 'delete', 'current'],
+                            'actions' => ['current'],
                             'roles' => ['@'],
                         ],
                     ],
@@ -61,6 +62,10 @@ class UserController extends Controller
             'create' => [
                 'class' => SignupAction::class,
                 'modelClass' => SignupUser::class,
+            ],
+            'current' => [
+                'class' => CurrentAction::class,
+                'modelClass' => User::class,
             ],
         ];
     }

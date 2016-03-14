@@ -118,7 +118,7 @@ class CreateToken extends Model
 
         $accessToken->expired_at = $expireTime + time();
 
-        return $accessToken->save() ? $accessToken : null;
+        return $accessToken->save() ? $accessToken : false;
     }
 
     /**

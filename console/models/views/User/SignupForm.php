@@ -1,5 +1,9 @@
 <?php
-namespace frontend\models;
+/**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+namespace console\models\views\User;
 
 use common\models\User;
 use yii\base\Model;
@@ -65,15 +69,20 @@ class SignupForm extends Model
     public function signup()
     {
         if (!$this->validate()) {
-            return null;
+            return false;
         }
-        
+
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();
-        
-        return $user->save() ? $user : null;
+
+        if (!$user->save()) {
+            $this->addErrors($user->getFirstErrors());
+            return false;
+        }
+
+        return true;
     }
 }

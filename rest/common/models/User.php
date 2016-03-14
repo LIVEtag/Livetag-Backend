@@ -44,6 +44,16 @@ class User extends CommonUser implements IdentityInterface
     }
 
     /**
+     * @return null|AccessToken
+     */
+    public function getAccessToken()
+    {
+        return $this->hasOne(AccessToken::class , ['user_id' => 'id'])
+            ->where('expired_at > :expired_at', [':expired_at' => time()])
+            ->one();
+    }
+
+    /**
      * @inheritdoc
      * @return UserQuery
      */
@@ -60,6 +70,7 @@ class User extends CommonUser implements IdentityInterface
         return [
             'username',
             'email',
+            'accessToken'
         ];
     }
 }

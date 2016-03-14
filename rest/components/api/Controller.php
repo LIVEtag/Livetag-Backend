@@ -6,6 +6,7 @@
 namespace rest\components\api;
 
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\ContentNegotiator;
@@ -34,6 +35,7 @@ class Controller extends BaseController
                 'authMethods' => [
                     HttpBearerAuth::class,
                     QueryParamAuth::class,
+                    HttpBasicAuth::class,
                 ],
                 'except' => ['options'],
             ],

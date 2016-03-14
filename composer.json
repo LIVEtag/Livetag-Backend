@@ -22,7 +22,7 @@
         "codeception/codeception": "2.0.*",
         "codeception/specify": "*",
         "codeception/verify": "*",
-        "andres-montanez/magallanes": "~1.0.1"
+        "andres-montanez/magallanes": "~1.0.1",
         "phpmd/phpmd" : "*"
     },
     "config": {

@@ -60,13 +60,19 @@ return [
                         'v1/user',
                         'v1/access-token'
                     ],
+                    'extraPatterns' => [
+                        'GET current' => 'current',
+                    ],
                     'pluralize' => true,
                 ],
                 [
                     'class' => 'rest\components\api\UrlRule',
                     'controller' => [
                         'v2/user',
-                        'v2/access-token'
+                        'v2/access-token',
+                    ],
+                    'extraPatterns' => [
+                        'GET current' => 'current',
                     ],
                     'pluralize' => true,
                 ],
