@@ -6,17 +6,17 @@
 namespace backend\modules\rbac\controllers;
 
 use backend\modules\rbac\components\MenuHelper;
-use backend\modules\rbac\models\Menu;
-use backend\modules\rbac\models\search\Menu as MenuSearch;
+use backend\modules\rbac\models\BizRule;
 use Yii;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
+use backend\modules\rbac\models\search\BizRule as BizRuleSearch;
+use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class MenuController
+ * Class RuleController
  */
-class MenuController extends Controller
+class RuleController extends Controller
 {
     /**
      * @inheritdoc
@@ -34,120 +34,103 @@ class MenuController extends Controller
     }
 
     /**
-     * Lists all Menu models
+     * Lists all AuthItem models
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new MenuSearch;
+        $searchModel = new BizRuleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        return $this->render(
-            'index',
-            [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
-            ]
-        );
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
     }
 
     /**
-     * Displays a single Menu model
+     * Displays a single AuthItem model
      *
-     * @param int $id
+     * @param string $name
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView($name)
     {
-        /** @var \backend\modules\rbac\models\Menu $model */
-        $model = Menu::findOne($id);
-        if ($model === null) {
+        $item = Yii::$app->authManager->getRule($name);
+        if ($item === null) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        return $this->render(
-            'view',
-            [
-                'model' => $model,
-            ]
-        );
+        $model = new BizRule($item);
+
+        return $this->render('view', ['model' => $model]);
     }
 
     /**
-     * Creates a new Menu model
+     * Creates a new AuthItem model
      * If creation is successful, the browser will be redirected to the 'view' page
      *
      * @return string
      */
     public function actionCreate()
     {
-        $model = new Menu;
-
+        $model = new BizRule(null);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             MenuHelper::invalidate();
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->name]);
         }
 
-        return $this->render(
-            'create',
-            [
-                'model' => $model,
-            ]
-        );
+        return $this->render('create', ['model' => $model,]);
     }
 
     /**
-     * Updates an existing Menu model
+     * Updates an existing AuthItem model.
      * If update is successful, the browser will be redirected to the 'view' page
      *
-     * @param int $id
+     * @param string $name
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate($name)
     {
-        /** @var \backend\modules\rbac\models\Menu $model */
-        $model = Menu::findOne($id);
-        if ($model === null) {
+        $item = Yii::$app->authManager->getRule($name);
+        if ($item === null) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $parent = $model->getMenuParent()->one();
+        $model = new BizRule($item);
 
-        if ($parent !== null) {
-            $model->parentName = $parent->name;
-        }
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             MenuHelper::invalidate();
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->name]);
         }
 
-        return $this->render('update', ['model' => $model]);
+        return $this->render('update', ['model' => $model,]);
     }
 
     /**
-     * Deletes an existing Menu model
+     * Deletes an existing AuthItem model.
      * If deletion is successful, the browser will be redirected to the 'index' page
      *
-     * @param int $id
+     * @param string $name
      * @return string
      * @throws NotFoundHttpException
-     * @throws \Exception
      */
-    public function actionDelete($id)
+    public function actionDelete($name)
     {
-        /** @var \backend\modules\rbac\models\Menu $model */
-        $model = Menu::findOne($id);
-        if ($model === null) {
+        $item = Yii::$app->authManager->getRule($name);
+        if ($item === null) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model->delete();
-
+        /** @var \common\modules\rbac\components\DbManager $authManager */
+        $authManager = Yii::$app->getAuthManager();
+        $model = new BizRule($item);
+        $authManager->remove($model->getItem());
         MenuHelper::invalidate();
 
         return $this->redirect(['index']);

@@ -1,4 +1,5 @@
 include:
+  - codeception/rest
   - codeception/common
   - codeception/console
   - codeception/backend

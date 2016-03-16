@@ -82,24 +82,24 @@ class Menu extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rbac-admin', 'ID'),
-            'name' => Yii::t('rbac-admin', 'Name'),
-            'parent' => Yii::t('rbac-admin', 'Parent'),
-            'parentName' => Yii::t('rbac-admin', 'Parent Name'),
-            'route' => Yii::t('rbac-admin', 'Route'),
-            'order' => Yii::t('rbac-admin', 'Order'),
-            'data' => Yii::t('rbac-admin', 'Data'),
+            'id' => Yii::t('rbac-backend', 'ID'),
+            'name' => Yii::t('rbac-backend', 'Name'),
+            'parent' => Yii::t('rbac-backend', 'Parent'),
+            'parentName' => Yii::t('rbac-backend', 'Parent Name'),
+            'route' => Yii::t('rbac-backend', 'Route'),
+            'order' => Yii::t('rbac-backend', 'Order'),
+            'data' => Yii::t('rbac-backend', 'Data'),
         ];
     }
 
     /**
      * Get menu parent
      *
-     * @return Menu
+     * @return \yii\db\ActiveQuery
      */
     public function getMenuParent()
     {
-        return $this->hasOne(Menu::class, ['id' => 'parent'])->one();
+        return $this->hasOne(Menu::class, ['id' => 'parent']);
     }
 
     /**
