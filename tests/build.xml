@@ -23,6 +23,7 @@
     </target>
 
     <target name="phpmd-ci"
+            depends="prepare"
             unless="phpmd.done"
             description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
         <exec executable="${phpmd}" taskname="phpmd">
