@@ -8,6 +8,7 @@ namespace backend\modules\rbac;
 use Yii;
 use yii\base\Module as BaseModule;
 use yii\helpers\Inflector;
+use yii\i18n\PhpMessageSource;
 
 /**
  * GUI manager for RBAC
@@ -87,22 +88,7 @@ class Module extends BaseModule
         parent::init();
         \Yii::configure($this, require(__DIR__ . '/config/main.php'));
 
-        if (!isset(Yii::$app->i18n->translations['rbac-backend'])) {
-            Yii::$app->i18n->translations['rbac-backend'] = [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'sourceLanguage' => 'en',
-                'basePath' => '@rbac/messages'
-            ];
-        }
-
-        if ($this->navbar === null) {
-            $this->navbar = [
-                [
-                    'label' => Yii::t('rbac-backend', 'Application'),
-                    'url' => Yii::$app->homeUrl
-                ]
-            ];
-        }
+        $this->registerTranslations();
     }
 
     /**
@@ -120,9 +106,6 @@ class Module extends BaseModule
         // resolve core menus
         $this->normalizeMenus = [];
         foreach ($this->coreItems as $id => $lable) {
-            if ($id === 'menu') {
-                continue;
-            }
             $this->normalizeMenus[$id] = [
                 'label' => Yii::t('rbac-backend', $lable),
                 'url' => [$mid . $id]
@@ -165,5 +148,17 @@ class Module extends BaseModule
     {
         $this->menus = array_merge($this->menus, $menus);
         $this->normalizeMenus = null;
+    }
+
+    /**
+     * RegisterTranslations
+     */
+    private function registerTranslations()
+    {
+        Yii::$app->i18n->translations['rbac-backend'] = [
+            'class' => PhpMessageSource::class,
+            'sourceLanguage' => 'en',
+            'basePath' => '@rbac/messages'
+        ];
     }
 }

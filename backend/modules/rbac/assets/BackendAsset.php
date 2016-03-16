@@ -15,7 +15,7 @@ class BackendAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $sourcePath = '@rbac/assets';
+    public $sourcePath = '@rbac/assets/dist';
 
     /**
      * @inheritdoc

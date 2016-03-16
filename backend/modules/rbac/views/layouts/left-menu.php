@@ -9,6 +9,7 @@ use yii\helpers\Html;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+/** @var \yii\web\Controller $controller */
 $controller = $this->context;
 $menus = $controller->module->menus;
 $route = $controller->route;
@@ -38,7 +39,7 @@ $this->params['nav-items'] = $menus;
     </div>
 </div>
 <?php
-list(, $url) = Yii::$app->assetManager->publish('@mdm/admin/assets');
+list(, $url) = Yii::$app->assetManager->publish('@rbac/assets/dist');
 $this->registerCssFile($url . '/list-item.css');
 ?>
 

@@ -14,6 +14,8 @@ return [
     'modules' => [
         'rbac' => [
             'class' => 'backend\modules\rbac\Module',
+            'layout' => 'left-menu',
+            'mainLayout' => '@app/views/layouts/main.php',
         ],
     ],
     'components' => [

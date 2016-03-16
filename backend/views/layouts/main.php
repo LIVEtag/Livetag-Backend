@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use backend\assets\AppAsset;
+use yii\base\Controller;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -27,8 +28,11 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
+    /** @var Controller $controller */
+    $controller = $this->context;
+    $route = $controller->route;
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => 'GBKSoft',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -36,6 +40,7 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
+        ['label' => 'Rbac', 'url' => ['/rbac'], 'active' => strpos($controller->route, 'rbac/') === 0],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
@@ -67,9 +72,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
+        <p class="pull-left">&copy; GBKSoft <?= date('Y') ?></p>
     </div>
 </footer>
 

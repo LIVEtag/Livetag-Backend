@@ -56,7 +56,7 @@ yii.admin = (function ($) {
             var params = {
                 id: pub.roleName,
                 action: action,
-                roles: $('#list-' + (action == 'assign' ? 'avaliable' : 'assigned')).val(),
+                roles: $('#list-' + (action == 'assign' ? 'avaliable' : 'assigned')).val()
             };
             $.post(pub.assignUrl, params,
                 function () {
@@ -109,7 +109,7 @@ yii.admin = (function ($) {
         assignRoute: function (action) {
             var params = {
                 action: action,
-                routes: $('#list-' + (action == 'assign' ? 'avaliable' : 'assigned')).val(),
+                routes: $('#list-' + (action == 'assign' ? 'avaliable' : 'assigned')).val()
             };
             $.post(pub.assignUrl, params,
                 function () {

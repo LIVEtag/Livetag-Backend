@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-use tests\codeception\backend\FunctionalTester;
+use tests\codeception\frontend\FunctionalTester;
 use tests\codeception\backend\functional\modules\rbac\_pages\IndexPage;
 use tests\codeception\backend\functional\modules\rbac\_pages\RoutePage;
 use tests\codeception\backend\functional\modules\rbac\_pages\PermissionPage;
@@ -19,21 +19,21 @@ $I = new FunctionalTester($scenario);
 $I->wantTo('ensure rbac pages works');
 
 $indexPage = IndexPage::openBy($I);
-$I->see('Assignments', 'h1');
+$I->dontSee('Assignments', 'h1');
 $indexPage = AssignmentPage::openBy($I);
-$I->see('Assignments', 'h1');
+$I->dontSee('Assignments', 'h1');
 
 $indexPage = RolePage::openBy($I);
-$I->see('Roles', 'h1');
+$I->dontSee('Roles', 'h1');
 
 $indexPage = PermissionPage::openBy($I);
-$I->see('Permission', 'h1');
+$I->dontSee('Permission', 'h1');
 
 $indexPage = RoutePage::openBy($I);
-$I->see('Routes', 'h1');
+$I->dontSee('Routes', 'h1');
 
 $indexPage = RulePage::openBy($I);
-$I->see('Rules', 'h1');
+$I->dontSee('Rules', 'h1');
 
 $indexPage = MenuPage::openBy($I);
-$I->see('Menus', 'h1');
+$I->dontSee('Menus', 'h1');
