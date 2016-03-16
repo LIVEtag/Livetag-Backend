@@ -43,16 +43,16 @@ class AuthItem extends Model
     /**
      * @var Item
      */
-    private $_item;
+    private $item;
 
     /**
      * Initialize object
      * @param Item  $item
      * @param array $config
      */
-    public function __construct($item, $config = [])
+    public function __construct($item = null, $config = [])
     {
-        $this->_item = $item;
+        $this->item = $item;
         if ($item !== null) {
             $this->name = $item->name;
             $this->type = $item->type;
@@ -74,7 +74,7 @@ class AuthItem extends Model
                 'message' => 'Rule not exists'],
             [['name', 'type'], 'required'],
             [['name'], 'unique', 'when' => function() {
-                return $this->isNewRecord || ($this->_item->name != $this->name);
+                return $this->isNewRecord || ($this->item->name != $this->name);
             }],
             [['type'], 'integer'],
             [['description', 'data', 'ruleName'], 'default'],
@@ -116,7 +116,7 @@ class AuthItem extends Model
      */
     public function getIsNewRecord()
     {
-        return $this->_item === null;
+        return $this->item === null;
     }
 
     /**
@@ -143,27 +143,27 @@ class AuthItem extends Model
         if ($this->validate()) {
             $manager = Yii::$app->authManager;
             $oldName = null;
-            if ($this->_item === null) {
+            if ($this->item === null) {
                 if ($this->type == Item::TYPE_ROLE) {
-                    $this->_item = $manager->createRole($this->name);
+                    $this->item = $manager->createRole($this->name);
                 } else {
-                    $this->_item = $manager->createPermission($this->name);
+                    $this->item = $manager->createPermission($this->name);
                 }
                 $isNew = true;
             } else {
                 $isNew = false;
-                $oldName = $this->_item->name;
+                $oldName = $this->item->name;
             }
 
-            $this->_item->name = $this->name;
-            $this->_item->description = $this->description;
-            $this->_item->ruleName = $this->ruleName;
-            $this->_item->data = $this->data === null || $this->data === '' ? null : Json::decode($this->data);
+            $this->item->name = $this->name;
+            $this->item->description = $this->description;
+            $this->item->ruleName = $this->ruleName;
+            $this->item->data = $this->data === null || $this->data === '' ? null : Json::decode($this->data);
 
             if ($isNew) {
-                $manager->add($this->_item);
+                $manager->add($this->item);
             } else {
-                $manager->update($oldName, $this->_item);
+                $manager->update($oldName, $this->item);
             }
 
             return true;
@@ -179,7 +179,7 @@ class AuthItem extends Model
      */
     public function getItem()
     {
-        return $this->_item;
+        return $this->item;
     }
 
     /**
