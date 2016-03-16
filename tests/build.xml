@@ -9,11 +9,7 @@
     <target name="clean"
             unless="clean.done"
             description="Cleanup build artifacts">
-        <delete dir="${basedir}/build/api"/>
-        <delete dir="${basedir}/build/coverage"/>
         <delete dir="${basedir}/build/logs"/>
-        <delete dir="${basedir}/build/pdepend"/>
-        <delete dir="${basedir}/build/phpdox"/>
         <property name="clean.done" value="true"/>
     </target>
 
@@ -22,6 +18,7 @@
             depends="clean"
             description="Prepare for build">
         <mkdir dir="${basedir}/build/logs"/>
+        <touch file="${basedir}/build/logs/pmd.xml"/>
         <property name="prepare.done" value="true"/>
     </target>
 
