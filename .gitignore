@@ -30,3 +30,6 @@ phpunit.phar
 /phpunit.xml
 
 composer.lock
+
+# configuration of environment
+.env

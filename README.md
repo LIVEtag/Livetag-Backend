@@ -10,20 +10,21 @@ is a separate Yii application.
 The template is designed to work in a team development environment. It supports
 deploying the application in different environments.
 
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
-
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-app-advanced/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-app-advanced/downloads.png)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-advanced.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-advanced)
-
 DIRECTORY STRUCTURE
 -------------------
 
 ```
+rest
+    common/              contains classes used in all version of REST API
+    components/          contains components classes
+    config/              contains rest configurations
+    modules/             contains modules classes
+    runtime/             contains files generated during runtime
+    web/                 contains the entry script and Web resources
 common
     config/              contains shared configurations
     mail/                contains view files for e-mails
-    models/              contains model classes used in both backend and frontend
+    models/              contains model classes used in all areas backend and frontend and REST
 console
     config/              contains console configurations
     controllers/         contains console controllers (commands)
