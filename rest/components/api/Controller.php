@@ -5,6 +5,8 @@
  */
 namespace rest\components\api;
 
+use rest\common\models\views\AccessToken\CreateToken;
+use Yii;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
@@ -35,7 +37,27 @@ class Controller extends BaseController
                 'authMethods' => [
                     HttpBearerAuth::class,
                     QueryParamAuth::class,
-                    HttpBasicAuth::class,
+                    [
+                        'class' => HttpBasicAuth::class,
+                        'auth' => function ($username, $password) {
+
+                            $accessTokenCreate = new CreateToken();
+                            $accessTokenCreate->load(
+                                [
+                                    'username' => $username,
+                                    'password' => $password,
+                                ],
+                                ''
+                            );
+
+                            $accessTokenCreate->userAgent = Yii::$app->getRequest()->getUserAgent();
+                            $accessTokenCreate->userIp = Yii::$app->getRequest()->getUserIP();
+
+                            $accessToken = $accessTokenCreate->create();
+
+                            return $accessToken->getUser()->one();
+                        }
+                    ],
                 ],
                 'except' => ['options'],
             ],

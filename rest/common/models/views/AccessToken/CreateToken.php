@@ -19,8 +19,6 @@ class CreateToken extends Model
 
     const NO_VALUE = 'no';
 
-    const RANDOM_PASSWORD_LENGTH = 10;
-
     /**
      * @var string
      */
@@ -102,7 +100,7 @@ class CreateToken extends Model
         $accessToken = new AccessToken();
         $accessToken->user_id = $this->getUser()->id;
 
-        $accessToken->token = $this->createToken($accessToken->user_id);
+        $accessToken->generateToken();
 
         $accessToken->is_verify_ip = false;
         $accessToken->is_frozen_expire = false;
@@ -133,23 +131,5 @@ class CreateToken extends Model
         }
 
         return $this->user;
-    }
-
-    /**
-     * @param int $userId
-     * @return string
-     * @throws \yii\base\InvalidConfigException
-     */
-    private function createToken($userId)
-    {
-        $security = Yii::$app->getSecurity();
-
-        $hash = $security->hashData(
-            $userId,
-            $security->generateRandomString(self::RANDOM_PASSWORD_LENGTH)
-        );
-        $hash .= '_';
-
-        return $hash . $security->generateRandomString(AccessToken::TOKEN_LENGTH - strlen($hash));
     }
 }

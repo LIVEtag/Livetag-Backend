@@ -6,6 +6,8 @@
 namespace rest\common\models\views\User;
 
 use rest\common\models\User;
+use rest\common\models\views\AccessToken\CreateToken;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -29,6 +31,16 @@ class SignupUser extends Model
     public $password;
 
     /**
+     * @var string
+     */
+    public $userIp;
+
+    /**
+     * @var string
+     */
+    public $userAgent;
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -43,6 +55,9 @@ class SignupUser extends Model
                 'message' => 'This username has already been taken.'
             ],
             ['username', 'string', 'min' => 2, 'max' => 255],
+
+            [['userIp'], 'string', 'max' => 46],
+            [['userAgent'], 'string'],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
@@ -72,8 +87,25 @@ class SignupUser extends Model
         }
 
         $user = new User();
+
         $user->username = $this->username;
         $user->email = $this->email;
+
+        $signupUser = $this;
+
+        $user->on(
+            User::EVENT_AFTER_INSERT,
+            function () use ($user, $signupUser) {
+                $accessTokenCreate = new CreateToken();
+
+                $accessTokenCreate->username = $signupUser->username;
+                $accessTokenCreate->password = $signupUser->password;
+                $accessTokenCreate->userAgent = $signupUser->userAgent;
+                $accessTokenCreate->userIp = $signupUser->userIp;
+
+                $accessTokenCreate->create();
+            }
+        );
 
         $user->setPassword($this->password);
         $user->generateAuthKey();

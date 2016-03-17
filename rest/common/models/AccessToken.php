@@ -6,6 +6,7 @@
 namespace rest\common\models;
 
 use rest\common\models\queries\User\UserQuery;
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -35,6 +36,8 @@ class AccessToken extends ActiveRecord
     const NOT_REMEMBER_ME_TIME = 3600;
 
     const TOKEN_LENGTH = 128;
+
+    const RANDOM_HASH_LENGTH = 10;
 
     /**
      * @inheritdoc
@@ -67,10 +70,10 @@ class AccessToken extends ActiveRecord
             [['user_id', 'token'], 'required'],
             [['user_id'], 'integer'],
             [['user_agent'], 'string'],
-            [['created_at', 'expired_at'], 'safe'],
-            [['token'], 'string', 'max' => self::TOKEN_LENGTH],
             [['user_ip'], 'string', 'max' => 46],
+            [['token'], 'string', 'min' => self::TOKEN_LENGTH, 'max' => self::TOKEN_LENGTH],
             [['is_frozen_expire', 'is_verify_ip'], 'boolean'],
+            [['created_at', 'expired_at'], 'safe'],
         ];
     }
 
@@ -99,5 +102,30 @@ class AccessToken extends ActiveRecord
             'token',
             'expired_at',
         ];
+    }
+
+    /**
+     * Generate token
+     */
+    public function generateToken()
+    {
+        $this->token = $this->createToken();
+    }
+
+    /**
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function createToken()
+    {
+        $security = Yii::$app->getSecurity();
+
+        $hash = $security->hashData(
+            $this->user_id,
+            $security->generateRandomString(self::RANDOM_HASH_LENGTH)
+        );
+        $hash .= '_';
+
+        return $hash . $security->generateRandomString(AccessToken::TOKEN_LENGTH - strlen($hash));
     }
 }
