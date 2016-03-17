@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use mdm\admin\AdminAsset;
+use backend\modules\rbac\assets\BackendAsset;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $this->render('_script', ['name' => $model->name]);
 
-AdminAsset::register($this);
+BackendAsset::register($this);
 $properties = Json::htmlEncode([
         'roleName' => $model->name,
         'assignUrl' => Url::to(['assign']),

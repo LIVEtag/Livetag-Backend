@@ -6,7 +6,7 @@ use yii\helpers\Url;
 <?php $this->beginBlock('JS_END') ?>
     yii.process = (function ($) {
         var _onSearch = false;
-        var pub = {
+        return {
             roleSearch: function () {
                 if (!_onSearch) {
                     _onSearch = true;
@@ -16,7 +16,7 @@ use yii\helpers\Url;
                         var data = {
                             id:<?= json_encode($name)?>,
                             target:$th.data('target'),
-                            term: $th.val(),
+                            term: $th.val()
                         };
                         var target = '#' + $th.data('target');
                         $.get('<?= Url::toRoute(['role-search']) ?>', data,
@@ -29,8 +29,8 @@ use yii\helpers\Url;
             action: function () {
                 var action = $(this).data('action');
                 var params = $((action == 'assign' ? '#avaliable' : '#assigned')+', .role-search').serialize();
-                var urlAssign = '<?= Url::toRoute(['assign', 'id' => $name,'action'=>'assign']) ?>';
-                var urlDelete = '<?= Url::toRoute(['assign', 'id' => $name,'action'=>'delete']) ?>';
+                var urlAssign = '<?= Url::toRoute(['assign', 'id' => $name, 'action' => 'assign']) ?>';
+                var urlDelete = '<?= Url::toRoute(['assign', 'id' => $name, 'action' => 'delete']) ?>';
                 $.post(action=='assign'?urlAssign : urlDelete,
                 params,function (r) {
                     $('#avaliable').html(r[0]);
@@ -39,9 +39,7 @@ use yii\helpers\Url;
 
                 return false;
             }
-        }
-
-        return pub;
+        };
     })(window.jQuery);
 <?php $this->endBlock(); ?>
 

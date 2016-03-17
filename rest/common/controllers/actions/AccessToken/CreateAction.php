@@ -21,12 +21,11 @@ class CreateAction extends Action
      */
     public function run()
     {
-        /* @var $accessTokenCreate CreateToken */
-        $accessTokenCreate = new $this->modelClass();
+        $accessTokenCreate = new CreateToken();
         $accessTokenCreate->load($this->request->getBodyParams(), '');
 
-        $accessTokenCreate->userAgent = Yii::$app->getRequest()->getUserAgent();
-        $accessTokenCreate->userIp = Yii::$app->getRequest()->getUserIP();
+        $accessTokenCreate->userAgent = $this->request->getUserAgent();
+        $accessTokenCreate->userIp = $this->request->getUserIP();
 
         $accessToken = $accessTokenCreate->create();
 

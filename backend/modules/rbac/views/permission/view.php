@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use mdm\admin\AdminAsset;
+use backend\modules\rbac\assets\BackendAsset;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
@@ -14,20 +14,17 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-backend', 'Permissions
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="auth-item-view">
-
     <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a(Yii::t('rbac-backend', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('rbac-backend', 'Update'), ['update', 'name' => $model->name], ['class' => 'btn btn-primary']) ?>
         <?php
-        echo Html::a(Yii::t('rbac-backend', 'Delete'), ['delete', 'id' => $model->name], [
+        echo Html::a(Yii::t('rbac-backend', 'Delete'), ['delete', 'name' => $model->name], [
             'class' => 'btn btn-danger',
             'data-confirm' => Yii::t('rbac-backend', 'Are you sure to delete this item?'),
             'data-method' => 'post',
         ]);
         ?>
     </p>
-
     <?php
     echo DetailView::widget([
         'model' => $model,
@@ -61,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 </div>
 <?php
-AdminAsset::register($this);
+BackendAsset::register($this);
 $properties = Json::htmlEncode([
         'roleName' => $model->name,
         'assignUrl' => Url::to(['assign']),
@@ -89,4 +86,3 @@ yii.admin.searchRole('avaliable', true);
 yii.admin.searchRole('assigned', true);
 JS;
 $this->registerJs($js);
-

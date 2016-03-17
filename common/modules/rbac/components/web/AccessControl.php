@@ -23,7 +23,7 @@ use yii\di\Instance;
  *
  * ~~~
  * 'as access' => [
- *     'class' => 'mdm\admin\components\AccessControl',
+ *     'class' => '\common\modules\rbac\components\web\AccessControl',
  *     'allowActions' => ['site/login', 'site/error']
  * ]
  * ~~~
@@ -52,7 +52,7 @@ class AccessControl extends ActionFilter
     public function getUser()
     {
         if (!$this->user instanceof User) {
-            $this->user = Instance::ensure($this->user, User::className());
+            $this->user = Instance::ensure($this->user, User::class);
         }
         return $this->user;
     }

@@ -54,13 +54,13 @@ class PermissionController extends Controller
     /**
      * Displays a single AuthItem model
      *
-     * @param int $id
+     * @param string $name
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView($name)
     {
-        $item = Yii::$app->getAuthManager()->getPermission($id);
+        $item = Yii::$app->getAuthManager()->getPermission($name);
 
         if ($item === null) {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -84,7 +84,7 @@ class PermissionController extends Controller
         if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
             MenuHelper::invalidate();
 
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['view', 'name' => $model->name]);
         }
 
         return $this->render('create', ['model' => $model,]);
@@ -94,13 +94,13 @@ class PermissionController extends Controller
      * Updates an existing AuthItem model.
      * If update is successful, the browser will be redirected to the 'view' page
      *
-     * @param int $id
+     * @param string $name
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate($name)
     {
-        $item = Yii::$app->getAuthManager()->getPermission($id);
+        $item = Yii::$app->getAuthManager()->getPermission($name);
 
         if ($item === null) {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -111,7 +111,7 @@ class PermissionController extends Controller
         if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
             MenuHelper::invalidate();
 
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['view', 'name' => $model->name]);
         }
 
         return $this->render('update', ['model' => $model,]);
@@ -121,13 +121,13 @@ class PermissionController extends Controller
      * Deletes an existing AuthItem model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      *
-     * @param int $id
+     * @param string $name
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionDelete($id)
+    public function actionDelete($name)
     {
-        $item = Yii::$app->getAuthManager()->getPermission($id);
+        $item = Yii::$app->getAuthManager()->getPermission($name);
 
         if ($item === null) {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -151,11 +151,11 @@ class PermissionController extends Controller
     public function actionAssign()
     {
         $post = Yii::$app->getRequest()->post();
-        $id = $post['id'];
+        $name = $post['name'];
         $action = $post['action'];
         $roles = $post['roles'];
         $manager = Yii::$app->getAuthManager();
-        $parent = $manager->getPermission($id);
+        $parent = $manager->getPermission($name);
         $error = [];
         if ($action == 'assign') {
             foreach ($roles as $role) {
@@ -185,12 +185,12 @@ class PermissionController extends Controller
     /**
      * Search role
      *
-     * @param string $id
+     * @param string $name
      * @param string $target
      * @param string $term
      * @return array
      */
-    public function actionSearch($id, $target, $term = '')
+    public function actionSearch($name, $target, $term = '')
     {
         $result = [
             'Permission' => [],
@@ -198,20 +198,22 @@ class PermissionController extends Controller
         ];
         $authManager = Yii::$app->getAuthManager();
         if ($target == 'avaliable') {
-            $children = array_keys($authManager->getChildren($id));
-            $children[] = $id;
-            foreach ($authManager->getPermissions() as $name => $role) {
-                if (in_array($name, $children)) {
+            $children = array_keys($authManager->getChildren($name));
+            $children[] = $name;
+            foreach ($authManager->getPermissions() as $permissionsName => $role) {
+                if (in_array($permissionsName, $children)) {
                     continue;
                 }
-                if (empty($term) or strpos($name, $term) !== false) {
-                    $result[$name[0] === '/' ? 'Routes' : 'Permissions'][$name] = $name;
+                if (empty($term) or strpos($permissionsName, $term) !== false) {
+                    $result[$permissionsName[0] === '/'
+                        ? 'Routes'
+                        : 'Permissions'][$permissionsName] = $permissionsName;
                 }
             }
         } else {
-            foreach ($authManager->getChildren($id) as $name => $child) {
-                if (empty($term) or strpos($name, $term) !== false) {
-                    $result[$name[0] === '/' ? 'Routes' : 'Permissions'][$name] = $name;
+            foreach ($authManager->getChildren($name) as $childName => $child) {
+                if (empty($term) or strpos($childName, $term) !== false) {
+                    $result[$childName[0] === '/' ? 'Routes' : 'Permissions'][$childName] = $childName;
                 }
             }
         }

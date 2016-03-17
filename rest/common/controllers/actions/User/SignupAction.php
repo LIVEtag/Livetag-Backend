@@ -21,8 +21,7 @@ class SignupAction extends Action
      */
     public function run()
     {
-        /* @var $signupUser SignupUser */
-        $signupUser = new $this->modelClass();
+        $signupUser = new SignupUser();
         $signupUser->load($this->request->getBodyParams(), '');
 
         $user = $signupUser->signup();

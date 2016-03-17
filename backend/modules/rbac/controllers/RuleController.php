@@ -80,7 +80,7 @@ class RuleController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             MenuHelper::invalidate();
 
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['view', 'name' => $model->name]);
         }
 
         return $this->render('create', ['model' => $model,]);
@@ -106,7 +106,7 @@ class RuleController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             MenuHelper::invalidate();
 
-            return $this->redirect(['view', 'id' => $model->name]);
+            return $this->redirect(['view', 'name' => $model->name]);
         }
 
         return $this->render('update', ['model' => $model,]);

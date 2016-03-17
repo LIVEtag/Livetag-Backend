@@ -54,7 +54,7 @@ yii.admin = (function ($) {
         // role & permission
         addChild: function (action) {
             var params = {
-                id: pub.roleName,
+                name: pub.roleName,
                 action: action,
                 roles: $('#list-' + (action == 'assign' ? 'avaliable' : 'assigned')).val()
             };
@@ -70,7 +70,7 @@ yii.admin = (function ($) {
                 var $inp = $('#search-' + target);
                 setTimeout(function () {
                     var data = {
-                        id: pub.roleName,
+                        name: pub.roleName,
                         target: target,
                         term: $inp.val()
                     };
