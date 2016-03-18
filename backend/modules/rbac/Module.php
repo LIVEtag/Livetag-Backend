@@ -66,13 +66,6 @@ class Module extends BaseModule
     private $normalizeMenus;
 
     /**
-     * Nav bar items
-     *
-     * @var array
-     */
-    public $navbar;
-
-    /**
      * Main layout using for module. Default to layout of parent module
      * Its used when `layout` set to 'left-menu', 'right-menu' or 'top-menu'
      *
@@ -140,7 +133,7 @@ class Module extends BaseModule
     }
 
     /**
-     * Set or add avalible menu
+     * Set or add available menu
      *
      * @param array $menus
      */

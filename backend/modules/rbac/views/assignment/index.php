@@ -14,9 +14,7 @@ $this->title = Yii::t('rbac-backend', 'Assignments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="assignment-index">
-
 	<h1><?= Html::encode($this->title) ?></h1>
-
 	<?php
     Pjax::begin([
         'enablePushState'=>false,
@@ -44,5 +42,4 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     Pjax::end();
     ?>
-
 </div>

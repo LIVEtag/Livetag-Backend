@@ -11,24 +11,17 @@ use backend\modules\rbac\assets\AutocompleteAsset;
 ?>
 
 <div class="auth-item-form">
-
     <?php $form = ActiveForm::begin(); ?>
-
     <?= $form->field($model, 'name')->textInput(['maxlength' => 64]) ?>
-
     <?= $form->field($model, 'description')->textarea(['rows' => 2]) ?>
-
     <?= $form->field($model, 'ruleName')->textInput(['id'=>'rule-name']) ?>
-
     <?= $form->field($model, 'data')->textarea(['rows' => 6]) ?>
-
     <div class="form-group">
         <?php
         echo Html::submitButton($model->isNewRecord ? Yii::t('rbac-backend', 'Create') : Yii::t('rbac-backend', 'Update'), [
             'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary',])
         ?>
     </div>
-
     <?php ActiveForm::end(); ?>
 </div>
 <?php

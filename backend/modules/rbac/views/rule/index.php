@@ -1,7 +1,14 @@
 <?php
+/**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
 
+use yii\grid\ActionColumn;
+use yii\grid\SerialColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /**
@@ -13,13 +20,10 @@ $this->title = Yii::t('rbac-backend', 'Rules');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="role-index">
-
     <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a(Yii::t('rbac-backend', 'Create Rule'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
     <?php
     Pjax::begin([
         'enablePushState'=>false,
@@ -28,15 +32,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => SerialColumn::class],
             [
                 'attribute' => 'name',
                 'label' => Yii::t('rbac-backend', 'Name'),
             ],
-            ['class' => 'yii\grid\ActionColumn',],
+            [
+                'class' => ActionColumn::class,
+                'urlCreator' => function ($action, $model) {
+                    return Url::to([$action, 'name' => $model->name]);
+                }
+            ],
         ],
     ]);
     Pjax::end();
     ?>
-
 </div>

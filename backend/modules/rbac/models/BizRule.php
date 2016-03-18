@@ -46,17 +46,17 @@ class BizRule extends Model
     /**
      * @var Rule
      */
-    private $_item;
+    private $item;
 
     /**
      * Constructor
      *
-     * @param Rule $item
+     * @param $item
      * @param array $config
      */
-    public function __construct(Rule $item, $config = [])
+    public function __construct(Rule $item = null, $config = [])
     {
-        $this->_item = $item;
+        $this->item = $item;
         if ($item !== null) {
             $this->name = $item->name;
             $this->className = get_class($item);
@@ -103,7 +103,7 @@ class BizRule extends Model
      */
     public function getIsNewRecord()
     {
-        return $this->_item === null;
+        return $this->item === null;
     }
 
     /**
@@ -133,19 +133,19 @@ class BizRule extends Model
             $manager = Yii::$app->authManager;
             $class = $this->className;
             $oldName = null;
-            if ($this->_item === null) {
-                $this->_item = new $class();
+            if ($this->item === null) {
+                $this->item = new $class();
                 $isNew = true;
             } else {
                 $isNew = false;
-                $oldName = $this->_item->name;
+                $oldName = $this->item->name;
             }
-            $this->_item->name = $this->name;
+            $this->item->name = $this->name;
 
             if ($isNew) {
-                $manager->add($this->_item);
+                $manager->add($this->item);
             } else {
-                $manager->update($oldName, $this->_item);
+                $manager->update($oldName, $this->item);
             }
 
             return true;
@@ -161,6 +161,6 @@ class BizRule extends Model
      */
     public function getItem()
     {
-        return $this->_item;
+        return $this->item;
     }
 }

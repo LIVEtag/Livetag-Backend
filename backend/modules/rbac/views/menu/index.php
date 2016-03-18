@@ -12,14 +12,11 @@ $this->title = Yii::t('rbac-backend', 'Menus');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="menu-index">
-
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
-
     <p>
         <?= Html::a(Yii::t('rbac-backend', 'Create Menu'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
     <?php
     Pjax::begin(['formSelector' => 'form', 'enablePushState' => false]);
     echo GridView::widget([

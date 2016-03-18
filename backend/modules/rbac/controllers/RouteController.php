@@ -182,7 +182,7 @@ class RouteController extends Controller
         $result = $cache->get($key);
         if ($result === false) {
             $result = [];
-            $this->collectRouteRecrusive(Yii::$app, $result);
+            $this->collectRouteRecursive(Yii::$app, $result);
             if ($cache !== null) {
                 $cache->set($key, $result, self::CACHE_DURATION, new TagDependency([
                     'tags' => self::CACHE_TAG
@@ -199,14 +199,14 @@ class RouteController extends Controller
      * @param Module $module
      * @param array $result
      */
-    private function collectRouteRecrusive($module, &$result)
+    private function collectRouteRecursive($module, &$result)
     {
         $token = "Get Route of '" . get_class($module) . "' with id '" . $module->uniqueId . "'";
         Yii::beginProfile($token, __METHOD__);
         try {
             foreach ($module->getModules() as $id => $child) {
                 if (($child = $module->getModule($id)) !== null) {
-                    $this->collectRouteRecrusive($child, $result);
+                    $this->collectRouteRecursive($child, $result);
                 }
             }
 
@@ -251,7 +251,7 @@ class RouteController extends Controller
                     $className = $namespace . Inflector::id2camel($id) . 'Controller';
                     if (strpos($className, '-') === false
                         && class_exists($className)
-                        && is_subclass_of($className, 'yii\base\Controller')
+                        && is_subclass_of($className, BaseController::class)
                     ) {
                         $this->collectControllerActions($className, $prefix . $id, $module, $result);
                     }

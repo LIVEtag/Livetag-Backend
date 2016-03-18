@@ -1,7 +1,9 @@
 <?php
 
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /**
@@ -13,13 +15,10 @@ $this->title = Yii::t('rbac-backend', 'Roles');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="role-index">
-
     <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a(Yii::t('rbac-backend', 'Create Role'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
     <?php
     Pjax::begin([
         'enablePushState'=>false,
@@ -37,10 +36,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'description',
                 'label' => Yii::t('rbac-backend', 'Description'),
             ],
-            ['class' => 'yii\grid\ActionColumn',],
+            [
+                'class' => ActionColumn::class,
+                'urlCreator' => function ($action, $model) {
+                    return Url::to([$action, 'name' => $model->name]);
+                }
+            ],
         ],
     ]);
     Pjax::end();
     ?>
-
 </div>
