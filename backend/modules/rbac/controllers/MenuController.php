@@ -10,7 +10,7 @@ use backend\modules\rbac\models\Menu;
 use backend\modules\rbac\models\search\Menu as MenuSearch;
 use Yii;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
+use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 
 /**

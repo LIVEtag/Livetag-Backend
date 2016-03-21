@@ -9,7 +9,7 @@ use backend\modules\rbac\components\MenuHelper;
 use backend\modules\rbac\components\RouteRule;
 use Yii;
 use \backend\modules\rbac\models\Route;
-use yii\base\Controller as BaseController;
+use backend\components\Controller as BaseController;
 use yii\base\Module;
 use yii\caching\TagDependency;
 use yii\web\Controller;

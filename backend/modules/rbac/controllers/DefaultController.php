@@ -5,7 +5,7 @@
  */
 namespace backend\modules\rbac\controllers;
 
-use yii\web\Controller;
+use backend\components\Controller;
 
 /**
  * Class DefaultController

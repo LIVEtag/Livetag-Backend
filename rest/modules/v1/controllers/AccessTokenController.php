@@ -13,5 +13,5 @@ use rest\common\models\AccessToken;
  */
 class AccessTokenController extends CommonAccessTokenController
 {
-    public $modelClass = AccessToken::class;
+
 }

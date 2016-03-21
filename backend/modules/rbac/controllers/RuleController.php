@@ -8,7 +8,7 @@ namespace backend\modules\rbac\controllers;
 use backend\modules\rbac\components\MenuHelper;
 use backend\modules\rbac\models\BizRule;
 use Yii;
-use yii\web\Controller;
+use backend\components\Controller;
 use backend\modules\rbac\models\search\BizRule as BizRuleSearch;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;

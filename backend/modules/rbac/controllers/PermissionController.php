@@ -8,7 +8,7 @@ namespace backend\modules\rbac\controllers;
 use backend\modules\rbac\components\MenuHelper;
 use backend\modules\rbac\models\AuthItem;
 use backend\modules\rbac\models\search\AuthItem as AuthItemSearch;
-use yii\web\Controller;
+use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\rbac\Item;

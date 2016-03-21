@@ -13,5 +13,5 @@ use rest\modules\v2\models\views\AccessToken\CreateToken;
  */
 class AccessTokenController extends CommonAccessTokenController
 {
-    public $modelClass = CreateToken::class;
+
 }

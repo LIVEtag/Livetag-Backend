@@ -13,5 +13,5 @@ use rest\common\models\User;
  */
 class UserController extends CommonUserController
 {
-    public $modelClass = User::class;
+
 }

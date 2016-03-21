@@ -8,7 +8,7 @@ namespace backend\modules\rbac\controllers;
 use Yii;
 use common\models\User;
 use backend\modules\rbac\models\search\Assignment as AssignmentSearch;
-use yii\web\Controller;
+use backend\components\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\modules\rbac\components\MenuHelper;

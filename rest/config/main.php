@@ -4,6 +4,16 @@
  * See LICENSE.txt for license details.
  */
 
+use rest\common\models\User;
+use rest\components\api\UrlRule;
+use rest\modules\swagger\Module as SwaggerModule;
+use rest\modules\v1\Module as V1Module;
+use rest\modules\v2\Module as V2Module;
+use yii\log\FileTarget;
+use yii\web\JsonParser;
+use yii\web\Request;
+use yii\web\Response;
+
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
@@ -16,46 +26,57 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'modules' => [
+        'swagger' => [
+            'class' => SwaggerModule::class,
+        ],
         'v1' => [
-            'class' => 'rest\modules\v1\Module',
+            'class' => V1Module::class,
         ],
         'v2' => [
-            'class' => 'rest\modules\v2\Module',
+            'class' => V2Module::class,
         ],
     ],
     'components' => [
         'user' => [
-            'identityClass' => 'rest\common\models\User',
+            'identityClass' => User::class,
             'enableSession' => false,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['error', 'warning'],
                 ],
             ],
         ],
         'response' => [
-            'format' => yii\web\Response::FORMAT_JSON,
+            'format' => Response::FORMAT_JSON,
             'charset' => 'UTF-8',
             'acceptParams' => ['version' => 'v1']
         ],
         'request' => [
-            'class' => '\yii\web\Request',
+            'class' => Request::class,
             'enableCookieValidation' => false,
             'parsers' => [
-                'application/json' => 'yii\web\JsonParser',
+                'application/json' => JsonParser::class,
             ],
         ],
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
-            'showScriptName' => false,
             'rules' => [
                 [
-                    'class' => 'rest\components\api\UrlRule',
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'swagger/main',
+                    ],
+                    'extraPatterns' => [
+                        'GET json' => 'json',
+                        'GET history' => 'history',
+                    ],
+                    'pluralize' => false,
+                ],
+                [
+                    'class' => UrlRule::class,
                     'controller' => [
                         'v1/user',
                         'v1/access-token'
@@ -63,10 +84,9 @@ return [
                     'extraPatterns' => [
                         'GET current' => 'current',
                     ],
-                    'pluralize' => true,
                 ],
                 [
-                    'class' => 'rest\components\api\UrlRule',
+                    'class' => UrlRule::class,
                     'controller' => [
                         'v2/user',
                         'v2/access-token',
@@ -74,7 +94,6 @@ return [
                     'extraPatterns' => [
                         'GET current' => 'current',
                     ],
-                    'pluralize' => true,
                 ],
             ],
         ],

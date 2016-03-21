@@ -13,5 +13,5 @@ use rest\modules\v1\models\views\User\SignupUser;
  */
 class UserController extends CommonUserController
 {
-    public $modelClass = SignupUser::class;
+    
 }

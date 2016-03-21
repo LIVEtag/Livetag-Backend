@@ -6,7 +6,7 @@
 namespace rest\components\api\actions;
 
 use Yii;
-use yii\rest\Action as BaseAction;
+use yii\base\Action as BaseAction;
 use yii\rest\Controller;
 use yii\web\Request;
 use yii\web\Response;
@@ -38,17 +38,5 @@ abstract class Action extends BaseAction
         parent::__construct($id, $controller, $config);
         $this->request = Yii::$app->getRequest();
         $this->response = Yii::$app->getResponse();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function beforeRun()
-    {
-        if ($this->checkAccess !== null) {
-            call_user_func($this->checkAccess, $this->id);
-        }
-
-        return parent::beforeRun();
     }
 }
