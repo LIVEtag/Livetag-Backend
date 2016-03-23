@@ -6,6 +6,7 @@
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\User\CurrentAction;
+use rest\common\controllers\actions\User\OptionsAction;
 use rest\common\controllers\actions\User\SignupAction;
 use rest\common\models\User;
 use rest\common\models\views\User\SignupUser;
@@ -32,7 +33,7 @@ class UserController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['create'],
+                    'except' => ['create', 'options'],
                 ],
                 'access' => [
                     'class' => AccessControl::class,
@@ -66,6 +67,9 @@ class UserController extends Controller
             'current' => [
                 'class' => CurrentAction::class,
                 'modelClass' => User::class,
+            ],
+            'options' => [
+                'class' => OptionsAction::class,
             ],
         ];
     }

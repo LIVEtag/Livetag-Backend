@@ -78,8 +78,17 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
+                        'v1/access-token' // 'OPTIONS login' => 'options',
+                    ],
+                    'extraPatterns' => [
+                        'GET current' => 'current',
+                        'OPTIONS access-tokens' => 'options',
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
                         'v1/user',
-                        'v1/access-token'
                     ],
                     'extraPatterns' => [
                         'GET current' => 'current',
@@ -88,8 +97,13 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v2/user',
                         'v2/access-token',
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v2/user',
                     ],
                     'extraPatterns' => [
                         'GET current' => 'current',

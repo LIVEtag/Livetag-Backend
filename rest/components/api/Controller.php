@@ -5,15 +5,11 @@
  */
 namespace rest\components\api;
 
-use rest\common\models\views\AccessToken\CreateToken;
 use Yii;
-use yii\filters\auth\CompositeAuth;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
-use yii\rest\ActiveController as BaseController;
+use yii\rest\Controller as BaseController;
 use yii\web\Response;
 
 /**
@@ -33,33 +29,7 @@ class Controller extends BaseController
     {
         return [
             'authenticator' => [
-                'class' => CompositeAuth::class,
-                'authMethods' => [
-                    HttpBearerAuth::class,
-                    QueryParamAuth::class,
-                    [
-                        'class' => HttpBasicAuth::class,
-                        'auth' => function ($username, $password) {
-
-                            $accessTokenCreate = new CreateToken();
-                            $accessTokenCreate->load(
-                                [
-                                    'username' => $username,
-                                    'password' => $password,
-                                ],
-                                ''
-                            );
-
-                            $accessTokenCreate->userAgent = Yii::$app->getRequest()->getUserAgent();
-                            $accessTokenCreate->userIp = Yii::$app->getRequest()->getUserIP();
-
-                            $accessToken = $accessTokenCreate->create();
-
-                            return $accessToken->getUser()->one();
-                        }
-                    ],
-                ],
-                'except' => ['options'],
+                'class' => HttpBearerAuth::class,
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,

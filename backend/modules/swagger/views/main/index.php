@@ -29,7 +29,7 @@ $(function () {
       window.SwaggerTranslator.translate();
     }
     window.swaggerUi = new SwaggerUi({
-      //validatorUrl : 'http://localhost:3000',
+      validatorUrl : null,
       url: url,
       dom_id: "swagger-ui-container",
       supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],

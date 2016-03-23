@@ -8,7 +8,6 @@ namespace rest\common\controllers\actions\AccessToken;
 use rest\common\models\views\AccessToken\CreateToken;
 use rest\components\api\actions\Action;
 use Yii;
-use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -38,8 +37,6 @@ class CreateAction extends Action
         }
 
         $this->response->setStatusCode(201);
-        $this->response->getHeaders()
-            ->set('Location', Url::toRoute(['view', 'id' => $accessToken->getId()], true));
 
         return $accessToken;
     }

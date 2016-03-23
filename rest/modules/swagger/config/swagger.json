@@ -10,59 +10,90 @@
     "paths": {
         "/access-tokens": {
             "post": {
-                "tags": ["access-token"],
                 "summary": "Login for APP",
-                "description": "",
-                "operationId": "userCreateAccessToken",
+                "tags": ["access-token"],
                 "produces": ["application/json", "application/xml"],
+                "operationId": "userCreateAccessToken",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    }
+                ],
                 "responses": {
                     "201": {
-                        "description": "Successful operation",
+                        "description": "Success",
                         "schema": {
-                            "description": "Access token",
-                            "type": "string"
+                            "$ref": "#/definitions/Token"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
                         }
                     }
                 }
             }
         }
     },
-    "securityDefinitions": {
-
-    },
     "definitions": {
-        "Users": {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/User"
+        "Token": {
+            "type": "object",
+            "required": [
+                "token",
+                "expired_at"
+            ],
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "expired_at": {
+                    "type": "integer",
+                    "format": "int32"
+                }
             }
         },
-        "User": {
+        "ErrorModel": {
             "type": "object",
+            "required": [
+                "code",
+                "message",
+                "fields"
+            ],
             "properties": {
-                "id": {
-                    "type" : "integer"
+                "code": {
+                    "type": "integer"
                 },
-                "username": {
-                    "type" : "string"
+                "message": {
+                    "type": "string"
                 },
-                "email": {
-                    "type" : "string"
+                "fields": {
+                    "schema": {
+                        "$ref": "#definitions/ErrorFields"
+                    }
+                }
+            }
+        },
+        "ErrorFields": {
+            "type": "object",
+            "required": ["field", "message"],
+            "properties": {
+                "field": {
+                    "type": "string"
                 },
-                "image": {
-                    "type" : "string"
-                },
-                "lat": {
-                    "type" : "string"
-                },
-                "lon": {
-                    "type" : "integer"
-                },
-                "created_at": {
-                    "type" : "integer"
-                },
-                "updated_at": {
-                    "type" : "integer"
+                "message": {
+                    "type": "string"
                 }
             }
         }
