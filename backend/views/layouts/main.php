@@ -41,6 +41,11 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'Rbac', 'url' => ['/rbac'], 'active' => strpos($controller->route, 'rbac/') === 0],
+        [
+            'label' => 'Swagger',
+            'url' => ['/swagger/main/view'],
+            'active' => strpos($controller->route, 'swagger/') === 0
+        ],
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];

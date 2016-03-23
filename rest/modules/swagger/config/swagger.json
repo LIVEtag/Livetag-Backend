@@ -2,267 +2,24 @@
     "swagger": "2.0",
     "info": {
         "description": "API for mobile && js applications.",
-        "version": "1.1.0",
+        "version": "1.0.0",
         "title": "GBKSOFT Test API"
     },
     "basePath": "/v1",
     "schemes": ["http", "https"],
     "paths": {
-        "/users/login": {
+        "/access-tokens": {
             "post": {
-                "tags": ["user"],
-                "summary": "Login for mobile APP",
-                "description": "<div class='swagger-section static-info' style='margin-top: 10px; background-color: #c3d9ec;'><div class='swagger-ui-wrap'><p></p><p>FB Auth Flow</p><p><b>Scope required: email,public_profile</b></p><p> - Client application requests access token from FB</p><p> - Client application sends access token to the backend server</p><p> - backend server uses access token to get user information from FB</p><p> - backend server returns Test API access token as a result</p></div></div>",
-                "operationId": "userLoginMobile",
+                "tags": ["access-token"],
+                "summary": "Login for APP",
+                "description": "",
+                "operationId": "userCreateAccessToken",
                 "produces": ["application/json", "application/xml"],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Successful operation",
                         "schema": {
-                            "description": "Auth token",
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "tags": ["user"],
-                "summary": "Get users list",
-                "description": "Get users list",
-                "operationId": "userslist",
-                "produces": ["application/json", "application/xml"],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "page",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "in": "query",
-                        "name": "per-page",
-                        "required": false,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "A deterministic version of a JSON Schema object.",
-                            "$ref": "#/definitions/Users"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "tags": ["user"],
-                "summary": "Get users detail",
-                "description": "Get users detail",
-                "operationId": "usersdetail",
-                "produces": ["application/json", "application/xml"],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "required": true,
-                        "type": "integer"
-                    }
-
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "A deterministic version of a JSON Schema object.",
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            }
-        },
-        "/profile": {
-            "post": {
-                "tags": ["user"],
-                "summary": "Update user profile",
-                "description": "Update user profile",
-                "operationId": "userProfile",
-                "produces": ["application/json", "application/xml"],
-                "parameters": [
-                    {
-                        "in": "formData",
-                        "name": "username",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "gender",
-                        "required": false,
-                        "type": "integer"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "email",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "city",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "country",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "image",
-                        "required": false,
-                        "type": "file"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "A deterministic version of a JSON Schema object.",
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "get": {
-                "tags": ["user"],
-                "summary": "Get user's profile.",
-                "description": "Get current authorized user profile.",
-                "operationId": "myProfile",
-                "produces": ["application/json", "application/xml"],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "A deterministic version of a JSON Schema object.",
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                }
-            }
-        },
-        "/location": {
-            "post": {
-                "tags": ["user"],
-                "summary": "Update user location",
-                "description": "Update user location",
-                "operationId": "userProfile",
-                "produces": ["application/json", "application/xml"],
-                "parameters": [
-                    {
-                        "in": "formData",
-                        "name": "lat",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "lon",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "lon",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "A deterministic version of a JSON Schema object.",
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            }
-        },
-        "/users/search": {
-            "get": {
-                "tags": ["user"],
-                "summary": "Search users",
-                "description": "Search users",
-                "operationId": "userProfile",
-                "produces": ["application/json", "application/xml"],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "search_string",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "radius",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "lat",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "lon",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "A deterministic version of a JSON Schema object.",
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            }
-        },
-        "/login-web": {
-            "get": {
-                "tags": ["user"],
-                "summary": "Login for web APP",
-                "description": "<div class='swagger-section static-info' style='margin-top: 10px; background-color: #c3d9ec;'><div class='swagger-ui-wrap'>http://testwork.gti.gbksoft.net/api/v2/users/login-web</div></div>",
-                "operationId": "userLoginWeb",
-                "produces": ["application/json", "application/xml"],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "schema": {
-                            "description": "Auth token",
+                            "description": "Access token",
                             "type": "string"
                         }
                     }
@@ -271,6 +28,7 @@
         }
     },
     "securityDefinitions": {
+
     },
     "definitions": {
         "Users": {

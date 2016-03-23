@@ -51,5 +51,7 @@ class SwaggerAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $depends = [];
+    public $depends = [
+
+    ];
 }

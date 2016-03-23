@@ -3,10 +3,11 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace backend\modules\swagger\controllers\actions\Index;
+namespace backend\modules\swagger\controllers\actions\Main;
 
 use Yii;
 use yii\base\Action;
+use yii\web\Controller;
 
 /**
  * Class IndexAction
@@ -14,12 +15,30 @@ use yii\base\Action;
 class IndexAction extends Action
 {
     /**
+     * IndexAction constructor.
+     *
+     * @param string $id
+     * @param Controller $controller
+     * @param array $config
+     */
+    public function __construct($id, Controller $controller, array $config = [])
+    {
+        parent::__construct($id, $controller, $config);
+        $this->controller->layout = 'main';
+    }
+
+    /**
      * Run action
      *
      * @return string
      */
     public function run()
     {
+        if (Yii::$app->getModule('debug')) {
+            Yii::$app->getModule('debug')
+                ->getInstance()
+                ->allowedIPs = [];
+        }
         $isSecure = Yii::$app->getRequest()->getIsSecureConnection();
 
         $basePath = $isSecure ? 'https://' : 'http://'. Yii::getAlias('@rest.domain');

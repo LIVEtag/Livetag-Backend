@@ -5,8 +5,9 @@
  */
 namespace backend\modules\swagger\controllers;
 
-use backend\modules\swagger\controllers\actions\Index\IndexAction;
+use backend\modules\swagger\controllers\actions\Main\IndexAction;
 use backend\components\Controller;
+use backend\modules\swagger\controllers\actions\Main\ViewAction;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
@@ -27,7 +28,7 @@ class MainController extends Controller
                     'class' => AccessControl::className(),
                     'rules' => [
                         [
-                            'actions' => ['index'],
+                            'actions' => ['index', 'view'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]
@@ -45,7 +46,10 @@ class MainController extends Controller
         return [
             'index' => [
                 'class' => IndexAction::class
-            ]
+            ],
+            'view' => [
+                'class' => ViewAction::class
+            ],
         ];
     }
 }
