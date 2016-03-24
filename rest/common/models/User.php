@@ -6,6 +6,7 @@
 namespace rest\common\models;
 
 use common\models\User as CommonUser;
+use rest\common\models\queries\User\AccessTokenQuery;
 use rest\common\models\queries\User\UserQuery;
 use Yii;
 use yii\web\IdentityInterface;
@@ -44,13 +45,21 @@ class User extends CommonUser implements IdentityInterface
     }
 
     /**
-     * @return null|AccessToken
+     * @return null|AccessTokenQuery
      */
     public function getAccessToken()
     {
         return $this->hasOne(AccessToken::class , ['user_id' => 'id'])
-            ->where('expired_at > :expired_at', [':expired_at' => time()])
-            ->one();
+            ->where('expired_at > :expired_at', [':expired_at' => time()]);
+    }
+
+    /**
+     * @return null|AccessTokenQuery
+     */
+    public function getAccessTokens()
+    {
+        return $this->hasMany(AccessToken::class , ['user_id' => 'id'])
+            ->where('expired_at > :expired_at', [':expired_at' => time()]);
     }
 
     /**

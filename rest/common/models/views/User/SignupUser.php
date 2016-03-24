@@ -96,12 +96,14 @@ class SignupUser extends Model
         $user->on(
             User::EVENT_AFTER_INSERT,
             function () use ($user, $signupUser) {
-                $accessTokenCreate = new CreateToken();
-
-                $accessTokenCreate->username = $signupUser->username;
-                $accessTokenCreate->password = $signupUser->password;
-                $accessTokenCreate->userAgent = $signupUser->userAgent;
-                $accessTokenCreate->userIp = $signupUser->userIp;
+                $accessTokenCreate = new CreateToken(
+                    [
+                        'username' => $signupUser->username,
+                        'password' => $signupUser->password,
+                        'userAgent' => $signupUser->userAgent,
+                        'userIp' => $signupUser->userIp,
+                    ]
+                );
 
                 $accessTokenCreate->create();
             }

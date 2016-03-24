@@ -21,19 +21,19 @@ class Serializer extends BaseSerializer
      * @inheritdoc
      */
     public function serialize($data) {
-        $_data = parent::serialize($data);
+        $data = parent::serialize($data);
         
-        if (!is_array($_data)) {
+        if (!is_array($data)) {
             return [];
         }
         
         /**
          * Ignore meta data for collection in response
          */
-        if (isset($_data[$this->collectionEnvelope])) {
-            return $_data[$this->collectionEnvelope];
+        if (isset($data[$this->collectionEnvelope])) {
+            return $data[$this->collectionEnvelope];
         }
         
-        return $_data;
+        return $data;
     }
 }
