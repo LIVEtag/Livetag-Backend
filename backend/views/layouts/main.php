@@ -40,7 +40,7 @@ AppAsset::register($this);
     ]);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Rbac', 'url' => ['/rbac'], 'active' => strpos($controller->route, 'rbac/') === 0],
+        ['label' => 'Rbac', 'url' => ['/rbac/default/index'], 'active' => strpos($controller->route, 'rbac/') === 0],
         [
             'label' => 'Swagger',
             'url' => ['/swagger/main/view'],

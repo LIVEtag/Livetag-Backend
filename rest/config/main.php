@@ -78,10 +78,9 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/access-token' // 'OPTIONS login' => 'options',
+                        'v1/access-token'
                     ],
                     'extraPatterns' => [
-                        'GET current' => 'current',
                         'OPTIONS access-tokens' => 'options',
                     ],
                 ],
@@ -92,6 +91,7 @@ return [
                     ],
                     'extraPatterns' => [
                         'GET current' => 'current',
+                        'OPTIONS current' => 'options',
                     ],
                 ],
                 [
@@ -107,6 +107,7 @@ return [
                     ],
                     'extraPatterns' => [
                         'GET current' => 'current',
+                        'OPTIONS current' => 'options',
                     ],
                 ],
             ],

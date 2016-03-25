@@ -19,9 +19,6 @@ class CurrentAction extends Action
      */
     public function run()
     {
-        return User::find()
-            ->andWhere('status = :status', [':status' => User::STATUS_ACTIVE])
-            ->andWhere('id = :id', [':id' => Yii::$app->user->identity->getId()])
-            ->one();
+        return Yii::$app->user->identity;
     }
 }

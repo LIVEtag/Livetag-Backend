@@ -45,9 +45,12 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'enableStrictParsing' => false,
-            'showScriptName' => false,
+            'rules' => [
+                '' => '',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>/',
+                '<module:\w+>/<controller:\w+>' => '<module>/<controller>/',
+                '<module:\w+>/<controller:\w+>/<action:.*>' => '<module>/<controller>/<action>/',
+            ],
         ],
     ],
     'params' => $params,

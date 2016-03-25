@@ -95,8 +95,8 @@ class AccessTokenCest
                 'username' => self::TEST_NAME,
                 'email' => self::TEST_EMAIL,
                 'password' => self::TEST_PASSWORD,
-                'userAgent' => 'test-user-agent',
-                'userIp' => '0.0.0.0',
+                'userAgent' => 'Test-User-Agent',
+                'userIp' => '',
             ],
             ''
         );

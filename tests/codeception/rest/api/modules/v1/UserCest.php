@@ -6,7 +6,9 @@
 namespace tests\codeception\rest\api\modules\v1;
 
 use Codeception\Scenario;
+use rest\common\models\AccessToken;
 use rest\common\models\User;
+use rest\common\models\views\AccessToken\CreateToken;
 use rest\common\models\views\User\SignupUser;
 use tests\codeception\rest\ApiTester;
 
@@ -85,11 +87,20 @@ class UserCest
     public function testCurrentBearerAuthenticated(ApiTester $I, Scenario $scenario)
     {
         $user = $this->createUser();
+
+        // Creating a token to validate the ratio of the current user token
+        $this->createAccessToken($user);
+
         $token = $user->getAccessToken()->one();
+
+        // Creating a token to validate the ratio of the current user token
+        $this->createAccessToken($user);
 
         $I->wantTo('View a user via API V1 bearer authenticated');
 
         $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('User-Agent', 'Test-User-Agent');
+
         $I->amBearerAuthenticated($token->token);
 
         $I->sendGET('v1/users/current');
@@ -122,12 +133,29 @@ class UserCest
                 'username' => self::TEST_NAME,
                 'email' => self::TEST_EMAIL,
                 'password' => self::TEST_PASSWORD,
-                'userAgent' => 'test-user-agent',
-                'userIp' => '0.0.0.0',
+                'userAgent' => 'Test-User-Agent',
+                'userIp' => '',
             ],
             ''
         );
 
         return $user->signup();
+    }
+
+    /**
+     * @param User $user
+     * @return bool|AccessToken
+     */
+    private function createAccessToken(User $user)
+    {
+        $accessTokenCreate = new CreateToken(
+            [
+                'username' => $user->username,
+                'password' => self::TEST_PASSWORD,
+                'userAgent' => 'Test-User-Agent',
+                'userIp' => '',
+            ]
+        );
+        return $accessTokenCreate->create();
     }
 }

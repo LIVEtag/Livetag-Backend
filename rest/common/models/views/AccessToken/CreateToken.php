@@ -104,6 +104,8 @@ class CreateToken extends Model
 
         $accessToken->is_verify_ip = false;
         $accessToken->is_frozen_expire = false;
+        $accessToken->user_ip = $this->userIp;
+        $accessToken->user_agent = $this->userAgent;
 
         if ($this->isVerifyIp === self::YES_VALUE) {
             $accessToken->is_verify_ip = true;

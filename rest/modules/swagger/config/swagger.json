@@ -10,7 +10,7 @@
     "paths": {
         "/access-tokens": {
             "post": {
-                "summary": "Login for APP",
+                "summary": "Create access token for APP",
                 "tags": ["access-token"],
                 "produces": ["application/json", "application/xml"],
                 "operationId": "userCreateAccessToken",
@@ -32,7 +32,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "Success",
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Token"
                         }
@@ -45,9 +45,95 @@
                     }
                 }
             }
+        },
+        "/users": {
+            "post": {
+                "summary": "Login for APP",
+                "tags": ["user"],
+                "produces": ["application/json", "application/xml"],
+                "operationId": "userCreate",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "username",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "password",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/current": {
+            "get": {
+                "summary": "Login for APP",
+                "tags": ["user"],
+                "produces": ["application/json", "application/xml"],
+                "operationId": "userCurrent",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "User": {
+            "type": "object",
+            "required": [
+                "username",
+                "email",
+                "accessToken"
+            ],
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "accessToken": {
+                    "schema": {
+                        "$ref": "#/definitions/Token"
+                    }
+                }
+            }
+        },
         "Token": {
             "type": "object",
             "required": [
@@ -80,20 +166,23 @@
                 },
                 "fields": {
                     "schema": {
-                        "$ref": "#definitions/ErrorFields"
+                        "type": "array",
+                        "minimum": 0,
+                        "items": [
+                            {
+                                "type": "object",
+                                "required": ["field", "message"],
+                                "properties": {
+                                    "field": {
+                                        "type": "string"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        ]
                     }
-                }
-            }
-        },
-        "ErrorFields": {
-            "type": "object",
-            "required": ["field", "message"],
-            "properties": {
-                "field": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
                 }
             }
         }
