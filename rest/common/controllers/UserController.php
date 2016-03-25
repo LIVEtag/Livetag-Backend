@@ -62,11 +62,9 @@ class UserController extends Controller
         return [
             'create' => [
                 'class' => SignupAction::class,
-                'modelClass' => SignupUser::class,
             ],
             'current' => [
                 'class' => CurrentAction::class,
-                'modelClass' => User::class,
             ],
             'options' => [
                 'class' => OptionsAction::class,

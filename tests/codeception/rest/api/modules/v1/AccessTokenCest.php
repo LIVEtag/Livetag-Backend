@@ -47,7 +47,7 @@ class AccessTokenCest
     }
 
     /**
-     * Test user tokon creation
+     * Test user token creation
      *
      * @param ApiTester $I
      * @param Scenario $scenario

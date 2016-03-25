@@ -62,45 +62,15 @@ class UserCest
 
         /** @var User $user */
         $user = User::findOne(['email' => self::TEST_EMAIL]);
+        $token = $user->getAccessToken()->one();
+
         $I->seeResponseContainsJson(
             [
                 'username' => 'test',
                 'email' => self::TEST_EMAIL,
                 'accessToken' => [
-                    'token' => $user->getAccessToken()->token,
-                    'expired_at' => $user->getAccessToken()->expired_at,
-                ]
-            ]
-        );
-    }
-
-    /**
-     * Test view current user http authenticated
-     *
-     * @param ApiTester $I
-     * @param Scenario $scenario
-     */
-    public function testCurrentHttpAuthenticated(ApiTester $I, Scenario $scenario)
-    {
-        $user = $this->createUser();
-
-        $I->wantTo('View a user via API V2 http authenticated');
-
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->amHttpAuthenticated($user->username, self::TEST_PASSWORD);
-
-        $I->sendGET('v2/users/current');
-
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-
-        $I->seeResponseContainsJson(
-            [
-                'username' => self::TEST_NAME,
-                'email' => self::TEST_EMAIL,
-                'accessToken' => [
-                    'token' => $user->getAccessToken()->token,
-                    'expired_at' => $user->getAccessToken()->expired_at,
+                    'token' => $token->token,
+                    'expired_at' => $token->expired_at,
                 ]
             ]
         );
@@ -115,12 +85,12 @@ class UserCest
     public function testCurrentBearerAuthenticated(ApiTester $I, Scenario $scenario)
     {
         $user = $this->createUser();
+        $token = $user->getAccessToken()->one();
 
         $I->wantTo('View a user via API V2 bearer authenticated');
 
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->haveHttpHeader('Cookie', 'PHPSTORM');
-        $I->amBearerAuthenticated($user->getAccessToken()->token);
+        $I->amBearerAuthenticated($token->token);
 
         $I->sendGET('v2/users/current');
 
@@ -132,8 +102,8 @@ class UserCest
                 'username' => self::TEST_NAME,
                 'email' => self::TEST_EMAIL,
                 'accessToken' => [
-                    'token' => $user->getAccessToken()->token,
-                    'expired_at' => $user->getAccessToken()->expired_at,
+                    'token' => $token->token,
+                    'expired_at' => $token->expired_at,
                 ]
             ]
         );
