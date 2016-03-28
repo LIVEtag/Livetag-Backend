@@ -21,4 +21,28 @@ class AccessTokenQuery extends ActiveQuery
     {
         return parent::one($db);
     }
+
+    /**
+     * Find current access token by matching client
+     *
+     * @param string $userAgent
+     * @param string $userIp
+     * @return AccessTokenQuery
+     */
+    public function findCurrentToken($userAgent, $userIp)
+    {
+        return $this->where(
+                [
+                    'and',
+                    'expired_at > :expired_at',
+                    'user_agent = :user_agent',
+                    'user_ip = :user_ip',
+                ],
+                [
+                    ':expired_at' => time(),
+                    ':user_agent' => (string) $userAgent,
+                    ':user_ip' =>  (string) $userIp,
+                ]
+            );
+    }
 }

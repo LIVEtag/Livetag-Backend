@@ -22,20 +22,16 @@ class User extends CommonUser implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         /** @var $accessToken AccessToken */
-        $accessToken = AccessToken::find()
-            ->where(
+        $accessToken = AccessToken::find()->findCurrentToken(
+            Yii::$app->request->getUserAgent(),
+            Yii::$app->request->getUserIP()
+        )->andWhere(
                 [
                     'and',
                     'token = :token',
-                    'expired_at > :expired_at',
-                    'user_agent = :user_agent',
-                    'user_ip = :user_ip',
                 ],
                 [
                     ':token' => $token,
-                    ':expired_at' => time(),
-                    ':user_agent' => Yii::$app->request->getUserAgent(),
-                    ':user_ip' => Yii::$app->request->getUserIP()
                 ]
             )->one();
 

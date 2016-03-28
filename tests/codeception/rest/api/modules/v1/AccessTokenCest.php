@@ -6,9 +6,6 @@
 namespace tests\codeception\rest\api\modules\v1;
 
 use Codeception\Scenario;
-use rest\common\models\AccessToken;
-use rest\common\models\User;
-use rest\common\models\views\User\SignupUser;
 use tests\codeception\rest\ApiTester;
 
 /**
@@ -16,36 +13,6 @@ use tests\codeception\rest\ApiTester;
  */
 class AccessTokenCest
 {
-    const TEST_EMAIL = 'test@test.com';
-
-    const TEST_PASSWORD = '123123q';
-
-    const TEST_NAME = 'test';
-
-    /**
-     * @param ApiTester $I
-     */
-    public function _before(ApiTester $I)
-    {
-        $user = User::find()->where(['email' => self::TEST_EMAIL])
-            ->one();
-        if ($user) {
-            AccessToken::deleteAll(['user_id' => $user->getId()]);
-            User::deleteAll(['email' => self::TEST_EMAIL]);
-        }
-    }
-
-    /**
-     * @param ApiTester $I
-     */
-    public function _after(ApiTester $I)
-    {
-        $user = User::find()->where(['email' => self::TEST_EMAIL])
-            ->one();
-        AccessToken::deleteAll(['user_id' => $user->getId()]);
-        User::deleteAll(['email' => self::TEST_EMAIL]);
-    }
-
     /**
      * Test user token creation
      *
@@ -54,53 +21,29 @@ class AccessTokenCest
      */
     public function createTest(ApiTester $I, Scenario $scenario)
     {
-        $user = $this->createUser();
-
         $I->wantTo('Create a user via API V1');
+
+        $user = $I->getFixture('user')[0];
+        $accessToken = $I->getFixture('access_token')[0];
+
+        $I->haveHttpHeader('User-Agent', 'Test-User-Agent');
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST(
             'v1/access-tokens',
             [
-                'username' => self::TEST_NAME,
-                'password' => self::TEST_PASSWORD
+                'username' => $user['username'],
+                'password' => 'password_0'
             ]
         );
-
-        /** @var AccessToken $token */
-        $token = AccessToken::find()->andWhere(['user_id' => $user->getId()])
-            ->orderBy(['id' => SORT_DESC])
-            ->one();
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
 
         $I->seeResponseContainsJson(
             [
-                'token' => $token->token,
-                'expired_at' => $token->expired_at,
+                'token' => $accessToken['token'],
+                'expired_at' => $accessToken['expired_at'],
             ]
         );
-    }
-
-    /**
-     * Create user
-     *
-     * @return User
-     */
-    protected function createUser()
-    {
-        $user = new SignupUser();
-        $user->load(
-            [
-                'username' => self::TEST_NAME,
-                'email' => self::TEST_EMAIL,
-                'password' => self::TEST_PASSWORD,
-                'userAgent' => 'Test-User-Agent',
-                'userIp' => '',
-            ],
-            ''
-        );
-
-        return $user->signup();
     }
 }

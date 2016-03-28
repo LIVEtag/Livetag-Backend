@@ -18,17 +18,15 @@ class m160226_133453_setup_access_token extends Migration
         $this->createTable(
             AccessToken::tableName(),
             [
-                'id' => $this->primaryKey(),
-                'user_id' => $this->integer(),
+                'id' => $this->primaryKey()->unsigned(),
+                'user_id' => $this->integer()->unsigned()->notNull(),
                 'token' => $this->string(128)->notNull(),
                 // @link http://stackoverflow.com/a/20473371
-                'user_ip' => $this->string(46),
+                'user_ip' => $this->string(46)->notNull()->defaultValue(''),
                 // @link http://stackoverflow.com/a/20746656
                 'user_agent' => $this->text(),
-                'is_verify_ip' => $this->boolean()->defaultValue(false),
-                'is_frozen_expire'  => $this->boolean()->defaultValue(true),
-                'created_at' => $this->integer()->notNull(),
-                'expired_at' => $this->integer()->notNull(),
+                'created_at' => $this->integer()->unsigned()->notNull(),
+                'expired_at' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );

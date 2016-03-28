@@ -87,12 +87,10 @@ class SignupUser extends Model
         }
 
         $user = new User();
-
         $user->username = $this->username;
         $user->email = $this->email;
 
         $signupUser = $this;
-
         $user->on(
             User::EVENT_AFTER_INSERT,
             function () use ($user, $signupUser) {

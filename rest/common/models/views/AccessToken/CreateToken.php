@@ -37,11 +37,6 @@ class CreateToken extends Model
     /**
      * @var string
      */
-    public $isVerifyIp = self::YES_VALUE;
-
-    /**
-     * @var string
-     */
     public $userIp;
 
     /**
@@ -62,8 +57,9 @@ class CreateToken extends Model
         return [
             [['username', 'password'], 'required'],
             ['password', 'validatePassword'],
-            [['isRememberMe', 'isVerifyIp'], 'in', 'range' => [self::YES_VALUE, self::NO_VALUE]],
+            [['isRememberMe'], 'in', 'range' => [self::YES_VALUE, self::NO_VALUE]],
             [['userIp', 'userAgent'], 'string'],
+            [['userIp', 'userAgent'], 'filter', 'filter' => 'trim'],
         ];
     }
 
@@ -95,25 +91,29 @@ class CreateToken extends Model
             return false;
         }
 
-        $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
+        $accessToken = AccessToken::find()->findCurrentToken(
+            $this->userAgent,
+            $this->userIp
+        )->andWhere(
+            'user_id = :user_id',
+            [':user_id' => $this->getUser()->id]
+        )->one();
+
+        if ($accessToken !== null) {
+            return $accessToken;
+        }
 
         $accessToken = new AccessToken();
         $accessToken->user_id = $this->getUser()->id;
 
         $accessToken->generateToken();
 
-        $accessToken->is_verify_ip = false;
-        $accessToken->is_frozen_expire = false;
         $accessToken->user_ip = $this->userIp;
         $accessToken->user_agent = $this->userAgent;
 
-        if ($this->isVerifyIp === self::YES_VALUE) {
-            $accessToken->is_verify_ip = true;
-        }
-
+        $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         if ($this->isRememberMe === self::YES_VALUE) {
             $expireTime = AccessToken::REMEMBER_ME_TIME;
-            $accessToken->is_frozen_expire = true;
         }
 
         $accessToken->expired_at = $expireTime + time();

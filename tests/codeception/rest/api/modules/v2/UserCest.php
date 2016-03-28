@@ -6,8 +6,6 @@
 namespace tests\codeception\rest\api\modules\v2;
 
 use Codeception\Scenario;
-use rest\common\models\User;
-use rest\common\models\views\User\SignupUser;
 use tests\codeception\rest\ApiTester;
 
 /**
@@ -15,27 +13,11 @@ use tests\codeception\rest\ApiTester;
  */
 class UserCest
 {
-    const TEST_EMAIL = 'test@test.com';
+    const TEST_EMAIL = 'v2test@test.loc';
 
     const TEST_PASSWORD = '123123q';
 
-    const TEST_NAME = 'username';
-
-    /**
-     * @param ApiTester $I
-     */
-    public function _before(ApiTester $I)
-    {
-        User::deleteAll(['email' => self::TEST_EMAIL]);
-    }
-
-    /**
-     * @param ApiTester $I
-     */
-    public function _after(ApiTester $I)
-    {
-        User::deleteAll(['email' => self::TEST_EMAIL]);
-    }
+    const TEST_NAME = 'v2username';
 
     /**
      * Test user creation
@@ -46,34 +28,30 @@ class UserCest
     public function testCreate(ApiTester $I, Scenario $scenario)
     {
         $I->wantTo('Create a user via API V2');
+
         $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->haveHttpHeader('User-Agent', 'Test-User-Agent');
 
         $I->sendPOST(
             'v2/users',
             [
-                'username' => 'test',
+                'username' => self::TEST_NAME,
                 'email' => self::TEST_EMAIL,
-                'password' => self::TEST_PASSWORD
+                'password' => self::TEST_PASSWORD,
             ]
         );
 
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
 
-        /** @var User $user */
-        $user = User::findOne(['email' => self::TEST_EMAIL]);
-        $token = $user->getAccessToken()->one();
-
         $I->seeResponseContainsJson(
             [
-                'username' => 'test',
+                'username' => self::TEST_NAME,
                 'email' => self::TEST_EMAIL,
-                'accessToken' => [
-                    'token' => $token->token,
-                    'expired_at' => $token->expired_at,
-                ]
             ]
         );
+        $I->seeResponseJsonMatchesJsonPath('$.accessToken.token');
+        $I->seeResponseJsonMatchesJsonPath('$.accessToken.expired_at');
     }
 
     /**
@@ -84,13 +62,15 @@ class UserCest
      */
     public function testCurrentBearerAuthenticated(ApiTester $I, Scenario $scenario)
     {
-        $user = $this->createUser();
-        $token = $user->getAccessToken()->one();
-
         $I->wantTo('View a user via API V2 bearer authenticated');
 
+        $user = $I->getFixture('user')[0];
+        $accessToken = $I->getFixture('access_token')[0];
+
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->amBearerAuthenticated($token->token);
+        $I->haveHttpHeader('User-Agent', 'Test-User-Agent');
+
+        $I->amBearerAuthenticated($accessToken['token']);
 
         $I->sendGET('v2/users/current');
 
@@ -99,35 +79,13 @@ class UserCest
 
         $I->seeResponseContainsJson(
             [
-                'username' => self::TEST_NAME,
-                'email' => self::TEST_EMAIL,
+                'username' => $user['username'],
+                'email' => $user['email'],
                 'accessToken' => [
-                    'token' => $token->token,
-                    'expired_at' => $token->expired_at,
+                    'token' => $accessToken['token'],
+                    'expired_at' => $accessToken['expired_at'],
                 ]
             ]
         );
-    }
-
-    /**
-     * Create user
-     *
-     * @return User
-     */
-    protected function createUser()
-    {
-        $user = new SignupUser();
-        $user->load(
-            [
-                'username' => self::TEST_NAME,
-                'email' => self::TEST_EMAIL,
-                'password' => self::TEST_PASSWORD,
-                'userAgent' => 'test-user-agent',
-                'userIp' => '0.0.0.0',
-            ],
-            ''
-        );
-
-        return $user->signup();
     }
 }

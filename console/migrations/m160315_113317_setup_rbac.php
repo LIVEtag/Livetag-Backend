@@ -98,7 +98,7 @@ class m160315_113317_setup_rbac extends Migration
             $authManager->assignmentTable,
             [
                 'item_name' => $this->string(64)->notNull(),
-                'user_id' => $this->integer()->notNull(),
+                'user_id' => $this->integer()->unsigned()->notNull(),
                 'created_at' => $this->integer()->notNull(),
                 'PRIMARY KEY (item_name, user_id)',
             ],
@@ -118,9 +118,9 @@ class m160315_113317_setup_rbac extends Migration
         $this->createTable(
             Menu::tableName(),
             [
-                'id' => $this->primaryKey(),
+                'id' => $this->primaryKey()->unsigned(),
                 'name' => $this->string(128)->notNull(),
-                'parent' => $this->integer(),
+                'parent' => $this->integer()->unsigned(),
                 'route' => $this->string(256)->notNull(),
                 'order' => $this->integer()->notNull(),
                 'data' => $this->text(),

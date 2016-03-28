@@ -5,6 +5,7 @@
  */
 namespace rest\common\models;
 
+use rest\common\models\queries\User\AccessTokenQuery;
 use rest\common\models\queries\User\UserQuery;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -18,8 +19,6 @@ use yii\db\ActiveRecord;
  * @property string $token
  * @property string $user_ip
  * @property string $user_agent
- * @property boolean $is_verify_ip
- * @property boolean $is_frozen_expire
  * @property integer $created_at
  * @property integer $expired_at
  */
@@ -71,8 +70,8 @@ class AccessToken extends ActiveRecord
             [['user_id'], 'integer'],
             [['user_agent'], 'string'],
             [['user_ip'], 'string', 'max' => 46],
+            [['user_ip', 'user_agent'], 'default', 'value' => ''],
             [['token'], 'string', 'min' => self::TOKEN_LENGTH, 'max' => self::TOKEN_LENGTH],
-            [['is_frozen_expire', 'is_verify_ip'], 'boolean'],
             [['created_at', 'expired_at'], 'safe'],
         ];
     }
@@ -91,6 +90,15 @@ class AccessToken extends ActiveRecord
     public function getId()
     {
         return $this->getPrimaryKey();
+    }
+
+    /**
+     * @inheritdoc
+     * @return AccessTokenQuery
+     */
+    public static function find()
+    {
+        return Yii::createObject(AccessTokenQuery::class, [get_called_class()]);
     }
 
     /**
@@ -126,6 +134,6 @@ class AccessToken extends ActiveRecord
         );
         $hash .= '_';
 
-        return $hash . $security->generateRandomString(AccessToken::TOKEN_LENGTH - strlen($hash));
+        return $hash . $security->generateRandomString(self::TOKEN_LENGTH - strlen($hash));
     }
 }
