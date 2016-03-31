@@ -8,7 +8,6 @@ namespace rest\common\controllers\actions\User;
 use rest\common\models\views\User\SignupUser;
 use rest\components\api\actions\Action;
 use Yii;
-use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -38,8 +37,6 @@ class SignupAction extends Action
         }
 
         $this->response->setStatusCode(201);
-        $this->response->getHeaders()
-            ->set('Location', Url::toRoute(['view', 'id' => $user->getId()], true));
 
         return $user;
     }
