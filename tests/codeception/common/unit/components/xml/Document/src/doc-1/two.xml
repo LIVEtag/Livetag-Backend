@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+    <node_root>
+        <argument name="test">
+            <item>test3</item>
+            <item name="test">test-replace</item>
+            <item>test4</item>
+        </argument>
+        <argument>
+            <item>test1</item>
+        </argument>
+        <argument name="test2">
+            <item>test1</item>
+        </argument>
+    </node_root>
+    <node_root>
+        <argument>
+            <item>test1</item>
+        </argument>
+    </node_root>
+    <node_root>
+        <argument name="test">
+            <item>test1</item>
+            <item name="test">test</item>
+            <item>test2</item>
+        </argument>
+    </node_root>
+    <node_root>
+        <argument name="test">
+            <item>test1</item>
+        </argument>
+    </node_root>
+</config>

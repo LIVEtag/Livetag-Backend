@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+    <node_root>
+        <argument name="test">
+            <item>test1</item>
+            <item name="test">test</item>
+            <item>test2</item>
+        </argument>
+        <argument></argument>
+        <argument></argument>
+    </node_root>
+    <node_root></node_root>
+    <node_root>
+        <argument name="test"></argument>
+    </node_root>
+</config>
