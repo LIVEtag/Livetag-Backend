@@ -6,11 +6,12 @@
 namespace tests\codeception\common\unit\components\xml\Document\Node;
 
 use Codeception\TestCase\Test;
-use common\components\xml\Document\Merge\Rule\EqualAttribute;
-use common\components\xml\Document\Merge\Rule\EqualNodeName;
-use common\components\xml\Document\Merge\Rule\IsComplexType;
-use common\components\xml\Document\Merge\Rule\IsNodeElement;
-use common\components\xml\Document\Merge\Rule\IsSimpleType;
+use common\components\xml\Document\Node\Merger\ContextValidator;
+use common\components\xml\Document\Node\Merger\Rule\EqualAttribute;
+use common\components\xml\Document\Node\Merger\Rule\EqualNodeName;
+use common\components\xml\Document\Node\Merger\Rule\IsComplexType;
+use common\components\xml\Document\Node\Merger\Rule\IsNodeElement;
+use common\components\xml\Document\Node\Merger\Rule\IsSimpleType;
 use common\components\xml\Document\Node\MergerInterface;
 use common\components\xml\Document\Node\Resolver;
 
@@ -22,19 +23,20 @@ use common\components\xml\Document\Node\Resolver;
 class ResolverTest extends Test
 {
     /**
+     * @param string $expected
      * @param array $config
      * @param \DOMNode $leftNode
      * @param \DOMNode $rightNode
      *
      * @dataProvider resolveDataProvider
      */
-    public function testResolve(array $config, \DOMNode $leftNode, \DOMNode $rightNode)
+    public function testResolve($expected, array $config, \DOMNode $leftNode, \DOMNode $rightNode)
     {
         $resolver = new Resolver($config);
 
         $merger = $resolver->resolve($leftNode, $rightNode);
 
-        self::assertInstanceOf(MergerInterface::class, $merger);
+        self::assertEquals($expected, $merger);
     }
 
     /**
@@ -42,46 +44,66 @@ class ResolverTest extends Test
      */
     public function resolveDataProvider()
     {
+        $contextValidator = new ContextValidator();
         $document = new \DOMDocument();
         $document->load(__DIR__ . '/src/doc-1.xml');
         $node = $document->getElementsByTagName('test')->item(0);
 
         return [
             [
+                'expected' => MergerInterface::class . 'Complex',
                 'config' => [
                     Resolver::RULES => [
                         'complex' => [
-                            'rule' => IsNodeElement::class,
-                            'next' => [
-                                'rule' => IsComplexType::class,
-                                'next' => [
-                                    'rule' => EqualNodeName::class,
-                                    'next' => [
-                                        'rule' => EqualAttribute::class,
-                                        'merger' => MergerInterface::class
+                            Resolver::RULE => $this->create(IsNodeElement::class),
+                            Resolver::NEXT => [
+                                Resolver::RULE => $this->create(IsComplexType::class, [$contextValidator]),
+                                Resolver::NEXT => [
+                                    Resolver::RULE => $this->create(EqualNodeName::class),
+                                    Resolver::NEXT => [
+                                        Resolver::RULE => $this->create(
+                                            EqualAttribute::class,
+                                            [['name'], $contextValidator]
+                                        ),
+                                        Resolver::MERGER => MergerInterface::class . 'Complex'
                                     ]
                                 ]
                             ]
                         ],
                         'simple' => [
-                            'rule' => IsNodeElement::class,
-                            'next' => [
-                                'rule' => IsSimpleType::class,
-                                'next' => [
-                                    'rule' => EqualNodeName::class,
-                                    'next' => [
-                                        'rule' => EqualAttribute::class,
-                                        'merger' => MergerInterface::class
+                            Resolver::RULE => $this->create(IsNodeElement::class),
+                            Resolver::NEXT => [
+                                Resolver::RULE => $this->create(IsSimpleType::class),
+                                Resolver::NEXT => [
+                                    Resolver::RULE => $this->create(EqualNodeName::class),
+                                    Resolver::NEXT => [
+                                        Resolver::RULE => $this->create(
+                                            EqualAttribute::class,
+                                            [['name'], $contextValidator]
+                                        ),
+                                        Resolver::MERGER => MergerInterface::class
                                     ]
                                 ]
                             ]
                         ]
                     ],
-                    Resolver::DEFAULT_MERGER => MergerInterface::class
+                    Resolver::DEFAULT_MERGER => MergerInterface::class . 'Default'
                 ],
                 'leftNode' => $node,
                 'rightNode' => $node,
             ]
         ];
+    }
+
+    /**
+     * @param string $className
+     * @param array $arguments
+     * @return object
+     */
+    private function create($className, array $arguments = [])
+    {
+        $class = new \ReflectionClass($className);
+
+        return $class->newInstanceArgs($arguments);
     }
 }

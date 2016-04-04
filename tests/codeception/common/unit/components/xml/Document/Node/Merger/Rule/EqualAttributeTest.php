@@ -3,16 +3,16 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace tests\codeception\common\unit\components\xml\Document\Merge\Rule;
+namespace tests\codeception\common\unit\components\xml\Document\Node\Merger\Rule;
 
 use Codeception\TestCase\Test;
-use common\components\xml\Document\Merge\ContextValidator;
-use common\components\xml\Document\Merge\Rule\EqualAttribute;
+use common\components\xml\Document\Node\Merger\ContextValidator;
+use common\components\xml\Document\Node\Merger\Rule\EqualAttribute;
 
 /**
  * Class EqualAttributeTest
  *
- * @see \common\components\xml\Document\Merge\Rule\EqualAttribute
+ * @see \common\components\xml\Document\Node\Merger\Rule\EqualAttribute
  */
 class EqualAttributeTest extends Test
 {

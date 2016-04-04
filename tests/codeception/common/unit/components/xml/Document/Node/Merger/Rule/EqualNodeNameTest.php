@@ -3,21 +3,21 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace tests\codeception\common\unit\components\xml\Document\Merge\Rule;
+namespace tests\codeception\common\unit\components\xml\Document\Node\Merger\Rule;
 
 use Codeception\TestCase\Test;
-use common\components\xml\Document\Merge\Rule\IsNodeElement;
+use common\components\xml\Document\Node\Merger\Rule\EqualNodeName;
 
 /**
- * Class IsNodeElementTest
+ * Class EqualNodeNameTest
  *
- * @see \common\components\xml\Document\Merge\Rule\IsNodeElement
+ * @see \common\components\xml\Document\Node\Merger\Rule\EqualNodeName
  */
-class IsNodeElementTest extends Test
+class EqualNodeNameTest extends Test
 {
     public function testValidate()
     {
-        $rule = new IsNodeElement();
+        $rule = new EqualNodeName();
 
         $document = new \DOMDocument();
 
@@ -29,12 +29,12 @@ class IsNodeElementTest extends Test
 
     public function testValidateFail()
     {
-        $rule = new IsNodeElement();
+        $rule = new EqualNodeName();
 
         $document = new \DOMDocument();
 
         $leftNode = $document->createElement('bad');
-        $rightNode = $document->createTextNode('test');
+        $rightNode = $document->createElement('test');
 
         self::assertFalse($rule->validate($leftNode, $rightNode));
     }

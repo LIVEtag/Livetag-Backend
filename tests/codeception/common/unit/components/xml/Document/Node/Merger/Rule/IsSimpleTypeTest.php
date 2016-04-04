@@ -3,15 +3,15 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace tests\codeception\common\unit\components\xml\Document\Merge\Rule;
+namespace tests\codeception\common\unit\components\xml\Document\Node\Merger\Rule;
 
 use Codeception\TestCase\Test;
-use common\components\xml\Document\Merge\Rule\IsSimpleType;
+use common\components\xml\Document\Node\Merger\Rule\IsSimpleType;
 
 /**
  * Class IsSimpleTypeTest
  *
- * @see \common\components\xml\Document\Merge\Rule\IsSimpleType
+ * @see \common\components\xml\Document\Node\Merger\Rule\IsSimpleType
  */
 class IsSimpleTypeTest extends Test
 {
