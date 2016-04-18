@@ -22,13 +22,14 @@ class AppendNode implements CommandInterface
         }
 
         foreach ($this->collectNodes($rightNode) as $node) {
+            $node = $leftNode->ownerDocument->importNode($node, true);
             $leftNode->appendChild($node);
         }
-
     }
 
     /**
      * @param \DOMNode $node
+     * @return array
      */
     private function collectNodes(\DOMNode $node)
     {
@@ -36,5 +37,7 @@ class AppendNode implements CommandInterface
         foreach ($node->childNodes as $node) {
             $childNodes[] = $node;
         }
+
+        return $childNodes;
     }
 }

@@ -21,8 +21,31 @@ class ReplaceContent implements CommandInterface
             $this->removeChildNodes($leftNode);
         }
 
-        $newText = new \DOMText($rightNode->textContent);
-        $leftNode->appendChild($newText);
+        foreach ($this->collectNodes($rightNode) as $child) {
+            $child = $leftNode->ownerDocument->importNode($child, true);
+            $leftNode->appendChild($child);
+        }
+    }
+
+    /**
+     * @param \DOMNode $node
+     * @return \DOMNode[]
+     */
+    private function collectNodes(\DOMNode $node)
+    {
+        $childNodes = [];
+        /** @var \DOMNode $child */
+        foreach ($node->childNodes as $child) {
+            switch ($child->nodeType) {
+                case XML_CDATA_SECTION_NODE:
+                    // no break
+                case XML_TEXT_NODE:
+                    $childNodes[] = $node;
+                    break;
+            }
+        }
+
+        return $childNodes;
     }
 
     /**
@@ -30,12 +53,8 @@ class ReplaceContent implements CommandInterface
      */
     private function removeChildNodes(\DOMNode $node)
     {
-        $childNodes = [];
-        foreach ($node->childNodes as $node) {
-            $childNodes[] = $node;
-        }
-        foreach ($childNodes as $node) {
-            $node->removeChild($node);
+        foreach ($this->collectNodes($node) as $child) {
+            $node->removeChild($child);
         }
     }
 }
