@@ -102,6 +102,7 @@
 @media (min-width: 992px) {
     .swagger-section .operation > .samples {
         float: left;
+        margin-top: 90px;
         width: 50%
     }
 }
@@ -129,6 +130,7 @@
 @media (min-width: 1400px) {
     .swagger-section h2.operation-title {
         padding-right: 0;
+        margin-top: 60px;
     }
 }
 
@@ -1078,8 +1080,8 @@
 
 .swagger-section .sticky-nav.fixed {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 65;
+    left: 351;
     width: 100%;
     z-index: 600
 }
@@ -1383,7 +1385,8 @@
 
 .site-header .container {
     max-width: none !important;
-    width: 100%
+    width: 100%;
+    margin-top: 50px;
 }
 
 body {
@@ -1534,7 +1537,8 @@ body {
     }
 
     .swagger-section #resources .operation .content {
-        position: relative
+        position: relative;
+        margin-top: 60px;
     }
 
     .swagger-section #resources a.toggle-samples {

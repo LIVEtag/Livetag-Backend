@@ -43,7 +43,7 @@ AppAsset::register($this);
         ['label' => 'Rbac', 'url' => ['/rbac/default/index'], 'active' => strpos($controller->route, 'rbac/') === 0],
         [
             'label' => 'Swagger',
-            'url' => ['/swagger/main/view'],
+            'url' => ['/swagger/main/index'],
             'active' => strpos($controller->route, 'swagger/') === 0
         ],
     ];

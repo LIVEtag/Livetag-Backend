@@ -21,12 +21,10 @@ class SwaggerAsset extends AssetBundle
      * @inheritdoc
      */
     public $css = [
-        'css/typography.css',
-        'css/reset.css',
+        'css/index.css',
+        'css/standalone.css',
+        'css/api-explorer.css',
         'css/screen.css',
-        'css/tags.css',
-        'css/reset.css',
-        'css/apihistory.css',
     ];
 
     /**
@@ -51,7 +49,5 @@ class SwaggerAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $depends = [
-
-    ];
+    public $depends = [];
 }

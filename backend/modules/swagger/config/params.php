@@ -6,5 +6,6 @@
 
 return [
     'rest.swaggerJson' => 'swagger/main/json',
-    'rest.swaggerHistory' => 'swagger/main/history',
+    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8080/debug',
+    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8080',
 ];

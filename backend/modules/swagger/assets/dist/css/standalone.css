@@ -5,6 +5,7 @@ header.site-header {
     font-size: 14px;
     position: static;
     padding: 20px 0 20px 0;
+    margin-top: 40px;
 }
 header.site-header.header-fixed {
     background: rgba(255,255,255,0.8);
