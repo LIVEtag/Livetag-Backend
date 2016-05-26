@@ -53,3 +53,36 @@ environments/            contains environment-based overrides
 tests                    contains various tests for the advanced application
     codeception/         contains tests developed with Codeception PHP Testing Framework
 ```
+
+Settings swagger validator
+------------
+Для валидации swagger используются инструмент https://github.com/apigee-127/swagger-tools.
+Валидатор указываем в файле params.php модуля swagger
+
+```php
+return [
+    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8080/debug',
+    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8080',
+];
+```
+Run swagger validator
+------------
+Для запуска валидатора надо из папки /swagger-validator выполнить комманду
+```
+    node index.js
+```
+По умолчанию валидатор будет слушать порт 8080, и валидировать файл
+```
+/rest/modules/swagger/config/swagger.json
+```
+Запуск валидатора на определенном порту (например 8888)
+```
+node index.js 8888
+```
+При изменении порта надо поменять настройки валидатора
+```php
+return [
+    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8888/debug',
+    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8888',
+];
+```

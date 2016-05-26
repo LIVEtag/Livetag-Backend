@@ -43,7 +43,6 @@ class SwaggerAsset extends AssetBundle
         'lib/jsoneditor.min.js',
         'lib/marked.js',
         'lib/swagger-oauth.js',
-        'lib/apihistory.js',
     ];
 
     /**
