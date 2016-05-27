@@ -61,8 +61,10 @@ Settings swagger validator
 
 ```php
 return [
-    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8080/debug',
-    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8080',
+    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host']
+        . ':8080/debug?url=http://gbksoftyiidevelop.my/rest/web/swagger/main/json',
+    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host']
+        . ':8080/validate?url=http://gbksoftyiidevelop.my/rest/web/swagger/main/json',
 ];
 ```
 Run swagger validator
@@ -82,7 +84,9 @@ node index.js 8888
 При изменении порта надо поменять настройки валидатора
 ```php
 return [
-    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8888/debug',
-    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host'] . ':8888',
+    'rest.swaggerDebugUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host']
+        . ':8888/debug?url=http://gbksoftyiidevelop.my/rest/web/swagger/main/json',
+    'rest.swaggerValidatorUrl' => 'http://' . parse_url(\yii\helpers\Url::home(true))['host']
+        . ':8888/validate?url=http://gbksoftyiidevelop.my/rest/web/swagger/main/json',
 ];
 ```
