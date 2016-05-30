@@ -1,9 +1,9 @@
 <?php
+
 /**
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 use yii\web\View;
 use yii\helpers\Url;
 use backend\modules\swagger\assets\SwaggerAsset;
@@ -12,7 +12,6 @@ use Yii;
 /* @var $this \yii\web\View */
 /* @var $content string */
 /** @var $basePath string */
-
 SwaggerAsset::register($this);
 
 $jsonUrl = \Yii::$app->controller->module->params['rest.swaggerJson'];
@@ -116,13 +115,17 @@ $(function () {
             }
 
             function e() {
-                n() ? sticky.parents(".sticky-nav-placeholder").removeAttr("style") : sticky.parents(".sticky-nav-placeholder").css("min-height", sticky.outerHeight())
+                n() ?
+                    sticky.parents(".sticky-nav-placeholder").removeAttr("style") :
+                    sticky.parents(".sticky-nav-placeholder").css("min-height", sticky.outerHeight())
             }
 
             function i(n) {
                 n.hasClass("fixed") || (navOffset = n.offset().top);
                 e();
-                $(window).scrollTop() > navOffset ? $(".modal.in").length || n.addClass("fixed") : n.removeClass("fixed")
+                $(window).scrollTop() > navOffset ?
+                    $(".modal.in").length || n.addClass("fixed") :
+                    n.removeClass("fixed")
             }
 
             function r(e) {
@@ -133,7 +136,9 @@ $(function () {
 
                 function r(e) {
                     var t = o.next("[data-endpoint]"), n = o.prev("[data-endpoint]");
-                    return "next" === e ? t.length ? t : o.parent().next().find("[data-endpoint]").first() : "prev" === e ? n.length ? n : o.parent().prev().find("[data-endpoint]").last() : []
+                    return "next" === e ?
+                        t.length ? t : o.parent().next().find("[data-endpoint]").first() :
+                        "prev" === e ? n.length ? n : o.parent().prev().find("[data-endpoint]").last() : []
                 }
 
                 var nav = e.find("[data-navigator]");
@@ -186,25 +191,33 @@ $(function () {
     });
 JS;
 $this->registerJs($js, View::POS_END);
-
 ?>
 <header class="site-header">
     <nav role="navigation" class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" data-toggle="collapse" data-target="#navbar-collapse" class="navbar-toggle"><span
-                        class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
-                        class="icon-bar"></span><span class="icon-bar"></span></button>
-                <h1 class="navbar-brand"><a href="http://swagger.io"><span>swagger explorer</span></a></h1>
+                <button type="button" data-toggle="collapse" data-target="#navbar-collapse" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1 class="navbar-brand">
+                    <a href="http://swagger.io">
+                        <span>swagger explorer</span>
+                    </a>
+                </h1>
             </div>
             <div id="navbar-collapse" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="li-why"><a href="http://swagger.io" style="font-size: 25px; padding-left: 0px">Swagger
-                        explorer</a></li>
+                    <li class="li-why">
+                        <a href="http://swagger.io" style="font-size: 25px; padding-left: 0px">Swagger explorer</a>
+                    </li>
                 </ul>
                 <span style="float:right">
-                    <a href="<?= $debugUrl?>">
-                        <img id="validator" src="<?= $validatorUrl?>"></a>
+                    <a href="<?= $debugUrl ?>">
+                        <img id="validator" src="<?= $validatorUrl ?>">
+                    </a>
                 </span>
             </div>
         </div>
