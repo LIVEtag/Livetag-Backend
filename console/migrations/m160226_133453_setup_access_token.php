@@ -5,9 +5,6 @@
  */
 
 use common\components\db\Migration;
-use rest\common\models\AccessToken;
-use rest\common\models\User;
-
 /**
  * Class m160226_133453_setup_access_token
  */
@@ -16,7 +13,7 @@ class m160226_133453_setup_access_token extends Migration
     public function up()
     {
         $this->createTable(
-            AccessToken::tableName(),
+            '{{%access_token}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'user_id' => $this->integer()->unsigned()->notNull(),
@@ -33,21 +30,21 @@ class m160226_133453_setup_access_token extends Migration
 
         $this->addForeignKey(
             'fk_access_token_to_user',
-            AccessToken::tableName(),
+            '{{%access_token}}',
             'user_id',
-            User::tableName(),
+            '{{%user}}',
             'id',
             'CASCADE'
         );
-        $this->createIndex('idx_user_token', AccessToken::tableName(), 'token');
-        $this->createIndex('idx_user_token_expired', AccessToken::tableName(), ['token', 'expired_at']);
+        $this->createIndex('idx_user_token', '{{%access_token}}', 'token');
+        $this->createIndex('idx_user_token_expired', '{{%access_token}}', ['token', 'expired_at']);
     }
 
     public function down()
     {
-        $this->dropIndex('idx_user_token', AccessToken::tableName());
-        $this->dropIndex('idx_user_token_expired', AccessToken::tableName());
-        $this->dropForeignKey('fk_access_token_to_user', AccessToken::tableName());
-        $this->dropTable(AccessToken::tableName());
+        $this->dropIndex('idx_user_token', '{{%access_token}}');
+        $this->dropIndex('idx_user_token_expired', '{{%access_token}}');
+        $this->dropForeignKey('fk_access_token_to_user', '{{%access_token}}');
+        $this->dropTable('{{%access_token}}');
     }
 }

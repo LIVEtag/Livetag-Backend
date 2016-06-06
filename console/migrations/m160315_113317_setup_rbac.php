@@ -5,9 +5,7 @@
  */
 
 use common\modules\rbac\components\DbManager;
-use backend\modules\rbac\models\Menu;
 use common\components\db\Migration;
-use common\models\User;
 use yii\base\InvalidConfigException;
 
 /**
@@ -116,7 +114,7 @@ class m160315_113317_setup_rbac extends Migration
         );
 
         $this->createTable(
-            Menu::tableName(),
+            '{{%rbac_menu}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'name' => $this->string(128)->notNull(),
@@ -132,7 +130,7 @@ class m160315_113317_setup_rbac extends Migration
             'fk_auth_assignment_user_id_to_user',
             $authManager->assignmentTable,
             'user_id',
-            User::tableName(),
+            '{{%user}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -140,9 +138,9 @@ class m160315_113317_setup_rbac extends Migration
 
         $this->addForeignKey(
             'fk_rbac_menu_parent_to_rbac_menu_id',
-            Menu::tableName(),
+            '{{%rbac_menu}}',
             'parent',
-            Menu::tableName(),
+            '{{%rbac_menu}}',
             'id',
             'SET NULL',
             'CASCADE'
@@ -151,6 +149,6 @@ class m160315_113317_setup_rbac extends Migration
 
     public function down()
     {
-        $this->dropTable(Menu::tableName());
+        $this->dropTable('{{%rbac_menu}}');
     }
 }
