@@ -34,4 +34,13 @@ class Migration extends BaseMigration
     {
         return new ColumnSchemaBuilderPk('bigint', $length ?: '20');
     }
+
+    /**
+     * @param int $length
+     * @return ColumnSchemaBuilderPk
+     */
+    public function smallPrimaryKey($length = null)
+    {
+        return new ColumnSchemaBuilderPk('smallint', $length ?: '5');
+    }
 }
