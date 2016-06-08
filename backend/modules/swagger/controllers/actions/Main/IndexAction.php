@@ -24,7 +24,6 @@ class IndexAction extends Action
     public function __construct($id, Controller $controller, array $config = [])
     {
         parent::__construct($id, $controller, $config);
-        $this->controller->layout = 'main';
     }
 
     /**
@@ -34,11 +33,6 @@ class IndexAction extends Action
      */
     public function run()
     {
-        if (Yii::$app->getModule('debug')) {
-            Yii::$app->getModule('debug')
-                ->getInstance()
-                ->allowedIPs = [];
-        }
         $isSecure = Yii::$app->getRequest()->getIsSecureConnection();
 
         $basePath = $isSecure ? 'https://' : 'http://'. Yii::getAlias('@rest.domain');

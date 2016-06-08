@@ -33,3 +33,6 @@ composer.lock
 
 # configuration of environment
 .env
+
+npm-debug.log
+
