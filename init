@@ -23,7 +23,7 @@ $root = str_replace('\\', '/', __DIR__);
 
 define('SCRIPT_ROOT', $root);
 
-$envs = require("$root/environments/index.php");
+$envs = require(SCRIPT_ROOT . "/environments/index.php");
 $envNames = array_keys($envs);
 
 $errorLogs = $environments = [];
@@ -74,18 +74,18 @@ $environments = getEnvironments();
 
 
 echo "\n  Start initialization ...\n\n";
-$files = getFileList("$root/environments/{$env['path']}");
+$files = getFileList(SCRIPT_ROOT . "/environments/{$env['path']}");
 if (isset($env['skipFiles'])) {
     $skipFiles = $env['skipFiles'];
-    array_walk($skipFiles, function(&$value) use($env, $root) {
-        $value = "$root/$value";
+    array_walk($skipFiles, function(&$value) use($env) {
+        $value = SCRIPT_ROOT . "/$value";
     });
     $files = array_diff($files, array_intersect_key($env['skipFiles'], array_filter($skipFiles, 'file_exists')));
 }
 $all = false;
 foreach ($files as $file) {
 
-    if (!copyFile($root, "environments/{$env['path']}/$file", $file, $all, $params, $errorLogs, $environments)) {
+    if (!copyFile(SCRIPT_ROOT, "environments/{$env['path']}/$file", $file, $all, $params, $errorLogs, $environments)) {
         break;
     }
 }
@@ -93,7 +93,7 @@ foreach ($files as $file) {
 $callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable', 'createSymlink'];
 foreach ($callbacks as $callback) {
     if (!empty($env[$callback])) {
-        $callback($root, $env[$callback]);
+        $callback(SCRIPT_ROOT, $env[$callback]);
     }
 }
 
