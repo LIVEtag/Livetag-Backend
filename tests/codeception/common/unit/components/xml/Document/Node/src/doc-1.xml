@@ -7,4 +7,5 @@
             </argument>
         </inner>
     </test>
+    <text name="test">test text</text>
 </config>

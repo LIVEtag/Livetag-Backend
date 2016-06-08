@@ -5,7 +5,6 @@
  */
 
 use common\components\db\Migration;
-use common\models\User;
 
 /**
  * Class m130524_201442_setup_user
@@ -15,7 +14,7 @@ class m130524_201442_setup_user extends Migration
     public function up()
     {
         $this->createTable(
-            User::tableName(),
+            '{{%user}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'username' => $this->string()->notNull()->unique(),
@@ -33,6 +32,6 @@ class m130524_201442_setup_user extends Migration
 
     public function down()
     {
-        $this->dropTable(User::tableName());
+        $this->dropTable('{{%user}}');
     }
 }
