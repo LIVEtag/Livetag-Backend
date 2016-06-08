@@ -48,6 +48,7 @@ class ResolverTest extends Test
         $document = new \DOMDocument();
         $document->load(__DIR__ . '/src/doc-1.xml');
         $node = $document->getElementsByTagName('test')->item(0);
+        $nodeText = $document->getElementsByTagName('text')->item(0);
 
         return [
             [
@@ -91,6 +92,48 @@ class ResolverTest extends Test
                 ],
                 'leftNode' => $node,
                 'rightNode' => $node,
+            ],
+            [
+                'expected' => MergerInterface::class . 'Simple',
+                'config' => [
+                    Resolver::RULES => [
+                        'complex' => [
+                            Resolver::RULE => $this->create(IsNodeElement::class),
+                            Resolver::NEXT => [
+                                Resolver::RULE => $this->create(IsComplexType::class, [$contextValidator]),
+                                Resolver::NEXT => [
+                                    Resolver::RULE => $this->create(EqualNodeName::class),
+                                    Resolver::NEXT => [
+                                        Resolver::RULE => $this->create(
+                                            EqualAttribute::class,
+                                            [['name'], $contextValidator]
+                                        ),
+                                        Resolver::MERGER => MergerInterface::class
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'simple' => [
+                            Resolver::RULE => $this->create(IsNodeElement::class),
+                            Resolver::NEXT => [
+                                Resolver::RULE => $this->create(IsSimpleType::class),
+                                Resolver::NEXT => [
+                                    Resolver::RULE => $this->create(EqualNodeName::class),
+                                    Resolver::NEXT => [
+                                        Resolver::RULE => $this->create(
+                                            EqualAttribute::class,
+                                            [['name'], $contextValidator]
+                                        ),
+                                        Resolver::MERGER => MergerInterface::class . 'Simple'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    Resolver::DEFAULT_MERGER => MergerInterface::class . 'Default'
+                ],
+                'leftNode' => $nodeText,
+                'rightNode' => $nodeText,
             ]
         ];
     }

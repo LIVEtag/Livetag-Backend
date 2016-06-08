@@ -30,6 +30,7 @@ return [
         ],
         'urlManager' => [
             'rules' => [
+                '' => 'site/index',
                 '<controller:.*>/<action:.*>' => '<controller>/<action>'
             ],
         ],
