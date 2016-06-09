@@ -106,17 +106,17 @@ class CreateToken extends Model
         $accessToken = new AccessToken();
         $accessToken->user_id = $this->getUser()->id;
 
-        $accessToken->generateToken();
-
-        $accessToken->user_ip = $this->userIp;
-        $accessToken->user_agent = $this->userAgent;
-
         $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         if ($this->isRememberMe === self::YES_VALUE) {
             $expireTime = AccessToken::REMEMBER_ME_TIME;
         }
 
-        $accessToken->expired_at = $expireTime + time();
+        $accessToken->generateToken($expireTime);
+
+        $accessToken->user_ip = $this->userIp;
+        $accessToken->user_agent = $this->userAgent;
+
+        
 
         return $accessToken->save() ? $accessToken : false;
     }

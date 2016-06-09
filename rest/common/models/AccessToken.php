@@ -114,9 +114,16 @@ class AccessToken extends ActiveRecord
 
     /**
      * Generate token
+     *
+     * @param int|null $expireTime
      */
-    public function generateToken()
+    public function generateToken($expireTime = null)
     {
+        if ($expireTime === null) {
+            $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
+        }
+
+        $this->expired_at = $expireTime + time();
         $this->token = $this->createToken();
     }
 
