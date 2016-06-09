@@ -25,6 +25,7 @@ class SwaggerAsset extends AssetBundle
         'css/standalone.css',
         'css/api-explorer.css',
         'css/screen.css',
+        'css/main.css',
     ];
 
     /**

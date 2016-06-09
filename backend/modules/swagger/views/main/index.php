@@ -48,17 +48,6 @@ $(function () {
       dom_id: "swagger-ui-container",
       supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
       onComplete: function(swaggerApi, swaggerUi){
-        if(typeof initOAuth == "function") {
-          initOAuth({
-            clientId: "your-client-id",
-            clientSecret: "your-client-secret-if-required",
-            realm: "your-realms",
-            appName: "your-app-name",
-            scopeSeparator: ",",
-            additionalQueryStringParams: {}
-          });
-        }
-
         if(window.SwaggerTranslator) {
           window.SwaggerTranslator.translate();
         }
@@ -68,8 +57,6 @@ $(function () {
         });
 
         addApiKeyAuthorization();
-
-
       },
       onFailure: function(data) {
         log("Unable to Load SwaggerUI");
@@ -91,7 +78,7 @@ $(function () {
       }
     }
 
-    $('#input_apiKey').change(addApiKeyAuthorization);
+    $('body').on('change', '#input_apiKey', addApiKeyAuthorization);
     window.swaggerUi.load();
 
     function log() {
@@ -187,8 +174,58 @@ $(function () {
     });
     $(function () {
         $("[data-toggle='tooltip']").tooltip();
-        console.log($("changes-disclaimer").html());
     });
+    
+    (function ($) {
+
+        var defaults = {
+            waggle : 5,
+            duration : 2,
+            interval : 200
+        };
+
+        function rand(waggle) {
+            return Math.random() % (waggle - (waggle / 2) + 1) + (waggle / 2);
+        }
+
+        $.fn.wiggle = function (options, callback) {
+            options = $.extend({}, defaults, options);
+
+            var duration = options.duration,
+                elem = this,
+                moveLeft = false,
+                left = elem.css('left'),
+                pos = elem.css('position'),
+                timer;
+            elem.css('position', 'relative');
+
+            function doWiggle() {
+                var move = rand(options.waggle);
+                elem.animate({
+                    left : moveLeft ? move : -move
+                }, options.interval);
+                moveLeft = !moveLeft;
+
+                if (options.wiggleCallback) {
+                    options.wiggleCallback(elem);
+                }
+
+                duration -= options.interval / 1000;
+                if (duration <= 0) {
+                    elem.css('left', left);
+                    elem.css('position', pos);
+
+                    clearTimeout(timer);
+
+                    callback && callback();
+                } else {
+                    timer = setTimeout(doWiggle, options.interval);
+                }
+            }
+            timer = setTimeout(doWiggle, options.interval);
+        };
+
+    })(window.jQuery);
 JS;
 $this->registerJs($js, View::POS_END);
 ?>

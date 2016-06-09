@@ -17,14 +17,16 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
+    'layout' => 'container',
     'modules' => [
         'swagger' => [
             'class' => SwaggerModule::class,
+            'layout' => '@app/views/layouts/main',
         ],
         'rbac' => [
             'class' => RbacModule::class,
             'layout' => 'left-menu',
-            'mainLayout' => '@app/views/layouts/main.php',
+            'mainLayout' => '@app/views/layouts/container.php',
         ],
     ],
     'components' => [
