@@ -71,7 +71,7 @@ class Module extends BaseModule
      *
      * @var string
      */
-    public $mainLayout = '@rbac/views/layouts/main.php';
+    public $mainLayout;
 
     /**
      * @inheritdoc

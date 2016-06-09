@@ -63,6 +63,7 @@ tests                    contains various tests for the advanced application
 
 Settings swagger validator
 ------------
+UI - https://github.com/jensoleg/swagger-ui
 Для валидации swagger используются инструмент https://github.com/apigee-127/swagger-tools.
 Валидатор указываем в файле params.php модуля swagger
 

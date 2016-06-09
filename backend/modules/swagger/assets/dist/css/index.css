@@ -1626,33 +1626,6 @@ pre code {
     max-height: 340px;
     overflow-y: scroll;
 }
-.container {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-}
-@media (min-width: 768px) {
-    .container {
-        width: 750px;
-    }
-}
-@media (min-width: 992px) {
-    .container {
-        width: 970px;
-    }
-}
-@media (min-width: 1200px) {
-    .container {
-        width: 1170px;
-    }
-}
-.container-fluid {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-}
 .row {
     margin-right: -15px;
     margin-left: -15px;
@@ -15784,13 +15757,7 @@ a.hiring::after {
         text-align: center;
     }
 }
-.container {
-    max-width: 1016px;
-}
-.container.spacing-content {
-    padding-top: 80px;
-    padding-bottom: 80px;
-}
+
 .narrow-content {
     max-width: 680px;
     margin: auto;
@@ -15829,13 +15796,16 @@ a.btn {
     -o-transition: background-color 0.2s ease;
     transition: background-color 0.2s ease;
     text-transform: uppercase;
-    letter-spacing: 2px;
     border: 0;
     font-weight: bold;
     border: 1px solid #d0d2d3;
     padding-left: 15px;
     padding-right: 15px;
     border-radius: 3px;
+}
+.btn.btn-link,
+a.btn.btn-link {
+    text-transform: none;
 }
 .btn.btn-none,
 a.btn.btn-none {
