@@ -93,7 +93,7 @@
         },
         "/users/current": {
             "get": {
-                "summary": "Login for APP",
+                "summary": "Current user for APP",
                 "tags": ["user"],
                 "produces": ["application/json", "application/xml"],
                 "operationId": "userCurrent",
