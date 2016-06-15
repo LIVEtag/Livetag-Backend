@@ -33,3 +33,5 @@ phpunit.phar
 *.env
 
 npm-debug.log
+
+tests

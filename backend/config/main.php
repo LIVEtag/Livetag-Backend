@@ -1,6 +1,5 @@
 <?php
 
-use backend\modules\rbac\Module as RbacModule;
 use backend\modules\swagger\Module as SwaggerModule;
 use common\models\User;
 use yii\log\FileTarget;
@@ -22,11 +21,6 @@ return [
         'swagger' => [
             'class' => SwaggerModule::class,
             'layout' => '@app/views/layouts/main',
-        ],
-        'rbac' => [
-            'class' => RbacModule::class,
-            'layout' => 'left-menu',
-            'mainLayout' => '@app/views/layouts/container.php',
         ],
     ],
     'components' => [

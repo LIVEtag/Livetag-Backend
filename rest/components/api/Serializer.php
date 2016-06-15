@@ -22,18 +22,19 @@ class Serializer extends BaseSerializer
      */
     public function serialize($data) {
         $data = parent::serialize($data);
-        
-        if (!is_array($data)) {
-            return [];
+
+        $dataResult = [
+            'code' => $this->response->getStatusCode(),
+            'status' => $this->response->getIsSuccessful() ? 'success' : 'error',
+            'result' => [],
+        ];
+
+        if (is_array($data) && isset($data[$this->collectionEnvelope])) {
+            $dataResult['result'] = $data[$this->collectionEnvelope];
+        } else {
+            $dataResult['result'] = $data;
         }
-        
-        /**
-         * Ignore meta data for collection in response
-         */
-        if (isset($data[$this->collectionEnvelope])) {
-            return $data[$this->collectionEnvelope];
-        }
-        
-        return $data;
+
+        return $dataResult;
     }
 }

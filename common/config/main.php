@@ -4,16 +4,11 @@
  * See LICENSE.txt for license details.
  */
 
-use common\modules\rbac\components\DbManager;
-
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
-        ],
-        'authManager' => [
-            'class' => DbManager::class,
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,

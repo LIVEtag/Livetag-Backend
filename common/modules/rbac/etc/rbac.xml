@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!--
-/**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
- * See LICENSE.txt for license details.
- */
--->
-<rbac xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="urn:common:module:rbac:etc/rbac.xsd"></rbac>
