@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var http = require("http");
 var requestLib = require('request');
 var url = require("url");

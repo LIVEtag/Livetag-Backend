@@ -37,6 +37,8 @@ class IndexAction extends Action
 
         $basePath = $isSecure ? 'https://' : 'http://'. Yii::getAlias('@rest.domain');
 
+        
+
         return $this->controller->render(
             'index',
             [
