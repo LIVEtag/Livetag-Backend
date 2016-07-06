@@ -129,7 +129,7 @@ function copyFile($root, $source, $target, &$all, $params, &$errorLogs, $environ
     }
 
     $contentSource = preg_replace_callback(
-        "/\{\{([A-Z\_]+)\}\}/",
+        "/\{\{([\w\-]+)\}\}/",
         function($matches) use (&$errorLogs, $environments) {
         if (is_array($matches) && isset($matches[1]) && isset($environments[$matches[1]])) {
             return $environments[$matches[1]];

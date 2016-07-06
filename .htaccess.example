@@ -1,0 +1,28 @@
+# Mod_Autoindex
+<IfModule mod_autoindex.c>
+    # Disable Indexes
+    Options -Indexes
+    IndexIgnore */*
+</IfModule>
+
+# Mod_Rewrite
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+    RewriteRule ^version.txt$ version.txt [L,PT]
+    RewriteRule ^version_parent.txt$ version_parent.txt [L,PT]
+
+    #Send all /backend requests to backend/web folder
+    RewriteRule ^backend(/.*)$ backend/web/$1 [L,PT]
+
+    #Enable GII
+    RewriteRule ^gii(.*)$ frontend/web/$1 [L]
+    RewriteRule ^assets(.*)$ frontend/web/assets/$1 [L]
+
+    #Send all /api requests to api/web folder
+    RewriteRule ^rest(.*)$ rest/web/$1 [L,PT]
+
+    # Angular frontend
+    RewriteRule ^(.*)$ angular/web/$1
+</IfModule>
