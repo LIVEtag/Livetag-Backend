@@ -285,7 +285,7 @@ function setRequestBaseUrl($root, $paths)
                 if ($areaData === false) {
                     $content = preg_replace(
                         '/(("|\')baseUrl("|\')\s*=>\s*)(""|\'\')/',
-                        "//\\1'/'",
+                        "//\\1''",
                         file_get_contents($filename));
                     file_put_contents($filename, $content);
                     $content = preg_replace(
