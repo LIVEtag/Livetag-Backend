@@ -237,9 +237,18 @@ function setRequestBaseUrl($root, $paths)
 {
     $types = [
         1 => [ // htaccess
-            'backend' => '/backend',
-            'rest' => '/rest',
-            'frontend' => '/',
+            'backend' => [
+                'baseUrl' => '/backend',
+                'csrfCookie' => '/backend',
+            ],
+            'rest' => [
+                'baseUrl' => '/rest',
+                'csrfCookie' => '/rest',
+            ],
+            'frontend' => [
+                'baseUrl' => '/',
+                'csrfCookie' => '/',
+            ],
         ],
         2 => [ // domain
             'backend' => false,
@@ -270,17 +279,29 @@ function setRequestBaseUrl($root, $paths)
         echo "   add base url in $file\n";
         $filename = $root . '/' . $file;
 
-        foreach ($types[$answer] as $area => $baseUrl) {
+        foreach ($types[$answer] as $area => $areaData) {
             if (strpos($file, $area) === 0) {
-                if ($baseUrl === false) {
+                if ($areaData === false) {
                     $content = preg_replace(
-                        '/(("|\')baseUrl("|\')\s*=>\s*)("\/"|\'\/\')/', "//\\1'/'",
+                        '/(("|\')baseUrl("|\')\s*=>\s*)("\/"|\'\/\')/',
+                        "//\\1'/'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                    $content = preg_replace(
+                        '/(("|\')csrfCookie("|\')\s*=>\s*)("\/"|\'\/\')/',
+                        "//\\1'/'",
                         file_get_contents($filename));
                     file_put_contents($filename, $content);
                     continue;
                 }
                 $content = preg_replace(
-                    '/(("|\')baseUrl("|\')\s*=>\s*)("\/"|\'\/\')/', "\\1'{$baseUrl}'",
+                    '/(("|\')baseUrl("|\')\s*=>\s*)("\/"|\'\/\')/',
+                    "\\1'{$areaData["baseUrl"]}'",
+                    file_get_contents($filename));
+                file_put_contents($filename, $content);
+                $content = preg_replace(
+                    '/(("|\')csrfCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
+                    "\\1'{$areaData["csrfCookie"]}'",
                     file_get_contents($filename));
                 file_put_contents($filename, $content);
             }
