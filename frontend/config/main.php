@@ -31,7 +31,8 @@ return [
         'urlManager' => [
             'rules' => [
                 '' => 'site/index',
-                '<controller:.*>/<action:.*>' => '<controller>/<action>'
+                '<controller:[\w-]+>' => '<controller>',
+                '<controller:[\w-]+>/<action:[\w-]+>' => '<controller>/<action>',
             ],
         ],
     ],
