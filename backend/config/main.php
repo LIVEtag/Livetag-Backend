@@ -27,6 +27,13 @@ return [
         'user' => [
             'identityClass' => User::class,
             'enableAutoLogin' => true,
+            'identityCookie' => [
+                'name' => '_backendUser',
+            ]
+        ],
+        'session' => [
+            'name' => '_backendSessionId',
+            'savePath' => __DIR__ . '/../runtime',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

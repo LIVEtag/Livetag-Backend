@@ -14,6 +14,11 @@ $config = [
                 'path' => '/'
             ],
         ],
+        'user' => [
+            'identityCookie' => [
+                'path'=>'/'
+            ]
+        ],
     ],
 ];
 

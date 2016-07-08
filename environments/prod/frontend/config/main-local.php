@@ -14,5 +14,10 @@ return [
                 'path' => '/'
             ],
         ],
+        'user' => [
+            'identityCookie' => [
+                'path'=>'/'
+            ]
+        ],
     ],
 ];
