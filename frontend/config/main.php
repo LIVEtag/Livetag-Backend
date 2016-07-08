@@ -20,7 +20,7 @@ return [
             'identityClass' => User::class,
             'enableAutoLogin' => true,
             'identityCookie' => [
-                'name' => '_backendUser',
+                'name' => '_frontendUser',
             ]
         ],
         'session' => [

@@ -244,8 +244,6 @@ function setRequestBaseUrl($root, $paths)
             ],
             'rest' => [
                 'baseUrl' => '/rest',
-                'csrfCookie' => '/rest',
-                'identityCookie' => '/rest',
             ],
             'frontend' => [
                 'baseUrl' => '',
@@ -304,21 +302,27 @@ function setRequestBaseUrl($root, $paths)
                     file_put_contents($filename, $content);
                     continue;
                 }
-                $content = preg_replace(
-                    '/(("|\')baseUrl("|\')\s*=>\s*)(""|\'\')/',
-                    "\\1'{$areaData["baseUrl"]}'",
-                    file_get_contents($filename));
-                file_put_contents($filename, $content);
-                $content = preg_replace(
-                    '/(("|\')csrfCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
-                    "\\1'{$areaData["csrfCookie"]}'",
-                    file_get_contents($filename));
-                file_put_contents($filename, $content);
-                $content = preg_replace(
-                    '/(("|\')identityCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
-                    "\\1'{$areaData["identityCookie"]}'",
-                    file_get_contents($filename));
-                file_put_contents($filename, $content);
+                if (isset($areaData["baseUrl"])) {
+                    $content = preg_replace(
+                        '/(("|\')baseUrl("|\')\s*=>\s*)(""|\'\')/',
+                        "\\1'{$areaData["baseUrl"]}'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                }
+                if (isset($areaData["csrfCookie"])) {
+                    $content = preg_replace(
+                        '/(("|\')csrfCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
+                        "\\1'{$areaData["csrfCookie"]}'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                }
+                if (isset($areaData["identityCookie"])) {
+                    $content = preg_replace(
+                        '/(("|\')identityCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
+                        "\\1'{$areaData["identityCookie"]}'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                }
             }
         }
     }
