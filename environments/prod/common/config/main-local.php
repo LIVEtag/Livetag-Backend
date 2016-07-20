@@ -12,9 +12,9 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host={{DB_HOST}};dbname={{DB_NAME}}',
-            'username' => '{{DB_USERNAME}}',
-            'password' => '{{DB_PASSWORD}}',
+            'dsn' => 'mysql:host={{L_DB_HOST}};dbname={{L_DB_NAME}}',
+            'username' => '{{L_DB_USERNAME}}',
+            'password' => '{{L_DB_PASSWORD}}',
             'charset' => 'utf8',
         ],
         'mailer' => [

@@ -37,17 +37,19 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        [
-            'label' => 'Swagger',
-            'url' => ['/swagger/main/index'],
-            'active' => strpos($controller->route, 'swagger/') === 0
-        ],
-    ];
+
+    $menuItems = [];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
+        $menuItems = [
+            ['label' => 'Home', 'url' => ['/site/index']],
+            [
+                'label' => 'Swagger',
+                'url' => ['/swagger/main/index'],
+                'active' => strpos($controller->route, 'swagger/') === 0
+            ],
+        ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
@@ -57,6 +59,7 @@ AppAsset::register($this);
             . Html::endForm()
             . '</li>';
     }
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,

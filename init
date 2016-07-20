@@ -90,7 +90,7 @@ foreach ($files as $file) {
     }
 }
 
-$callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable', 'createSymlink'];
+$callbacks = ['setRequestBaseUrl', 'setCookieValidationKey', 'setWritable', 'setExecutable', 'createSymlink'];
 foreach ($callbacks as $callback) {
     if (!empty($env[$callback])) {
         $callback(SCRIPT_ROOT, $env[$callback]);
@@ -230,6 +230,101 @@ function setCookieValidationKey($root, $paths)
         $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'",
             file_get_contents($file));
         file_put_contents($file, $content);
+    }
+}
+
+function setRequestBaseUrl($root, $paths)
+{
+    $types = [
+        1 => [ // htaccess
+            'backend' => [
+                'baseUrl' => '/backend',
+                'csrfCookie' => '/backend',
+                'identityCookie' => '/backend',
+            ],
+            'rest' => [
+                'baseUrl' => '/rest',
+            ],
+            'frontend' => [
+                'baseUrl' => '',
+                'csrfCookie' => '/',
+                'identityCookie' => '/',
+            ],
+        ],
+        2 => [ // domain
+            'backend' => false,
+            'rest' => false,
+            'frontend' => false,
+        ]
+    ];
+
+    echo "\n  Please, select instance type: \n";
+    echo "\n  Your choice [1-2, or 'q' to quit]";
+    echo "\n  App with .htaccess [1]";
+    echo "\n  App with separate domains [2] ";
+    $answer = trim(fgets(STDIN));
+
+    if ($answer === 'q') {
+        echo "\n  Quit initialization.\n";
+        exit(0);
+    }
+
+    if (!in_array($answer, range(1, 2))) {
+        echo "\n\n  Wrong answer!!! Try again \n\n";
+        setRequestBaseUrl($root, $paths);
+    }
+
+    $answer = (int) $answer;
+
+    foreach ($paths as $file) {
+        echo "   add base url in $file\n";
+        $filename = $root . '/' . $file;
+
+        foreach ($types[$answer] as $area => $areaData) {
+            if (strpos($file, $area) === 0) {
+                if ($areaData === false) {
+                    $content = preg_replace(
+                        '/(("|\')baseUrl("|\')\s*=>\s*)(""|\'\')/',
+                        "//\\1''",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                    $content = preg_replace(
+                        '/("|\')csrfCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*("\/"|\'\/\')\s*\n*\],?/',
+                        '',
+                        file_get_contents($filename)
+                    );
+                    file_put_contents($filename, $content);
+                    $content = preg_replace(
+                        '/("|\')identityCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*("\/"|\'\/\')\s*\n*\],?/',
+                        '',
+                        file_get_contents($filename)
+                    );
+                    file_put_contents($filename, $content);
+                    continue;
+                }
+                if (isset($areaData["baseUrl"])) {
+                    $content = preg_replace(
+                        '/(("|\')baseUrl("|\')\s*=>\s*)(""|\'\')/',
+                        "\\1'{$areaData["baseUrl"]}'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                }
+                if (isset($areaData["csrfCookie"])) {
+                    $content = preg_replace(
+                        '/(("|\')csrfCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
+                        "\\1'{$areaData["csrfCookie"]}'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                }
+                if (isset($areaData["identityCookie"])) {
+                    $content = preg_replace(
+                        '/(("|\')identityCookie("|\')\s*=>\s*\[\n*\s*("|\')path("|\')\s*=>\s*)("\/"|\'\/\')/',
+                        "\\1'{$areaData["identityCookie"]}'",
+                        file_get_contents($filename));
+                    file_put_contents($filename, $content);
+                }
+            }
+        }
     }
 }
 

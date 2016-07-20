@@ -48,7 +48,7 @@
         },
         "/users": {
             "post": {
-                "summary": "Login for APP",
+                "summary": "Create user for APP",
                 "tags": ["user"],
                 "produces": ["application/json", "application/xml"],
                 "operationId": "userCreate",

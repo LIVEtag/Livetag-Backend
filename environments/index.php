@@ -51,6 +51,12 @@ return [
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
+            'rest/config/main-local.php',
+        ],
+        'setRequestBaseUrl' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
+            'rest/config/main-local.php',
         ],
     ],
     'Test' => [
@@ -70,6 +76,12 @@ return [
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
+            'rest/config/main-local.php',
+        ],
+        'setRequestBaseUrl' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
+            'rest/config/main-local.php',
         ],
     ],
     'Live' => [
@@ -88,6 +100,12 @@ return [
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
+            'rest/config/main-local.php',
+        ],
+        'setRequestBaseUrl' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
+            'rest/config/main-local.php',
         ],
     ],
 ];

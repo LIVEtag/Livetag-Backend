@@ -20,34 +20,31 @@ class SwaggerAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $css = [
-        'css/index.css',
-        'css/standalone.css',
-        'css/api-explorer.css',
-        'css/screen.css',
-        'css/main.css',
-    ];
+    public $css = [];
 
     /**
      * @inheritdoc
      */
     public $js = [
-        'lib/jquery-1.8.0.min.js',
+        'lib/jquery-migrate-1.4.1.js',
         'lib/jquery.slideto.min.js',
         'lib/jquery.wiggle.min.js',
-        'lib/jquery.ba-bbq.min.js',
+        'lib/jquery.ba-bbq.js',
         'lib/handlebars-2.0.0.js',
         'lib/underscore-min.js',
         'lib/backbone-min.js',
-        'swagger-ui.min.js',
         'lib/highlight.7.3.pack.js',
         'lib/jsoneditor.min.js',
         'lib/marked.js',
         'lib/swagger-oauth.js',
+        'swagger-ui.js',
+        'app.js',
     ];
 
     /**
      * @inheritdoc
      */
-    public $depends = [];
+    public $depends = [
+        \yii\web\YiiAsset::class,
+    ];
 }
