@@ -4,9 +4,9 @@
  * See LICENSE.txt for license details.
  */
 
-Yii::setAlias('@base.domain', '{{WEB_HOST}}');
-Yii::setAlias('@rest.domain', '{{REST_WEB_HOST}}');
-Yii::setAlias('@backend.domain', '{{BACKEND_WEB_HOST}}');
+Yii::setAlias('@base.domain', '{{D_WEB_HOST}}');
+Yii::setAlias('@rest.domain', '{{D_REST_WEB_HOST}}');
+Yii::setAlias('@backend.domain', '{{D_BACKEND_WEB_HOST}}');
 
 return [
     'components' => [

@@ -4,17 +4,17 @@
  * See LICENSE.txt for license details.
  */
 
-Yii::setAlias('@base.domain', '{{WEB_HOST}}');
-Yii::setAlias('@rest.domain', '{{REST_WEB_HOST}}');
-Yii::setAlias('@backend.domain', '{{BACKEND_WEB_HOST}}');
+Yii::setAlias('@base.domain', '{{P_WEB_HOST}}');
+Yii::setAlias('@rest.domain', '{{P_REST_WEB_HOST}}');
+Yii::setAlias('@backend.domain', '{{P_BACKEND_WEB_HOST}}');
 
 return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host={{L_DB_HOST}};dbname={{L_DB_NAME}}',
-            'username' => '{{L_DB_USERNAME}}',
-            'password' => '{{L_DB_PASSWORD}}',
+            'dsn' => 'mysql:host={{P_DB_HOST}};dbname={{P_DB_NAME}}',
+            'username' => '{{P_DB_USERNAME}}',
+            'password' => '{{P_DB_PASSWORD}}',
             'charset' => 'utf8',
         ],
         'mailer' => [
