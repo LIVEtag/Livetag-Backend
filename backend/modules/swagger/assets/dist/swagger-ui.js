@@ -27559,6 +27559,10 @@
             $('.response_hider', $(this.el)).show();
             $('.response_throbber', $(this.el)).hide();
 
+            $('html, body').stop().animate({
+                scrollTop: $('.response', $(this.el)).offset().top + $('.response', $(this.el)).height()
+            }, 1000);
+
 
             // adds curl output
             var curlCommand = this.model.asCurl(this.map, {responseContentType: contentType});

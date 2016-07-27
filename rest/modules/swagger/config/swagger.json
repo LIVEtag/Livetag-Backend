@@ -34,11 +34,11 @@
                     "201": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Token"
+                            "$ref": "#/definitions/201Token"
                         }
                     },
                     "422": {
-                        "description": "Invalid request data",
+                        "description": "Data Validation Failed.",
                         "schema": {
                             "$ref": "#/definitions/ErrorModel"
                         }
@@ -83,7 +83,7 @@
                         }
                     },
                     "422": {
-                        "description": "Invalid request data",
+                        "description": "Data Validation Failed.",
                         "schema": {
                             "$ref": "#/definitions/ErrorModel"
                         }
@@ -134,6 +134,28 @@
                 }
             }
         },
+        "201Token": {
+            "type": "object",
+            "required": [
+                "code",
+                "status",
+                "result"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "result": {
+                    "schema": {
+                        "$ref": "#/definitions/Token"
+                    }
+                }
+            }
+        },
         "Token": {
             "type": "object",
             "required": [
@@ -154,34 +176,33 @@
             "type": "object",
             "required": [
                 "code",
-                "message",
-                "fields"
+                "status",
+                "result"
             ],
             "properties": {
                 "code": {
                     "type": "integer"
                 },
-                "message": {
+                "status": {
                     "type": "string"
                 },
-                "fields": {
-                    "schema": {
-                        "type": "array",
-                        "minimum": 0,
-                        "items": [
-                            {
-                                "type": "object",
-                                "required": ["field", "message"],
-                                "properties": {
-                                    "field": {
-                                        "type": "string"
-                                    },
-                                    "message": {
-                                        "type": "string"
-                                    }
-                                }
+                "result": {
+                    "type": "array",
+                    "items": {
+                        "minimum": 1,
+                        "type": "object",
+                        "required": [
+                            "field",
+                            "message"
+                        ],
+                        "properties": {
+                            "field": {
+                                "type": "string"
+                            },
+                            "message": {
+                                "type": "string"
                             }
-                        ]
+                        }
                     }
                 }
             }
