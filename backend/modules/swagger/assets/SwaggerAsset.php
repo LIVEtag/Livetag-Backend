@@ -20,7 +20,10 @@ class SwaggerAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $css = [];
+    public $css = [
+        'css/screen.css',
+        'css/style.css'
+    ];
 
     /**
      * @inheritdoc

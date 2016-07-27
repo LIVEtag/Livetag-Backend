@@ -123,7 +123,7 @@
 .swagger-section .swagger-ui-wrap {
   line-height: 1;
   font-family: "Droid Sans", sans-serif;
-  max-width: 960px;
+  max-width: 100%;
   margin-left: auto;
   margin-right: auto;
   /* JSONEditor specific styling */
@@ -199,6 +199,7 @@
 .swagger-section .swagger-ui-wrap ol,
 .swagger-section .swagger-ui-wrap ul {
   list-style: none;
+  padding: 0;
 }
 .swagger-section .swagger-ui-wrap h1 a,
 .swagger-section .swagger-ui-wrap h2 a,
@@ -611,6 +612,7 @@
 .swagger-section .swagger-ui-wrap ul#resources {
   font-family: "Droid Sans", sans-serif;
   font-size: 0.9em;
+  padding: 0;
 }
 .swagger-section .swagger-ui-wrap ul#resources li.resource {
   border-bottom: 1px solid #dddddd;
@@ -684,6 +686,7 @@
   float: left;
   font-family: "Droid Sans", sans-serif;
   font-weight: bold;
+  margin: 0;
 }
 .swagger-section .swagger-ui-wrap ul#resources li.resource div.heading h2 a {
   color: #999999;

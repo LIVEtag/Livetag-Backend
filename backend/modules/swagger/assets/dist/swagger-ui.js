@@ -491,7 +491,7 @@
             if (stack1 != null) {
                 buffer += stack1;
             }
-            buffer += "</div>\n<div class='container' id='resources_container'>\n  <ul id='resources'></ul>\n\n  <div class=\"footer\">\n    <h4 style=\"color: #999\">[ <span style=\"font-variant: small-caps\">base url</span>: "
+            buffer += "</div>\n<div id='resources_container'>\n  <ul id='resources'></ul>\n\n  <div class=\"footer\">\n    <h4 style=\"color: #999\">[ <span style=\"font-variant: small-caps\">base url</span>: "
                 + escapeExpression(((helper = (helper = helpers.basePath || (depth0 != null ? depth0.basePath : depth0)) != null ? helper : helperMissing), (typeof helper === functionType ? helper.call(depth0, {
                     "name": "basePath",
                     "hash": {},
