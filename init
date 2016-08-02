@@ -131,12 +131,12 @@ function copyFile($root, $source, $target, &$all, $params, &$errorLogs, $environ
     $contentSource = preg_replace_callback(
         "/\{\{([\w\-]+)\}\}/",
         function($matches) use (&$errorLogs, $environments) {
-        if (is_array($matches) && isset($matches[1]) && isset($environments[$matches[1]])) {
-            return $environments[$matches[1]];
-        }
-        $errorLogs[] = $matches[0];
-        return '';
-    }, file_get_contents($root . '/' . $source)
+            if (is_array($matches) && isset($matches[1]) && isset($environments[$matches[1]])) {
+                return $environments[$matches[1]];
+            }
+            $errorLogs[] = $matches[0];
+            return '';
+        }, file_get_contents($root . '/' . $source)
     );
 
     if (is_file($root . '/' . $target)) {
@@ -235,6 +235,7 @@ function setCookieValidationKey($root, $paths)
 
 function setRequestBaseUrl($root, $paths)
 {
+    $params = getParams();
     $types = [
         1 => [ // htaccess
             'backend' => [
@@ -262,7 +263,7 @@ function setRequestBaseUrl($root, $paths)
     echo "\n  Your choice [1-2, or 'q' to quit]";
     echo "\n  App with .htaccess [1]";
     echo "\n  App with separate domains [2] ";
-    $answer = trim(fgets(STDIN));
+    $answer = !empty($params['overwrite']) ? '1' : trim(fgets(STDIN));
 
     if ($answer === 'q') {
         echo "\n  Quit initialization.\n";
@@ -273,6 +274,8 @@ function setRequestBaseUrl($root, $paths)
         echo "\n\n  Wrong answer!!! Try again \n\n";
         setRequestBaseUrl($root, $paths);
     }
+
+    echo "\n  Your choice: {$answer}\n";
 
     $answer = (int) $answer;
 
@@ -371,7 +374,7 @@ function getEnvironments()
             echo '\n\n Error. ' . $e->getMessage() . '\n\n';
             return [];
         }
-        
+
     } else {
         echo "\n\n  Wrong answer!!! Try again \n\n";
         return getEnvironments();
@@ -389,7 +392,7 @@ function showErrorsAfterInit(array $errorLogs)
         }
 
         echo "Recommended add this agrument"
-        . (count($errorLogs) > 1 ? 's' : '')
-        . " to your file .env or create file\n";
+            . (count($errorLogs) > 1 ? 's' : '')
+            . " to your file .env or create file\n";
     }
 }
