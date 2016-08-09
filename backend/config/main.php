@@ -1,6 +1,5 @@
 <?php
 
-use backend\modules\swagger\Module as SwaggerModule;
 use common\models\User;
 use yii\log\FileTarget;
 
@@ -17,12 +16,7 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'layout' => 'container',
-    'modules' => [
-        'swagger' => [
-            'class' => SwaggerModule::class,
-            'layout' => '@app/views/layouts/main',
-        ],
-    ],
+    'modules' => [],
     'components' => [
         'user' => [
             'identityClass' => User::class,

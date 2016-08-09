@@ -5,10 +5,10 @@
         "version": "1.0.0",
         "title": "GBKSOFT Test API"
     },
-    "basePath": "/v1",
+    "basePath": "/rest",
     "schemes": ["http", "https"],
     "paths": {
-        "/access-tokens": {
+        "/v1/access-tokens": {
             "post": {
                 "summary": "Create access token for APP",
                 "tags": ["access-token"],
@@ -46,10 +46,10 @@
                 }
             }
         },
-        "/users": {
+        "/v1/users": {
             "post": {
                 "summary": "Create user for APP",
-                "tags": ["user"],
+                "tags": ["user", "NEW"],
                 "produces": ["application/json", "application/xml"],
                 "operationId": "userCreate",
                 "parameters": [
@@ -91,7 +91,7 @@
                 }
             }
         },
-        "/users/current": {
+        "/v1/users/current": {
             "get": {
                 "summary": "Current user for APP",
                 "tags": ["user"],

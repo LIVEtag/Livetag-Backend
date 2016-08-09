@@ -44,11 +44,6 @@ AppAsset::register($this);
     } else {
         $menuItems = [
             ['label' => 'Home', 'url' => ['/site/index']],
-            [
-                'label' => 'Swagger',
-                'url' => ['/swagger/main/index'],
-                'active' => strpos($controller->route, 'swagger/') === 0
-            ],
         ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')

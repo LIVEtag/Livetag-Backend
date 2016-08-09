@@ -7,6 +7,10 @@
     Options +FollowSymlinks
     RewriteEngine On
 
+    #Swagger
+    RewriteCond %{REQUEST_URI} !^/swagger/dist/? [NC]
+    RewriteRule ^swagger/?(.*)$ /swagger/dist/$1 [L]
+
     # Backend
     RewriteRule ^backend/?(.*)$ /backend/web/$1 [L]
 
@@ -14,5 +18,6 @@
     RewriteRule ^rest/?(.*)$ /rest/web/$1 [L]
 
     # Frontend
+    RewriteCond %{REQUEST_URI} !^/swagger/? [NC] #For Swagger
     RewriteRule ^/?(.*)$ /frontend/web/$1 [L]
 </IfModule>
