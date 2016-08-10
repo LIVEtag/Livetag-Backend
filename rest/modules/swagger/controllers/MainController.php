@@ -5,8 +5,8 @@
  */
 namespace rest\modules\swagger\controllers;
 
-use rest\modules\swagger\controllers\actions\Index\HistoryAction;
-use rest\modules\swagger\controllers\actions\Index\JsonAction;
+use rest\modules\swagger\controllers\actions\Main\HistoryAction;
+use rest\modules\swagger\controllers\actions\Main\JsonAction;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\Cors;

@@ -3,7 +3,7 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace rest\modules\swagger\controllers\actions\Index;
+namespace rest\modules\swagger\controllers\actions\Main;
 
 use yii\base\Action;
 use yii\web\Response;
