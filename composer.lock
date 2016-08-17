@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a34b6bf6cd889bcfdfad9d7001c99250",
-    "content-hash": "bfa9cb3842121a487f64f405c0cc69a9",
+    "hash": "b3f7f2c85eddf4e69066c77d77380f76",
+    "content-hash": "f9ebab6206cfd767d396be542ebcdc1c",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -254,44 +254,6 @@
                 "markdown-extra"
             ],
             "time": "2015-03-06 05:28:07"
-        },
-        {
-            "name": "duccio/apns-php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/immobiliare/ApnsPHP.git",
-                "reference": "d66ed9987abdc9b358f040f315486e7cc0a2f038"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/immobiliare/ApnsPHP/zipball/d66ed9987abdc9b358f040f315486e7cc0a2f038",
-                "reference": "d66ed9987abdc9b358f040f315486e7cc0a2f038",
-                "shasum": ""
-            },
-            "require": {
-                "lib-openssl": "*",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "ApnsPHP/Autoload.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Apple Push Notification & Feedback Provider",
-            "homepage": "https://github.com/immobiliare/ApnsPHP",
-            "keywords": [
-                "apns",
-                "apple",
-                "notification",
-                "push"
-            ],
-            "time": "2016-06-06 10:49:35"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -3412,9 +3374,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "duccio/apns-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
