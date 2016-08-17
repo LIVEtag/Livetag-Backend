@@ -47,7 +47,7 @@ return [
                     'attributeNames' => [
                         'email-address',
                     ],
-                    'consumerKey' => '{{LINKEDIN_CUSTOMER_KEY}}',
+                    'consumerKey' => '{{LINKEDIN_CLIENT_ID}}',
                     'consumerSecret' => '{{LINKEDIN_CLIENT_SECRET}}',
                 ]
             ],
