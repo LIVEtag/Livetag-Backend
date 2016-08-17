@@ -5,7 +5,6 @@
  */
 namespace rest\components\api;
 
-use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
@@ -36,7 +35,7 @@ class Controller extends BaseController
                 'formats' => [
                     'text/html' => Response::FORMAT_JSON,
                     'application/json' => Response::FORMAT_JSON,
-                    'application/xml' => Response::FORMAT_XML,
+                    'application/xml' => Response::FORMAT_JSON,
                 ],
             ],
             'corsFilter' => [

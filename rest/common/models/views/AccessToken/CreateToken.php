@@ -7,7 +7,6 @@ namespace rest\common\models\views\AccessToken;
 
 use rest\common\models\AccessToken;
 use rest\common\models\User;
-use Yii;
 use yii\base\Model;
 
 /**

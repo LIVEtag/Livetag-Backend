@@ -5,7 +5,6 @@
  */
 namespace rest\components\api\actions;
 
-use Yii;
 use yii\base\Action as BaseAction;
 use yii\rest\Controller;
 use yii\web\Request;
@@ -36,7 +35,7 @@ abstract class Action extends BaseAction
     public function __construct($id, Controller $controller, array $config = [])
     {
         parent::__construct($id, $controller, $config);
-        $this->request = Yii::$app->getRequest();
-        $this->response = Yii::$app->getResponse();
+        $this->request = \Yii::$app->getRequest();
+        $this->response = \Yii::$app->getResponse();
     }
 }

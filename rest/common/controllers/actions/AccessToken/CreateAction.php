@@ -7,7 +7,6 @@ namespace rest\common\controllers\actions\AccessToken;
 
 use rest\common\models\views\AccessToken\CreateToken;
 use rest\components\api\actions\Action;
-use Yii;
 use yii\web\ServerErrorHttpException;
 
 /**

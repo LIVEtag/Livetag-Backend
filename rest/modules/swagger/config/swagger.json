@@ -11,8 +11,8 @@
         "/v1/access-tokens": {
             "post": {
                 "summary": "Create access token for APP",
-                "tags": ["access-token"],
-                "produces": ["application/json", "application/xml"],
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
                 "operationId": "userCreateAccessToken",
                 "parameters": [
                     {
@@ -49,8 +49,8 @@
         "/v1/users": {
             "post": {
                 "summary": "Create user for APP",
-                "tags": ["user", "NEW"],
-                "produces": ["application/json", "application/xml"],
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
                 "operationId": "userCreate",
                 "parameters": [
                     {
@@ -94,8 +94,8 @@
         "/v1/users/current": {
             "get": {
                 "summary": "Current user for APP",
-                "tags": ["user"],
-                "produces": ["application/json", "application/xml"],
+                "tags": ["User"],
+                "produces": ["application/json"],
                 "operationId": "userCurrent",
                 "parameters": [],
                 "responses": {

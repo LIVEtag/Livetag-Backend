@@ -7,7 +7,6 @@ namespace rest\common\controllers;
 
 use rest\common\controllers\actions\AccessToken\CreateAction;
 use rest\common\controllers\actions\AccessToken\OptionsAction;
-use rest\common\models\AccessToken;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -17,11 +16,6 @@ use yii\helpers\ArrayHelper;
  */
 class AccessTokenController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public $modelClass = AccessToken::class;
-
     /**
      * @inheritdoc
      */

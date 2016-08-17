@@ -6,7 +6,6 @@
 namespace rest\modules\v1\controllers;
 
 use rest\common\controllers\UserController as CommonUserController;
-use rest\common\models\User;
 
 /**
  * Class UserController

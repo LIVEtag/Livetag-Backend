@@ -7,7 +7,6 @@ namespace rest\common\models;
 
 use rest\common\models\queries\User\AccessTokenQuery;
 use rest\common\models\queries\User\UserQuery;
-use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -98,7 +97,7 @@ class AccessToken extends ActiveRecord
      */
     public static function find()
     {
-        return Yii::createObject(AccessTokenQuery::class, [get_called_class()]);
+        return \Yii::createObject(AccessTokenQuery::class, [get_called_class()]);
     }
 
     /**
@@ -129,11 +128,10 @@ class AccessToken extends ActiveRecord
 
     /**
      * @return string
-     * @throws \yii\base\InvalidConfigException
      */
     private function createToken()
     {
-        $security = Yii::$app->getSecurity();
+        $security = \Yii::$app->getSecurity();
 
         $hash = $security->hashData(
             $this->user_id,
