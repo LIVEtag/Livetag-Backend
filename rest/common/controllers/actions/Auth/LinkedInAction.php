@@ -14,6 +14,6 @@ class LinkedInAction extends Action
 {
     public function run()
     {
-
+        die(__CLASS__);
     }
 }

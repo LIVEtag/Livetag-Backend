@@ -14,6 +14,6 @@ class TwitterAction extends Action
 {
     public function run()
     {
-
+        die(__CLASS__);
     }
 }

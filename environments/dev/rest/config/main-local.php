@@ -9,6 +9,8 @@ use yii\authclient\clients\Google;
 use yii\authclient\clients\LinkedIn;
 use yii\authclient\clients\Twitter;
 use yii\authclient\Collection;
+use yii\debug\Module as DebugModule;
+use yii\gii\Module as GiiModule;
 
 $config = [
     'components' => [
@@ -59,13 +61,13 @@ if (!YII_ENV_TEST) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
+        'class' => DebugModule::class,
         'dataPath' => '@backend/runtime/debug',
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
+        'class' => GiiModule::class,
     ];
 }
 
