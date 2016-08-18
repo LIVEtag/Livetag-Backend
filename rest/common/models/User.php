@@ -8,7 +8,6 @@ namespace rest\common\models;
 use common\models\User as CommonUser;
 use rest\common\models\queries\User\AccessTokenQuery;
 use rest\common\models\queries\User\UserQuery;
-use Yii;
 use yii\web\IdentityInterface;
 
 /**
@@ -23,8 +22,8 @@ class User extends CommonUser implements IdentityInterface
     {
         /** @var $accessToken AccessToken */
         $accessToken = AccessToken::find()->findCurrentToken(
-            Yii::$app->request->getUserAgent(),
-            Yii::$app->request->getUserIP()
+            \Yii::$app->request->getUserAgent(),
+            \Yii::$app->request->getUserIP()
         )->andWhere(
                 [
                     'and',
@@ -68,7 +67,7 @@ class User extends CommonUser implements IdentityInterface
      */
     public static function find()
     {
-        return Yii::createObject(UserQuery::class, [get_called_class()]);
+        return \Yii::createObject(UserQuery::class, [get_called_class()]);
     }
 
     /**

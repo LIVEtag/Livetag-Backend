@@ -4,9 +4,11 @@
  * See LICENSE.txt for license details.
  */
 
+use yii\gii\Module as GiiModule;
+
 return [
     'bootstrap' => ['gii'],
     'modules' => [
-        'gii' => 'yii\gii\Module',
+        'gii' => GiiModule::class,
     ],
 ];

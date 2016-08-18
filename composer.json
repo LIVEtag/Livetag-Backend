@@ -4,13 +4,13 @@
     "license": "MIT",
     "minimum-stability": "stable",
     "require": {
-        "php": "~5.5.0|~5.6.0|~7.0.0",
-        "yiisoft/yii2": ">=2.0.8",
+        "php": "~5.6.0|~7.0.0",
+        "yiisoft/yii2": ">=2.0.9",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "duccio/apns-php" : "dev-master",
         "fxp/composer-asset-plugin": "~1.1.0",
-        "gbksoft/shell-command-builder": "1.0.1"
+        "gbksoft/shell-command-builder": "1.0.1",
+        "yiisoft/yii2-authclient": "~2.1.0"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

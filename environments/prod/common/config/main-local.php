@@ -4,21 +4,24 @@
  * See LICENSE.txt for license details.
  */
 
-Yii::setAlias('@base.domain', '{{P_WEB_HOST}}');
-Yii::setAlias('@rest.domain', '{{P_REST_WEB_HOST}}');
-Yii::setAlias('@backend.domain', '{{P_BACKEND_WEB_HOST}}');
+use yii\db\Connection;
+use yii\swiftmailer\Mailer;
+
+Yii::setAlias('@base.domain', '{{WEB_HOST}}');
+Yii::setAlias('@rest.domain', '{{REST_WEB_HOST}}');
+Yii::setAlias('@backend.domain', '{{BACKEND_WEB_HOST}}');
 
 return [
     'components' => [
         'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host={{P_DB_HOST}};dbname={{P_DB_NAME}}',
-            'username' => '{{P_DB_USERNAME}}',
-            'password' => '{{P_DB_PASSWORD}}',
+            'class' => Connection::class,
+            'dsn' => 'mysql:host={{DB_HOST}};dbname={{DB_NAME}}',
+            'username' => '{{DB_USERNAME}}',
+            'password' => '{{DB_PASSWORD}}',
             'charset' => 'utf8',
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => Mailer::class,
             'viewPath' => '@common/mail',
         ],
     ],

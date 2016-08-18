@@ -7,7 +7,6 @@ namespace rest\common\controllers\actions\User;
 
 use rest\common\models\User;
 use rest\components\api\actions\Action;
-use Yii;
 
 /**
  * Class CurrentAction
@@ -19,6 +18,6 @@ class CurrentAction extends Action
      */
     public function run()
     {
-        return Yii::$app->user->identity;
+        return User::findOne(\Yii::$app->user->id);
     }
 }

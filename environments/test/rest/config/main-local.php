@@ -4,6 +4,12 @@
  * See LICENSE.txt for license details.
  */
 
+use yii\authclient\clients\Facebook;
+use yii\authclient\clients\Google;
+use yii\authclient\clients\LinkedIn;
+use yii\authclient\clients\Twitter;
+use yii\authclient\Collection;
+
 $config = [
     'components' => [
         'request' => [
@@ -11,21 +17,42 @@ $config = [
             'cookieValidationKey' => '',
             'baseUrl' => '',
         ],
+        'authClientCollection' => [
+            'class' => Collection::class,
+            'clients' => [
+                'google' => [
+                    'class' => Google::class,
+                    'scope' => 'email',
+                    'clientId' => '{{GOOGLE_CLIENT_ID}}',
+                    'clientSecret' => '{{GOOGLE_CLIENT_SECRET}}',
+                ],
+                'facebook' => [
+                    'class' => Facebook::class,
+                    'attributeNames' => [
+                        'email'
+                    ],
+                    'clientId' => '{{FACEBOOK_CLIENT_ID}}',
+                    'clientSecret' => '{{FACEBOOK_CLIENT_SECRET}}',
+                ],
+                'twitter' => [
+                    'class' => Twitter::class,
+                    'attributeParams' => [
+                        'include_email' => 'true',
+                    ],
+                    'consumerKey' => '{{TWITTER_CONSUMER_KEY}}',
+                    'consumerSecret' => '{{TWITTER_CONSUMER_SECRET}}',
+                ],
+                'linkedin' => [
+                    'class' => LinkedIn::class,
+                    'attributeNames' => [
+                        'email-address',
+                    ],
+                    'consumerKey' => '{{LINKEDIN_CLIENT_ID}}',
+                    'consumerSecret' => '{{LINKEDIN_CLIENT_SECRET}}',
+                ]
+            ],
+        ],
     ],
 ];
-
-if (!YII_ENV_TEST) {
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        'dataPath' => '@backend/runtime/debug',
-    ];
-
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-    ];
-}
 
 return $config;

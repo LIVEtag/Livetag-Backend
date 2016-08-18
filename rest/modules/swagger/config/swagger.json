@@ -8,11 +8,40 @@
     "basePath": "/rest",
     "schemes": ["http", "https"],
     "paths": {
+        "/v1/auth/{type}": {
+            "post": {
+                "summary": "Create access token for APP using social account",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "userCreateAccessTokenUsingSocialAccount",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "type",
+                        "type": "string",
+                        "enum": [
+                            "facebook",
+                            "linkedin",
+                            "google",
+                            "twitter"
+                        ],
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "token",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    }
+                ]
+            }
+        },
         "/v1/access-tokens": {
             "post": {
                 "summary": "Create access token for APP",
-                "tags": ["access-token"],
-                "produces": ["application/json", "application/xml"],
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
                 "operationId": "userCreateAccessToken",
                 "parameters": [
                     {
@@ -49,8 +78,8 @@
         "/v1/users": {
             "post": {
                 "summary": "Create user for APP",
-                "tags": ["user", "NEW"],
-                "produces": ["application/json", "application/xml"],
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
                 "operationId": "userCreate",
                 "parameters": [
                     {
@@ -94,8 +123,8 @@
         "/v1/users/current": {
             "get": {
                 "summary": "Current user for APP",
-                "tags": ["user"],
-                "produces": ["application/json", "application/xml"],
+                "tags": ["User"],
+                "produces": ["application/json"],
                 "operationId": "userCurrent",
                 "parameters": [],
                 "responses": {

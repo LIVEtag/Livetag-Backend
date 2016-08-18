@@ -8,8 +8,6 @@ namespace rest\common\controllers;
 use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\OptionsAction;
 use rest\common\controllers\actions\User\SignupAction;
-use rest\common\models\User;
-use rest\common\models\views\User\SignupUser;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -19,11 +17,6 @@ use yii\helpers\ArrayHelper;
  */
 class UserController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public $modelClass = User::class;
-
     /**
      * @inheritdoc
      */
@@ -69,6 +62,18 @@ class UserController extends Controller
             'options' => [
                 'class' => OptionsAction::class,
             ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function verbs()
+    {
+        return [
+            'create' => ['POST'],
+            'current' => ['GET'],
+            'options' => ['OPTIONS'],
         ];
     }
 }

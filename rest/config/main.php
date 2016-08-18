@@ -8,7 +8,6 @@ use rest\common\models\User;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
-use rest\modules\v2\Module as V2Module;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Request;
@@ -31,9 +30,6 @@ return [
         ],
         'v1' => [
             'class' => V1Module::class,
-        ],
-        'v2' => [
-            'class' => V2Module::class,
         ],
     ],
     'components' => [
@@ -78,6 +74,23 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
+                        'v1/auth',
+                    ],
+                    'extraPatterns' => [
+                        'POST facebook' => 'facebook',
+                        'POST linkedin' => 'linkedin',
+                        'POST google' => 'google',
+                        'POST twitter' => 'twitter',
+                        'OPTIONS facebook' => 'options',
+                        'OPTIONS linkedin' => 'options',
+                        'OPTIONS google' => 'options',
+                        'OPTIONS twitter' => 'options',
+                    ],
+                    'pluralize' => false,
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
                         'v1/access-token'
                     ],
                     'extraPatterns' => [
@@ -88,22 +101,6 @@ return [
                     'class' => UrlRule::class,
                     'controller' => [
                         'v1/user',
-                    ],
-                    'extraPatterns' => [
-                        'GET current' => 'current',
-                        'OPTIONS current' => 'options',
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
-                        'v2/access-token',
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
-                        'v2/user',
                     ],
                     'extraPatterns' => [
                         'GET current' => 'current',

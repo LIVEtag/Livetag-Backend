@@ -7,7 +7,6 @@ namespace rest\common\controllers\actions\User;
 
 use rest\common\models\views\User\SignupUser;
 use rest\components\api\actions\Action;
-use Yii;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -23,8 +22,8 @@ class SignupAction extends Action
         $signupUser = new SignupUser();
         $signupUser->load($this->request->getBodyParams(), '');
 
-        $signupUser->userAgent = Yii::$app->getRequest()->getUserAgent();;
-        $signupUser->userIp = Yii::$app->getRequest()->getUserIP();;
+        $signupUser->userAgent = $this->request->getUserAgent();;
+        $signupUser->userIp = $this->request->getUserIP();;
 
         $user = $signupUser->signup();
 

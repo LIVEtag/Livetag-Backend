@@ -6,7 +6,6 @@
 namespace rest\modules\v1\controllers;
 
 use rest\common\controllers\AccessTokenController as CommonAccessTokenController;
-use rest\common\models\AccessToken;
 
 /**
  * Class AccessTokenController

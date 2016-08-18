@@ -5,10 +5,11 @@
  */
 namespace rest\components\api;
 
-use Yii;
+use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
+use yii\filters\RateLimiter;
 use yii\rest\Controller as BaseController;
 use yii\web\Response;
 
@@ -30,13 +31,14 @@ class Controller extends BaseController
         return [
             'authenticator' => [
                 'class' => HttpBearerAuth::class,
+                'except' => ['options'],
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,
                 'formats' => [
                     'text/html' => Response::FORMAT_JSON,
                     'application/json' => Response::FORMAT_JSON,
-                    'application/xml' => Response::FORMAT_XML,
+                    'application/xml' => Response::FORMAT_JSON,
                 ],
             ],
             'corsFilter' => [
@@ -50,7 +52,11 @@ class Controller extends BaseController
                     'Access-Control-Allow-Headers' => ['Content-Type', 'Authorization'],
                 ],
             ],
+            'rateLimiter' => [
+                'class' => RateLimiter::class,
+            ],
             'access' => [
+                'class' => AccessControl::class,
                 'except' => ['options'],
             ],
         ];

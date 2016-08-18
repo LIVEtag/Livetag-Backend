@@ -5,12 +5,12 @@
  */
 namespace rest\modules\v1\controllers;
 
-use rest\common\controllers\UserController as CommonUserController;
+use rest\common\controllers\AuthController as CommonAuthController;
 
 /**
  * Class UserController
  */
-class UserController extends CommonUserController
+class AuthController extends CommonAuthController
 {
 
 }
