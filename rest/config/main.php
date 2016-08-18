@@ -74,6 +74,23 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
+                        'v1/auth',
+                    ],
+                    'extraPatterns' => [
+                        'POST facebook' => 'facebook',
+                        'POST linkedin' => 'linkedin',
+                        'POST google' => 'google',
+                        'POST twitter' => 'twitter',
+                        'OPTIONS facebook' => 'options',
+                        'OPTIONS linkedin' => 'options',
+                        'OPTIONS google' => 'options',
+                        'OPTIONS twitter' => 'options',
+                    ],
+                    'pluralize' => false,
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
                         'v1/access-token'
                     ],
                     'extraPatterns' => [

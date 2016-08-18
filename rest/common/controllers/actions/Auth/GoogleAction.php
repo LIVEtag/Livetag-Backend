@@ -5,15 +5,20 @@
  */
 namespace rest\common\controllers\actions\Auth;
 
-use rest\components\api\actions\Action;
-
 /**
  * Class GoogleAction
  */
-class GoogleAction extends Action
+class GoogleAction extends AbstractAuthAction
 {
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
-        die(__CLASS__);
+        $client = $this->getClient('google');
+
+        $attributes = $this->authOAuth2($client);
+
+        return $attributes;
     }
 }

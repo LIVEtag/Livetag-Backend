@@ -5,15 +5,16 @@
  */
 namespace rest\common\controllers\actions\Auth;
 
-use rest\components\api\actions\Action;
-
 /**
  * Class TwitterAction
  */
-class TwitterAction extends Action
+class TwitterAction extends AbstractAuthAction
 {
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
-        die(__CLASS__);
+
     }
 }

@@ -5,15 +5,16 @@
  */
 namespace rest\common\controllers\actions\Auth;
 
-use rest\components\api\actions\Action;
-
 /**
- * Class LinkedInAction
+ * Class LinkedinAction
  */
-class LinkedInAction extends Action
+class LinkedinAction extends AbstractAuthAction
 {
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
-        die(__CLASS__);
+
     }
 }

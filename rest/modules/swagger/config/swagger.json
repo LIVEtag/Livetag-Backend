@@ -8,6 +8,35 @@
     "basePath": "/rest",
     "schemes": ["http", "https"],
     "paths": {
+        "/v1/auth/{type}": {
+            "post": {
+                "summary": "Create access token for APP using social account",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "userCreateAccessTokenUsingSocialAccount",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "type",
+                        "type": "string",
+                        "enum": [
+                            "facebook",
+                            "linkedin",
+                            "google",
+                            "twitter"
+                        ],
+                        "required": true
+                    },
+                    {
+                        "in": "formData",
+                        "name": "token",
+                        "type": "string",
+                        "required": true,
+                        "description": "Minimum 2, maximum 255 characters"
+                    }
+                ]
+            }
+        },
         "/v1/access-tokens": {
             "post": {
                 "summary": "Create access token for APP",

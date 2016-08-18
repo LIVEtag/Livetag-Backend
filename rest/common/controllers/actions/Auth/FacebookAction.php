@@ -5,15 +5,20 @@
  */
 namespace rest\common\controllers\actions\Auth;
 
-use rest\components\api\actions\Action;
-
 /**
  * Class FacebookAction
  */
-class FacebookAction extends Action
+class FacebookAction extends AbstractAuthAction
 {
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
-        die(__CLASS__);
+        $client = $this->getClient('facebook');
+
+        $attributes = $this->authOAuth2($client);
+
+        return $attributes;
     }
 }

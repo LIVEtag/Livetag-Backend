@@ -64,4 +64,16 @@ class UserController extends Controller
             ],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function verbs()
+    {
+        return [
+            'create' => ['POST'],
+            'current' => ['GET'],
+            'options' => ['OPTIONS'],
+        ];
+    }
 }
