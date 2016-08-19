@@ -44,7 +44,7 @@ class m160819_140937_create_user_social_profile_linked_table extends Migration
      */
     public function down()
     {
-        //$this->dropForeignKey('fk_user_social_profile_linked_to_user', '{{%user_social_profile_linked}}');
+        $this->dropForeignKey('fk_user_social_profile_linked_to_user', '{{%user_social_profile_linked}}');
         $this->dropTable('{{%user_social_profile_linked}}');
     }
 }
