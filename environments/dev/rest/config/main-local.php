@@ -30,6 +30,7 @@ $config = [
                 ],
                 'facebook' => [
                     'class' => Facebook::class,
+                    'validateAuthState' => false,
                     'attributeNames' => [
                         'email'
                     ],

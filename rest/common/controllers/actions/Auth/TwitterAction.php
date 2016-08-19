@@ -15,6 +15,10 @@ class TwitterAction extends AbstractAuthAction
      */
     public function run()
     {
+        $client = $this->getClient('twitter');
 
+        $attributes = $this->authOAuth2($client);
+
+        return $attributes;
     }
 }

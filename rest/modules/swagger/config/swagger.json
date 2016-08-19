@@ -29,7 +29,7 @@
                     },
                     {
                         "in": "formData",
-                        "name": "token",
+                        "name": "code",
                         "type": "string",
                         "required": true,
                         "description": "Minimum 2, maximum 255 characters"

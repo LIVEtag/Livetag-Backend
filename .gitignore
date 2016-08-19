@@ -30,7 +30,7 @@ phpunit.phar
 /phpunit.xml
 
 # configuration of environment
-*.env
+.env
 
 npm-debug.log
 

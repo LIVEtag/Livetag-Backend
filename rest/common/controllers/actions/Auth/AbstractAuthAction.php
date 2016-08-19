@@ -13,6 +13,7 @@ use yii\authclient\OAuth2;
 use yii\authclient\OAuthToken;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use Yii;
 
 /**
  * Abstract class AbstractAuthAction
@@ -31,8 +32,10 @@ abstract class AbstractAuthAction extends Action
      */
     protected function getClient($clientId)
     {
+
         /** @var Collection $collection */
         $collection = \Yii::$app->get('authClientCollection');
+
         if (!$collection->hasClient($clientId)) {
             throw new NotFoundHttpException("Unknown auth client '{$clientId}'");
         }
@@ -47,28 +50,20 @@ abstract class AbstractAuthAction extends Action
      */
     protected function authOAuth2(OAuth2 $client)
     {
-        $client->setAccessToken($this->getToken());
+        $code = $this->request->post('code');
+
+        if (!$code) {
+            throw new BadRequestHttpException('Code cannot be blank.');
+        }
+
+        $authToken = $client->fetchAccessToken($code);
+
+        $client->setAccessToken($authToken);
+
         try {
             return $client->getUserAttributes();
         } catch (InvalidResponseException $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }
-    }
-
-    /**
-     * @return OAuthToken
-     * @throws BadRequestHttpException
-     */
-    private function getToken()
-    {
-        $token = $this->request->post('token');
-        if (!$token) {
-            throw new BadRequestHttpException('Token cannot be blank.');
-        }
-
-        $authToken = new OAuthToken();
-        $authToken->setToken($token);
-
-        return $authToken;
     }
 }

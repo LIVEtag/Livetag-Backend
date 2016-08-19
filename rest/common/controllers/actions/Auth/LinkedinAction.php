@@ -15,6 +15,10 @@ class LinkedinAction extends AbstractAuthAction
      */
     public function run()
     {
+        $client = $this->getClient('linkedin');
 
+        $attributes = $this->authOAuth2($client);
+
+        return $attributes;
     }
 }
