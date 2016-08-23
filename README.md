@@ -1,3 +1,7 @@
+Yii2 base
+=====
+[![Build Status](https://phpci.gbksoft.net/buildStatus/icon?job=gurzhiy-an-yii2-base)](https://phpci.gbksoft.net/job/gurzhiy-an-yii2-base/)
+
 Конфигурирование проекта через .env
 -------------------
 
