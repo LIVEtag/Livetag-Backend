@@ -13,7 +13,7 @@ use yii\authclient\OAuth2;
 use yii\authclient\OAuthToken;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
-use Yii;
+use rest\common\models\views\User\SocialForm;
 
 /**
  * Abstract class AbstractAuthAction
@@ -66,4 +66,5 @@ abstract class AbstractAuthAction extends Action
             throw new BadRequestHttpException($exception->getMessage());
         }
     }
+
 }

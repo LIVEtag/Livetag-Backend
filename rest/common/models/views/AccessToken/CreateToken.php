@@ -115,7 +115,7 @@ class CreateToken extends Model
         $accessToken->user_ip = $this->userIp;
         $accessToken->user_agent = $this->userAgent;
 
-        
+
 
         return $accessToken->save() ? $accessToken : false;
     }

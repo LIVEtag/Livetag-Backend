@@ -22,8 +22,7 @@
                         "enum": [
                             "facebook",
                             "linkedin",
-                            "google",
-                            "twitter"
+                            "google"
                         ],
                         "required": true
                     },
@@ -32,9 +31,23 @@
                         "name": "code",
                         "type": "string",
                         "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
+                        "description": "Get code example facebook: https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}"
                     }
-                ]
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "422": {
+                        "description": "Data Validation Failed.",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
             }
         },
         "/v1/access-tokens": {
@@ -157,9 +170,7 @@
                     "type": "string"
                 },
                 "accessToken": {
-                    "schema": {
-                        "$ref": "#/definitions/Token"
-                    }
+                    "$ref": "#/definitions/Token"
                 }
             }
         },
@@ -179,9 +190,7 @@
                     "type": "string"
                 },
                 "result": {
-                    "schema": {
-                        "$ref": "#/definitions/Token"
-                    }
+                    "$ref": "#/definitions/Token"
                 }
             }
         },

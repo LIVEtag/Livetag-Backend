@@ -21,7 +21,7 @@ class m160819_134134_create_user_social_profile_table extends Migration
                 'social_id' => $this->string()->notNull(),
                 'email' => $this->string()->notNull(),
                 'created_at' => $this->integer()->unsigned()->notNull(),
-                'expired_at' => $this->integer()->unsigned()->notNull(),
+                'updated_at' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );
