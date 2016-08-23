@@ -47,7 +47,7 @@
             unless="phpmd.done"
             depends="prepare"
             description="Run phpmd tests">
-        <exec executable="${phpmd}">
+        <exec  executable="${phpmd}" >
             <arg path="${basedir}/../backend,${basedir}/../common,${basedir}/../console,${basedir}/../frontend,${basedir}/../rest" />
             <arg value="xml" />
             <arg path="${basedir}/etc/phpmd/rules/rules.xml" />
