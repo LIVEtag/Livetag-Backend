@@ -22,12 +22,14 @@ return [
             'clients' => [
                 'google' => [
                     'class' => Google::class,
+                    'validateAuthState' => false,
                     'scope' => 'email',
                     'clientId' => '{{GOOGLE_CLIENT_ID}}',
                     'clientSecret' => '{{GOOGLE_CLIENT_SECRET}}',
                 ],
                 'facebook' => [
                     'class' => Facebook::class,
+                    'validateAuthState' => false,
                     'attributeNames' => [
                         'email'
                     ],
@@ -44,6 +46,7 @@ return [
                 ],
                 'linkedin' => [
                     'class' => LinkedIn::class,
+                    'validateAuthState' => false,
                     'attributeNames' => [
                         'email-address',
                     ],
