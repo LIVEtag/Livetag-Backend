@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<ruleset name="My first PHPMD rule set"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0
+                     ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="ruleset_xml_schema.xsd">
+
+    <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag">
+        <priority>0</priority>
+    </rule>
+
+    <rule ref="rulesets/cleancode.xml/ElseExpression">
+        <priority>0</priority>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+        <priority>0</priority>
+        <properties>
+            <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="15"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/NPathComplexity">
+        <priority>1</priority>
+        <properties>
+            <property name="minimum" description="The npath reporting threshold" value="250"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+        <priority>1</priority>
+        <properties>
+            <property name="minimum" description="The method size reporting threshold" value="150"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+        <priority>1</priority>
+        <properties>
+            <property name="minimum" description="The class size reporting threshold"  value="1000"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
+        <priority>1</priority>
+        <properties>
+            <property name="minimum" description="The parameter count reporting threshold" value="10"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/ExcessivePublicCount">
+        <priority>1</priority>
+        <properties>
+            <property name="minimum" description="The public item reporting threshold" value="75"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/TooManyFields">
+        <priority>1</priority>
+        <properties>
+            <property name="maxfields" description="The field count reporting threshold " value="35"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/TooManyMethods">
+        <priority>1</priority>
+        <properties>
+            <property name="maxmethods" description="The method count reporting threshold" value="35"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <priority>1</priority>
+        <properties>
+            <property name="maxmethods" description="The method count reporting threshold" value="20"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
+        <priority>1</priority>
+        <properties>
+            <property name="maximum" description="The maximum WMC tolerable for a class." value="65"/>
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/controversial.xml/Superglobals">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/design.xml/ExitExpression">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/design.xml/EvalExpression">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/design.xml/GotoStatement">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/design.xml/DevelopmentCodeFragment">
+        <priority>1</priority>
+        <properties>
+            <property name="unwanted-functions" value="var_dump,print_r,debug_zval_dump,debug_print_backtrace" description="Comma separated list of suspect function images." />
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/naming.xml/ConstantNamingConventions">
+        <priority>1</priority>
+        <properties />
+    </rule>
+
+    <rule ref="rulesets/unusedcode.xml/UnusedPrivateField">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod">
+        <priority>1</priority>
+    </rule>
+
+    <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+        <priority>1</priority>
+    </rule>
+</ruleset>

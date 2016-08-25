@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+-->
+<project name="test-api-phpunit" default="full-build">
+    <property name="phpunit" value="${basedir}/../vendor/bin/phpunit"/>
+    <property name="phpmd" value="${basedir}/../vendor/bin/phpmd"/>
+
+    <target name="full-build"
+            depends="prepare,static-analysis,phpmd-ci,phpunit-ci"
+            description="Performs static analysis and runs the tests"/>
+
+    <target name="composer"
+            unless="composer.done"
+            description="Composer install">
+        <exec dir="${basedir}/../" executable="composer">
+            <arg value="install" />
+        </exec>
+        <property name="composer.done" value="true"/>
+    </target>
+
+    <target name="static-analysis"
+            depends="phpunit-ci,phpmd-ci"
+            description="Performs static analysis" />
+
+    <target name="clean"
+            depends="composer"
+            unless="clean.done"
+            description="Cleanup build artifacts">
+        <delete dir="${basedir}/build/logs"/>
+        <property name="clean.done" value="true"/>
+    </target>
+
+    <target name="prepare"
+            unless="prepare.done"
+            depends="clean"
+            description="Prepare for build">
+        <mkdir dir="${basedir}/build/logs"/>
+        <touch file="${basedir}/build/logs/pmd.xml"/>
+        <property name="prepare.done" value="true"/>
+    </target>
+
+    <target name="phpmd-ci"
+            unless="phpmd.done"
+            depends="prepare"
+            description="Run phpmd tests">
+        <exec  executable="${phpmd}" >
+            <arg path="${basedir}/../backend,${basedir}/../common,${basedir}/../console,${basedir}/../frontend,${basedir}/../rest" />
+            <arg value="xml" />
+            <arg path="${basedir}/etc/phpmd/rules/rules.xml" />
+            <arg value="--reportfile" />
+            <arg path="${basedir}/build/logs/pmd.xml" />
+            <arg value="--suffixes" />
+            <arg value="php" />
+        </exec>
+
+        <property name="phpmd.done" value="true"/>
+    </target>
+
+    <target name="phpunit-ci"
+            depends="prepare"
+            unless="phpunit.done"
+            description="Run phpunit tests">
+        <exec executable="${phpunit}">
+            <arg value="--configuration" />
+            <arg path="${basedir}/etc/phpunit/phpunit.xml" />
+        </exec>
+        <property name="phpunit.done" value="true"/>
+    </target>
+</project>

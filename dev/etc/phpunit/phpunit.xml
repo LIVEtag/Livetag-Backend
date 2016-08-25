@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../../../vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
+         verbose="true">
+    <testsuites>
+        <testsuite name="small">
+            <directory suffix="Test.php">backend/tests</directory>
+            <directory suffix="Test.php">common/tests</directory>
+            <directory suffix="Test.php">console/tests</directory>
+            <directory suffix="Test.php">frontend/tests</directory>
+            <directory suffix="Test.php">rest/tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

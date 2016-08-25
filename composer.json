@@ -22,7 +22,12 @@
         "codeception/verify": "*",
         "flow/jsonpath": "*",
         "andres-montanez/magallanes": "~1.0.1",
-        "phpmd/phpmd" : "*"
+        "phpmd/phpmd" : "2.4.3",
+        "sebastian/phpcpd": "2.0.4",
+        "phpunit/phpunit": "4.8"
+    },
+    "autoload-dev": {
+        "psr-4": {"tests\\lib\\": "tests/lib"}
     },
     "config": {
         "process-timeout": 1800
