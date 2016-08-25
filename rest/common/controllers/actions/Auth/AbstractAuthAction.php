@@ -67,4 +67,43 @@ abstract class AbstractAuthAction extends Action
         }
     }
 
+    /**
+     * @param OAuth1 $client
+     * @return array
+     * @throws BadRequestHttpException
+     */
+    protected function authOAuth1( $client)
+    {
+        $client->setAccessToken($this->getAuthToken());
+
+        try {
+            return $client->getUserAttributes();
+        } catch (InvalidResponseException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+    }
+
+    /**
+     * @return OAuthToken
+     * @throws BadRequestHttpException
+     */
+    private function getAuthToken()
+    {
+
+        $token = $this->request->post('token');
+        if (!$token) {
+            throw new BadRequestHttpException('Token cannot be blank.');
+        }
+        $tokenSecret = $this->request->post('tokenSecret');
+        if (!$tokenSecret) {
+            throw new BadRequestHttpException('Token secret cannot be blank.');
+        }
+        
+        $authToken = new OAuthToken();
+        $authToken->setToken($token);
+        $authToken->setTokenSecret($tokenSecret);
+
+        return $authToken;
+    }
+
 }

@@ -24,6 +24,7 @@ class SocialProfile extends \yii\db\ActiveRecord
     const TYPE_GOOGLE = 1;
     const TYPE_LINKEDIN = 2;
     const TYPE_FACEBOOK = 3;
+    const TYPE_TWITTER = 4;
 
     /**
      * @inheritdoc

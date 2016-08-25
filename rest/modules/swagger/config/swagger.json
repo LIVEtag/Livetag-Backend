@@ -8,6 +8,42 @@
     "basePath": "/rest",
     "schemes": ["http", "https"],
     "paths": {
+        "/v1/auth/twitter": {
+            "post": {
+                "summary": "Create access token for APP using twitter account",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "userCreateAccessTokenUsingTwitterAccount",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "token",
+                        "description": "Access token",
+                        "type": "string"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "tokenSecret",
+                        "description": "Access token secret",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "422": {
+                        "description": "Data Validation Failed.",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth/{type}": {
             "post": {
                 "summary": "Create access token for APP using social account",
@@ -31,7 +67,7 @@
                         "name": "code",
                         "type": "string",
                         "required": true,
-                        "description": "Get code example facebook: https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}"
+                        "description": "Get code facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}"
                     }
                 ],
                 "responses": {
