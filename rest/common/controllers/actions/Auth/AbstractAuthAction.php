@@ -10,6 +10,7 @@ use yii\authclient\ClientInterface;
 use yii\authclient\Collection;
 use yii\authclient\InvalidResponseException;
 use yii\authclient\OAuth2;
+use yii\authclient\OAuth1;
 use yii\authclient\OAuthToken;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -72,10 +73,9 @@ abstract class AbstractAuthAction extends Action
      * @return array
      * @throws BadRequestHttpException
      */
-    protected function authOAuth1( $client)
+    protected function authOAuth1(OAuth1 $client)
     {
         $client->setAccessToken($this->getAuthToken());
-
         try {
             return $client->getUserAttributes();
         } catch (InvalidResponseException $exception) {
@@ -89,7 +89,6 @@ abstract class AbstractAuthAction extends Action
      */
     private function getAuthToken()
     {
-
         $token = $this->request->post('token');
         if (!$token) {
             throw new BadRequestHttpException('Token cannot be blank.');
@@ -98,12 +97,11 @@ abstract class AbstractAuthAction extends Action
         if (!$tokenSecret) {
             throw new BadRequestHttpException('Token secret cannot be blank.');
         }
-        
+
         $authToken = new OAuthToken();
         $authToken->setToken($token);
         $authToken->setTokenSecret($tokenSecret);
 
         return $authToken;
     }
-
 }

@@ -20,7 +20,6 @@ use common\models\User\SocialProfile;
 class SocialForm extends Model
 {
     /**
-     *
      * @var User
      */
     public $user;
@@ -29,6 +28,7 @@ class SocialForm extends Model
      * @var string
      */
     public $username;
+
     /**
      * @var string
      */
@@ -48,7 +48,6 @@ class SocialForm extends Model
      * @var integer
      */
     public $socialType;
-
 
     /**
      * @var string
