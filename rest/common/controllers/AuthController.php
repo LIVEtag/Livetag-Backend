@@ -11,6 +11,8 @@ use rest\common\controllers\actions\Auth\LinkedinAction;
 use rest\common\controllers\actions\Auth\OptionsAction;
 use rest\common\controllers\actions\Auth\TwitterAction;
 use rest\components\api\Controller;
+use rest\common\models\User;
+use rest\common\models\views\User\SignupUser;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
@@ -65,7 +67,7 @@ class AuthController extends Controller
                 'class' => LinkedinAction::class,
             ],
             'google' => [
-                'class' => GoogleAction::class
+                'class' => GoogleAction::class,
             ],
             'twitter' => [
                 'class' => TwitterAction::class
