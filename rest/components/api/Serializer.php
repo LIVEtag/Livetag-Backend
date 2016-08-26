@@ -16,7 +16,7 @@ class Serializer extends BaseSerializer
      * @inheritdoc
      */
     public $collectionEnvelope = 'items';
-    
+
     /**
      * @inheritdoc
      */
@@ -26,13 +26,11 @@ class Serializer extends BaseSerializer
         $dataResult = [
             'code' => $this->response->getStatusCode(),
             'status' => $this->response->getIsSuccessful() ? 'success' : 'error',
-            'result' => [],
+            'result' => $data,
         ];
 
         if (is_array($data) && isset($data[$this->collectionEnvelope])) {
             $dataResult['result'] = $data[$this->collectionEnvelope];
-        } else {
-            $dataResult['result'] = $data;
         }
 
         return $dataResult;
