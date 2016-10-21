@@ -5,11 +5,11 @@
          verbose="true">
     <testsuites>
         <testsuite name="small">
-            <directory suffix="Test.php">backend/tests</directory>
-            <directory suffix="Test.php">common/tests</directory>
-            <directory suffix="Test.php">console/tests</directory>
-            <directory suffix="Test.php">frontend/tests</directory>
-            <directory suffix="Test.php">rest/tests</directory>
+            <directory suffix="Test.php">backend</directory>
+            <directory suffix="Test.php">common</directory>
+            <directory suffix="Test.php">console</directory>
+            <directory suffix="Test.php">frontend</directory>
+            <directory suffix="Test.php">rest</directory>
         </testsuite>
     </testsuites>
 </phpunit>

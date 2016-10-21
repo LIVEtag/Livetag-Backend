@@ -1,33 +1,28 @@
 {
     "name": "gbksoft/yii2-base",
+    "description": "Yii 2 Base",
     "type": "project",
-    "license": "MIT",
+    "license": "MTI",
     "minimum-stability": "stable",
     "require": {
         "php": "~5.6.0|~7.0.0",
-        "yiisoft/yii2": ">=2.0.9",
-        "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-swiftmailer": "*",
-        "fxp/composer-asset-plugin": "~1.1.0",
+        "yiisoft/yii2": "2.0.10",
+        "yiisoft/yii2-bootstrap": "2.0.6",
+        "yiisoft/yii2-swiftmailer": "2.0.6",
+        "fxp/composer-asset-plugin": "1.1.4",
         "gbksoft/shell-command-builder": "1.0.1",
-        "yiisoft/yii2-authclient": "~2.1.0"
+        "yiisoft/yii2-authclient": "2.1.1"
     },
     "require-dev": {
-        "yiisoft/yii2-codeception": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*",
-        "codeception/codeception": "2.0.*",
-        "codeception/specify": "*",
-        "codeception/verify": "*",
-        "flow/jsonpath": "*",
+        "yiisoft/yii2-codeception": "2.0.5",
+        "yiisoft/yii2-debug": "2.0.6",
+        "yiisoft/yii2-gii": "2.0.5",
+        "yiisoft/yii2-faker": "2.0.3",
         "andres-montanez/magallanes": "~1.0.1",
         "phpmd/phpmd" : "2.4.3",
         "sebastian/phpcpd": "2.0.4",
+        "squizlabs/php_codesniffer": "2.7.0",
         "phpunit/phpunit": "4.8"
-    },
-    "autoload-dev": {
-        "psr-4": {"tests\\lib\\": "tests/lib"}
     },
     "config": {
         "process-timeout": 1800
