@@ -8,6 +8,8 @@
 <project name="test-api-phpunit" default="full-build">
     <property name="phpunit" value="${basedir}/../vendor/bin/phpunit"/>
     <property name="phpmd" value="${basedir}/../vendor/bin/phpmd"/>
+    <property name="phpcpd" value="${basedir}/../vendor/bin/phpcpd"/>
+    <property name="phpcs" value="${basedir}/../vendor/bin/phpcs"/>
 
     <target name="full-build"
             depends="prepare,static-analysis,phpmd-ci,phpunit-ci"
@@ -23,7 +25,7 @@
     </target>
 
     <target name="static-analysis"
-            depends="phpunit-ci,phpmd-ci"
+            depends="phpunit-ci,phpmd-ci,phpcpd-ci,phpcs-ci"
             description="Performs static analysis" />
 
     <target name="clean"
@@ -38,8 +40,13 @@
             unless="prepare.done"
             depends="clean"
             description="Prepare for build">
+
         <mkdir dir="${basedir}/build/logs"/>
+
         <touch file="${basedir}/build/logs/pmd.xml"/>
+        <touch file="${basedir}/build/logs/cpd.xml" />
+        <touch file="${basedir}/build/logs/checkstyle.xml" />
+
         <property name="prepare.done" value="true"/>
     </target>
 
@@ -47,8 +54,8 @@
             unless="phpmd.done"
             depends="prepare"
             description="Run phpmd tests">
-        <exec  executable="${phpmd}" >
-            <arg path="${basedir}/../backend,${basedir}/../common,${basedir}/../console,${basedir}/../frontend,${basedir}/../rest" />
+        <exec executable="${phpmd}" >
+            <arg path="${basedir}/../common,${basedir}/../console,${basedir}/../rest,${basedir}/../backend" />
             <arg value="xml" />
             <arg path="${basedir}/etc/phpmd/rules/rules.xml" />
             <arg value="--reportfile" />
@@ -58,6 +65,38 @@
         </exec>
 
         <property name="phpmd.done" value="true"/>
+    </target>
+
+    <target name="phpcpd-ci"
+            unless="phpcpd.done"
+            depends="prepare">
+        <exec executable="${phpcpd}">
+            <arg path="${basedir}/../common" />
+            <arg path="${basedir}/../console" />
+            <arg path="${basedir}/../rest" />
+            <arg path="${basedir}/../backend" />
+            <arg value="--log-pmd" />
+            <arg path="${basedir}/build/logs/cpd.xml" />
+        </exec>
+
+        <property name="phpcpd.done" value="true"/>
+    </target>
+
+    <target name="phpcs-ci"
+            unless="phpcs.done"
+            description="Run phpcs tests">
+        <exec executable="${phpcs}">
+            <arg value="--standard=${basedir}/etc/phpcs/standard/ruleset.xml" />
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+            <arg value="--extensions=php" />
+            <arg path="${basedir}/../common" />
+            <arg path="${basedir}/../console" />
+            <arg path="${basedir}/../rest" />
+            <arg path="${basedir}/../backend" />
+        </exec>
+
+        <property name="phpcs.done" value="true"/>
     </target>
 
     <target name="phpunit-ci"
