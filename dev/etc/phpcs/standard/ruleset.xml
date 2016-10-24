@@ -5,12 +5,12 @@
     <rule ref="PSR2"/>
 
     <rule ref="Generic.Files.LineLength">
-        <exclude-pattern>/views/</exclude-pattern>
-        <exclude-pattern>/views/layouts/</exclude-pattern>
+        <exclude-pattern>/views/.*</exclude-pattern>
+        <exclude-pattern>/views/layouts/.*</exclude-pattern>
     </rule>
 
     <rule ref="PSR2.Files.ClosingTag">
-        <exclude-pattern>/views/</exclude-pattern>
-        <exclude-pattern>/views/layouts/</exclude-pattern>
+        <exclude-pattern>/views/.*</exclude-pattern>
+        <exclude-pattern>/views/layouts/.*</exclude-pattern>
     </rule>
 </ruleset>
