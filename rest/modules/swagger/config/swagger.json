@@ -64,7 +64,7 @@
                     },
                     {
                         "in": "formData",
-                        "name": "code",
+                        "name": "token",
                         "type": "string",
                         "required": true,
                         "description": "Get code facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}"

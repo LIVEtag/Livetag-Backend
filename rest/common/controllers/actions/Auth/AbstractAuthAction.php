@@ -51,14 +51,14 @@ abstract class AbstractAuthAction extends Action
      */
     protected function authOAuth2(OAuth2 $client)
     {
-        $code = $this->request->post('code');
+        $token = $this->request->post('token');
 
-        if (!$code) {
-            throw new BadRequestHttpException('Code cannot be blank.');
+        if (!$token) {
+            throw new BadRequestHttpException('Token cannot be blank.');
         }
 
-        $authToken = $client->fetchAccessToken($code);
-
+        $authToken = new OAuthToken();
+        $authToken->setToken($token);
         $client->setAccessToken($authToken);
 
         try {
