@@ -125,8 +125,12 @@ class CreateToken extends Model
      */
     protected function getUser()
     {
+        $param = $this->username;
         if ($this->user === null) {
-            $this->user = User::findByUsername($this->username);
+            $this->user = User::findByUsername($param);
+        }
+        if (empty($this->user)) {
+            $this->user = User::findByEmail($param);
         }
 
         return $this->user;

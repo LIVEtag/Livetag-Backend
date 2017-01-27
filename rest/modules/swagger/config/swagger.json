@@ -98,7 +98,7 @@
                         "name": "username",
                         "type": "string",
                         "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
+                        "description": "Username / e-mail<br>Minimum 2, maximum 255 characters"
                     },
                     {
                         "in": "formData",
