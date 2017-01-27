@@ -21,6 +21,9 @@ class CreateAction extends Action
     {
         $accessTokenCreate = new CreateToken();
         $accessTokenCreate->load($this->request->getBodyParams(), '');
+        $accessTokenCreate->isRememberMe = filter_var($this->request->getBodyParam('isRememberMe'), FILTER_VALIDATE_BOOLEAN)
+            ? CreateToken::YES_VALUE
+            : CreateToken::NO_VALUE;
 
         $accessTokenCreate->userAgent = $this->request->getUserAgent();
         $accessTokenCreate->userIp = $this->request->getUserIP();

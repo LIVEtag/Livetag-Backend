@@ -8,7 +8,7 @@
     "basePath": "/rest",
     "schemes": ["http", "https"],
     "paths": {
-        "/v1/auth/twitter": {
+        "/v1/user/login/twitter": {
             "post": {
                 "summary": "Create access token for APP using twitter account",
                 "tags": ["AnyBody"],
@@ -44,7 +44,7 @@
                 }
             }
         },
-        "/v1/auth/{type}": {
+        "/v1/user/login/{type}": {
             "post": {
                 "summary": "Create access token for APP using social account",
                 "tags": ["AnyBody"],
@@ -86,7 +86,7 @@
                 }
             }
         },
-        "/v1/access-tokens": {
+        "/v1/user/login": {
             "post": {
                 "summary": "Create access token for APP",
                 "tags": ["AnyBody"],
@@ -124,7 +124,7 @@
                 }
             }
         },
-        "/v1/users": {
+        "/v1/user/register": {
             "post": {
                 "summary": "Create user for APP",
                 "tags": ["AnyBody"],
@@ -151,6 +151,15 @@
                         "type": "string",
                         "required": true,
                         "description": "Minimum 2, maximum 255 characters"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "isRememberMe",
+                        "type": "string",
+                        "enum": [ "yes", "no"],
+                        "default": "no",
+                        "required": false,
+                        "description": "are you need remember this token?"
                     }
                 ],
                 "responses": {
@@ -169,7 +178,7 @@
                 }
             }
         },
-        "/v1/users/current": {
+        "/v1/user/current": {
             "get": {
                 "summary": "Current user for APP",
                 "tags": ["User"],
