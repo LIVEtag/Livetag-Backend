@@ -7,6 +7,8 @@ namespace rest\common\controllers\actions\AccessToken;
 
 use rest\common\models\views\AccessToken\CreateToken;
 use rest\components\api\actions\Action;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -16,12 +18,16 @@ class CreateAction extends Action
 {
     /**
      * Create access token
+     *
+     * @throws ServerErrorHttpException
+     * @throws InvalidParamException
+     * @throws InvalidConfigException
      */
     public function run()
     {
         $accessTokenCreate = new CreateToken();
         $accessTokenCreate->load($this->request->getBodyParams(), '');
-        $accessTokenCreate->isRememberMe = filter_var($this->request->getBodyParam('isRememberMe'), FILTER_VALIDATE_BOOLEAN)
+        $accessTokenCreate->isRememberMe = filter_var($this->request->getBodyParam('is_remember_me'), FILTER_VALIDATE_BOOLEAN)
             ? CreateToken::YES_VALUE
             : CreateToken::NO_VALUE;
 

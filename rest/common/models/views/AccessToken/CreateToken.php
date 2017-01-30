@@ -7,7 +7,10 @@ namespace rest\common\models\views\AccessToken;
 
 use rest\common\models\AccessToken;
 use rest\common\models\User;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\base\Model;
+use common\components\user\SearchService;
 
 /**
  * Class Create
@@ -67,15 +70,17 @@ class CreateToken extends Model
      * This method serves as the inline validation for password.
      *
      * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * @internal param array $params the additional name-value pairs given in the rule
+     * @throws InvalidConfigException
      */
     public function validatePassword($attribute)
     {
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if ($user === null || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
-            }
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        if ($this->user === null || !$this->user->validatePassword($this->password)) {
+            $this->addError($attribute, 'Incorrect username or password.');
         }
     }
 
@@ -83,9 +88,16 @@ class CreateToken extends Model
      * Create user access token
      *
      * @return bool|AccessToken
+     * @throws InvalidParamException
+     * @throws InvalidConfigException
      */
     public function create()
     {
+        $this->user = \Yii::createObject(SearchService::class, [$this->username])->getUser();
+        if ($this->user === null) {
+            return false;
+        }
+
         if (!$this->validate()) {
             return false;
         }
@@ -95,7 +107,7 @@ class CreateToken extends Model
             $this->userIp
         )->andWhere(
             'user_id = :user_id',
-            [':user_id' => $this->getUser()->id]
+            [':user_id' => $this->user->id]
         )->one();
 
         if ($accessToken !== null) {
@@ -103,7 +115,7 @@ class CreateToken extends Model
         }
 
         $accessToken = new AccessToken();
-        $accessToken->user_id = $this->getUser()->id;
+        $accessToken->user_id = $this->user->id;
 
         $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         if ($this->isRememberMe === self::YES_VALUE) {
@@ -116,23 +128,5 @@ class CreateToken extends Model
         $accessToken->user_agent = $this->userAgent;
 
         return $accessToken->save() ? $accessToken : false;
-    }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    protected function getUser()
-    {
-        $param = $this->username;
-        if ($this->user === null) {
-            $this->user = User::findByUsername($param);
-        }
-        if (empty($this->user)) {
-            $this->user = User::findByEmail($param);
-        }
-
-        return $this->user;
     }
 }

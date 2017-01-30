@@ -29,16 +29,26 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
@@ -71,16 +81,26 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
@@ -109,16 +129,26 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/201Token"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
@@ -154,7 +184,7 @@
                     },
                     {
                         "in": "formData",
-                        "name": "isRememberMe",
+                        "name": "is_remember_me",
                         "type": "string",
                         "enum": [ "yes", "no"],
                         "default": "no",
@@ -163,16 +193,26 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
@@ -189,18 +229,239 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
-        "User": {
+
+        "responseModel": {
+            "type": "object",
+            "required": [
+                "code",
+                "status",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "object"
+                }
+            }
+        },
+        "validateError": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "example": "user_id"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User ID must be an integer."
+                }
+            }
+        },
+        "status200": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "200 OK",
+                    "properties": {
+                        "code": {
+                            "example": "200"
+                        },
+                        "status": {
+                            "example": "success"
+                        }
+                    }
+                }
+            ]
+        },
+        "status201": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "201 Created",
+                    "properties": {
+                        "code": {
+                            "example": "201"
+                        },
+                        "status": {
+                            "example": "success"
+                        },
+                        "message": {
+                            "example": "Created"
+                        }
+                    }
+                }
+            ]
+        },
+        "status400": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "400 Bad Request",
+                    "properties": {
+                        "code": {
+                            "example": "400"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Bad Request"
+                        }
+                    }
+                }
+            ]
+        },
+        "status401": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "401 Unauthorized",
+                    "properties": {
+                        "code": {
+                            "example": "401"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Unauthorized"
+                        }
+                    }
+                }
+            ]
+        },
+        "status404": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "401 Not Found",
+                    "properties": {
+                        "code": {
+                            "example": "404"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Not Found"
+                        }
+                    }
+                }
+            ]
+        },
+        "status422": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "422 Unprocessable Entity",
+                    "properties": {
+                        "code": {
+                            "example": "422"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Unprocessable Entity"
+                        },
+                        "result": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/validateError"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "status500": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "500 Internal Server Error",
+                    "properties": {
+                        "code": {
+                            "example": "500"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Internal Server Error"
+                        }
+                    }
+                }
+            ]
+        },
+        "status503": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "503 Service Unavailable",
+                    "properties": {
+                        "code": {
+                            "example": "503"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Service Unavailable"
+                        }
+                    }
+                }
+            ]
+        },
+
+        "user": {
             "type": "object",
             "required": [
                 "username",
@@ -215,31 +476,11 @@
                     "type": "string"
                 },
                 "accessToken": {
-                    "$ref": "#/definitions/Token"
+                    "$ref": "#/definitions/token"
                 }
             }
         },
-        "201Token": {
-            "type": "object",
-            "required": [
-                "code",
-                "status",
-                "result"
-            ],
-            "properties": {
-                "code": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "result": {
-                    "$ref": "#/definitions/Token"
-                }
-            }
-        },
-        "Token": {
+        "token": {
             "type": "object",
             "required": [
                 "token",
@@ -252,41 +493,6 @@
                 "expired_at": {
                     "type": "integer",
                     "format": "int32"
-                }
-            }
-        },
-        "ErrorModel": {
-            "type": "object",
-            "required": [
-                "code",
-                "status",
-                "result"
-            ],
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "result": {
-                    "type": "array",
-                    "items": {
-                        "minimum": 1,
-                        "type": "object",
-                        "required": [
-                            "field",
-                            "message"
-                        ],
-                        "properties": {
-                            "field": {
-                                "type": "string"
-                            },
-                            "message": {
-                                "type": "string"
-                            }
-                        }
-                    }
                 }
             }
         }
