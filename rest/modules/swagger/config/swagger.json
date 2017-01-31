@@ -47,6 +47,7 @@
                         }
                     },
                     "422": {
+                        "description": "Validation Error",
                         "schema": {
                             "$ref": "#/definitions/status422"
                         }
@@ -99,6 +100,7 @@
                         }
                     },
                     "422": {
+                        "description": "Validation Error",
                         "schema": {
                             "$ref": "#/definitions/status422"
                         }
@@ -147,6 +149,7 @@
                         }
                     },
                     "422": {
+                        "description": "Validation Error",
                         "schema": {
                             "$ref": "#/definitions/status422"
                         }
@@ -211,6 +214,7 @@
                         }
                     },
                     "422": {
+                        "description": "Validation Error",
                         "schema": {
                             "$ref": "#/definitions/status422"
                         }
@@ -244,6 +248,7 @@
                         }
                     },
                     "401": {
+                        "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/status401"
                         }
