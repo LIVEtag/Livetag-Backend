@@ -6,6 +6,7 @@
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\AccessToken\CreateAction;
+use rest\common\controllers\actions\AccessToken\EmailAction;
 use rest\common\controllers\actions\AccessToken\OptionsAction;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
@@ -25,14 +26,14 @@ class AccessTokenController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['create', 'options'],
+                    'except' => ['create', 'options', 'email'],
                 ],
                 'access' => [
                     'class' => AccessControl::class,
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['create'],
+                            'actions' => ['create', 'email'],
                             'roles' => ['?'],
                         ],
                     ],
@@ -53,6 +54,9 @@ class AccessTokenController extends Controller
             'options' => [
                 'class' => OptionsAction::class,
             ],
+            'email' => [
+                'class' => EmailAction::class
+            ],
         ];
     }
 
@@ -62,7 +66,8 @@ class AccessTokenController extends Controller
     protected function verbs()
     {
         return [
-            'create' => ['POST']
+            'create' => ['POST'],
+            'email' => ['POST'],
         ];
     }
 }

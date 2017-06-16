@@ -80,7 +80,7 @@ class CreateToken extends Model
         }
 
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
-            $this->addError($attribute, 'Incorrect username or password.');
+            $this->addError($attribute, 'Incorrect password.');
         }
     }
 
@@ -95,6 +95,7 @@ class CreateToken extends Model
     {
         $this->user = \Yii::createObject(SearchService::class, [$this->username])->getUser();
         if ($this->user === null) {
+            $this->addError('username', 'User is blocked or not found');
             return false;
         }
 
