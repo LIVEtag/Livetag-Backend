@@ -158,7 +158,7 @@
             }
         },
         "/v1/user/login/email": {
-            "patch": {
+            "post": {
                 "summary": "Create access token for APP by email",
                 "tags": ["AnyBody"],
                 "produces": ["application/json"],

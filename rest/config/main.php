@@ -96,7 +96,7 @@ return [
                     'extraPatterns' => [
                         'POST login' => 'create',
                         'OPTIONS login' => 'options',
-                        'PATCH login/email' => 'email',
+                        'POST login/email' => 'email',
                     ],
                 ],
                 [
