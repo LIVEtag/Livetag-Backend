@@ -108,6 +108,8 @@ return [
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
+                        'POST recovery-password' => 'recovery-password',
+                        'POST new-password' => 'new-password'
                     ],
                 ],
             ],

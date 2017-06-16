@@ -93,7 +93,7 @@ class CreateToken extends Model
      */
     public function create()
     {
-        $this->user = \Yii::createObject(SearchService::class, [$this->username])->getUser();
+        $this->user = \Yii::createObject(SearchService::class)->getUser($this->username);
         if ($this->user === null) {
             return false;
         }
