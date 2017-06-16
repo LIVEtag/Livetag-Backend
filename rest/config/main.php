@@ -108,6 +108,7 @@ return [
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
+                        'PATCH change-password' => 'change-password'
                     ],
                 ],
             ],

@@ -5,6 +5,7 @@
  */
 namespace rest\common\controllers;
 
+use rest\common\controllers\actions\User\ChangePasswordAction;
 use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\OptionsAction;
 use rest\common\controllers\actions\User\SignupAction;
@@ -38,7 +39,7 @@ class UserController extends Controller
                         ],
                         [
                             'allow' => true,
-                            'actions' => ['current'],
+                            'actions' => ['current', 'change-password'],
                             'roles' => ['@'],
                         ],
                     ],
@@ -62,6 +63,9 @@ class UserController extends Controller
             'options' => [
                 'class' => OptionsAction::class,
             ],
+            'change-password' => [
+                'class' => ChangePasswordAction::class
+            ]
         ];
     }
 
@@ -74,6 +78,7 @@ class UserController extends Controller
             'create' => ['POST'],
             'current' => ['GET'],
             'options' => ['OPTIONS'],
+            'changePassword' => ['POST'],
         ];
     }
 }

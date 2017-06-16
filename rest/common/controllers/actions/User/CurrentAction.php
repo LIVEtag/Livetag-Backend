@@ -7,6 +7,7 @@ namespace rest\common\controllers\actions\User;
 
 use rest\common\models\User;
 use rest\components\api\actions\Action;
+use yii\rest\Controller;
 
 /**
  * Class CurrentAction

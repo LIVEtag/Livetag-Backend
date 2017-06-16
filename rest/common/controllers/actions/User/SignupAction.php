@@ -22,8 +22,8 @@ class SignupAction extends Action
         $signupUser = new SignupUser();
         $signupUser->load($this->request->getBodyParams(), '');
 
-        $signupUser->userAgent = $this->request->getUserAgent();;
-        $signupUser->userIp = $this->request->getUserIP();;
+        $signupUser->userAgent = $this->request->getUserAgent();
+        $signupUser->userIp = $this->request->getUserIP();
 
         $user = $signupUser->signup();
 

@@ -255,6 +255,54 @@
                     }
                 }
             }
+        },
+        "/v1/user/change-password": {
+            "patch": {
+                "summary": "Change User Password",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userChangePassword",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/changePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -498,6 +546,23 @@
                 "expired_at": {
                     "type": "integer",
                     "format": "int32"
+                }
+            }
+        },
+        "changePassword": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "required": true
+                },
+                "newPassword": {
+                    "type": "string",
+                    "required": true
+                },
+                "confirmPassword": {
+                    "type": "string",
+                    "required": true
                 }
             }
         }
