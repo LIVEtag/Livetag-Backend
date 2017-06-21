@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
 namespace common\models;
 
 use common\components\user\SearchService;
@@ -34,6 +39,23 @@ class LoginForm extends Model
     private $user;
 
     /**
+     * @var SearchService
+     */
+    private $searchService;
+
+    /**
+     * LoginForm constructor
+     *
+     * @param SearchService $searchService
+     * @param array $config
+     */
+    public function __construct(SearchService $searchService, array $config = [])
+    {
+        parent::__construct($config);
+        $this->searchService = $searchService;
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -61,6 +83,9 @@ class LoginForm extends Model
             return;
         }
 
+        /** @var User $user */
+        $this->user = $this->searchService->getUser($this->username);
+
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
             $this->addError($attribute, 'Incorrect username/e-mail or password.');
         }
@@ -75,16 +100,9 @@ class LoginForm extends Model
      */
     public function login()
     {
-        /** @var User $user */
-        $this->user = \Yii::createObject(SearchService::class)->getUser($this->username);
-        if ($this->user === null) {
-            return false;
+        if ($this->validate()) {
+            return Yii::$app->user->login($this->user, $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
-
-        if (!$this->validate()) {
-            return false;
-        }
-
-        return Yii::$app->user->login($this->user, $this->rememberMe ? 3600 * 24 * 30 : 0);
+        return false;
     }
 }

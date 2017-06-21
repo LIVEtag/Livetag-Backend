@@ -50,6 +50,21 @@ class CreateToken extends Model
      * @var User
      */
     private $user;
+    /**
+     * @var SearchService
+     */
+    private $searchService;
+
+    /**
+     * CreateToken constructor.
+     * @param SearchService $searchService
+     * @param array $config
+     */
+    public function __construct(SearchService $searchService, array $config = [])
+    {
+        parent::__construct($config);
+        $this->searchService = $searchService;
+    }
 
     /**
      * @inheritdoc
@@ -86,18 +101,12 @@ class CreateToken extends Model
 
     /**
      * Create user access token
-     *
      * @return bool|AccessToken
-     * @throws InvalidParamException
-     * @throws InvalidConfigException
+     * @internal param $user
      */
     public function create()
     {
-        $this->user = \Yii::createObject(SearchService::class)->getUser($this->username);
-        if ($this->user === null) {
-            return false;
-        }
-
+        $this->user = $this->searchService->getUser($this->username);
         if (!$this->validate()) {
             return false;
         }

@@ -12,16 +12,15 @@ use rest\common\models\User;
  */
 class SearchService
 {
-
     /**
-     * @param $searchString
+     * @param $username
      * @return null|User
      */
-    public function getUser($searchString)
+    public function getUser($username)
     {
-        $user = User::findByUsername($searchString);
+        $user = User::findByUsername($username);
         if ($user === null) {
-            $user = User::findByEmail($searchString);
+            $user = User::findByEmail($username);
         }
 
         return $user;

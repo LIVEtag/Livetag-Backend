@@ -9,6 +9,12 @@ use yii\db\ActiveRecord;
 
 /**
  * Class RateRequest
+ * @property string action_id
+ * @property null|string ip
+ * @property null|string user_agent
+ * @property int created_at
+ * @property int|mixed count
+ * @property int last_request
  */
 class RateRequest extends ActiveRecord
 {
@@ -20,10 +26,7 @@ class RateRequest extends ActiveRecord
     public function rules()
     {
         return [
-            [
-                ['action_type', 'user_id'],
-                'required'
-            ]
+            ['action_id', 'required']
         ];
     }
 }

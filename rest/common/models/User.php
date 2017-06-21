@@ -62,6 +62,18 @@ class User extends CommonUser implements IdentityInterface
     }
 
     /**
+     * @return null|RateRequest
+     */
+    public function getRateRequest($id)
+    {
+        $params['action_type'] = $id;
+        $params['ip'] = \Yii::$app->request->getUserIP();
+        $params['user_agent'] = \Yii::$app->request->getUserAgent();
+        return $this->hasOne(RateRequest::class, ['user_id' => 'id'])
+            ->where($params)->one();
+    }
+
+    /**
      * @inheritdoc
      * @return UserQuery
      */

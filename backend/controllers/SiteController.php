@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use common\components\user\SearchService;
 use Yii;
 use backend\components\Controller;
 use common\models\LoginForm;
@@ -27,12 +28,12 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $loginForm = new LoginForm(new SearchService());
+        if ($loginForm->load(Yii::$app->request->post()) && $loginForm->login()) {
             return $this->goBack();
         }
         return $this->render('login', [
-            'model' => $model,
+            'model' => $loginForm,
         ]);
     }
 

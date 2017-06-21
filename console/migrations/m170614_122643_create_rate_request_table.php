@@ -16,8 +16,7 @@ class m170614_122643_create_rate_request_table extends Migration
             '{{%rate_request}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'action_type' => $this->string()->notNull(),
-                'user_id' => $this->integer()->unsigned(),
+                'action_id' => $this->string()->notNull(),
                 'ip' => $this->string()->notNull(),
                 'user_agent' => $this->string()->notNull(),
                 'count' => $this->smallInteger()->unsigned()->notNull(),
@@ -28,17 +27,6 @@ class m170614_122643_create_rate_request_table extends Migration
             self::TABLE_OPTIONS
         );
 
-        $this->createIndex('idx_rate_request_user_id', '{{%rate_request}}', 'user_id');
-
-        $this->addForeignKey(
-            'fk_rate_request_to_user',
-            '{{%rate_request}}',
-            'user_id',
-            '{{%user}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
     }
 
     /**
@@ -46,8 +34,6 @@ class m170614_122643_create_rate_request_table extends Migration
      */
     public function down()
     {
-        $this->dropForeignKey('fk_rate_request_to_user', '{{%rate_request}}');
-        $this->dropIndex('idx_rate_request_user_id', '{{%rate_request}}');
         $this->dropTable('{{%rate_request}}');
     }
 }

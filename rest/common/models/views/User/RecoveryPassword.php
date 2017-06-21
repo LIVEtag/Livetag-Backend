@@ -26,6 +26,21 @@ class RecoveryPassword extends Model
      * @var string
      */
     public $confirmPassword;
+    /**
+     * @var User
+     */
+    private $user;
+
+    /**
+     * RecoveryPassword constructor.
+     * @param User $user
+     * @param array $config
+     */
+    public function __construct(User $user, array $config = [])
+    {
+        parent::__construct($config);
+        $this->user = $user;
+    }
 
     public function rules()
     {
@@ -41,20 +56,14 @@ class RecoveryPassword extends Model
      */
     public function recovery()
     {
-        $user = User::findByPasswordResetToken($this->resetToken);
-        if (!RateRequestService::rateRequest($user)) {
-            $this->addError('resetToken', 'Access denied.');
-
-            return $this;
-        }
-        if ($user) {
+        if ($this->user) {
             if ($this->validate()) {
-                $user->setPassword($this->password);
+                $this->user->setPassword($this->password);
             } else {
                 $this->addError('resetToken', 'Token is invalid.');
             }
-            $user->removePasswordResetToken();
-            $user->save();
+            $this->user->removePasswordResetToken();
+            $this->user->save();
         } else {
             $this->addError('resetToken', 'Token is invalid.');
         }

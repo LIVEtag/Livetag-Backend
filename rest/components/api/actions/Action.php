@@ -6,6 +6,7 @@
 namespace rest\components\api\actions;
 
 use yii\base\Action as BaseAction;
+use yii\base\Event;
 use yii\rest\Controller;
 use yii\web\Request;
 use yii\web\Response;
