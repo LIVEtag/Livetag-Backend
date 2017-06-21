@@ -78,7 +78,7 @@ class UserController extends Controller
             'create' => ['POST'],
             'current' => ['GET'],
             'options' => ['OPTIONS'],
-            'changePassword' => ['POST'],
+            'changePassword' => ['PATCH'],
         ];
     }
 }
