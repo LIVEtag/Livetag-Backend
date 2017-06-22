@@ -6,8 +6,6 @@
 namespace rest\common\services\User;
 
 use rest\common\models\RateRequest;
-use yii\base\Action;
-use yii\base\Event;
 
 /**
  * Class RateRequestService
@@ -31,7 +29,11 @@ class RateRequestService
      */
     public function check($count = RateRequestService::ACCESS_COUNT, $time = RateRequestService::DENIED_TIME)
     {
-        $model = $this->search();
+        $model = $this->search(
+            \Yii::$app->controller->action->getUniqueId(),
+            \Yii::$app->request->getUserIP(),
+            \Yii::$app->request->getUserAgent()
+        );
         if ($model->count > $count && ($model->last_request - $model->created_at) <= $time) {
             return false;
         }
@@ -40,18 +42,21 @@ class RateRequestService
     }
 
     /**
-     * @param Event $event
+     * @param string $action_id
+     * @param string $ip
+     * @param string $user_agent
      * @return array|RateRequest
      */
-    public function search(Event $event = null)
+    public function search($action_id, $ip, $user_agent)
     {
-        /** @var Action $sender */
-        $sender = $event ? $event->sender : null;
-
         return RateRequest::find()->where([
-            'action_id' => $sender ? $sender->getUniqueId() : \Yii::$app->controller->action->getUniqueId(),
-            'ip' => $sender ? $sender->request->getUserIp() : \Yii::$app->getRequest()->getUserIP(),
-            'user_agent' => $sender ? $sender->request->getUserAgent() : \Yii::$app->getRequest()->getUserAgent()
-        ])->one() ?: new RateRequest();
+            'action_id' => $action_id,
+            'ip' => $ip,
+            'user_agent' => $user_agent
+        ])->one() ?: new RateRequest([
+            'action_id' => $action_id,
+            'ip' => $ip,
+            'user_agent' => $user_agent
+        ]);
     }
 }

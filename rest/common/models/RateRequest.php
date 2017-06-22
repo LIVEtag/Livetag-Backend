@@ -20,6 +20,18 @@ use yii\db\ActiveRecord;
 class RateRequest extends ActiveRecord
 {
     /**
+     * RateRequest constructor.
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+        foreach ($config as $key => $item) {
+            $this->$key = $item;
+        }
+    }
+
+    /**
      * @return string
      */
     public static function tableName()

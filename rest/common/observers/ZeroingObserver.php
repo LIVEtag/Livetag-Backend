@@ -38,7 +38,11 @@ class ZeroingObserver
      */
     public function execute(BeforeActionEvent $event)
     {
-        $model = $this->rateRequestService->search($event);
+        $model = $this->rateRequestService->search(
+            $event->sender->getUniqueId(),
+            $event->sender->request->getUserIp(),
+            $event->sender->request->getUserAgent()
+        );
 
         if (!$model->id && ($model->last_request - $model->created_at) >= $this->time) {
             $model->count = 0;

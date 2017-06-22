@@ -58,17 +58,13 @@ class RecoveryPassword extends Model
      */
     public function recovery()
     {
-        if ($this->user) {
-            if ($this->validate()) {
-                $this->user->setPassword($this->password);
-            } else {
-                $this->addError('resetToken', 'Token is invalid.');
-            }
-            $this->user->removePasswordResetToken();
-            $this->user->save();
+        if ($this->validate()) {
+            $this->user->setPassword($this->password);
         } else {
             $this->addError('resetToken', 'Token is invalid.');
         }
+        $this->user->removePasswordResetToken();
+        $this->user->save();
 
         return $this;
     }

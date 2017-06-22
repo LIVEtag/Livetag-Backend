@@ -32,7 +32,11 @@ class UpdateObserver
      */
     public function execute(BeforeActionEvent $event)
     {
-        $model = $this->rateRequestService->search($event);
+        $model = $this->rateRequestService->search(
+            $event->sender->getUniqueId(),
+            $event->sender->request->getUserIp(),
+            $event->sender->request->getUserAgent()
+        );
 
         if ($model->isNewRecord) {
             $model->action_id = $event->sender->getUniqueId();

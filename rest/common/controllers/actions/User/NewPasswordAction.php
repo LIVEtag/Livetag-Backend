@@ -50,10 +50,13 @@ class NewPasswordAction extends Action
     public function run()
     {
         if (!\Yii::createObject(RateRequestService::class)->check()) {
-            throw new TooManyRequestsHttpException('Access denied');
+            throw new TooManyRequestsHttpException('Access denied.');
         }
         $params = \Yii::$app->request->getBodyParams();
         $user = User::findByPasswordResetToken($params['resetToken']);
+        if (!$user) {
+            throw new \InvalidArgumentException('Token is invalid.');
+        }
         /** @var RecoveryPassword $recovery */
         $recovery = \Yii::createObject(RecoveryPassword::class, [$user]);
         $recovery->setAttributes($params);

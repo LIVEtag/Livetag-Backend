@@ -1,7 +1,6 @@
 <?php
 namespace frontend\controllers;
 
-use common\components\user\SearchService;
 use Yii;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
@@ -91,6 +90,7 @@ class SiteController extends Controller
         if ($loginForm->load(Yii::$app->request->post()) && $loginForm->login()) {
             return $this->goBack();
         }
+
         return $this->render('login', [
             'model' => $loginForm,
         ]);
