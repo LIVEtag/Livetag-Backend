@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
 
 /**
  * Class RateRequest
+ * @property int id
  * @property string action_id
  * @property null|string ip
  * @property null|string user_agent
@@ -18,11 +19,17 @@ use yii\db\ActiveRecord;
  */
 class RateRequest extends ActiveRecord
 {
+    /**
+     * @return string
+     */
     public static function tableName()
     {
         return parent::tableName();
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [

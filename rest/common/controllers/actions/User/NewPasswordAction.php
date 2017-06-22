@@ -5,7 +5,6 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use rest\common\interfaces\RecoveryPasswordInterface;
 use rest\common\models\User;
 use rest\common\models\views\User\RecoveryPassword;
 use rest\common\observers\UpdateObserver;
@@ -19,13 +18,12 @@ use yii\web\TooManyRequestsHttpException;
 /**
  * Class NewPasswordAction
  */
-class NewPasswordAction extends Action implements RecoveryPasswordInterface
+class NewPasswordAction extends Action
 {
-    const EVENT_BEFORE_RUN = 'EVENT_BEFORE_RUN';
     /**
-     * @var UpdateObserver
+     * Event name
      */
-    private $updateObserver;
+    const EVENT_BEFORE_RUN = 'EVENT_BEFORE_RUN';
 
     /**
      * NewPasswordAction constructor.
@@ -51,7 +49,7 @@ class NewPasswordAction extends Action implements RecoveryPasswordInterface
      */
     public function run()
     {
-        if (!\Yii::createObject(RateRequestService::class)->check($this->updateObserver)) {
+        if (!\Yii::createObject(RateRequestService::class)->check()) {
             throw new TooManyRequestsHttpException('Access denied');
         }
         $params = \Yii::$app->request->getBodyParams();
@@ -63,19 +61,12 @@ class NewPasswordAction extends Action implements RecoveryPasswordInterface
         return $recovery->recovery();
     }
 
+    /**
+     * @return bool
+     */
     protected function beforeRun()
     {
         $this->trigger(self::EVENT_BEFORE_RUN, new BeforeActionEvent());
         return true;
-    }
-
-    /**
-     * @param UpdateObserver $updateObserver
-     * @return NewPasswordAction
-     */
-    public function setUpdateObserver($updateObserver)
-    {
-        $this->updateObserver = $updateObserver;
-        return $this;
     }
 }

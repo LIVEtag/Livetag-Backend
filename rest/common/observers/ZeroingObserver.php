@@ -3,23 +3,34 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 namespace rest\common\observers;
 
-use rest\common\models\RateRequest;
+use rest\common\services\User\RateRequestService;
 use rest\components\api\actions\events\BeforeActionEvent;
 
+/**
+ * Class ZeroingObserver
+ */
 class ZeroingObserver
 {
+    /**
+     * @var int
+     */
     private $time;
+    /**
+     * @var RateRequestService
+     */
+    private $rateRequestService;
 
     /**
      * ZeroingObserver constructor.
      * @param $time
+     * @param RateRequestService $rateRequestService
      */
-    public function __construct($time)
+    public function __construct($time, RateRequestService $rateRequestService)
     {
         $this->time = $time;
+        $this->rateRequestService = $rateRequestService;
     }
 
     /**
@@ -27,27 +38,13 @@ class ZeroingObserver
      */
     public function execute(BeforeActionEvent $event)
     {
-        /** @var RateRequest $model */
-        $model = RateRequest::find()->where([
-            'action_id' => $event->sender->id,
-            'ip' => \Yii::$app->request->getUserIp(),
-            'user_agent' => \Yii::$app->request->getUserAgent()
-        ])->one();
-        if (!empty($model) && ($model->last_request - $model->created_at) >= $this->time) {
+        $model = $this->rateRequestService->search($event);
+
+        if (!$model->id && ($model->last_request - $model->created_at) >= $this->time) {
             $model->count = 0;
             $model->created_at = time();
             $model->last_request = time();
             $model->save();
         }
-    }
-
-    /**
-     * @param int $time
-     * @return ZeroingObserver
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-        return $this;
     }
 }

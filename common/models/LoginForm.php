@@ -83,9 +83,6 @@ class LoginForm extends Model
             return;
         }
 
-        /** @var User $user */
-        $this->user = $this->searchService->getUser($this->username);
-
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
             $this->addError($attribute, 'Incorrect username/e-mail or password.');
         }

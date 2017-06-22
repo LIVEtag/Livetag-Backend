@@ -6,7 +6,6 @@
 namespace rest\components\api\actions;
 
 use yii\base\Action as BaseAction;
-use yii\base\Event;
 use yii\rest\Controller;
 use yii\web\Request;
 use yii\web\Response;
@@ -19,12 +18,12 @@ abstract class Action extends BaseAction
     /**
      * @var Request
      */
-    protected $request;
+    public $request;
 
     /**
      * @var Response
      */
-    protected $response;
+    public $response;
 
     /**
      * Constructor

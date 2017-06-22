@@ -5,8 +5,8 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use rest\common\interfaces\RecoveryPasswordInterface;
 use rest\common\models\User;
+use rest\common\models\views\User\RecoveryPassword;
 use rest\common\observers\UpdateObserver;
 use rest\common\observers\ZeroingObserver;
 use rest\common\services\User\RateRequestService;
@@ -18,15 +18,19 @@ use yii\web\TooManyRequestsHttpException;
 /**
  * Class RecoveryAction
  */
-class RecoveryAction extends Action implements RecoveryPasswordInterface
+class RecoveryAction extends Action
 {
+    /**
+     * Event name
+     */
     const EVENT_BEFORE_RUN = 'EVENT_BEFORE_RUN';
 
     /**
-     * @var UpdateObserver
+     * RecoveryAction constructor.
+     * @param string $id
+     * @param Controller $controller
+     * @param array $config
      */
-    private $updateObserver;
-
     public function __construct($id, Controller $controller, array $config = [])
     {
         parent::__construct($id, $controller, $config);
@@ -40,43 +44,26 @@ class RecoveryAction extends Action implements RecoveryPasswordInterface
     }
 
     /**
-     * @return bool|User
+     * @return User
      * @throws TooManyRequestsHttpException
      */
     public function run()
     {
-        if (!\Yii::createObject(RateRequestService::class)->check($this->updateObserver)) {
+        if (!\Yii::createObject(RateRequestService::class)->check()) {
             throw new TooManyRequestsHttpException('Access denied');
         }
-        $user = User::findByEmail(\Yii::$app->request->getBodyParam('email'));
-        if ($user) {
-            $user->generatePasswordResetToken();
-            if ($user->save()) {
-                \Yii::$app->mailer->compose('recovery-password', [
-                    'user' => $user,
-                ])->send();
-            }
-        } else {
-            $user = new User;
-            $user->addError('username/email', 'Username/Email not found');
-        }
 
-        return $user;
+        $user = User::findByEmail(\Yii::$app->request->getBodyParam('email')) ?: new User;
+
+        return \Yii::createObject(RecoveryPassword::class)->generateAndSendEmail($user);
     }
 
+    /**
+     * @return bool
+     */
     protected function beforeRun()
     {
         $this->trigger(self::EVENT_BEFORE_RUN, new BeforeActionEvent());
         return true;
-    }
-
-    /**
-     * @param UpdateObserver $updateObserver
-     * @return RecoveryAction
-     */
-    public function setUpdateObserver($updateObserver)
-    {
-        $this->updateObserver = $updateObserver;
-        return $this;
     }
 }

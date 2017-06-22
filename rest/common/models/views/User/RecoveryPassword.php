@@ -6,7 +6,6 @@
 namespace rest\common\models\views\User;
 
 use rest\common\models\User;
-use rest\common\services\User\RateRequestService;
 use yii\base\Model;
 
 /**
@@ -42,6 +41,9 @@ class RecoveryPassword extends Model
         $this->user = $user;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -69,5 +71,25 @@ class RecoveryPassword extends Model
         }
 
         return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return User
+     */
+    public function generateAndSendEmail(User $user)
+    {
+        if ($user->id) {
+            $user->generatePasswordResetToken();
+            if ($user->save()) {
+                \Yii::$app->mailer->compose('recovery-password', [
+                    'user' => $user,
+                ])->send();
+            }
+        } else {
+            $user->addError('email', 'User with such email not found');
+        }
+
+        return $user;
     }
 }
