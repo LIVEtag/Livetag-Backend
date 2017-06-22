@@ -38,14 +38,9 @@ class UpdateObserver
             $event->sender->request->getUserAgent()
         );
 
-        if ($model->isNewRecord) {
-            $model->action_id = $event->sender->getUniqueId();
-            $model->ip = \Yii::$app->request->getUserIP();
-            $model->user_agent = \Yii::$app->request->getUserAgent();
-            $model->created_at = $model->created_at ?: time();
+        if (!$model->isNewRecord) {
+            $model->count = $model->count + 1;
         }
-        $model->count = $model->isNewRecord ? 1 : $model->count + 1;
-        $model->last_request = time();
 
         $model->save();
     }

@@ -7,6 +7,9 @@ namespace rest\components\api\actions\events;
 
 use yii\base\Event;
 
+/**
+ * Class BeforeActionEvent
+ */
 class BeforeActionEvent extends Event
 {
 }

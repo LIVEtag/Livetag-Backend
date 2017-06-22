@@ -5,40 +5,21 @@
  */
 namespace rest\common\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
  * Class RateRequest
  * @property int id
- * @property string action_id
- * @property null|string ip
- * @property null|string user_agent
- * @property int created_at
- * @property int|mixed count
- * @property int last_request
+ * @property string $action_id
+ * @property null|string $ip
+ * @property null|string $user_agent
+ * @property int $created_at
+ * @property int|mixed $count
+ * @property int $last_request
  */
 class RateRequest extends ActiveRecord
 {
-    /**
-     * RateRequest constructor.
-     * @param array $config
-     */
-    public function __construct(array $config = [])
-    {
-        parent::__construct($config);
-        foreach ($config as $key => $item) {
-            $this->$key = $item;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public static function tableName()
-    {
-        return parent::tableName();
-    }
-
     /**
      * @return array
      */
@@ -46,6 +27,22 @@ class RateRequest extends ActiveRecord
     {
         return [
             ['action_id', 'required']
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'last_request'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['last_request'],
+                ],
+            ],
         ];
     }
 }

@@ -15,14 +15,16 @@ class RateRequestService
     /**
      * Counter of the access per DENIED_TIME
      */
-    const ACCESS_COUNT = 3000;
+    const ACCESS_COUNT = 3;
 
     /**
      * The time after which set to zero counter requests
      */
-    const DENIED_TIME = 3600;
+    const DENIED_TIME = 5;
 
     /**
+     * Check access by count requests
+     *
      * @param int $count
      * @param int $time
      * @return bool
@@ -42,6 +44,8 @@ class RateRequestService
     }
 
     /**
+     * Search RateRequest (model for count requests)
+     *
      * @param string $action_id
      * @param string $ip
      * @param string $user_agent

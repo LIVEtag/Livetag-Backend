@@ -44,10 +44,9 @@ class ZeroingObserver
             $event->sender->request->getUserAgent()
         );
 
-        if (!$model->id && ($model->last_request - $model->created_at) >= $this->time) {
+        if (!$model->isNewRecord && ($model->last_request - $model->created_at) >= $this->time) {
             $model->count = 0;
             $model->created_at = time();
-            $model->last_request = time();
             $model->save();
         }
     }
