@@ -80,7 +80,7 @@ class CreateToken extends Model
         }
 
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
-            $this->addError($attribute, 'Incorrect password.');
+            $this->addError($attribute, 'User not found.');
         }
     }
 
