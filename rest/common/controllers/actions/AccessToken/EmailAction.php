@@ -20,7 +20,7 @@ class EmailAction extends AbstractAuthAction
     public function run()
     {
         $accessTokenCreate = new CreateToken();
-        $accessTokenCreate->load($this->request->getBodyParams(), '');
+        $accessTokenCreate->setAttributes($this->request->getBodyParams());
         $accessTokenCreate->username = $this->request->getBodyParam('email');
         $accessTokenCreate->isRememberMe = filter_var(
             $this->request->getBodyParam('is_remember_me'), FILTER_VALIDATE_BOOLEAN
