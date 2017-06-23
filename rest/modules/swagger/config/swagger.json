@@ -157,6 +157,48 @@
                 }
             }
         },
+        "/v1/user/login/email": {
+            "post": {
+                "summary": "Create access token for APP by email",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "userCreateAccessTokenByEmail",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/loginEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/user/register": {
             "post": {
                 "summary": "Create user for APP",
@@ -546,6 +588,21 @@
                 "expired_at": {
                     "type": "integer",
                     "format": "int32"
+                }
+            }
+        },
+        "loginEmail": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Email"
+                },
+                "password": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
                 }
             }
         },
