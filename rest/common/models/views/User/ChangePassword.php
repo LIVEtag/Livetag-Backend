@@ -60,11 +60,11 @@ class ChangePassword extends Model
      * Change user password.
      * @param User $user
      * @throws Exception
-     * @return bool|null
+     * @return bool|User $user
      */
     public function changePassword(User $user)
     {
-        if (!$user || !$user->validatePassword($this->password, $user->password_hash)) {
+        if (!$user || !$user->validatePassword($this->password)) {
             $this->addError('password', 'Wrong password');
             return false;
         }
@@ -73,6 +73,6 @@ class ChangePassword extends Model
             $this->addError('newPassword', 'New password was not changed');
             return false;
         }
-        return;
+        return $user;
     }
 }
