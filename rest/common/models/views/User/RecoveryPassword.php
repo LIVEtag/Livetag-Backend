@@ -17,29 +17,16 @@ class RecoveryPassword extends Model
      * @var string
      */
     public $resetToken;
+
     /**
      * @var string
      */
     public $password;
+
     /**
      * @var string
      */
     public $confirmPassword;
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * RecoveryPassword constructor.
-     * @param User $user
-     * @param array $config
-     */
-    public function __construct(User $user, array $config = [])
-    {
-        parent::__construct($config);
-        $this->user = $user;
-    }
 
     /**
      * @return array
@@ -53,39 +40,42 @@ class RecoveryPassword extends Model
     }
 
     /**
-     * Set new users's password
-     * @return RecoveryPassword $this
-     */
-    public function recovery()
-    {
-        if ($this->validate()) {
-            $this->user->setPassword($this->password);
-        } else {
-            $this->addError('resetToken', 'Token is invalid.');
-        }
-        $this->user->removePasswordResetToken();
-        $this->user->save();
-
-        return $this;
-    }
-
-    /**
      * @param User $user
      * @return User
+     * @throws \InvalidArgumentException
      */
     public function generateAndSendEmail(User $user)
     {
-        if ($user->id) {
-            $user->generatePasswordResetToken();
-            if ($user->save()) {
-                \Yii::$app->mailer->compose('recovery-password', [
-                    'user' => $user,
-                ])->send();
-            }
-        } else {
-            $user->addError('email', 'User with such email not found');
+        if ($user->isNewRecord) {
+            throw new \InvalidArgumentException();
+        }
+
+        $user->generatePasswordResetToken();
+        if ($user->save()) {
+            \Yii::$app->mailer->compose('recovery-password', [
+                'user' => $user,
+            ])->send();
         }
 
         return $user;
+    }
+
+    /**
+     * Set new users's password
+     *
+     * @param User $user
+     * @return RecoveryPassword $this
+     */
+    public function recovery(User $user)
+    {
+        if ($this->validate()) {
+            $user->setPassword($this->password);
+        } else {
+            $this->addError('resetToken', 'Token is invalid.');
+        }
+        $user->removePasswordResetToken();
+        $user->save();
+
+        return $this;
     }
 }

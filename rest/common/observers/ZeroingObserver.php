@@ -23,7 +23,8 @@ class ZeroingObserver
     private $rateRequestService;
 
     /**
-     * ZeroingObserver constructor.
+     * ZeroingObserver constructor
+     *
      * @param $time
      * @param RateRequestService $rateRequestService
      */

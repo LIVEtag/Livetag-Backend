@@ -5,6 +5,7 @@
  */
 namespace rest\common\controllers\actions\User;
 
+use League\Container\Exception\NotFoundException;
 use rest\common\models\User;
 use rest\common\models\views\User\RecoveryPassword;
 use rest\common\observers\UpdateObserver;
@@ -26,7 +27,8 @@ class NewPasswordAction extends Action
     const EVENT_BEFORE_RUN = 'EVENT_BEFORE_RUN';
 
     /**
-     * NewPasswordAction constructor.
+     * NewPasswordAction constructor
+     *
      * @param string $id
      * @param Controller $controller
      * @param array $config
@@ -55,13 +57,14 @@ class NewPasswordAction extends Action
         $params = \Yii::$app->request->getBodyParams();
         $user = User::findByPasswordResetToken($params['resetToken']);
         if (!$user) {
-            throw new \InvalidArgumentException('Token is invalid.');
+            throw new NotFoundException('Token is invalid.');
         }
+
         /** @var RecoveryPassword $recovery */
-        $recovery = \Yii::createObject(RecoveryPassword::class, [$user]);
+        $recovery = \Yii::createObject(RecoveryPassword::class);
         $recovery->setAttributes($params);
 
-        return $recovery->recovery();
+        return $recovery->recovery($user);
     }
 
     /**

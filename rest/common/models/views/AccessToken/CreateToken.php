@@ -8,7 +8,6 @@ namespace rest\common\models\views\AccessToken;
 use rest\common\models\AccessToken;
 use rest\common\models\User;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\Model;
 use common\components\user\SearchService;
 
@@ -56,7 +55,8 @@ class CreateToken extends Model
     private $searchService;
 
     /**
-     * CreateToken constructor.
+     * CreateToken constructor
+     *
      * @param SearchService $searchService
      * @param array $config
      */
@@ -81,8 +81,8 @@ class CreateToken extends Model
     }
 
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
+     * Validates the password
+     * This method serves as the inline validation for password
      *
      * @param string $attribute the attribute currently being validated
      * @internal param array $params the additional name-value pairs given in the rule
@@ -101,6 +101,7 @@ class CreateToken extends Model
 
     /**
      * Create user access token
+     *
      * @return bool|AccessToken
      * @internal param $user
      */

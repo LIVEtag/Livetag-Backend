@@ -19,7 +19,8 @@ class UpdateObserver
     private $rateRequestService;
 
     /**
-     * UpdateObserver constructor.
+     * UpdateObserver constructor
+     *
      * @param RateRequestService $rateRequestService
      */
     public function __construct(RateRequestService $rateRequestService)

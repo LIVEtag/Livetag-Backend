@@ -20,7 +20,7 @@ class RateRequestService
     /**
      * The time after which set to zero counter requests
      */
-    const DENIED_TIME = 3600;
+    const DENIED_TIME = 5;
 
     /**
      * Check access by count requests
@@ -36,7 +36,7 @@ class RateRequestService
             \Yii::$app->request->getUserIP(),
             \Yii::$app->request->getUserAgent()
         );
-        return !($model->count > $count && ($model->last_request - $model->created_at) <= $time);
+        return $model->count > $count && ($model->last_request - $model->created_at) <= $time;
     }
 
     /**

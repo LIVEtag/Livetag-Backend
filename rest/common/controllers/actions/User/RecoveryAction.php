@@ -5,6 +5,7 @@
  */
 namespace rest\common\controllers\actions\User;
 
+use League\Container\Exception\NotFoundException;
 use rest\common\models\User;
 use rest\common\models\views\User\RecoveryPassword;
 use rest\common\observers\UpdateObserver;
@@ -26,7 +27,8 @@ class RecoveryAction extends Action
     const EVENT_BEFORE_RUN = 'EVENT_BEFORE_RUN';
 
     /**
-     * RecoveryAction constructor.
+     * RecoveryAction constructor
+     *
      * @param string $id
      * @param Controller $controller
      * @param array $config
@@ -49,11 +51,15 @@ class RecoveryAction extends Action
      */
     public function run()
     {
-        if (!\Yii::createObject(RateRequestService::class)->check()) {
-            throw new TooManyRequestsHttpException('Access denied');
+        if (\Yii::createObject(RateRequestService::class)->check()) {
+            throw new TooManyRequestsHttpException('Access denied.');
         }
 
-        $user = User::findByEmail(\Yii::$app->request->getBodyParam('email')) ?: new User;
+        $user = User::findByEmail(\Yii::$app->request->getBodyParam('email'));
+
+        if ($user === null) {
+            throw new NotFoundException();
+        }
 
         return \Yii::createObject(RecoveryPassword::class)->generateAndSendEmail($user);
     }
