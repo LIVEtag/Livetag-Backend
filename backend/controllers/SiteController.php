@@ -27,12 +27,13 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $loginForm = \Yii::createObject(LoginForm::class);
+        if ($loginForm->load(Yii::$app->request->post()) && $loginForm->login()) {
             return $this->goBack();
         }
+
         return $this->render('login', [
-            'model' => $model,
+            'model' => $loginForm,
         ]);
     }
 

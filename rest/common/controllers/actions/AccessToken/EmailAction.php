@@ -19,7 +19,7 @@ class EmailAction extends AbstractAuthAction
      */
     public function run()
     {
-        $accessTokenCreate = new CreateToken();
+        $accessTokenCreate = \Yii::createObject(CreateToken::class);
         $accessTokenCreate->setAttributes($this->request->getBodyParams());
         $accessTokenCreate->username = $this->request->getBodyParam('email');
         $accessTokenCreate->isRememberMe = filter_var(

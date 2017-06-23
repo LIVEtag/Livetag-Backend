@@ -345,6 +345,90 @@
                     }
                 }
             }
+        },
+        "/v1/user/recovery-password": {
+            "post": {
+                "summary": "Recovery user password by email",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userRecoveryPasswordByEmail",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/recoveryPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/new-password": {
+            "post": {
+                "summary": "Recovery user password by email",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userRecoveryPasswordChange",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/recoveryPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -620,6 +704,36 @@
                 "confirmPassword": {
                     "type": "string",
                     "required": true
+                }
+            }
+        },
+        "recoveryPasswordRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Email"
+                }
+            }
+        },
+        "recoveryPassword": {
+            "type": "object",
+            "properties": {
+                "resetToken": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Password reset token"
+                },
+                "password": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
+                },
+                "confirmPassword": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
                 }
             }
         }

@@ -20,7 +20,7 @@ class SignupAction extends Action
     public function run()
     {
         $signupUser = new SignupUser();
-        $signupUser->load($this->request->getBodyParams(), '');
+        $signupUser->setAttributes($this->request->getBodyParams());
 
         $signupUser->userAgent = $this->request->getUserAgent();
         $signupUser->userIp = $this->request->getUserIP();

@@ -109,7 +109,9 @@ return [
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
-                        'PATCH change-password' => 'change-password'
+                        'PATCH change-password' => 'change-password',
+                        'POST recovery-password' => 'recovery-password',
+                        'POST new-password' => 'new-password'
                     ],
                 ],
             ],

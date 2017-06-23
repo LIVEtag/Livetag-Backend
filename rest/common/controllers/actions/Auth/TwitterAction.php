@@ -7,6 +7,7 @@ namespace rest\common\controllers\actions\Auth;
 
 use common\models\User\SocialProfile;
 use rest\common\models\views\User\SocialForm;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class TwitterAction
