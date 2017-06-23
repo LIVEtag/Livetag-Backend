@@ -20,7 +20,7 @@ class RateRequestService
     /**
      * The time after which set to zero counter requests
      */
-    const DENIED_TIME = 5;
+    const DENIED_TIME = 3600;
 
     /**
      * Check access by count requests
@@ -36,11 +36,7 @@ class RateRequestService
             \Yii::$app->request->getUserIP(),
             \Yii::$app->request->getUserAgent()
         );
-        if ($model->count > $count && ($model->last_request - $model->created_at) <= $time) {
-            return false;
-        }
-
-        return true;
+        return !($model->count > $count && ($model->last_request - $model->created_at) <= $time);
     }
 
     /**
@@ -53,14 +49,11 @@ class RateRequestService
      */
     public function search($action_id, $ip, $user_agent)
     {
-        return RateRequest::find()->where([
+        $attributes = [
             'action_id' => $action_id,
             'ip' => $ip,
             'user_agent' => $user_agent
-        ])->one() ?: new RateRequest([
-            'action_id' => $action_id,
-            'ip' => $ip,
-            'user_agent' => $user_agent
-        ]);
+        ];
+        return RateRequest::find()->where($attributes)->one() ?: new RateRequest($attributes);
     }
 }

@@ -38,9 +38,7 @@ class UpdateObserver
             $event->sender->request->getUserAgent()
         );
 
-        if (!$model->isNewRecord) {
-            $model->count = $model->count + 1;
-        }
+        $model->count = $model->count + 1;
 
         $model->save();
     }
