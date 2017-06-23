@@ -56,7 +56,7 @@ class NewPasswordAction extends Action
         $params = \Yii::$app->request->getBodyParams();
         $user = User::findByPasswordResetToken($params['resetToken']);
         if ($user === null) {
-            throw new NotFoundException('Token is invalid.');
+            throw new NotFoundException('User has been not found.');
         }
 
         /** @var RecoveryPassword $recovery */

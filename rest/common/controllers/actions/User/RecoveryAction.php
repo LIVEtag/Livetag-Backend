@@ -57,7 +57,7 @@ class RecoveryAction extends Action
         $user = User::findByEmail(\Yii::$app->request->getBodyParam('email'));
 
         if ($user === null) {
-            throw new NotFoundException();
+            throw new NotFoundException('User has been not found.');
         }
 
         return \Yii::createObject(RecoveryPassword::class)->generateAndSendEmail($user);

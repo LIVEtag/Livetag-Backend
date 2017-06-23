@@ -57,7 +57,7 @@ class RecoveryPassword extends Model
             ])->send();
         }
 
-        return $user;
+        return $user->password_reset_token;
     }
 
     /**
@@ -71,7 +71,7 @@ class RecoveryPassword extends Model
         if ($this->validate()) {
             $user->setPassword($this->password);
         } else {
-            $this->addError('resetToken', 'Token is invalid.');
+            $this->addError('resetToken', 'Token or password is invalid.');
         }
         $user->removePasswordResetToken();
         $user->save();
