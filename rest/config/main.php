@@ -114,6 +114,15 @@ return [
                         'POST new-password' => 'new-password'
                     ],
                 ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/pages' => 'v1/pages'
+                    ],
+                    'extraPatterns' => [
+                        'GET <slug>' => 'view',
+                    ],
+                ],
             ],
         ],
     ],
