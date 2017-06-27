@@ -298,6 +298,89 @@
                 }
             }
         },
+        "/v1/pages": {
+            "get": {
+                "summary": "Static pages list",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "pagesIndex",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "fields",
+                        "description": "Fields list in response",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "sort",
+                        "description": "Sort ordering. You can use order=[-]sort_order as paremeter in Url",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/staticPage"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/pages/{slug}": {
+            "get": {
+                "summary": "Static page view",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "pagesView",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/staticPage"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/user/change-password": {
             "patch": {
                 "summary": "Change User Password",
@@ -453,6 +536,7 @@
                 "result": {
                     "type": "object"
                 }
+
             }
         },
         "validateError": {
@@ -639,7 +723,6 @@
                 }
             ]
         },
-
         "user": {
             "type": "object",
             "required": [
@@ -672,6 +755,17 @@
                 "expired_at": {
                     "type": "integer",
                     "format": "int32"
+                }
+            }
+        },
+        "staticPage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
                 }
             }
         },

@@ -28,7 +28,7 @@ trait CheckStyleTrait
         $PHPCsTask = $this->getPHPCsTask()
             ->directories($directories)
             ->extensions('php')
-            ->report('summary') // @see https://github.com/squizlabs/PHP_CodeSniffer/wiki/Reporting
+            ->report('emacs') // @see https://github.com/squizlabs/PHP_CodeSniffer/wiki/Reporting
             ->standard(__DIR__ . '/../../../dev/etc/phpcs/standard/ruleset.xml')
             ;
         $PHPCpd = $this->getPHPCpdTask()
