@@ -13,27 +13,14 @@ use rest\common\models\User;
 class SearchService
 {
     /**
-     * @var string
-     */
-    private $searchString;
-
-    /**
-     * SearchService constructor.
-     * @param string $usernameOrEmail
-     */
-    public function __construct($usernameOrEmail)
-    {
-        $this->searchString = $usernameOrEmail;
-    }
-
-    /**
+     * @param $username
      * @return null|User
      */
-    public function getUser()
+    public function getUser($username)
     {
-        $user = User::findByUsername($this->searchString);
+        $user = User::findByUsername($username);
         if ($user === null) {
-            $user = User::findByEmail($this->searchString);
+            $user = User::findByEmail($username);
         }
 
         return $user;

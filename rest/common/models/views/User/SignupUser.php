@@ -93,14 +93,13 @@ class SignupUser extends Model
         $user->on(
             User::EVENT_AFTER_INSERT,
             function () use ($user, $signupUser) {
-                $accessTokenCreate = new CreateToken(
-                    [
-                        'username' => $signupUser->username,
-                        'password' => $signupUser->password,
-                        'userAgent' => $signupUser->userAgent,
-                        'userIp' => $signupUser->userIp,
-                    ]
-                );
+
+                $accessTokenCreate = \Yii::createObject(CreateToken::class, [
+                    'username' => $signupUser->username,
+                    'password' => $signupUser->password,
+                    'userAgent' => $signupUser->userAgent,
+                    'userIp' => $signupUser->userIp,
+                ]);
 
                 $accessTokenCreate->create();
             }

@@ -157,6 +157,48 @@
                 }
             }
         },
+        "/v1/user/login/email": {
+            "post": {
+                "summary": "Create access token for APP by email",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "userCreateAccessTokenByEmail",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/loginEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/user/register": {
             "post": {
                 "summary": "Create user for APP",
@@ -251,6 +293,138 @@
                         "description": "Error",
                         "schema": {
                             "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/change-password": {
+            "patch": {
+                "summary": "Change User Password",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userChangePassword",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/changePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/recovery-password": {
+            "post": {
+                "summary": "Recovery user password by email",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userRecoveryPasswordByEmail",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/recoveryPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/new-password": {
+            "post": {
+                "summary": "Recovery user password by email",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userRecoveryPasswordChange",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/recoveryPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
@@ -498,6 +672,68 @@
                 "expired_at": {
                     "type": "integer",
                     "format": "int32"
+                }
+            }
+        },
+        "loginEmail": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Email"
+                },
+                "password": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
+                }
+            }
+        },
+        "changePassword": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "required": true
+                },
+                "newPassword": {
+                    "type": "string",
+                    "required": true
+                },
+                "confirmPassword": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "recoveryPasswordRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Email"
+                }
+            }
+        },
+        "recoveryPassword": {
+            "type": "object",
+            "properties": {
+                "resetToken": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Password reset token"
+                },
+                "password": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
+                },
+                "confirmPassword": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
                 }
             }
         }

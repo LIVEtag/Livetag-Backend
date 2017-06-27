@@ -96,6 +96,7 @@ return [
                     'extraPatterns' => [
                         'POST login' => 'create',
                         'OPTIONS login' => 'options',
+                        'POST login/email' => 'email',
                     ],
                 ],
                 [
@@ -108,6 +109,9 @@ return [
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
+                        'PATCH change-password' => 'change-password',
+                        'POST recovery-password' => 'recovery-password',
+                        'POST new-password' => 'new-password'
                     ],
                 ],
             ],

@@ -6,5 +6,6 @@
 
 return [
     'adminEmail' => 'admin@example.com',
-    'user.passwordResetTokenExpire',
+    'user.passwordResetTokenExpire' => 600,
+    'projectDomain' => 'example.com/'
 ];
