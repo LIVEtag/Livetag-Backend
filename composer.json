@@ -5,7 +5,7 @@
     "license": "MTI",
     "minimum-stability": "stable",
     "require": {
-        "php": "~5.6.0|~7.0.0",
+        "php": "~7.1.0",
         "yiisoft/yii2": "2.0.10",
         "yiisoft/yii2-bootstrap": "2.0.6",
         "yiisoft/yii2-swiftmailer": "2.0.6",
@@ -32,5 +32,11 @@
             "npm-asset-library": "vendor/npm",
             "bower-asset-library": "vendor/bower"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
