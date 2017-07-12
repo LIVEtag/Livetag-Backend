@@ -6,10 +6,9 @@
     "minimum-stability": "stable",
     "require": {
         "php": "~7.1.0",
-        "yiisoft/yii2": "2.0.10",
+        "yiisoft/yii2": "2.0.12",
         "yiisoft/yii2-bootstrap": "2.0.6",
         "yiisoft/yii2-swiftmailer": "2.0.6",
-        "fxp/composer-asset-plugin": "1.1.4",
         "gbksoft/shell-command-builder": "1.0.1",
         "yiisoft/yii2-authclient": "2.1.1"
     },
@@ -26,12 +25,6 @@
     },
     "config": {
         "process-timeout": 1800
-    },
-    "extra": {
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        }
     },
     "repositories": [
         {
