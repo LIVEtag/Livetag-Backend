@@ -25,20 +25,22 @@ return [
         ],
     ],
     'controllerMap' => [
-        // https://yiiframework.com.ua/ru/doc/guide/2/db-migrations/#namespaced-migrations
-        // ------------
-        // some of base yii migrations have not namespace, it is problem
-        // example:
-        // 'yii\log\migrations' - yii DB log migration
-        // you can only create new migration with namespace and run problem migration inside
-        // <?php
-        //    namespace ...
-        //    require_once $yiiPath . "/log/migrations/m141106_185632_log_init.php";
-        //    (new \m141106_185632_log_init)->up();
-        'class' => MigrateController::class,
-        'migrationPath' => null,
-        'migrationNamespaces' => [
-            'console\migrations', //base migrations
+        'migrate' => [
+            // https://yiiframework.com.ua/ru/doc/guide/2/db-migrations/#namespaced-migrations
+            // ------------
+            // some of base yii migrations have not namespace, it is problem
+            // example:
+            // 'yii\log\migrations' - yii DB log migration
+            // you can only create new migration with namespace and run problem migration inside
+            // <?php
+            //    namespace ...
+            //    require_once $yiiPath . "/log/migrations/m141106_185632_log_init.php";
+            //    (new \m141106_185632_log_init)->up();
+            'class' => MigrateController::class,
+            'migrationPath' => null,
+            'migrationNamespaces' => [
+                'console\migrations', //base migrations
+            ],
         ],
     ],
     'params' => $params,
