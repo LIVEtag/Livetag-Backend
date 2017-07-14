@@ -5,17 +5,16 @@
  */
 namespace rest\common\controllers;
 
-use rest\common\controllers\actions\AccessToken\CreateAction;
-use rest\common\controllers\actions\AccessToken\EmailAction;
-use rest\common\controllers\actions\AccessToken\OptionsAction;
+use rest\common\controllers\actions\Pages\ListAction;
+use rest\common\controllers\actions\Pages\ViewAction;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class AccessTokenController
+ * Class PagesController
  */
-class AccessTokenController extends Controller
+class PagesController extends Controller
 {
     /**
      * @inheritdoc
@@ -26,14 +25,14 @@ class AccessTokenController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['create', 'options', 'email'],
+                    'except' => ['index', 'view'],
                 ],
                 'access' => [
                     'class' => AccessControl::class,
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['create', 'email'],
+                            'actions' => ['index', 'view'],
                             'roles' => ['?'],
                         ],
                     ],
@@ -48,14 +47,11 @@ class AccessTokenController extends Controller
     public function actions()
     {
         return [
-            'create' => [
-                'class' => CreateAction::class,
+            'index' => [
+                'class' => ListAction::class,
             ],
-            'options' => [
-                'class' => OptionsAction::class,
-            ],
-            'email' => [
-                'class' => EmailAction::class
+            'view' => [
+                'class' => ViewAction::class,
             ],
         ];
     }
@@ -66,8 +62,8 @@ class AccessTokenController extends Controller
     protected function verbs()
     {
         return [
-            'create' => ['POST'],
-            'email' => ['POST'],
+            'index' => ['GET'],
+            'view' => ['GET'],
         ];
     }
 }

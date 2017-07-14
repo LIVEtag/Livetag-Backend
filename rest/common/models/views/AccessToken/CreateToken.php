@@ -7,7 +7,9 @@ namespace rest\common\models\views\AccessToken;
 
 use rest\common\models\AccessToken;
 use rest\common\models\User;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
+use common\components\user\SearchService;
 
 /**
  * Class Create
@@ -49,6 +51,23 @@ class CreateToken extends Model
     private $user;
 
     /**
+     * @var SearchService
+     */
+    private $searchService;
+
+    /**
+     * CreateToken constructor
+     *
+     * @param SearchService $searchService
+     * @param array $config
+     */
+    public function __construct(SearchService $searchService, array $config = [])
+    {
+        parent::__construct($config);
+        $this->searchService = $searchService;
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -63,19 +82,23 @@ class CreateToken extends Model
     }
 
     /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
+     * Validates the password
+     * This method serves as the inline validation for password
      *
      * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
+     * @internal param array $params the additional name-value pairs given in the rule
+     * @throws InvalidConfigException
      */
     public function validatePassword($attribute)
     {
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if ($user === null || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
-            }
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        $this->user = $this->searchService->getUser($this->username);
+
+        if ($this->user === null || !$this->user->validatePassword($this->password)) {
+            $this->addError($attribute, 'Incorrect username or password.');
         }
     }
 
@@ -83,6 +106,7 @@ class CreateToken extends Model
      * Create user access token
      *
      * @return bool|AccessToken
+     * @internal param $user
      */
     public function create()
     {
@@ -95,7 +119,7 @@ class CreateToken extends Model
             $this->userIp
         )->andWhere(
             'user_id = :user_id',
-            [':user_id' => $this->getUser()->id]
+            [':user_id' => $this->user->id]
         )->one();
 
         if ($accessToken !== null) {
@@ -103,7 +127,7 @@ class CreateToken extends Model
         }
 
         $accessToken = new AccessToken();
-        $accessToken->user_id = $this->getUser()->id;
+        $accessToken->user_id = $this->user->id;
 
         $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         if ($this->isRememberMe === self::YES_VALUE) {
@@ -116,19 +140,5 @@ class CreateToken extends Model
         $accessToken->user_agent = $this->userAgent;
 
         return $accessToken->save() ? $accessToken : false;
-    }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    protected function getUser()
-    {
-        if ($this->user === null) {
-            $this->user = User::findByUsername($this->username);
-        }
-
-        return $this->user;
     }
 }

@@ -25,7 +25,7 @@ return [
         ],
         'session' => [
             'name' => '_frontendSessionId',
-            'savePath' => __DIR__ . '/../runtime',
+            'savePath' => __DIR__ . '/../runtime/frontend',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -41,9 +41,10 @@ return [
         ],
         'urlManager' => [
             'rules' => [
-                '' => 'site/index',
-                '<controller:[\w-]+>' => '<controller>',
-                '<controller:[\w-]+>/<action:[\w-]+>' => '<controller>/<action>',
+                '' => '',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>/',
+                '<module:\w+>/<controller:\w+>' => '<module>/<controller>/',
+                '<module:\w+>/<controller:\w+>/<action:\w+>' => '<module>/<controller>/<action>/',
             ],
         ],
     ],

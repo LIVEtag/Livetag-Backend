@@ -8,7 +8,7 @@
     "basePath": "/rest",
     "schemes": ["http", "https"],
     "paths": {
-        "/v1/auth/twitter": {
+        "/v1/user/login/twitter": {
             "post": {
                 "summary": "Create access token for APP using twitter account",
                 "tags": ["AnyBody"],
@@ -29,22 +29,33 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
+                        "description": "Validation Error",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
             }
         },
-        "/v1/auth/{type}": {
+        "/v1/user/login/{type}": {
             "post": {
                 "summary": "Create access token for APP using social account",
                 "tags": ["AnyBody"],
@@ -71,22 +82,33 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
+                        "description": "Validation Error",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
             }
         },
-        "/v1/access-tokens": {
+        "/v1/user/login": {
             "post": {
                 "summary": "Create access token for APP",
                 "tags": ["AnyBody"],
@@ -98,7 +120,7 @@
                         "name": "username",
                         "type": "string",
                         "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
+                        "description": "Username / e-mail<br>Minimum 2, maximum 255 characters"
                     },
                     {
                         "in": "formData",
@@ -109,22 +131,75 @@
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/201Token"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
+                        "description": "Validation Error",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
             }
         },
-        "/v1/users": {
+        "/v1/user/login/email": {
+            "post": {
+                "summary": "Create access token for APP by email",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "userCreateAccessTokenByEmail",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/loginEmail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/register": {
             "post": {
                 "summary": "Create user for APP",
                 "tags": ["AnyBody"],
@@ -151,25 +226,45 @@
                         "type": "string",
                         "required": true,
                         "description": "Minimum 2, maximum 255 characters"
+                    },
+                    {
+                        "in": "formData",
+                        "name": "is_remember_me",
+                        "type": "string",
+                        "enum": [ "yes", "no"],
+                        "default": "no",
+                        "required": false,
+                        "description": "are you need remember this token?"
                     }
                 ],
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "422": {
-                        "description": "Data Validation Failed.",
+                        "description": "Validation Error",
                         "schema": {
-                            "$ref": "#/definitions/ErrorModel"
+                            "$ref": "#/definitions/status422"
                         }
                     }
                 }
             }
         },
-        "/v1/users/current": {
+        "/v1/user/current": {
             "get": {
                 "summary": "Current user for APP",
                 "tags": ["User"],
@@ -180,18 +275,455 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/pages": {
+            "get": {
+                "summary": "Static pages list",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "pagesIndex",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "fields",
+                        "description": "Fields list in response",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "path",
+                        "name": "sort",
+                        "description": "Sort ordering. You can use order=[-]sort_order as paremeter in Url",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/staticPage"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/pages/{slug}": {
+            "get": {
+                "summary": "Static page view",
+                "tags": ["AnyBody"],
+                "produces": ["application/json"],
+                "operationId": "pagesView",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/staticPage"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/change-password": {
+            "patch": {
+                "summary": "Change User Password",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userChangePassword",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/changePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/recovery-password": {
+            "post": {
+                "summary": "Recovery user password by email",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userRecoveryPasswordByEmail",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/recoveryPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/new-password": {
+            "post": {
+                "summary": "Recovery user password by email",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userRecoveryPasswordChange",
+                "parameters": [
+                    {
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/recoveryPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status200"
+                                },
+                                {
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/user"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "schema": {
+                            "$ref": "#/definitions/status422"
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
-        "User": {
+
+        "responseModel": {
+            "type": "object",
+            "required": [
+                "code",
+                "status",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "object"
+                }
+
+            }
+        },
+        "validateError": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string",
+                    "example": "user_id"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User ID must be an integer."
+                }
+            }
+        },
+        "status200": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "200 OK",
+                    "properties": {
+                        "code": {
+                            "example": "200"
+                        },
+                        "status": {
+                            "example": "success"
+                        }
+                    }
+                }
+            ]
+        },
+        "status201": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "201 Created",
+                    "properties": {
+                        "code": {
+                            "example": "201"
+                        },
+                        "status": {
+                            "example": "success"
+                        },
+                        "message": {
+                            "example": "Created"
+                        }
+                    }
+                }
+            ]
+        },
+        "status400": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "400 Bad Request",
+                    "properties": {
+                        "code": {
+                            "example": "400"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Bad Request"
+                        }
+                    }
+                }
+            ]
+        },
+        "status401": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "401 Unauthorized",
+                    "properties": {
+                        "code": {
+                            "example": "401"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Unauthorized"
+                        }
+                    }
+                }
+            ]
+        },
+        "status404": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "401 Not Found",
+                    "properties": {
+                        "code": {
+                            "example": "404"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Not Found"
+                        }
+                    }
+                }
+            ]
+        },
+        "status422": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "422 Unprocessable Entity",
+                    "properties": {
+                        "code": {
+                            "example": "422"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Unprocessable Entity"
+                        },
+                        "result": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/validateError"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "status500": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "500 Internal Server Error",
+                    "properties": {
+                        "code": {
+                            "example": "500"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Internal Server Error"
+                        }
+                    }
+                }
+            ]
+        },
+        "status503": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "503 Service Unavailable",
+                    "properties": {
+                        "code": {
+                            "example": "503"
+                        },
+                        "status": {
+                            "example": "error"
+                        },
+                        "message": {
+                            "example": "Service Unavailable"
+                        }
+                    }
+                }
+            ]
+        },
+        "user": {
             "type": "object",
             "required": [
                 "username",
@@ -206,31 +738,11 @@
                     "type": "string"
                 },
                 "accessToken": {
-                    "$ref": "#/definitions/Token"
+                    "$ref": "#/definitions/token"
                 }
             }
         },
-        "201Token": {
-            "type": "object",
-            "required": [
-                "code",
-                "status",
-                "result"
-            ],
-            "properties": {
-                "code": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "result": {
-                    "$ref": "#/definitions/Token"
-                }
-            }
-        },
-        "Token": {
+        "token": {
             "type": "object",
             "required": [
                 "token",
@@ -246,38 +758,76 @@
                 }
             }
         },
-        "ErrorModel": {
+        "staticPage": {
             "type": "object",
-            "required": [
-                "code",
-                "status",
-                "result"
-            ],
             "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "status": {
+                "name": {
                     "type": "string"
                 },
-                "result": {
-                    "type": "array",
-                    "items": {
-                        "minimum": 1,
-                        "type": "object",
-                        "required": [
-                            "field",
-                            "message"
-                        ],
-                        "properties": {
-                            "field": {
-                                "type": "string"
-                            },
-                            "message": {
-                                "type": "string"
-                            }
-                        }
-                    }
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "loginEmail": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Email"
+                },
+                "password": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
+                }
+            }
+        },
+        "changePassword": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "required": true
+                },
+                "newPassword": {
+                    "type": "string",
+                    "required": true
+                },
+                "confirmPassword": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "recoveryPasswordRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Email"
+                }
+            }
+        },
+        "recoveryPassword": {
+            "type": "object",
+            "properties": {
+                "resetToken": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Password reset token"
+                },
+                "password": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
+                },
+                "confirmPassword": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Minimum 2, maximum 255 characters"
                 }
             }
         }

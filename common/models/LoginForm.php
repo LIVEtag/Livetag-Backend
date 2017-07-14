@@ -1,20 +1,58 @@
 <?php
+/**
+ * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
 namespace common\models;
 
+use common\components\user\SearchService;
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\base\Model;
+use rest\common\models\User;
 
 /**
  * Login form
  */
 class LoginForm extends Model
 {
+    /**
+     * @var string
+     */
     public $username;
+
+    /**
+     * @var string
+     */
     public $password;
+
+    /**
+     * @var bool
+     */
     public $rememberMe = true;
 
-    private $_user;
+    /**
+     * @var User
+     */
+    private $user;
 
+    /**
+     * @var SearchService
+     */
+    private $searchService;
+
+    /**
+     * LoginForm constructor
+     *
+     * @param SearchService $searchService
+     * @param array $config
+     */
+    public function __construct(SearchService $searchService, array $config = [])
+    {
+        parent::__construct($config);
+        $this->searchService = $searchService;
+    }
 
     /**
      * @inheritdoc
@@ -36,14 +74,18 @@ class LoginForm extends Model
      * This method serves as the inline validation for password.
      *
      * @param string $attribute the attribute currently being validated
+     * @throws InvalidConfigException
      */
     public function validatePassword($attribute)
     {
-        if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
-            }
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        $this->user = $this->searchService->getUser($this->username);
+
+        if ($this->user === null || !$this->user->validatePassword($this->password)) {
+            $this->addError($attribute, 'Incorrect username/e-mail or password.');
         }
     }
 
@@ -51,28 +93,14 @@ class LoginForm extends Model
      * Logs in a user using the provided username and password.
      *
      * @return boolean whether the user is logged in successfully
+     * @throws InvalidConfigException
+     * @throws InvalidParamException
      */
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            return Yii::$app->user->login($this->user, $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
-
         return false;
-
-    }
-
-    /**
-     * Finds user by [[username]]
-     *
-     * @return User|null
-     */
-    protected function getUser()
-    {
-        if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
-        }
-
-        return $this->_user;
     }
 }

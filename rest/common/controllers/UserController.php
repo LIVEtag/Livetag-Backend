@@ -5,9 +5,12 @@
  */
 namespace rest\common\controllers;
 
-use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\OptionsAction;
+use rest\common\controllers\actions\User\RecoveryAction;
 use rest\common\controllers\actions\User\SignupAction;
+use rest\common\controllers\actions\User\ChangePasswordAction;
+use rest\common\controllers\actions\User\CurrentAction;
+use rest\common\controllers\actions\User\NewPasswordAction;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -26,23 +29,23 @@ class UserController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['create', 'options'],
+                    'except' => ['create', 'options', 'recovery-password', 'new-password'],
                 ],
                 'access' => [
                     'class' => AccessControl::class,
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['create'],
+                            'actions' => ['create', 'recovery-password', 'new-password'],
                             'roles' => ['?'],
                         ],
                         [
                             'allow' => true,
-                            'actions' => ['current'],
+                            'actions' => ['current', 'change-password'],
                             'roles' => ['@'],
                         ],
                     ],
-                ],
+                ]
             ]
         );
     }
@@ -62,6 +65,15 @@ class UserController extends Controller
             'options' => [
                 'class' => OptionsAction::class,
             ],
+            'change-password' => [
+                'class' => ChangePasswordAction::class
+            ],
+            'recovery-password' => [
+                'class' => RecoveryAction::class
+            ],
+            'new-password' => [
+                'class' => NewPasswordAction::class
+            ],
         ];
     }
 
@@ -74,6 +86,9 @@ class UserController extends Controller
             'create' => ['POST'],
             'current' => ['GET'],
             'options' => ['OPTIONS'],
+            'changePassword' => ['PATCH'],
+            'recovery-password' => ['POST'],
+            'new-password' => ['POST'],
         ];
     }
 }

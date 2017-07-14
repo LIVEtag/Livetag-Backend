@@ -1,6 +1,5 @@
 Yii2 base
 =====
-[![Build Status](https://phpci.gbksoft.net/buildStatus/icon?job=gbksoft-yii2)](https://phpci.gbksoft.net/job/gbksoft-yii2/)
 
 Конфигурирование проекта через .env
 -------------------
@@ -61,30 +60,6 @@ frontend
     widgets/             contains frontend widgets
 vendor/                  contains dependent 3rd-party packages
 environments/            contains environment-based overrides
-```
-
-
-Swagger UI
-------------
-
-```php
-[http|https]://<domain>/swagger
-```
-Run swagger validator
-------------
-
-```shell
-cd node/swagger/validator
-node index.js
-```
-or
-```shell
-node index.js 8888
-```
-
-После
-```
-Заменить url в **Swagger UI** на [http|https]://localhost:<port>
 ```
 
 Console commands

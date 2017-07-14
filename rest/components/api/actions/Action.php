@@ -18,12 +18,12 @@ abstract class Action extends BaseAction
     /**
      * @var Request
      */
-    protected $request;
+    public $request;
 
     /**
      * @var Response
      */
-    protected $response;
+    public $response;
 
     /**
      * Constructor

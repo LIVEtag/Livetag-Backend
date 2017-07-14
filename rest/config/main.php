@@ -14,10 +14,10 @@ use yii\web\Request;
 use yii\web\Response;
 
 $params = array_merge(
-    require(__DIR__ . '/../../common/config/params.php'),
-    require(__DIR__ . '/../../common/config/params-local.php'),
-    require(__DIR__ . '/params.php'),
-    require(__DIR__ . '/params-local.php')
+    require __DIR__ . '/../../common/config/params.php',
+    require __DIR__ . '/../../common/config/params-local.php',
+    require __DIR__ . '/params.php',
+    require __DIR__ . '/params-local.php'
 );
 
 return [
@@ -74,37 +74,53 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/auth',
+                        'v1/user' => 'v1/auth',
                     ],
                     'extraPatterns' => [
-                        'POST facebook' => 'facebook',
-                        'POST linkedin' => 'linkedin',
-                        'POST google' => 'google',
-                        'POST twitter' => 'twitter',
-                        'OPTIONS facebook' => 'options',
-                        'OPTIONS linkedin' => 'options',
-                        'OPTIONS google' => 'options',
-                        'OPTIONS twitter' => 'options',
+                        'POST login/facebook' => 'facebook',
+                        'POST login/linkedin' => 'linkedin',
+                        'POST login/google' => 'google',
+                        'POST login/twitter' => 'twitter',
+                        'OPTIONS login/facebook' => 'options',
+                        'OPTIONS login/linkedin' => 'options',
+                        'OPTIONS login/google' => 'options',
+                        'OPTIONS login/twitter' => 'options',
                     ],
                     'pluralize' => false,
                 ],
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/access-token'
+                        'v1/user' => 'v1/access-token'
                     ],
                     'extraPatterns' => [
-                        'OPTIONS access-tokens' => 'options',
+                        'POST login' => 'create',
+                        'OPTIONS login' => 'options',
+                        'POST login/email' => 'email',
                     ],
                 ],
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/user',
+                        'v1/user' => 'v1/user'
                     ],
                     'extraPatterns' => [
+                        'POST register' => 'create',
+                        'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
+                        'PATCH change-password' => 'change-password',
+                        'POST recovery-password' => 'recovery-password',
+                        'POST new-password' => 'new-password'
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/pages' => 'v1/pages'
+                    ],
+                    'extraPatterns' => [
+                        'GET <slug>' => 'view',
                     ],
                 ],
             ],
