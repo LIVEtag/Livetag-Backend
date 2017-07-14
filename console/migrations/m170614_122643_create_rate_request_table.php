@@ -1,4 +1,5 @@
 <?php
+namespace console\migrations;
 
 use common\components\db\Migration;
 
