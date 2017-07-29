@@ -44,6 +44,10 @@ return [
             'frontend/runtime',
             'frontend/web/assets',
         ],
+        'createSessionDirectory' => [
+            'backend/runtime/session',
+            'frontend/runtime/session',
+        ],
         'setExecutable' => [
             'yii',
             'tests/codeception/bin/yii',
@@ -69,6 +73,10 @@ return [
             'frontend/runtime',
             'frontend/web/assets',
         ],
+        'createSessionDirectory' => [
+            'backend/runtime/session',
+            'frontend/runtime/session',
+        ],
         'setExecutable' => [
             'yii',
             'tests/codeception/bin/yii',
@@ -93,6 +101,10 @@ return [
             'backend/web/assets',
             'frontend/runtime',
             'frontend/web/assets',
+        ],
+        'createSessionDirectory' => [
+            'backend/runtime/session',
+            'frontend/runtime/session',
         ],
         'setExecutable' => [
             'yii',
