@@ -30,6 +30,7 @@ if (!YII_ENV_TEST) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => DebugModule::class,
+        'allowedIPs' => ['*'],
     ];
 
     $config['bootstrap'][] = 'gii';

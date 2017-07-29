@@ -27,7 +27,7 @@ return [
         ],
         'session' => [
             'name' => '_backendSessionId',
-            'savePath' => __DIR__ . '/../runtime/backend',
+            'savePath' => dirname(__DIR__) . '/runtime/session',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

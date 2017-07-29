@@ -66,6 +66,7 @@ if (!YII_ENV_TEST) {
     $config['modules']['debug'] = [
         'class' => DebugModule::class,
         'dataPath' => '@backend/runtime/debug',
+        'allowedIPs' => ['*'],
     ];
 
     $config['bootstrap'][] = 'gii';
