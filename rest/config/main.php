@@ -111,7 +111,8 @@ return [
                         'OPTIONS current' => 'options',
                         'PATCH change-password' => 'change-password',
                         'POST recovery-password' => 'recovery-password',
-                        'POST new-password' => 'new-password'
+                        'POST new-password' => 'new-password',
+                        'POST logout' => 'logout',
                     ],
                 ],
                 [

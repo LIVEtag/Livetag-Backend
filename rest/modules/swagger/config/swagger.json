@@ -298,6 +298,33 @@
                 }
             }
         },
+        "/v1/user/logout": {
+            "post": {
+                "summary": "Logout current user",
+                "tags": ["User"],
+                "produces": ["application/json"],
+                "operationId": "userLogout",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/status204"
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/status401"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/pages": {
             "get": {
                 "summary": "Static pages list",
@@ -586,6 +613,24 @@
                         },
                         "message": {
                             "example": "Created"
+                        }
+                    }
+                }
+            ]
+        },
+        "status204": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/responseModel"
+                },
+                {
+                    "title": "204 No Content",
+                    "properties": {
+                        "code": {
+                            "example": "204"
+                        },
+                        "status": {
+                            "example": "success"
                         }
                     }
                 }
