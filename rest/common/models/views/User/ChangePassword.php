@@ -64,6 +64,9 @@ class ChangePassword extends Model
      */
     public function changePassword(User $user)
     {
+        if (!$this->validate()) {
+            return false;
+        }
         if (!$user || !$user->validatePassword($this->password)) {
             $this->addError('password', 'Wrong password');
             return false;
