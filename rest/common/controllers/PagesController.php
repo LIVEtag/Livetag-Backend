@@ -3,12 +3,12 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\Pages\ListAction;
 use rest\common\controllers\actions\Pages\ViewAction;
 use rest\components\api\Controller;
-use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -28,7 +28,6 @@ class PagesController extends Controller
                     'except' => ['index', 'view'],
                 ],
                 'access' => [
-                    'class' => AccessControl::class,
                     'rules' => [
                         [
                             'allow' => true,

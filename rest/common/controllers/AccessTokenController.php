@@ -3,13 +3,13 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\AccessToken\CreateAction;
 use rest\common\controllers\actions\AccessToken\EmailAction;
 use rest\common\controllers\actions\AccessToken\OptionsAction;
 use rest\components\api\Controller;
-use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -29,7 +29,6 @@ class AccessTokenController extends Controller
                     'except' => ['create', 'options', 'email'],
                 ],
                 'access' => [
-                    'class' => AccessControl::class,
                     'rules' => [
                         [
                             'allow' => true,

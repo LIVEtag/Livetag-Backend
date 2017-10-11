@@ -11,6 +11,7 @@ use yii\web\IdentityInterface;
  * User model
  *
  * @property integer $id
+ * @property integer $role
  * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
@@ -23,8 +24,26 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+
+    /**
+     * Disabled user (marked as deleted)
+     */
     const STATUS_DELETED = 0;
+
+    /**
+     * Default active user
+     */
     const STATUS_ACTIVE = 10;
+
+    /**
+     * Example role for default user
+     */
+    const ROLE_BASIC = 1;
+
+    /**
+     * Example role for pro user
+     */
+    const ROLE_ADVANCED = 2;
 
     /**
      * @inheritdoc
@@ -50,6 +69,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['role', 'default', 'value' => self::ROLE_BASIC],
+            ['role', 'in', 'range' => [self::ROLE_BASIC, self::ROLE_ADVANCED]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
@@ -106,8 +127,8 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         return static::findOne([
-            'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+                'password_reset_token' => $token,
+                'status' => self::STATUS_ACTIVE,
         ]);
     }
 
