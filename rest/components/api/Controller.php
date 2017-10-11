@@ -10,6 +10,8 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 use yii\filters\RateLimiter;
+use yii\web\ForbiddenHttpException;
+use rest\components\api\AccessRule;
 use yii\rest\Controller as BaseController;
 use yii\web\Response;
 
@@ -18,6 +20,12 @@ use yii\web\Response;
  */
 class Controller extends BaseController
 {
+
+    /**
+     * default options action
+     */
+    const ACTION_OPTIONS = 'options';
+
     /**
      * @inheritdoc
      */
@@ -31,7 +39,7 @@ class Controller extends BaseController
         return [
             'authenticator' => [
                 'class' => HttpBearerAuth::class,
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,
@@ -57,7 +65,13 @@ class Controller extends BaseController
             ],
             'access' => [
                 'class' => AccessControl::class,
-                'except' => ['options'],
+                'denyCallback' => function ($rule, $action) {
+                    throw new ForbiddenHttpException(\Yii::t('app', 'You are not allowed to perform this action'));
+                },
+                'ruleConfig' => [
+                    'class' => AccessRule::class,
+                ],
+                'except' => [self::ACTION_OPTIONS],
             ],
         ];
     }
