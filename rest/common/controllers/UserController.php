@@ -3,6 +3,7 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\User\OptionsAction;
@@ -11,6 +12,7 @@ use rest\common\controllers\actions\User\SignupAction;
 use rest\common\controllers\actions\User\ChangePasswordAction;
 use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\NewPasswordAction;
+use rest\common\controllers\actions\User\LogoutAction;
 use rest\components\api\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -41,7 +43,7 @@ class UserController extends Controller
                         ],
                         [
                             'allow' => true,
-                            'actions' => ['current', 'change-password'],
+                            'actions' => ['current', 'change-password', 'logout'],
                             'roles' => ['@'],
                         ],
                     ],
@@ -74,6 +76,9 @@ class UserController extends Controller
             'new-password' => [
                 'class' => NewPasswordAction::class
             ],
+            'logout' => [
+                'class' => LogoutAction::class
+            ],
         ];
     }
 
@@ -89,6 +94,7 @@ class UserController extends Controller
             'changePassword' => ['PATCH'],
             'recovery-password' => ['POST'],
             'new-password' => ['POST'],
+            'logout' => ['POST'],
         ];
     }
 }
