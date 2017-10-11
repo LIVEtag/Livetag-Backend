@@ -14,7 +14,7 @@ class AccessRule extends BaseAccessRule
      *
      * Additional role check in AccessControl
      * ```php
-     *'access' => [
+     * 'access' => [
      *    'class' => AccessControl::class,
      *    'rules' => [
      *        [
@@ -23,7 +23,7 @@ class AccessRule extends BaseAccessRule
      *            'roles' => [User::ROLE_BASIC, User::ROLE_ADVANCED],
      *        ]
      *    ]
-     *]
+     * ]
      * ```
      */
     protected function matchRole($user)
@@ -34,8 +34,10 @@ class AccessRule extends BaseAccessRule
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
-        
-        if (!$user->getIsGuest() && in_array($user->identity->role, $this->roles)) {
+
+        if (!$user->getIsGuest() &&
+            isset($user->identity->role) &&
+            in_array($user->identity->role, $this->roles)) {
             return true;
         }
 
