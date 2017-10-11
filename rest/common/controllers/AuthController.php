@@ -3,6 +3,7 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\Auth\FacebookAction;
@@ -11,15 +12,8 @@ use rest\common\controllers\actions\Auth\LinkedinAction;
 use rest\common\controllers\actions\Auth\OptionsAction;
 use rest\common\controllers\actions\Auth\TwitterAction;
 use rest\components\api\Controller;
-use rest\common\models\User;
-use rest\common\models\views\User\SignupUser;
-use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
-use yii\filters\ContentNegotiator;
-use yii\filters\Cors;
-use yii\filters\RateLimiter;
 use yii\helpers\ArrayHelper;
-use yii\web\Response;
 
 /**
  * Class AuthController

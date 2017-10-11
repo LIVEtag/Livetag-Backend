@@ -14,7 +14,6 @@ use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\NewPasswordAction;
 use rest\common\controllers\actions\User\LogoutAction;
 use rest\components\api\Controller;
-use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -34,7 +33,6 @@ class UserController extends Controller
                     'except' => ['create', 'options', 'recovery-password', 'new-password'],
                 ],
                 'access' => [
-                    'class' => AccessControl::class,
                     'rules' => [
                         [
                             'allow' => true,
