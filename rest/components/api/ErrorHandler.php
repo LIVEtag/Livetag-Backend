@@ -19,7 +19,6 @@ use yii\web\HttpException;
  */
 class ErrorHandler extends WebErrorHandler
 {
-
     /**
      * @inheritdoc
      */

@@ -306,7 +306,7 @@
                 "operationId": "userLogout",
                 "parameters": [],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "OK",
                         "schema": {
                             "allOf": [
