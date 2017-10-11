@@ -5,7 +5,7 @@
  */
 namespace rest\components\api;
 
-use rest\components\api\AccessControl;
+use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
