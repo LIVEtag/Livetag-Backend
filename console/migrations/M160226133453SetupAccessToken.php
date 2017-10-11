@@ -6,11 +6,13 @@
 namespace console\migrations;
 
 use common\components\db\Migration;
+
 /**
- * Class m160226_133453_setup_access_token
+ * Class M160226133453SetupAccessToken
  */
-class m160226_133453_setup_access_token extends Migration
+class M160226133453SetupAccessToken extends Migration
 {
+
     public function up()
     {
         $this->createTable(

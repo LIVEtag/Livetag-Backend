@@ -8,9 +8,9 @@ namespace console\migrations;
 use common\components\db\Migration;
 
 /**
- * Class m130524_201442_setup_user
+ * Class M130524201442SetupUser
  */
-class m130524_201442_setup_user extends Migration
+class M130524201442SetupUser extends Migration
 {
     public function up()
     {
