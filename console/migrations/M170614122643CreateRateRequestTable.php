@@ -6,7 +6,7 @@ use common\components\db\Migration;
 /**
  * Handles the creation of table `rate_request`.
  */
-class m170614_122643_create_rate_request_table extends Migration
+class M170614122643CreateRateRequestTable extends Migration
 {
     /**
      * @inheritdoc
@@ -26,7 +26,6 @@ class m170614_122643_create_rate_request_table extends Migration
             ],
             self::TABLE_OPTIONS
         );
-
     }
 
     /**

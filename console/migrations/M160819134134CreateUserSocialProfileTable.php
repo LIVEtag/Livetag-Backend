@@ -6,7 +6,7 @@ use common\components\db\Migration;
 /**
  * Handles the creation for table `user_social_profile`.
  */
-class m160819_134134_create_user_social_profile_table extends Migration
+class M160819134134CreateUserSocialProfileTable extends Migration
 {
     /**
      * @inheritdoc
