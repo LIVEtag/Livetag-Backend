@@ -9,6 +9,7 @@ use rest\components\api\UrlRule;
 use rest\components\api\ErrorHandler;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
+use rest\modules\chat\Module as ChatModule;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Request;
@@ -32,6 +33,9 @@ return [
         'v1' => [
             'class' => V1Module::class,
         ],
+        'chat' => [
+            'class' => ChatModule::class,
+        ]
     ],
     'components' => [
         'user' => [
@@ -127,6 +131,13 @@ return [
                     'extraPatterns' => [
                         'GET <slug>' => 'view',
                     ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/channel' => 'chat/channel'
+                    ],
+                    'pluralize' => false,
                 ],
             ],
         ],
