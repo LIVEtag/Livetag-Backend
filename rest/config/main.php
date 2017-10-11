@@ -6,6 +6,7 @@
 
 use rest\common\models\User;
 use rest\components\api\UrlRule;
+use rest\components\api\ErrorHandler;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
 use yii\log\FileTarget;
@@ -50,6 +51,9 @@ return [
             'format' => Response::FORMAT_JSON,
             'charset' => 'UTF-8',
             'acceptParams' => ['version' => 'v1']
+        ],
+        'errorHandler' => [
+            'class' => ErrorHandler::class
         ],
         'request' => [
             'class' => Request::class,
