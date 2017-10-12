@@ -71,7 +71,7 @@ class ActiveController extends BaseActiveController
             'access' => [
                 'class' => AccessControl::className(),
                 'denyCallback' => function ($rule, $action) {
-                    throw new ForbiddenHttpException(Yii::t('chat', 'You are not allowed to perform this action'));
+                    throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action'));
                 },
                 'ruleConfig' => ['class' => AccessRule::className(),],
                 'except' => [self::ACTION_OPTIONS],

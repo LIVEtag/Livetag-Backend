@@ -24,7 +24,7 @@ class M171011114726ChatTables extends Migration
         $this->createIndex('idx_channel_url', '{{%channel}}', 'url');
 
         $this->createTable(
-            '{{%channel_access}}',
+            '{{%channel_user}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'channel_id' => $this->integer()->unsigned()->notNull(),
@@ -33,9 +33,12 @@ class M171011114726ChatTables extends Migration
             ],
             self::TABLE_OPTIONS
         );
+        
+        $this->createIndex('idx_channel_user_unique', '{{%channel_user}}', 'channel_id,user_id,role', true);
+
         $this->addForeignKey(
-            'fk_channel_access_to_user',
-            '{{%channel_access}}',
+            'fk_channel_user_to_user',
+            '{{%channel_user}}',
             'user_id',
             '{{%user}}',
             'id',
@@ -43,8 +46,8 @@ class M171011114726ChatTables extends Migration
             'CASCADE'
         );
         $this->addForeignKey(
-            'fk_channel_access_to_channel',
-            '{{%channel_access}}',
+            'fk_channel_user_to_channel',
+            '{{%channel_user}}',
             'channel_id',
             '{{%channel}}',
             'id',
@@ -87,11 +90,11 @@ class M171011114726ChatTables extends Migration
     {
         $this->dropForeignKey('fk_message_to_channel', '{{%message}}');
         $this->dropForeignKey('fk_message_to_user', '{{%message}}');
-        $this->dropForeignKey('fk_channel_access_to_channel', '{{%channel_access}}');
-        $this->dropForeignKey('fk_channel_access_to_user', '{{%channel_access}}');
+        $this->dropForeignKey('fk_channel_user_to_channel', '{{%channel_user}}');
+        $this->dropForeignKey('fk_channel_user_to_user', '{{%channel_user}}');
 
         $this->dropTable('{{%channel}}');
         $this->dropTable('{{%message}}');
-        $this->dropTable('{{%channel_access}}');
+        $this->dropTable('{{%channel_user}}');
     }
 }

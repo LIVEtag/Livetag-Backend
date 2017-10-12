@@ -1,6 +1,7 @@
 <?php
-
 namespace rest\modules\chat\models;
+
+use rest\common\models\User;
 
 /**
  * This is the ActiveQuery class for [[Channel]].
@@ -9,26 +10,36 @@ namespace rest\modules\chat\models;
  */
 class ChannelQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
 
     /**
-     * @inheritdoc
-     * @return Channel[]|array
+     * get records only avaliable for current user
+     * @param User $user
      */
-    public function all($db = null)
+    public function avaliableForUser(User $user)
     {
-        return parent::all($db);
+        return $this->joinWith('users')
+                ->andWhere(
+                    ['OR',
+                        [
+                            Channel::tableName() . '.type' => Channel::TYPE_PUBLIC
+                        ],
+                        [
+                            Channel::tableName() . '.type' => Channel::TYPE_PRIVATE,
+                            ChannelUser::tableName() . '.user_id' => $user->id
+                        ],
+                    ]
+                );
     }
 
     /**
-     * @inheritdoc
-     * @return Channel|array|null
+     * filter by url
+     * @param string $url
      */
-    public function one($db = null)
+    public function byUrl(string $url)
     {
-        return parent::one($db);
+        $this->andWhere([
+            Channel::tableName() . '.url' => $url,
+        ]);
+        return $this;
     }
 }

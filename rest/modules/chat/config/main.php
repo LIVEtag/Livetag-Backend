@@ -5,7 +5,7 @@
  */
 Yii::setAlias('@chat', dirname(__DIR__));
 
-use CentrifugoComponent;
+use rest\modules\chat\components\CentrifugoComponent;
 
 return [
     'components' => [

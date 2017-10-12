@@ -5,6 +5,8 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\helpers\Inflector;
+use rest\common\models\User;
+use rest\modules\chat\exception\AfterSaveException;
 
 /**
  * This is the model class for table "chat_channel".
@@ -19,11 +21,21 @@ use yii\helpers\Inflector;
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property ChatChannelAccess[] $chatChannelAccesses
- * @property ChatMessage[] $chatMessages
+ * @property ChannelUser[] $users
+ * @property Message[] $messages
  */
 class Channel extends \yii\db\ActiveRecord
 {
+
+    /**
+     * create new channel
+     */
+    const SCENARIO_CREATE = 'create';
+
+    /**
+     * update channel info
+     */
+    const SCENARIO_UPDATE = 'update';
 
     /**
      * preffix, that determinate private channel (in centrifugo)
@@ -60,6 +72,19 @@ class Channel extends \yii\db\ActiveRecord
     }
 
     /**
+     * use transactions for all scenarios
+     * @return type
+     */
+    public function transactions()
+    {
+        $transactions = [];
+        foreach ($this->scenarios() as $scenario => $fields) {
+            $transactions[$scenario] = self::OP_ALL;
+        }
+        return $transactions;
+    }
+
+    /**
      * @inheritdoc
      * @return ChannelQuery the active query used by this AR class.
      */
@@ -87,15 +112,15 @@ class Channel extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('chat', 'ID'),
-            'url' => Yii::t('chat', 'Url'),
-            'name' => Yii::t('chat', 'Name'),
-            'description' => Yii::t('chat', 'Description'),
-            'type' => Yii::t('chat', 'Type'),
-            'created_by' => Yii::t('chat', 'Created By'),
-            'updated_by' => Yii::t('chat', 'Updated By'),
-            'created_at' => Yii::t('chat', 'Created At'),
-            'updated_at' => Yii::t('chat', 'Updated At'),
+            'id' => Yii::t('app', 'ID'),
+            'url' => Yii::t('app', 'Url'),
+            'name' => Yii::t('app', 'Name'),
+            'description' => Yii::t('app', 'Description'),
+            'type' => Yii::t('app', 'Type'),
+            'created_by' => Yii::t('app', 'Created By'),
+            'updated_by' => Yii::t('app', 'Updated By'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -109,8 +134,36 @@ class Channel extends \yii\db\ActiveRecord
             'url',
             'name',
             'description',
+            'type',
             'created_at'
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields()
+    {
+        return [
+            'users',
+            'messages'
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsers()
+    {
+        return $this->hasMany(ChannelUser::className(), ['channel_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMessages()
+    {
+        return $this->hasMany(Message::className(), ['channel_id' => 'id']);
     }
 
     /**
@@ -124,19 +177,55 @@ class Channel extends \yii\db\ActiveRecord
         return parent::beforeSave($insert);
     }
 
-    //add transaction
+    /**
+     * Scenario with transaction rollback, if error in afterSave
+     * catch thrown exception
+     * @param boolean $runValidation
+     * @param array $attributeNames
+     * @return boolean
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        try {
+            return parent::save($runValidation, $attributeNames);
+        } catch (AfterSaveException $ex) {
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
         if ($insert) {
             //add user as channel admin
-            //move
-            $acc = new ChannelAccess();
-            $acc->channel_id = $this->id;
-            $acc->user_id = $this->created_by;
-            $acc->role = ChannelAccess::ROLE_ADMIN;
-            $acc->save();
+            $this->createChannelUserRecord($this->created_by, ChannelUser::ROLE_ADMIN);
+            if ($this->hasErrors()) {
+                throw new AfterSaveException();
+            }
         }
+    }
+
+    /**
+     * create new channel access record
+     *
+     * @param int $userId
+     * @param int $role
+     * @return bool
+     */
+    public function createChannelUserRecord(int $userId, int $role = ChannelUser::ROLE_USER): bool
+    {
+        $model = new ChannelUser();
+        $model->channel_id = $this->id;
+        $model->user_id = $userId;
+        $model->role = $role;
+        if (!$model->save()) {
+            $this->addErrors($model->getErrors());
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -146,8 +235,8 @@ class Channel extends \yii\db\ActiveRecord
     public function generateUniqueChannelUrl()
     {
         $url = Inflector::slug($this->name, '_', true);
-        if ($this->type === self::TYPE_PRIVATE) {
-            $url = PRIVATE_PREFFIX . $url;
+        if ($this->type == self::TYPE_PRIVATE) {
+            $url = self::PRIVATE_PREFFIX . $url;
         }
         if ($this->checkUniqueUrl($url)) {
             $this->url = $url;
@@ -179,18 +268,75 @@ class Channel extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * get role of selected user in channel
+     * if channel public->user can access it as user
+     *
+     * @param type $user
+     * @return type
      */
-    public function getChatChannelAccesses()
+    public function getUserRoleInChannel($user)
     {
-        return $this->hasMany(ChatChannelAccess::className(), ['channel_id' => 'id']);
+        $role = $this->getUsers()
+            ->select('role')
+            ->andWhere([
+                ChannelUser::tableName() . '.user_id' => $user->id,
+            ])
+            ->scalar();
+        if (!$role) {
+            $role = $this->type == self::TYPE_PUBLIC ? ChannelUser::ROLE_USER : ChannelUser::ROLE_NOBODY;
+        }
+        return $role;
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * check if selected user can manage current channel
+     *
+     * @param User $user
      */
-    public function getChatMessages()
+    public function canManage(User $user)
     {
-        return $this->hasMany(ChatMessage::className(), ['channel_id' => 'id']);
+        return $this->getUserRoleInChannel($user) == ChannelUser::ROLE_ADMIN;
+    }
+
+    /**
+     * check if selected user can access to current channel
+     *
+     * @param User $user
+     */
+    public function canAccess(User $user)
+    {
+        return in_array($this->getUserRoleInChannel($user), [
+            ChannelUser::ROLE_USER,
+            ChannelUser::ROLE_ADMIN
+        ]);
+    }
+
+    /**
+     * try to join selected user to channel
+     *
+     * @param User $user
+     * @return type
+     */
+    public function joinUserToChannel(User $user)
+    {
+        return $this->createChannelUserRecord($user->id);
+    }
+
+    /**
+     * try to leave selected user from channel
+     *
+     * @param User $user
+     * @return type
+     */
+    public function leaveUserFromChannel(User $user)
+    {
+        $channelUser = ChannelUser::find()
+            ->byChannelAndUser($this->id, $user->id)
+            ->one();
+        if (!$channelUser) {
+            $this->addError('channel_id', Yii::t('app', 'User not in channel'));
+            return false;
+        }
+        return $channelUser->delete();
     }
 }
