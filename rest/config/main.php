@@ -138,6 +138,7 @@ return [
                     'extraPatterns' => [
                         'PUT <id:\d+>/join' => ChannelController::ACTION_JOIN,
                         'PUT <id:\d+>/leave' => ChannelController::ACTION_LEAVE,
+                        'POST <id:\d+>/message' => ChannelController::ACTION_MESSAGE,
                         'POST <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_ADD_TO_CHAT,
                         'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
                         'POST auth' => ChannelController::ACTION_AUTH,

@@ -33,8 +33,9 @@ class AuthAction extends Action
                     'status' => 404,
                 ];
             } elseif ($channelModel->canAccess($user)) {
-                Yii::$app->getModule('chat')->centrifugo->setUser($user);
-                $response[$channel] = Yii::$app->getModule('chat')->centrifugo->generateChannelSignResponce($channel, $client);
+                $response[$channel] = Yii::$app->getModule('chat')->centrifugo
+                    ->setUser($user)
+                    ->generateChannelSignResponce($channel, $client);
             } else {
                 $response[$channel] = [
                     'status' => 403,

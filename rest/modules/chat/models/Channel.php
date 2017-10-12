@@ -22,7 +22,7 @@ use rest\modules\chat\exception\AfterSaveException;
  * @property integer $updated_at
  *
  * @property ChannelUser[] $users
- * @property Message[] $messages
+ * @property ChannelMessage[] $messages
  */
 class Channel extends \yii\db\ActiveRecord
 {
@@ -163,7 +163,7 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function getMessages()
     {
-        return $this->hasMany(Message::className(), ['channel_id' => 'id']);
+        return $this->hasMany(ChannelMessage::className(), ['channel_id' => 'id']);
     }
 
     /**
@@ -271,10 +271,10 @@ class Channel extends \yii\db\ActiveRecord
      * get role of selected user in channel
      * if channel public->user can access it as user
      *
-     * @param type $user
-     * @return type
+     * @param User $user
+     * @return int
      */
-    public function getUserRoleInChannel($user)
+    public function getUserRoleInChannel($user): int
     {
         $role = $this->getUsers()
             ->select('role')
@@ -283,7 +283,7 @@ class Channel extends \yii\db\ActiveRecord
             ])
             ->scalar();
         if (!$role) {
-            $role = $this->type == self::TYPE_PUBLIC ? ChannelUser::ROLE_USER : ChannelUser::ROLE_NOBODY;
+            $role = ChannelUser::ROLE_NOBODY;
         }
         return $role;
     }
@@ -299,11 +299,29 @@ class Channel extends \yii\db\ActiveRecord
     }
 
     /**
-     * check if selected user can access to current channel
+     * check if selected user can access(see) to current channel
      *
      * @param User $user
      */
     public function canAccess(User $user)
+    {
+        $role = $this->getUserRoleInChannel($user);
+        //allow to view public channels vithout join
+        if (!$role && $this->type == self::TYPE_PUBLIC) {
+            return true;
+        }
+        return in_array($role, [
+            ChannelUser::ROLE_USER,
+            ChannelUser::ROLE_ADMIN
+        ]);
+    }
+
+    /**
+     * check if selected user can write to current channel
+     *
+     * @param User $user
+     */
+    public function canPost(User $user)
     {
         return in_array($this->getUserRoleInChannel($user), [
             ChannelUser::ROLE_USER,

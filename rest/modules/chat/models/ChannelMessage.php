@@ -3,6 +3,7 @@ namespace rest\modules\chat\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use rest\common\models\User;
 
 /**
  * This is the model class for table "message".
@@ -10,13 +11,14 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $id
  * @property integer $channel_id
  * @property integer $user_id
+ * @property string $message
  * @property integer $created_at
  * @property integer $updated_at
  *
  * @property Channel $channel
  * @property User $user
  */
-class Message extends \yii\db\ActiveRecord
+class ChannelMessage extends \yii\db\ActiveRecord
 {
 
     /**
@@ -24,7 +26,7 @@ class Message extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'message';
+        return 'channel_message';
     }
 
     /**
@@ -43,10 +45,34 @@ class Message extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['channel_id', 'user_id', 'created_at', 'updated_at'], 'required'],
-            [['channel_id', 'user_id', 'created_at', 'updated_at'], 'integer'],
+            [['channel_id', 'user_id', 'message'], 'required'],
+            [['channel_id', 'user_id'], 'integer'],
+            [['message'], 'string', 'max' => 255],
             [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        return [
+            'user_id',
+            'message',
+            'created_at'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields()
+    {
+        return [
+            'user',
+            'channel'
         ];
     }
 
@@ -59,6 +85,7 @@ class Message extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'channel_id' => Yii::t('app', 'Channel ID'),
             'user_id' => Yii::t('app', 'User ID'),
+            'message' => Yii::t('app', 'Message'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
         ];
@@ -82,10 +109,16 @@ class Message extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return MessageQuery the active query used by this AR class.
+     *
+     * before save message->publish it to centrifugo channel
      */
-    public static function find()
+    public function beforeSave($insert)
     {
-        return new MessageQuery(get_called_class());
+        if (!Yii::$app->getModule('chat')->centrifugo->setUser($this->user)->publishMessage($this->channel->url, $this->message)) {
+            $this->addError('channel_id', Yii::t('app', 'Failed to send message to channel'));
+            return false;
+        }
+
+        return parent::beforeSave($insert);
     }
 }

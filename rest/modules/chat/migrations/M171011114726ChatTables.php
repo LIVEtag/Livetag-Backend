@@ -56,19 +56,20 @@ class M171011114726ChatTables extends Migration
         );
 
         $this->createTable(
-            '{{%message}}',
+            '{{%channel_message}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'channel_id' => $this->integer()->unsigned()->notNull(),
                 'user_id' => $this->integer()->unsigned()->notNull(),
+                'message' => $this->string(255)->notNull(),
                 'created_at' => $this->integer()->unsigned()->notNull(),
                 'updated_at' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );
         $this->addForeignKey(
-            'fk_message_to_user',
-            '{{%message}}',
+            'fk_channel_message_to_user',
+            '{{%channel_message}}',
             'user_id',
             '{{%user}}',
             'id',
@@ -76,8 +77,8 @@ class M171011114726ChatTables extends Migration
             'CASCADE'
         );
         $this->addForeignKey(
-            'fk_message_to_channel',
-            '{{%message}}',
+            'fk_channel_message_to_channel',
+            '{{%channel_message}}',
             'channel_id',
             '{{%channel}}',
             'id',
@@ -88,13 +89,13 @@ class M171011114726ChatTables extends Migration
 
     public function down()
     {
-        $this->dropForeignKey('fk_message_to_channel', '{{%message}}');
-        $this->dropForeignKey('fk_message_to_user', '{{%message}}');
+        $this->dropForeignKey('fk_channel_message_to_channel', '{{%channel_message}}');
+        $this->dropForeignKey('fk_channel_message_to_user', '{{%channel_message}}');
         $this->dropForeignKey('fk_channel_user_to_channel', '{{%channel_user}}');
         $this->dropForeignKey('fk_channel_user_to_user', '{{%channel_user}}');
 
         $this->dropTable('{{%channel}}');
-        $this->dropTable('{{%message}}');
+        $this->dropTable('{{%channel_message}}');
         $this->dropTable('{{%channel_user}}');
     }
 }

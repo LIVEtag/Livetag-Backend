@@ -14,6 +14,7 @@ use yii\web\ForbiddenHttpException;
 use rest\modules\chat\models\ChannelSearch;
 use rest\modules\chat\controllers\actions\JoinAction;
 use rest\modules\chat\controllers\actions\LeaveAction;
+use rest\modules\chat\controllers\actions\MessageAction;
 use rest\modules\chat\controllers\actions\AddAction;
 use rest\modules\chat\controllers\actions\RemoveAction;
 use rest\modules\chat\controllers\actions\AuthAction;
@@ -34,6 +35,11 @@ class ChannelController extends ActiveController
      * leave selected channel
      */
     const ACTION_LEAVE = 'leave';
+
+    /**
+     * leave selected channel
+     */
+    const ACTION_MESSAGE = 'message';
 
     /**
      * add selected user to selected channel
@@ -77,6 +83,7 @@ class ChannelController extends ActiveController
                                 self::ACTION_VIEW,
                                 self::ACTION_JOIN,
                                 self::ACTION_LEAVE,
+                                self::ACTION_MESSAGE,
                                 self::ACTION_AUTH,
                                 self::ACTION_SIGN,
                             ],
@@ -123,6 +130,11 @@ class ChannelController extends ActiveController
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                 ],
+                self::ACTION_MESSAGE => [
+                    'class' => MessageAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                ],
                 self::ACTION_ADD_TO_CHAT => [
                     'class' => AddAction::class,
                     'modelClass' => $this->modelClass,
@@ -162,9 +174,14 @@ class ChannelController extends ActiveController
                         throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action!'));
                     }
                     break;
+                case self::ACTION_MESSAGE:
+                    if (!$model->canPost($user)) {
+                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action!'));
+                    }
+                    break;
                 case self::ACTION_JOIN:
                     if ($model->type == Channel::TYPE_PRIVATE) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to join private channels!'));
+                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to join private channels.'));
                     }
                     break;
                 default:

@@ -36,6 +36,7 @@ class CentrifugoComponent extends Model
     public function setUser($user)
     {
         $this->operationUser = $user;
+        return $this; //test it
     }
 
     public function getUser()
@@ -56,10 +57,15 @@ class CentrifugoComponent extends Model
                 'name' => 'Unknown'
             ]);
         }
-        return json_encode([
+        return [
             'id' => $this->user->id,
             'name' => $this->user->username
-        ]);
+        ];
+    }
+
+    public function getJsonEncodedUserInfo()
+    {
+        return json_encode($this->getUserInfo());
     }
 
     /**
@@ -71,7 +77,7 @@ class CentrifugoComponent extends Model
      */
     public function generateChannelSignResponce($channel, $client)
     {
-        $info = $this->getUserInfo();
+        $info = $this->getJsonEncodedUserInfo();
         return [
             'sign' => $this->client->generateChannelSign($client, $channel, $info),
             'info' => $info,
@@ -84,11 +90,41 @@ class CentrifugoComponent extends Model
      */
     public function generateUserToken()
     {
+        if (!$this->user) {
+            throw new InvalidConfigException(Yii::t('app', 'Please, set user for centrifugo'));
+        }
+
         $timestamp = (string) time();
-        $info = $this->getUserInfo();
+        $info = $this->getJsonEncodedUserInfo();
         $token = $this->client->generateClientToken($this->user->id, $timestamp, $info);
         return [
-            'token' => $token
+            'token' => $token,
+            'info' => $this->getUserInfo()
         ];
+    }
+
+    /**
+     * Publish message to channel
+     * Epic feil in the implementation:
+     * there is no way to publish a message from a specific user.
+     * so...put user info in data block
+     *
+     * @param string $channel
+     * @param string $message
+     * @return boolean
+     */
+    public function publishMessage(string $channel, string $message)
+    {
+        try {
+            Yii::info('Sending message `' . $message . '` to channel `' . $channel . '`', 'centrifugo');
+            $this->client->publish($channel, [
+                'message' => $message,
+                'user' => $this->getUserInfo(),
+            ]);
+            return true;
+        } catch (\Exception $ex) {
+            Yii::error($ex->getMessage(), 'centrifugo');
+            return false;
+        }
     }
 }

@@ -15,7 +15,8 @@ class SignAction extends Action
     public function run()
     {
         $user = Yii::$app->user->identity;
-        Yii::$app->getModule('chat')->centrifugo->setUser($user);
-        return Yii::$app->getModule('chat')->centrifugo->generateUserToken();
+        return Yii::$app->getModule('chat')->centrifugo
+                ->setUser($user)
+                ->generateUserToken();
     }
 }
