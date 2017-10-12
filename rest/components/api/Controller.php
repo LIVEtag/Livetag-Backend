@@ -5,12 +5,13 @@
  */
 namespace rest\components\api;
 
-use yii\filters\AccessControl;
+use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 use yii\filters\RateLimiter;
 use rest\components\api\AccessRule;
+use rest\components\api\AccessControl;
 use yii\rest\Controller as BaseController;
 use yii\web\Response;
 
@@ -58,6 +59,7 @@ class Controller extends BaseController
             ],
             'access' => [
                 'class' => AccessControl::class,
+                'forbiddenMessage' => Yii::t('yii', 'You are not allowed to perform this action.'),
                 'ruleConfig' => ['class' => AccessRule::class],
                 'except' => ['options'],
             ],
