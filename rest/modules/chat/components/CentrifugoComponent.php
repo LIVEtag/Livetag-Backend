@@ -14,6 +14,7 @@ class CentrifugoComponent extends Model
 
     public $secret = 'someSecret';
     public $host = 'http://localhost:8000';
+    public $ws;
     protected $phpcentClient;
     protected $operationUser;
 
@@ -57,9 +58,19 @@ class CentrifugoComponent extends Model
                 'name' => 'Unknown'
             ]);
         }
+        return self::formatUser($this->user);
+    }
+
+    /**
+     * Use this format in chat messages
+     * @param type $user
+     * @return type
+     */
+    public static function formatUser($user)
+    {
         return [
-            'id' => $this->user->id,
-            'name' => $this->user->username
+            'id' => $user->id,
+            'name' => $user->username
         ];
     }
 
@@ -93,13 +104,18 @@ class CentrifugoComponent extends Model
         if (!$this->user) {
             throw new InvalidConfigException(Yii::t('app', 'Please, set user for centrifugo'));
         }
-
         $timestamp = (string) time();
         $info = $this->getJsonEncodedUserInfo();
         $token = $this->client->generateClientToken($this->user->id, $timestamp, $info);
+
         return [
+            'url' => 'ws://centrifugo.local:8000/connection/websocket',
+            'user' => (string) $this->user->id,
+            'timestamp' => $timestamp,
+            'info' => $info,
             'token' => $token,
-            'info' => $this->getUserInfo()
+            //private chat access check endpoint
+            'authEndpoint' => Yii::$app->urlManager->createAbsoluteUrl('v1/channel/auth'),
         ];
     }
 

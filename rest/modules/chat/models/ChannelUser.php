@@ -74,9 +74,20 @@ class ChannelUser extends \yii\db\ActiveRecord
     public function fields()
     {
         return [
-            'user_id',
+            'user' => function () {
+                return $this->getUserIdAndName();
+            },
             'role'
         ];
+    }
+
+    /**
+     * centrifugo comp. format
+     * @return type
+     */
+    public function getUserIdAndName()
+    {
+        return Yii::$app->getModule('chat')->centrifugo::formatUser($this->user);
     }
 
     /**

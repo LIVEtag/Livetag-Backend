@@ -3,11 +3,12 @@ namespace rest\modules\chat\controllers\actions;
 
 use Yii;
 use yii\rest\Action;
+use yii\data\ActiveDataProvider;
 
 /**
- * Class JoinAction
+ * Class GetUsersAction
  */
-class LeaveAction extends Action
+class GetUsersAction extends Action
 {
 
     /**
@@ -20,9 +21,13 @@ class LeaveAction extends Action
         if ($this->checkAccess) {
             call_user_func($this->checkAccess, $this->id, $model);
         }
-
-        $user = Yii::$app->user->identity;
-        $model->leaveUserFromChannel($user);
-        return $model;
+        
+        $dataProvider = new ActiveDataProvider([
+            'query' => $model->getUsers(),
+            'sort' => ['defaultOrder' => ['id' => SORT_ASC]]
+        ]);
+        return $dataProvider;
     }
+
+     
 }

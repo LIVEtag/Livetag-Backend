@@ -59,9 +59,13 @@ class ChannelMessage extends \yii\db\ActiveRecord
     public function fields()
     {
         return [
-            'user_id',
+            'user' => function () {
+                return $this->getUserIdAndName();
+            },
             'message',
-            'created_at'
+            'date' => function () {
+                return $this->created_at;
+            }
         ];
     }
 
@@ -105,6 +109,15 @@ class ChannelMessage extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * centrifugo comp. format
+     * @return type
+     */
+    public function getUserIdAndName()
+    {
+        return Yii::$app->getModule('chat')->centrifugo::formatUser($this->user);
     }
 
     /**

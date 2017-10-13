@@ -6,11 +6,10 @@ use yii\rest\Action;
 use rest\modules\chat\models\ChannelMessage;
 
 /**
- * Class JoinAction
+ * Class MessageAction
  */
 class MessageAction extends Action
 {
-
     /**
      * @param string $id channel id
      */

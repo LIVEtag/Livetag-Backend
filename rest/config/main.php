@@ -17,7 +17,10 @@ use yii\web\Request;
 use yii\web\Response;
 
 $params = array_merge(
-    require __DIR__ . '/../../common/config/params.php', require __DIR__ . '/../../common/config/params-local.php', require __DIR__ . '/params.php', require __DIR__ . '/params-local.php'
+    require __DIR__ . '/../../common/config/params.php',
+    require __DIR__ . '/../../common/config/params-local.php',
+    require __DIR__ . '/params.php',
+    require __DIR__ . '/params-local.php'
 );
 
 return [
@@ -138,7 +141,9 @@ return [
                     'extraPatterns' => [
                         'PUT <id:\d+>/join' => ChannelController::ACTION_JOIN,
                         'PUT <id:\d+>/leave' => ChannelController::ACTION_LEAVE,
-                        'POST <id:\d+>/message' => ChannelController::ACTION_MESSAGE,
+                        'GET <id:\d+>/message' => ChannelController::ACTION_GET_MESSAGES,
+                        'POST <id:\d+>/message' => ChannelController::ACTION_ADD_MESSAGE,
+                        'GET <id:\d+>/user' => ChannelController::ACTION_GET_USERS,
                         'POST <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_ADD_TO_CHAT,
                         'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
                         'POST auth' => ChannelController::ACTION_AUTH,

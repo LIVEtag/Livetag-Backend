@@ -22,10 +22,8 @@ class JoinAction extends Action
         }
 
         $user = Yii::$app->user->identity;
-        if (!$model->joinUserToChannel($user)) {
-            return $model;
-        }
+        $model->joinUserToChannel($user);
 
-        Yii::$app->getResponse()->setStatusCode(204);
+        return $model;
     }
 }

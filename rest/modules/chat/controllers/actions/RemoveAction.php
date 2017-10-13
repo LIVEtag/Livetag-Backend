@@ -34,7 +34,7 @@ class RemoveAction extends Action
             throw new NotFoundHttpException(Yii::t('app', "User not found: $id"));
         } elseif ($user->id == Yii::$app->user->id) {
             throw new UnprocessableEntityHttpException(Yii::t('app', "You can't remove self"));
-        } elseif ($model->canManage($user)) {
+        } elseif ($model->canManage($userId)) {
             throw new UnprocessableEntityHttpException(Yii::t('app', "You can't remove other channel admin"));
         }
 

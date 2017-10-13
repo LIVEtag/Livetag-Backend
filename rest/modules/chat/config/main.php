@@ -11,8 +11,10 @@ return [
     'components' => [
         'centrifugo' => [
             'class' => CentrifugoComponent::class,
-            'host' => 'http://centrifugo:8000', //docker example(docker-compose link name)
+            //'host' => 'http://centrifugo:8000', //docker example(docker-compose link name)
+            'host' => 'http://centrifugo.local:8000', //docker example(docker-compose link name)
             'secret' => 'gbksoft',
+            'ws' => 'ws://centrifugo.local:8000/connection/websocket'
         ],
     ],
 ];

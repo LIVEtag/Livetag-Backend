@@ -95,6 +95,7 @@ class Channel extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
+     * @todo edit only title and description
      */
     public function rules()
     {
@@ -145,9 +146,21 @@ class Channel extends \yii\db\ActiveRecord
     public function extraFields()
     {
         return [
+            'inside',
             'users',
             'messages'
         ];
+    }
+
+    /**
+     * is current user inside channel
+     *
+     * @return bool
+     */
+    public function getInside(): bool
+    {
+        $userId = Yii::$app->user->id;
+        return $this->canPost($userId);
     }
 
     /**
@@ -271,15 +284,15 @@ class Channel extends \yii\db\ActiveRecord
      * get role of selected user in channel
      * if channel public->user can access it as user
      *
-     * @param User $user
+     * @param int $userId
      * @return int
      */
-    public function getUserRoleInChannel($user): int
+    public function getUserRoleInChannel(int $userId): int
     {
         $role = $this->getUsers()
             ->select('role')
             ->andWhere([
-                ChannelUser::tableName() . '.user_id' => $user->id,
+                ChannelUser::tableName() . '.user_id' => $userId,
             ])
             ->scalar();
         if (!$role) {
@@ -291,21 +304,21 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * check if selected user can manage current channel
      *
-     * @param User $user
+     * @param int $userId
      */
-    public function canManage(User $user)
+    public function canManage(int $userId): bool
     {
-        return $this->getUserRoleInChannel($user) == ChannelUser::ROLE_ADMIN;
+        return $this->getUserRoleInChannel($userId) == ChannelUser::ROLE_ADMIN;
     }
 
     /**
      * check if selected user can access(see) to current channel
      *
-     * @param User $user
+     * @param int $userId
      */
-    public function canAccess(User $user)
+    public function canAccess(int $userId): bool
     {
-        $role = $this->getUserRoleInChannel($user);
+        $role = $this->getUserRoleInChannel($userId);
         //allow to view public channels vithout join
         if (!$role && $this->type == self::TYPE_PUBLIC) {
             return true;
@@ -319,11 +332,11 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * check if selected user can write to current channel
      *
-     * @param User $user
+     * @param int $userId
      */
-    public function canPost(User $user)
+    public function canPost(int $userId): bool
     {
-        return in_array($this->getUserRoleInChannel($user), [
+        return in_array($this->getUserRoleInChannel($userId), [
             ChannelUser::ROLE_USER,
             ChannelUser::ROLE_ADMIN
         ]);

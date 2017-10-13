@@ -15,6 +15,8 @@ use rest\modules\chat\models\ChannelSearch;
 use rest\modules\chat\controllers\actions\JoinAction;
 use rest\modules\chat\controllers\actions\LeaveAction;
 use rest\modules\chat\controllers\actions\MessageAction;
+use rest\modules\chat\controllers\actions\GetMessagesAction;
+use rest\modules\chat\controllers\actions\GetUsersAction;
 use rest\modules\chat\controllers\actions\AddAction;
 use rest\modules\chat\controllers\actions\RemoveAction;
 use rest\modules\chat\controllers\actions\AuthAction;
@@ -37,9 +39,19 @@ class ChannelController extends ActiveController
     const ACTION_LEAVE = 'leave';
 
     /**
-     * leave selected channel
+     * get users in channel
      */
-    const ACTION_MESSAGE = 'message';
+    const ACTION_GET_USERS = 'get_users';
+
+    /**
+     * get messages in channel
+     */
+    const ACTION_GET_MESSAGES = 'get_messages';
+
+    /**
+     * add message to channel
+     */
+    const ACTION_ADD_MESSAGE = 'add_message';
 
     /**
      * add selected user to selected channel
@@ -83,7 +95,9 @@ class ChannelController extends ActiveController
                                 self::ACTION_VIEW,
                                 self::ACTION_JOIN,
                                 self::ACTION_LEAVE,
-                                self::ACTION_MESSAGE,
+                                self::ACTION_ADD_MESSAGE,
+                                self::ACTION_GET_MESSAGES,
+                                self::ACTION_GET_USERS,
                                 self::ACTION_AUTH,
                                 self::ACTION_SIGN,
                             ],
@@ -130,7 +144,17 @@ class ChannelController extends ActiveController
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                 ],
-                self::ACTION_MESSAGE => [
+                self::ACTION_GET_MESSAGES => [
+                    'class' => GetMessagesAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                ],
+                self::ACTION_GET_USERS => [
+                    'class' => GetUsersAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                ],
+                self::ACTION_ADD_MESSAGE => [
                     'class' => MessageAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
@@ -158,25 +182,27 @@ class ChannelController extends ActiveController
      */
     public function checkAccess($action, $model = null, $params = [])
     {
-        $user = Yii::$app->user->identity;
+        $userId = Yii::$app->user->id;
         if ($model) {
             switch ($action) {
                 case self::ACTION_UPDATE:
                 case self::ACTION_DELETE:
                 case self::ACTION_ADD_TO_CHAT:
                 case self::ACTION_REMOVE_FROM_CHAT:
-                    if (!$model->canManage($user)) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action!'));
+                    if (!$model->canManage($userId)) {
+                        throw new ForbiddenHttpException(Yii::t('app', 'You do no have permissions to pmanage this channel'));
                     }
                     break;
                 case self::ACTION_VIEW:
-                    if (!$model->canAccess($user)) {
+                case self::ACTION_GET_MESSAGES:
+                case self::ACTION_GET_USERS:
+                    if (!$model->canAccess($userId)) {
                         throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action!'));
                     }
                     break;
-                case self::ACTION_MESSAGE:
-                    if (!$model->canPost($user)) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action!'));
+                case self::ACTION_ADD_MESSAGE:
+                    if (!$model->canPost($userId)) {
+                        throw new ForbiddenHttpException(Yii::t('app', 'You do no have permissions to post message in this channel'));
                     }
                     break;
                 case self::ACTION_JOIN:
