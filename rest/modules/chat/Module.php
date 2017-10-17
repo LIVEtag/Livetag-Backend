@@ -6,6 +6,7 @@
 namespace rest\modules\chat;
 
 use yii\base\Module as BaseModule;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Module
@@ -20,6 +21,13 @@ class Module extends BaseModule
     {
         parent::init();
 
-        \Yii::configure($this, require(__DIR__ . '/config/main.php'));
+        $config = ArrayHelper::merge(
+            require(__DIR__ . '/config/main.php'),
+            require(__DIR__ . '/config/main-local.php')
+        );
+
+
+
+        \Yii::configure($this, $config);
     }
 }
