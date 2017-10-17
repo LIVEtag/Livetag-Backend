@@ -321,7 +321,7 @@ class Channel extends \yii\db\ActiveRecord
         if (!$role) {
             $role = ChannelUser::ROLE_NOBODY;
         }
-        return $role;
+        return (int)$role;
     }
 
     /**
@@ -391,6 +391,6 @@ class Channel extends \yii\db\ActiveRecord
             $this->addError('channel_id', Yii::t('app', 'User not in channel'));
             return false;
         }
-        return $channelUser->delete();
+        return $channelUser->delete() ? true : false;
     }
 }
