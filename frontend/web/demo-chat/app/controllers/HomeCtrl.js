@@ -72,15 +72,16 @@
             };
 
             /**
-             * join to channe
+             * join to channel
              * @param {Number} index         
              */
             $scope.join = function (index) {
                 Chat.joinChannel({id: $scope.channels[index].id}, function (data) {
                     var channel = data;
                     $scope.getChannelData(channel.id).then(function (data) {
-                        $scope.channels[index].messages = data.messages;
-                        $scope.channels[index].users = data.users;
+                        channel.messages = data.messages;
+                        channel.users = data.users;
+                        $scope.channels[index] = channel;//update info
                         $scope.subscribe(channel.url);
                     });
                 });

@@ -1,15 +1,23 @@
 <?php
+/**
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
+declare(strict_types=1);
+
 namespace rest\modules\chat\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 use yii\helpers\Inflector;
-use rest\common\models\User;
+use rest\modules\chat\models\User;
 use rest\modules\chat\exception\AfterSaveException;
+use yii\db\ActiveQuery;
 
 /**
- * This is the model class for table "chat_channel".
+ * This is the model class for table "channel".
  *
  * @property integer $id
  * @property string $url
@@ -55,7 +63,7 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'channel';
     }
@@ -63,11 +71,17 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             TimestampBehavior::class,
-            BlameableBehavior::class
+            [
+                'class' => BlameableBehavior::class,
+                'value' => function () {
+                    $user = Yii::$app->getModule('chat')->get('user', false);
+                    return $user && !$user->isGuest ? $user->id : null;
+                }
+            ],
         ];
     }
 
@@ -75,7 +89,7 @@ class Channel extends \yii\db\ActiveRecord
      * use transactions for all scenarios
      * @return type
      */
-    public function transactions()
+    public function transactions(): array
     {
         $transactions = [];
         foreach ($this->scenarios() as $scenario => $fields) {
@@ -88,16 +102,15 @@ class Channel extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return ChannelQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): ChannelQuery
     {
         return new ChannelQuery(get_called_class());
     }
 
     /**
      * @inheritdoc
-     * @todo edit only title and description
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'description', 'type'], 'required'],
@@ -110,7 +123,18 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function scenarios(): array
+    {
+        return array_merge(parent::scenarios(), [
+            self::SCENARIO_CREATE => ['name', 'description', 'type'],
+            self::SCENARIO_UPDATE => ['name', 'description'], //do not allow change type
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('app', 'ID'),
@@ -128,7 +152,7 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         return [
             'id',
@@ -143,7 +167,7 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function extraFields()
+    public function extraFields(): array
     {
         return [
             'inside',
@@ -159,22 +183,22 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function getInside(): bool
     {
-        $userId = Yii::$app->user->id;
-        return $this->canPost($userId);
+        $userId = Yii::$app->getModule('chat')->user->id;
+        return $userId ? $this->canPost($userId) : false;
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsers()
+    public function getUsers(): ?ActiveQuery
     {
         return $this->hasMany(ChannelUser::className(), ['channel_id' => 'id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getMessages()
+    public function getMessages(): ?ActiveQuery
     {
         return $this->hasMany(ChannelMessage::className(), ['channel_id' => 'id']);
     }
@@ -182,7 +206,7 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         if ($insert) {
             $this->generateUniqueChannelUrl();
@@ -193,11 +217,11 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * Scenario with transaction rollback, if error in afterSave
      * catch thrown exception
-     * @param boolean $runValidation
+     * @param bool $runValidation
      * @param array $attributeNames
-     * @return boolean
+     * @return bool
      */
-    public function save($runValidation = true, $attributeNames = null)
+    public function save($runValidation = true, $attributeNames = null): bool
     {
         try {
             return parent::save($runValidation, $attributeNames);
@@ -243,7 +267,6 @@ class Channel extends \yii\db\ActiveRecord
 
     /**
      * generate uniq url for channel
-     * @return string
      */
     public function generateUniqueChannelUrl()
     {
@@ -266,9 +289,9 @@ class Channel extends \yii\db\ActiveRecord
     /**
      * check name for uniq
      * @param type $url
-     * @return boolean
+     * @return bool
      */
-    private function checkUniqueUrl($url)
+    private function checkUniqueUrl($url): bool
     {
         $query = static::find()->andWhere(['url' => $url]);
         if ($this->id) {
@@ -346,9 +369,9 @@ class Channel extends \yii\db\ActiveRecord
      * try to join selected user to channel
      *
      * @param User $user
-     * @return type
+     * @return bool
      */
-    public function joinUserToChannel(User $user)
+    public function joinUserToChannel(User $user): bool
     {
         return $this->createChannelUserRecord($user->id);
     }
@@ -357,9 +380,9 @@ class Channel extends \yii\db\ActiveRecord
      * try to leave selected user from channel
      *
      * @param User $user
-     * @return type
+     * @return bool
      */
-    public function leaveUserFromChannel(User $user)
+    public function leaveUserFromChannel(User $user): bool
     {
         $channelUser = ChannelUser::find()
             ->byChannelAndUser($this->id, $user->id)

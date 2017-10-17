@@ -17,7 +17,7 @@ class AuthAction extends Action
 
     public function run()
     {
-        $user = Yii::$app->user->identity;
+        $user = Yii::$app->getModule('chat')->user->identity;
 
         $request = Yii::$app->request;
         $client = $request->post('client');

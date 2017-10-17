@@ -5,4 +5,14 @@
  */
 Yii::setAlias('@chat', dirname(__DIR__));
 
-return [];
+use rest\modules\chat\models\User as ChatUser;
+use yii\web\User as WebUser;
+
+return [
+    'components' => [
+        'user' => [
+            'class' => WebUser::class,
+            'identityClass' => ChatUser::class,
+        ]
+    ]
+];

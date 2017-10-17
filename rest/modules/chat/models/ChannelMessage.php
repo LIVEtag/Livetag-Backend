@@ -1,9 +1,17 @@
 <?php
+/**
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
+declare(strict_types=1);
+
 namespace rest\modules\chat\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use rest\common\models\User;
+use rest\modules\chat\models\User;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "message".
@@ -24,7 +32,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'channel_message';
     }
@@ -32,7 +40,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             TimestampBehavior::class,
@@ -42,7 +50,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['channel_id', 'user_id', 'message'], 'required'],
@@ -56,12 +64,10 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function fields()
+    public function fields(): array
     {
         return [
-            'user' => function () {
-                return $this->getUserIdAndName();
-            },
+            'user',
             'message',
             'date' => function () {
                 return $this->created_at;
@@ -72,7 +78,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function extraFields()
+    public function extraFields(): array
     {
         return [
             'user',
@@ -83,7 +89,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('app', 'ID'),
@@ -98,7 +104,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getChannel()
+    public function getChannel(): ?ActiveQuery
     {
         return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
     }
@@ -106,18 +112,9 @@ class ChannelMessage extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ?ActiveQuery
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * centrifugo comp. format
-     * @return type
-     */
-    public function getUserIdAndName()
-    {
-        return Yii::$app->getModule('chat')->centrifugo::formatUser($this->user);
     }
 
     /**
@@ -125,7 +122,7 @@ class ChannelMessage extends \yii\db\ActiveRecord
      *
      * before save message->publish it to centrifugo channel
      */
-    public function beforeSave($insert)
+    public function beforeSave($insert): bool
     {
         if (!Yii::$app->getModule('chat')->centrifugo->setUser($this->user)->publishMessage($this->channel->url, $this->message)) {
             $this->addError('channel_id', Yii::t('app', 'Failed to send message to channel'));

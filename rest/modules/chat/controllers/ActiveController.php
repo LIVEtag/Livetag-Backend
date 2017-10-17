@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
+declare(strict_types = 1);
+
 namespace rest\modules\chat\controllers;
 
 use Yii;
@@ -45,16 +52,23 @@ class ActiveController extends BaseActiveController
      */
     const ACTION_OPTIONS = 'options';
 
-    public function behaviors()
+    /**
+     * @inheritdoc
+     */
+    public function behaviors(): array
     {
         return ArrayHelper::merge(parent::behaviors(), self::getDefaultBehaviors());
     }
 
-    public static function getDefaultBehaviors()
+    /**
+     * @inheritdoc
+     */
+    public static function getDefaultBehaviors(): array
     {
         return [
             'authenticator' => [
                 'class' => CompositeAuth::className(),
+                'user' => Yii::$app->getModule('chat')->user,
                 'authMethods' => [
                     HttpBearerAuth::className(),
                 ],
@@ -70,6 +84,7 @@ class ActiveController extends BaseActiveController
             ],
             'access' => [
                 'class' => AccessControl::className(),
+                'user' => Yii::$app->getModule('chat')->user,
                 'denyCallback' => function ($rule, $action) {
                     throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action'));
                 },

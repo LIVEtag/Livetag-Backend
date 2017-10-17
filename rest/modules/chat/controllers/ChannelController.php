@@ -1,16 +1,20 @@
 <?php
 /**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+declare(strict_types = 1);
+
 namespace rest\modules\chat\controllers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\web\ForbiddenHttpException;
+use yii\data\ActiveDataProvider;
 use rest\modules\chat\controllers\ActiveController;
 use rest\modules\chat\models\Channel;
-use rest\common\models\User;
-use yii\web\ForbiddenHttpException;
+use rest\modules\chat\models\User;
 use rest\modules\chat\models\ChannelSearch;
 use rest\modules\chat\controllers\actions\JoinAction;
 use rest\modules\chat\controllers\actions\LeaveAction;
@@ -74,6 +78,18 @@ class ChannelController extends ActiveController
     const ACTION_SIGN = 'sign';
 
     /**
+     * @var string the scenario used for updating a model.
+     * @see \yii\base\Model::scenarios()
+     */
+    public $updateScenario = Channel::SCENARIO_UPDATE;
+
+    /**
+     * @var string the scenario used for creating a model.
+     * @see \yii\base\Model::scenarios()
+     */
+    public $createScenario = Channel::SCENARIO_CREATE;
+
+    /**
      * current controller default model class
      *
      * @var string
@@ -83,7 +99,7 @@ class ChannelController extends ActiveController
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return ArrayHelper::merge(parent::behaviors(), [
                 'access' => [
@@ -122,7 +138,7 @@ class ChannelController extends ActiveController
     /**
      * @inheritdoc
      */
-    public function actions()
+    public function actions(): array
     {
         return ArrayHelper::merge(parent::actions(), [
                 self::ACTION_INDEX => [
@@ -182,7 +198,7 @@ class ChannelController extends ActiveController
      */
     public function checkAccess($action, $model = null, $params = [])
     {
-        $userId = Yii::$app->user->id;
+        $userId = Yii::$app->getModule('chat')->user->id;
         if ($model) {
             switch ($action) {
                 case self::ACTION_UPDATE:
@@ -190,7 +206,7 @@ class ChannelController extends ActiveController
                 case self::ACTION_ADD_TO_CHAT:
                 case self::ACTION_REMOVE_FROM_CHAT:
                     if (!$model->canManage($userId)) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You do no have permissions to pmanage this channel'));
+                        throw new ForbiddenHttpException(Yii::t('app', 'You do no have permissions to manage this channel'));
                     }
                     break;
                 case self::ACTION_VIEW:
@@ -219,13 +235,13 @@ class ChannelController extends ActiveController
     /**
      * data provider for index action
      *
-     * @return \yii\data\ActiveDataProvider
+     * @return ActiveDataProvider
      */
-    public function prepareDataProvider()
+    public function prepareDataProvider(): ActiveDataProvider
     {
         $searchModel = new ChannelSearch();
         $params = Yii::$app->request->queryParams;
-        $user = Yii::$app->user->identity;
+        $user = Yii::$app->getModule('chat')->user->identity;
         return $searchModel->search($params, $user);
     }
 }

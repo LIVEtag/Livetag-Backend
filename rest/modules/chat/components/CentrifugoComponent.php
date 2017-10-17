@@ -1,10 +1,15 @@
 <?php
+/**
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
 namespace rest\modules\chat\components;
 
 use Yii;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
 use phpcent\Client;
+use rest\modules\chat\models\User;
 
 /**
  * extend from model to use errors
@@ -12,37 +17,57 @@ use phpcent\Client;
 class CentrifugoComponent extends Model
 {
 
-    public $secret = 'someSecret';
+    public $secret = 'someSuperSecret';
     public $host = 'http://localhost:8000';
-    public $ws;
+    public $ws = 'ws://localhost:8000/connection/websocket';
     protected $phpcentClient;
-    protected $operationUser;
+    protected $internalUser;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->client = new Client($this->host);
         $this->client->setSecret($this->secret);
     }
 
-    public function getClient()
+    /**
+     * client getter
+     * @return Client
+     */
+    public function getClient(): Client
     {
         return $this->phpcentClient;
     }
 
-    public function setClient($client)
+    /**
+     * client setter
+     * @param Client $client
+     */
+    public function setClient(Client $client)
     {
         $this->phpcentClient = $client;
     }
 
-    public function setUser($user)
+    /**
+     * internal user getter
+     * @return type
+     */
+    public function getUser(): ?User
     {
-        $this->operationUser = $user;
-        return $this; //test it
+        return $this->internalUser;
     }
 
-    public function getUser()
+    /**
+     * internal user setter
+     * @param User $user
+     * @return $this
+     */
+    public function setUser(User $user)
     {
-        return $this->operationUser;
+        $this->internalUser = $user;
+        return $this;
     }
 
     /**
@@ -53,28 +78,27 @@ class CentrifugoComponent extends Model
     public function getUserInfo()
     {
         if (!$this->user) {
-            return json_encode([
-                'id' => '',
-                'name' => 'Unknown'
-            ]);
+            self::formatUser(new User());
         }
         return self::formatUser($this->user);
     }
 
     /**
-     * Use this format in chat messages
-     * @param type $user
-     * @return type
+     * Use this format in chat messages (defined by fields() of User model)
+     *
+     * @param User $user
+     * @return array
      */
-    public static function formatUser($user)
+    public static function formatUser(User $user): array
     {
-        return [
-            'id' => $user->id,
-            'name' => $user->username
-        ];
+        return $user->toArray();
     }
 
-    public function getJsonEncodedUserInfo()
+    /**
+     * get json encoded user info
+     * @return string
+     */
+    public function getJsonEncodedUserInfo(): string
     {
         return json_encode($this->getUserInfo());
     }
@@ -84,9 +108,9 @@ class CentrifugoComponent extends Model
      *
      * @param string $channel
      * @param string $client
-     * @return type
+     * @return array
      */
-    public function generateChannelSignResponce($channel, $client)
+    public function generateChannelSignResponce($channel, $client): array
     {
         $info = $this->getJsonEncodedUserInfo();
         return [
@@ -97,9 +121,10 @@ class CentrifugoComponent extends Model
 
     /**
      * generate token for current(set) user
-     * @return type
+     *
+     * @return array
      */
-    public function generateUserToken()
+    public function generateUserToken(): array
     {
         if (!$this->user) {
             throw new InvalidConfigException(Yii::t('app', 'Please, set user for centrifugo'));
@@ -107,9 +132,8 @@ class CentrifugoComponent extends Model
         $timestamp = (string) time();
         $info = $this->getJsonEncodedUserInfo();
         $token = $this->client->generateClientToken($this->user->id, $timestamp, $info);
-
         return [
-            'url' => 'ws://centrifugo.local:8000/connection/websocket',
+            'url' => $this->ws,
             'user' => (string) $this->user->id,
             'timestamp' => $timestamp,
             'info' => $info,
@@ -123,15 +147,15 @@ class CentrifugoComponent extends Model
 
     /**
      * Publish message to channel
-     * Epic feil in the implementation:
+     * Epic fail in the implementation:
      * there is no way to publish a message from a specific user.
      * so...put user info in data block
      *
      * @param string $channel
      * @param string $message
-     * @return boolean
+     * @return bool
      */
-    public function publishMessage(string $channel, string $message)
+    public function publishMessage(string $channel, string $message): bool
     {
         try {
             Yii::info('Sending message `' . $message . '` to channel `' . $channel . '`', 'centrifugo');

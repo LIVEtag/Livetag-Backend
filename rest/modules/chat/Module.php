@@ -20,14 +20,10 @@ class Module extends BaseModule
     public function init()
     {
         parent::init();
-
         $config = ArrayHelper::merge(
             require(__DIR__ . '/config/main.php'),
             require(__DIR__ . '/config/main-local.php')
         );
-
-
-
         \Yii::configure($this, $config);
     }
 }

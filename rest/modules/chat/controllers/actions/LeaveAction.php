@@ -21,7 +21,7 @@ class LeaveAction extends Action
             call_user_func($this->checkAccess, $this->id, $model);
         }
 
-        $user = Yii::$app->user->identity;
+        $user = Yii::$app->getModule('chat')->user->identity;
         $model->leaveUserFromChannel($user);
         return $model;
     }

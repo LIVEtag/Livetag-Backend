@@ -1,11 +1,18 @@
 <?php
+/**
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
+declare(strict_types=1);
+
 namespace rest\modules\chat\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use rest\modules\chat\models\Channel;
-use rest\common\models\User;
+use rest\modules\chat\models\User;
 
 /**
  * ChannelSearch represents the model behind the search form about `rest\modules\chat\models\Channel`.
@@ -16,7 +23,7 @@ class ChannelSearch extends Channel
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'type', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
@@ -27,7 +34,7 @@ class ChannelSearch extends Channel
     /**
      * @inheritdoc
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -40,7 +47,7 @@ class ChannelSearch extends Channel
      *
      * @return ActiveDataProvider
      */
-    public function search($params, User $user)
+    public function search($params, User $user): ActiveDataProvider
     {
         $query = Channel::find();
 

@@ -3,7 +3,7 @@ namespace rest\modules\chat\controllers\actions;
 
 use Yii;
 use yii\rest\Action;
-use rest\common\models\User;
+use rest\modules\chat\models\User;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -32,7 +32,7 @@ class AddAction extends Action
         $user = User::findOne($userId);
         if (!$user) {
             throw new NotFoundHttpException(Yii::t('app', "User not found: $id"));
-        } elseif ($user->id == Yii::$app->user->id) {
+        } elseif ($user->id == Yii::$app->getModule('chat')->user->id) {
             throw new UnprocessableEntityHttpException(Yii::t('app', "You can't add self"));
         }
 

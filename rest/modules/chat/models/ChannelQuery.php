@@ -1,7 +1,14 @@
 <?php
+/**
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+
+declare(strict_types=1);
+
 namespace rest\modules\chat\models;
 
-use rest\common\models\User;
+use rest\modules\chat\models\User;
 
 /**
  * This is the ActiveQuery class for [[Channel]].
