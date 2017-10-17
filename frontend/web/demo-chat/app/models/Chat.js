@@ -8,7 +8,7 @@ app.factory('Chat', ['$resource', 'baseUrl', function ($resource, baseUrl) {
             },
             //'GET sign'
             sign: {
-                method: 'GET',
+                method: 'POST',
                 params: {action: 'sign'},
                 responseType: 'json',
             },

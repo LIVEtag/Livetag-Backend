@@ -147,7 +147,7 @@ return [
                         'POST <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_ADD_TO_CHAT,
                         'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
                         'POST auth' => ChannelController::ACTION_AUTH,
-                        'GET sign' => ChannelController::ACTION_SIGN,
+                        'POST sign' => ChannelController::ACTION_SIGN,
                     ],
                     'pluralize' => false,
                 ],

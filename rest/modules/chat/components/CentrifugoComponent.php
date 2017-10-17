@@ -116,6 +116,8 @@ class CentrifugoComponent extends Model
             'token' => $token,
             //private chat access check endpoint
             'authEndpoint' => Yii::$app->urlManager->createAbsoluteUrl('v1/channel/auth'),
+            //refresh token (if connection_lifetime in centrifugo config greater than zero)
+            'refreshEndpoint' => Yii::$app->urlManager->createAbsoluteUrl('v1/channel/sign'),
         ];
     }
 

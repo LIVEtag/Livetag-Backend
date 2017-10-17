@@ -3,8 +3,8 @@
         <div class="col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-list"></span> Channel list  
-                    <label class="link_url"></label>
+                    <span class="glyphicon glyphicon-list"></span> Channel list                   
+                    <a logout class="pull-right white-text"><span class="glyphicon glyphicon-log-out"></span></a>
                 </div>
                 <div class="panel-body">
                     <ul class="chat channel list">
@@ -101,16 +101,17 @@
         <div class="col-md-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-user"></span> Channel Users [Total: #{{channel.users.length}}]
+                    <span class="glyphicon glyphicon-user"></span> Channel Users [Total: {{channel.users.length}}]
                 </div>
                 <div class="panel-body">
                     <ul class="chat channel list">
-                        <li ng-repeat="user in channel.users" ng-init="userIndex = $index">
+                        <li ng-repeat="user in channel.users" ng-init="userIndex = $index;">
                             <span class="glyphicon glyphicon-king" ng-if="user.role == 2"></span>
                             <span class="glyphicon glyphicon-pawn" ng-if="user.role == 1"></span>                            
                             {{user.user.name}} <!--todo add presence icon -->
+                            <span ng-class="{'online':isOnine(channelIndex, user.user.id)}" class="glyphicon glyphicon-globe offline"></span>
                             <span ng-click="removeUserFromChannel(channelIndex, user.user.id)" class="glyphicon glyphicon-remove pull-right" ng-if="user.role == 1"></span>        
-                        </li>
+                        </li>                       
                     </ul>
                 </div>
                 <div class="panel-footer">
@@ -130,14 +131,14 @@
         <div class="col-md-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-comment"></span> System logs                 
+                    <span class="glyphicon glyphicon-comment"></span> System logs                    
                 </div>
                 <div class="panel-body">
                     <ul class="chat" ng-repeat="log in logs">
                         <li>
                             <div class="message chat-body clearfix"></div>
-                            <span class="channel" ng-show="log.channel">{{log.channel}}: </span>
-                            <span class="time">{{log.date}} </span>
+                            <span class="time">{{log.date}}: </span>
+                            <span class="channel" ng-show="log.channel">[{{log.channel}}] </span>                            
                             <span class="text">{{log.text}}</span>
                         </li>
 

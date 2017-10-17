@@ -3,11 +3,11 @@ namespace rest\modules\chat\controllers\actions;
 
 use Yii;
 use yii\base\Action;
-use rest\modules\chat\models\Channel;
 use yii\web\Response;
 
 /**
  * Class SignAction
+ * @see https://fzambia.gitbooks.io/centrifugal/content/server/connection_check.html
  */
 class SignAction extends Action
 {

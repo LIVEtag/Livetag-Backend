@@ -4,8 +4,13 @@ var app = angular.module('app', [
     'acl'
 ])
 
+/**
+ * baseUrl constant
+ */
 app.value('baseUrl', '/rest/v1/');
-
+/**
+ * $stateChangeStart access control
+ */
 app.run(['$rootScope', '$state', '$stateParams', 'Acl',
     function ($rootScope, $state, $stateParams, Acl) {
         $rootScope.$state = $state;
@@ -32,8 +37,11 @@ app.run(['$rootScope', '$state', '$stateParams', 'Acl',
         });
     }
 ]);
-//access control
-app.config(['AclProvider', function (AclProvider) {
+/**
+ * access control
+ */
+app.config(['AclProvider',
+    function (AclProvider) {
         AclProvider.config({
             storage: 'localStorage',
             storageKey: 'demo',
@@ -46,12 +54,10 @@ app.config(['AclProvider', function (AclProvider) {
                 guest: {
                     actions: {
                         'root.login': true,
-                        'root.home': false
                     }
                 },
                 user: {
                     actions: {
-                        'root.login': false,
                         'root.home': true,
                     },
                 }
@@ -59,8 +65,11 @@ app.config(['AclProvider', function (AclProvider) {
         });
     }
 ]);
-//routing
-app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+/**
+ * simple routing
+ */
+app.config(['$stateProvider', '$urlRouterProvider',
+    function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise(function ($injector) {
             var $state = $injector.get('$state');
             $state.go('root.home');
@@ -73,7 +82,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
                 })
                 .state("root.home", {
                     url: "/",
-                    templateUrl: 'app/home.html',
+                    templateUrl: 'app/views/home.html',
                     controller: 'HomeCtrl',
                     resolve: {
                         signPromise: ['Chat', function (Chat) {
@@ -84,14 +93,18 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
                 })
                 .state("root.login", {
                     url: "/login",
-                    templateUrl: 'app/login.html',
+                    templateUrl: 'app/views/login.html',
                     controller: 'LoginCtrl',
                 })
     }
 ]);
+/**
+ * Provider config
+ */
+app.config(['$locationProvider', '$httpProvider', '$qProvider',
+    function ($locationProvider, $httpProvider, $qProvider) {
+        $qProvider.errorOnUnhandledRejections(false);
 
-app.config(['$locationProvider', '$httpProvider',
-    function ($locationProvider, $httpProvider) {
         $httpProvider.defaults.transformResponse = function (data, headersGetter) {
             if (typeof (headersGetter()['content-type']) !== 'undefined' && headersGetter()['content-type'].indexOf('application/json') === 0) {
                 if (data) {
@@ -101,12 +114,14 @@ app.config(['$locationProvider', '$httpProvider',
             }
             return data;
         };
-
-        $locationProvider.html5Mode(true).hashPrefix('!'); //pretty url
         $httpProvider.interceptors.push('authInterceptor');
+
+        $locationProvider.html5Mode(true).hashPrefix('!'); //pretty url        
     }
 ]);
-//request settings
+/**
+ * request settings
+ */
 angular.module('app').factory('authInterceptor', ['Acl', 'baseUrl', '$injector', '$q',
     function (Acl, baseUrl, $injector, $q) {
         return {
@@ -131,7 +146,3 @@ angular.module('app').factory('authInterceptor', ['Acl', 'baseUrl', '$injector',
         };
     }
 ]);
-
-app.config(['$qProvider', function ($qProvider) {
-    $qProvider.errorOnUnhandledRejections(false);
-}]);
