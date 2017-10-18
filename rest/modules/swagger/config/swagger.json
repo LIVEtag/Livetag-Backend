@@ -780,7 +780,7 @@
                     }
                 }
             },
-            "post": {
+            "put": {
                 "summary": "Update channel",
                 "description": "Action avaliable for channel admin",
                 "tags": ["Channel"],
