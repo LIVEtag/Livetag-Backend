@@ -20,7 +20,7 @@ app.factory('Chat', ['$resource', 'baseUrl', function ($resource, baseUrl) {
             //'POST'
             createChannel: {
                 method: 'POST',
-                params: {expand: 'inside'}, 
+                params: {expand: 'inside,roleInChannel'}, 
                 responseType: 'json',
             },
             //GET
@@ -33,13 +33,13 @@ app.factory('Chat', ['$resource', 'baseUrl', function ($resource, baseUrl) {
             //'PUT <id:\d+>/join'
             joinChannel: {
                 method: 'PUT',
-                params: {action: 'join', expand: 'inside'}, //id required
+                params: {action: 'join', expand: 'inside,roleInChannel'}, //id required
                 responseType: 'json',
             },
             //'PUT <id:\d+>/leave' 
             leaveChannel: {
                 method: 'PUT',
-                params: {action: 'leave', expand: 'inside'}, //id required
+                params: {action: 'leave', expand: 'inside,roleInChannel'}, //id required
                 responseType: 'json',
             },
             //'GET <id:\d+>/message'

@@ -56,8 +56,6 @@
                 </div>
                 <div class="panel-body">
                     <ul class="chat chat-messages">
-
-
                         <li ng-class="{'left clearfix':user.id == message.user.id, 'right clearfix':user.id != message.user.id}" ng-repeat="message in channel.messages">
                             <span class="chat-img"  ng-class="{'pull-left':user.id == message.user.id, 'pull-right':user.id != message.user.id}">
                                 <img class="img-circle" ng-src="http://lorempixel.com/50/50/abstract/{{message.user.id}}/">
@@ -105,12 +103,12 @@
                 </div>
                 <div class="panel-body">
                     <ul class="chat channel list">
-                        <li ng-repeat="user in channel.users" ng-init="userIndex = $index;">
+                        <li ng-repeat="user in channel.users" ng-init="userIndex = $index">
                             <span class="glyphicon glyphicon-king" ng-if="user.role == 2"></span>
                             <span class="glyphicon glyphicon-pawn" ng-if="user.role == 1"></span>                            
-                            {{user.user.name}} <!--todo add presence icon -->
+                            {{user.user.name}}
                             <span ng-class="{'online':isOnine(channelIndex, user.user.id)}" class="glyphicon glyphicon-globe offline"></span>
-                            <span ng-click="removeUserFromChannel(channelIndex, user.user.id)" class="glyphicon glyphicon-remove pull-right" ng-if="user.role == 1"></span>        
+                            <span ng-click="removeUserFromChannel(channelIndex, user.user.id)" class="glyphicon glyphicon-remove pull-right" ng-if="user.role == 1 && channel.roleInChannel==2"></span>        
                         </li>                       
                     </ul>
                 </div>

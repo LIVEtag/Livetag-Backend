@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace rest\modules\chat\models;
 
@@ -172,8 +172,20 @@ class Channel extends \yii\db\ActiveRecord
         return [
             'inside',
             'users',
-            'messages'
+            'messages',
+            'roleInChannel'
         ];
+    }
+
+    /**
+     * role of current user in channel
+     *
+     * @return int
+     */
+    public function getRoleInChannel(): int
+    {
+        $userId = Yii::$app->getModule('chat')->user->id;
+        return $this->getUserRoleInChannel($userId);
     }
 
     /**
@@ -321,7 +333,7 @@ class Channel extends \yii\db\ActiveRecord
         if (!$role) {
             $role = ChannelUser::ROLE_NOBODY;
         }
-        return (int)$role;
+        return (int) $role;
     }
 
     /**

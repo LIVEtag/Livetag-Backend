@@ -14,7 +14,7 @@
              * get channel list from server
              */
             $scope.getChannels = function () {
-                Chat.getChannels({expand: 'inside,messages,users'}, function (data) {
+                Chat.getChannels({expand: 'inside,messages,users,roleInChannel'}, function (data) {
                     $scope.channels = data;
                     $scope.connectToCentrifugo();
                 });
@@ -80,7 +80,7 @@
                     var channel = data;
                     $scope.getChannelData(channel.id).then(function (data) {
                         channel.messages = data.messages;
-                        channel.users = data.users;
+                        channel.users = data.users;                        
                         $scope.channels[index] = channel;//update info
                         $scope.subscribe(channel.url);
                     });
