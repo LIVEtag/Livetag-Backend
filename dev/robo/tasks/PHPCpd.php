@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 namespace robo\tasks;
@@ -27,6 +27,11 @@ class PHPCpd extends BaseTask implements CommandInterface, PrintedInterface
      * @var string[]
      */
     protected $directories;
+
+    /**
+     * @var int
+     */
+    protected $minLines = 150;
 
     /**
      * PHPCpd constructor.
@@ -58,6 +63,16 @@ class PHPCpd extends BaseTask implements CommandInterface, PrintedInterface
     }
 
     /**
+     * @param int $minLines
+     * @return $this
+     */
+    public function minLines($minLines)
+    {
+        $this->minLines = (int) $minLines;
+        return $this;
+    }
+
+    /**
      * Returns command that can be executed.
      * This method is used to pass generated command from one task to another.
      *
@@ -65,7 +80,9 @@ class PHPCpd extends BaseTask implements CommandInterface, PrintedInterface
      */
     public function getCommand()
     {
-        $this->args($this->directories);
+        $this->args($this->directories)
+            ->option('min-lines', $this->minLines);
+
         return $this->command . $this->arguments;
     }
 

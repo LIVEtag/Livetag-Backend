@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 namespace robo\tasks;
@@ -23,11 +23,21 @@ trait CheckStyleTrait
             __DIR__ . '/../../../console',
             __DIR__ . '/../../../rest',
             __DIR__ . '/../../../backend',
+            __DIR__ . '/../../../frontend',
+        ];
+        $excludeDirectories = [
+            'backend/web',
+            'frontend/web',
+            'rest/web',
+            '/views/',
+            '/gii/generators/',
+            '/migrations/',
         ];
 
         $PHPCsTask = $this->getPHPCsTask()
             ->directories($directories)
             ->extensions('php')
+            ->ignore($excludeDirectories)
             ->report('emacs') // @see https://github.com/squizlabs/PHP_CodeSniffer/wiki/Reporting
             ->standard(__DIR__ . '/../../../dev/etc/phpcs/standard/ruleset.xml')
             ;
@@ -39,6 +49,7 @@ trait CheckStyleTrait
             ->format('text')
             ->standard(__DIR__ . '/../../../dev/etc/phpmd/rules/rules.xml')
             ->suffixes('php')
+            ->exclude($excludeDirectories);
         ;
 
         return $this->collectionBuilder()
