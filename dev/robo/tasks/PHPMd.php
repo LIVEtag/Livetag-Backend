@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 namespace robo\tasks;
@@ -42,6 +42,11 @@ class PHPMd extends BaseTask implements CommandInterface, PrintedInterface
      * @var string
      */
     protected $suffixes;
+
+    /**
+     * @var string[]
+     */
+    protected $exclude;
 
     /**
      * PHPMd constructor.
@@ -103,6 +108,16 @@ class PHPMd extends BaseTask implements CommandInterface, PrintedInterface
     }
 
     /**
+     * @param array $exclude
+     * @return $this
+     */
+    public function exclude(array $exclude)
+    {
+        $this->exclude = $exclude;
+        return $this;
+    }
+
+    /**
      * Returns command that can be executed.
      * This method is used to pass generated command from one task to another.
      *
@@ -113,7 +128,8 @@ class PHPMd extends BaseTask implements CommandInterface, PrintedInterface
         $this->option(null, implode(',', $this->directories))
             ->option(null, $this->format)
             ->option(null, $this->standard)
-            ->option('suffixes', $this->suffixes);
+            ->option('suffixes', $this->suffixes)
+            ->option('exclude', implode(',', $this->exclude));
 
         return $this->command . $this->arguments;
     }

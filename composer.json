@@ -10,7 +10,11 @@
         "yiisoft/yii2-bootstrap": "2.0.6",
         "yiisoft/yii2-swiftmailer": "2.0.7",
         "yiisoft/yii2-authclient": "2.1.3",
-        "gbksoft/shell-command-builder": "1.0.1"
+        "gbksoft/shell-command-builder": "1.0.1",
+        "kartik-v/yii2-widget-select2": "2.1.0",
+        "kosinix/grafika": "2.0.8",
+        "frostealth/yii2-aws-s3": "2.1.0",
+        "kartik-v/yii2-widgets": "3.4.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.9",
@@ -18,8 +22,21 @@
         "yiisoft/yii2-faker": "2.0.3",
 
         "codeception/base": "2.3.4",
-        "codeception/verify": "0.4.0"
+        "codeception/verify": "0.4.0",
+
+        "phpmd/phpmd": "2.6",
+        "sebastian/phpcpd": "2.0.4",
+        "squizlabs/php_codesniffer": "2.9.*",
+        "phpunit/phpunit": "4.*",
+        "consolidation/robo": "1.0.6"
     },
+
+    "autoload-dev": {
+        "psr-4": {
+            "robo\\": "dev/robo"
+        }
+    },
+
     "config": {
         "process-timeout": 1800,
         "fxp-asset":{

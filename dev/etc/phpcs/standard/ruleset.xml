@@ -2,6 +2,7 @@
 <ruleset name="Standard">
     <exclude-pattern>console/migrations/</exclude-pattern>
     <exclude-pattern>common/Yii.php</exclude-pattern>
+    <exclude-pattern>bootstrap.php</exclude-pattern>
     <rule ref="PSR2"/>
 
     <rule ref="Generic.Files.LineLength">
@@ -12,5 +13,13 @@
     <rule ref="PSR2.Files.ClosingTag">
         <exclude-pattern>/views/.*</exclude-pattern>
         <exclude-pattern>/views/layouts/.*</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR2">
+        <exclude name="PSR2.ControlStructures.ElseIfDeclaration"/>
+    </rule>
+
+    <rule ref="Squiz.ControlStructures.ElseIfDeclaration">
+        <severity>0</severity>
     </rule>
 </ruleset>
