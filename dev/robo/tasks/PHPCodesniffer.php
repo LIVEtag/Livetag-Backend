@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2017 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 namespace robo\tasks;
@@ -65,6 +65,17 @@ class PHPCodesniffer extends BaseTask implements CommandInterface, PrintedInterf
         $this->arguments .= null === $option ? '' : " " . $option;
         $this->arguments .= null === $value ? '' : "=" . static::escape($value);
 
+        return $this;
+    }
+
+    /**
+     * @param array $ignore
+     *
+     * @return $this
+     */
+    public function ignore(array $ignore)
+    {
+        $this->option('ignore', implode(',', $ignore));
         return $this;
     }
 
