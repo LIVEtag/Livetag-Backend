@@ -11,7 +11,7 @@
         "yiisoft/yii2-swiftmailer": "2.0.7",
         "yiisoft/yii2-authclient": "2.1.3",
         "gbksoft/shell-command-builder": "1.0.1",
-        "sl4mmer/phpcent": "dev-master#23a91d0"
+        "gbksoft/phpcent": "~1.0.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.9",
