@@ -148,9 +148,11 @@ return [
                         'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
                         'POST auth' => ChannelController::ACTION_AUTH,
                         'POST sign' => ChannelController::ACTION_SIGN,
+                        //'GET demo/<route:\*>'=>
                     ],
                     'pluralize' => false,
                 ],
+                'demo-chat/<action:.*>' => 'chat/demo/index',
             ],
         ],
     ],

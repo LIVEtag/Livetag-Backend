@@ -28,7 +28,7 @@ Chat module
 * Базовая авторизация: ![](https://w3tls.net/bHN3Coe91bb8a830c5ec68ff9478c50a501230.png) - первоначальное получение конфига (с токеном) для соединения с центрифугой, а также для [поддержания соединения](https://fzambia.gitbooks.io/centrifugal/content/server/connection_check.html)
 * Авторизация в приватных каналах: ![](https://w3tls.net/bHN3Cof563f46d49ceb3e5c446551fea6c7d61.png) - вызывается js библиотекой центрифуги [автоматически](https://fzambia.gitbooks.io/centrifugal/content/clients/javascript.html#private-channels) при регистрации в приватном канале.
 ##### Демо
-В рамках базовового проекто была создана демонстрация чата. В зависимости от базовой ссылки, его можно посмотреть тут: [http://yii2-base.local/frontend/web/demo-chat/](http://yii2-base.local/frontend/web/demo-chat/)
+В рамках базовового проекто была создана демонстрация чата. В зависимости от базовой ссылки, его можно посмотреть тут: [http://yii2-base.local/rest/demo-chat/](http://yii2-base.local/rest/demo-chat/)
 ##### TODO
 * Не реализовано управление ролями в каналах - только базовое назначение при создании.
 * Сейчас админ может покинуть канал с пользователями. Реализовать либо передачу прав кому-то либо запрет покидания.
