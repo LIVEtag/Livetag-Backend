@@ -1,0 +1,149 @@
+<div class="container">
+    <div class="row"> 
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-list"></span> Channel list                   
+                    <a logout class="pull-right white-text"><span class="glyphicon glyphicon-log-out"></span></a>
+                </div>
+                <div class="panel-body">
+                    <ul class="chat channel list">
+                        <li ng-repeat="channel in channels">
+                            <div class="message chat-body clearfix"></div>
+                            <span class="time"><span class="glyphicon" ng-class="{'glyphicon-lock':channel.type == 2, 'glyphicon-eye-open':channel.type == 1}"></span></span>
+                            <span class="text">{{channel.name}}</span>
+                            <span class="text" ng-hide="channel.inside">| <a ng-click="join($index)">[<span class="glyphicon glyphicon-play"></span>enter]</a></span>
+                            <span class="text" ng-show="channel.inside">| <a ng-click="leave($index)">[<span class="glyphicon glyphicon-stop"></span>leave]</a></span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    Joined: {{subscribedChannels.length}}/{{channels.length}} channels
+                </div>
+            </div>
+        </div>        
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-new-window"></span> Create channel                 
+                </div>
+                <div class="panel-body">
+                    <form name="someForm" class="search-wrapper" ng-submit="createChannel()" novalidate>
+                        <div class="form-group">
+                            <label>Channel name:</label>
+                            <input ng-model="model.name" name="name"  class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <input ng-model="model.description" name="description:" class="form-control" required>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" ng-model="model.private" name="private">Set Private</label>
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form> 
+                </div>  
+                <div class="panel-footer">&nbsp;</div>
+            </div>
+        </div>
+    </div>    
+
+    <div class="row" ng-repeat="channel in subscribedChannels track by $index" ng-init="channelIndex = $index">                 
+        <div class="col-md-9 chat-layout">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> {{channel.name}} - {{channel.description}} <span class="pull-right">[{{channel.url}}]</span>
+                </div>
+                <div class="panel-body">
+                    <ul class="chat chat-messages">
+                        <li ng-class="{'left clearfix':user.id == message.user.id, 'right clearfix':user.id != message.user.id}" ng-repeat="message in channel.messages">
+                            <span class="chat-img"  ng-class="{'pull-left':user.id == message.user.id, 'pull-right':user.id != message.user.id}">
+                                <img class="img-circle" ng-src="http://lorempixel.com/50/50/abstract/{{message.user.id}}/">
+                            </span>
+                            <!--current user -->
+                            <div class="chat-body clearfix" ng-if="user.id == message.user.id">
+                                <div class="header">
+                                    <strong class="primary-font">{{message.user.name}}</strong>
+                                    <small class="pull-right text-muted">
+                                        <span class="glyphicon glyphicon-time"></span>{{viewTime(message.date)}}
+                                    </small>
+                                </div>
+                                <p>{{message.message}}</p>
+                            </div>
+                            <!--other user -->
+                            <div class="chat-body clearfix" ng-if="user.id != message.user.id">
+                                <div class="header">
+                                    <small class=" text-muted">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        {{viewTime(message.date)}}
+                                    </small>
+                                    <strong class="pull-right primary-font">{{message.user.name}}</strong>
+                                </div>
+                                <p>{{message.message}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <form novalidate>
+                        <div class="input-group">
+                            <input class="form-control input-sm input-message" ng-model="message[channelIndex]" placeholder="type your message and press ENTER" type="text" required>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-warning btn-sm submit-message" ng-click="sendMessage(channelIndex)">Send</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-user"></span> Channel Users [Total: {{channel.users.length}}]
+                </div>
+                <div class="panel-body">
+                    <ul class="chat channel list">
+                        <li ng-repeat="user in channel.users" ng-init="userIndex = $index">
+                            <span class="glyphicon glyphicon-king" ng-if="user.role == 2"></span>
+                            <span class="glyphicon glyphicon-pawn" ng-if="user.role == 1"></span>                            
+                            {{user.user.name}}
+                            <span ng-class="{'online':isOnine(channelIndex, user.user.id)}" class="glyphicon glyphicon-globe offline"></span>
+                            <span ng-click="removeUserFromChannel(channelIndex, user.user.id)" class="glyphicon glyphicon-remove pull-right" ng-if="user.role == 1 && channel.roleInChannel==2"></span>        
+                        </li>                       
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <form novalidate>
+                        <div class="input-group">
+                            <input class="form-control input-sm input-message" ng-model="userModel[channelIndex]" placeholder="User ID(simplify)" type="text" required>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-warning btn-sm submit-message" ng-click="addUserToChannel(channelIndex)">Send</button>
+                            </span>
+                        </div>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>        
+    <div class="row">         
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> System logs                    
+                </div>
+                <div class="panel-body">
+                    <ul class="chat" ng-repeat="log in logs">
+                        <li>
+                            <div class="message chat-body clearfix"></div>
+                            <span class="time">{{log.date}}: </span>
+                            <span class="channel" ng-show="log.channel">[{{log.channel}}] </span>                            
+                            <span class="text">{{log.text}}</span>
+                        </li>
+
+                    </ul>
+                </div>  
+                <div class="panel-footer">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+</div>

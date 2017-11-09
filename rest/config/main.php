@@ -1,14 +1,16 @@
 <?php
+
 /**
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 use rest\common\models\User;
 use rest\components\api\UrlRule;
 use rest\components\api\ErrorHandler;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
+use rest\modules\chat\Module as ChatModule;
+use rest\modules\chat\controllers\ChannelController;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Request;
@@ -32,6 +34,9 @@ return [
         'v1' => [
             'class' => V1Module::class,
         ],
+        'chat' => [
+            'class' => ChatModule::class,
+        ]
     ],
     'components' => [
         'user' => [
@@ -128,6 +133,26 @@ return [
                         'GET <slug>' => 'view',
                     ],
                 ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/channel' => 'chat/channel'
+                    ],
+                    'extraPatterns' => [
+                        'PUT <id:\d+>/join' => ChannelController::ACTION_JOIN,
+                        'PUT <id:\d+>/leave' => ChannelController::ACTION_LEAVE,
+                        'GET <id:\d+>/message' => ChannelController::ACTION_GET_MESSAGES,
+                        'POST <id:\d+>/message' => ChannelController::ACTION_ADD_MESSAGE,
+                        'GET <id:\d+>/user' => ChannelController::ACTION_GET_USERS,
+                        'POST <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_ADD_TO_CHAT,
+                        'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
+                        'POST auth' => ChannelController::ACTION_AUTH,
+                        'POST sign' => ChannelController::ACTION_SIGN,
+                        //'GET demo/<route:\*>'=>
+                    ],
+                    'pluralize' => false,
+                ],
+                'demo-chat/<action:.*>' => 'chat/demo/index',
             ],
         ],
     ],

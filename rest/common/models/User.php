@@ -48,7 +48,7 @@ class User extends CommonUser implements IdentityInterface
      */
     public function getAccessToken()
     {
-        return $this->hasOne(AccessToken::class , ['user_id' => 'id'])
+        return $this->hasOne(AccessToken::class, ['user_id' => 'id'])
             ->where('expired_at > :expired_at', [':expired_at' => time()]);
     }
 
@@ -57,7 +57,7 @@ class User extends CommonUser implements IdentityInterface
      */
     public function getAccessTokens()
     {
-        return $this->hasMany(AccessToken::class , ['user_id' => 'id'])
+        return $this->hasMany(AccessToken::class, ['user_id' => 'id'])
             ->where('expired_at > :expired_at', [':expired_at' => time()]);
     }
 
@@ -76,6 +76,7 @@ class User extends CommonUser implements IdentityInterface
     public function fields()
     {
         return [
+            'id',
             'username',
             'email',
             'accessToken'
