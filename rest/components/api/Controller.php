@@ -14,6 +14,7 @@ use rest\components\api\AccessRule;
 use rest\components\api\AccessControl;
 use yii\rest\Controller as BaseController;
 use yii\web\Response;
+use yii\filters\VerbFilter;
 
 /**
  * Class Controller
@@ -62,6 +63,10 @@ class Controller extends BaseController
                 'forbiddenMessage' => Yii::t('yii', 'You are not allowed to perform this action.'),
                 'ruleConfig' => ['class' => AccessRule::class],
                 'except' => ['options'],
+            ],
+            'verbFilter' => [
+	            'class' => VerbFilter::class,
+	            'actions' => $this->verbs(),
             ],
         ];
     }
