@@ -11,6 +11,7 @@ use Gbksoft\Shell\Command\Flag;
 use Gbksoft\Shell\Command\Option;
 use Gbksoft\Shell\CommandBuilder;
 use yii\base\Action;
+use yii\web\Response;
 
 /**
  * Class HistoryAction
@@ -23,6 +24,7 @@ class HistoryAction extends Action
      */
     public function run($hash = null)
     {
+    	\Yii::$app->response->format = Response::FORMAT_HTML;
         $builder = new CommandBuilder();
         $pathToJson = \Yii::getAlias('@swagger') . '/config/swagger.json';
         $ansi2html = \Yii::getAlias('@swagger') . '/console/ansi2html.sh';
