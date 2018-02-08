@@ -94,7 +94,8 @@ class SignupUser extends Model
             User::EVENT_AFTER_INSERT,
             function () use ($user, $signupUser) {
 
-                $accessTokenCreate = \Yii::createObject(CreateToken::class, [
+                $accessTokenCreate = \Yii::createObject([
+                    'class' => CreateToken::class,
                     'username' => $signupUser->username,
                     'password' => $signupUser->password,
                     'userAgent' => $signupUser->userAgent,
