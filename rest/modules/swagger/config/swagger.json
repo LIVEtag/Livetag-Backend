@@ -84,7 +84,7 @@
                         "name": "token",
                         "type": "string",
                         "required": true,
-                        "description": "Get code facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}"
+                        "description": "Get token facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&response_type=token&redirect_uri={redirect_uri}&scope={scope}"
                     }
                 ],
                 "responses": {
