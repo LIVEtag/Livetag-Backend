@@ -3,6 +3,7 @@
  * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace rest\common\models\views\User;
 
 use rest\common\models\User;
@@ -14,6 +15,10 @@ use yii\base\Model;
  */
 class SignupUser extends Model
 {
+    const YES_VALUE = 'yes';
+
+    const NO_VALUE = 'no';
+
     /**
      * @var string
      */
@@ -38,6 +43,11 @@ class SignupUser extends Model
      * @var string
      */
     public $userAgent;
+
+    /**
+     * @var string
+     */
+    public $isRememberMe;
 
     /**
      * @inheritdoc
@@ -71,6 +81,8 @@ class SignupUser extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+            [['isRememberMe'], 'in', 'range' => [self::YES_VALUE, self::NO_VALUE]],
+            ['isRememberMe', 'default', 'value' => self::NO_VALUE],
         ];
     }
 
@@ -93,13 +105,13 @@ class SignupUser extends Model
         $user->on(
             User::EVENT_AFTER_INSERT,
             function () use ($user, $signupUser) {
-
                 $accessTokenCreate = \Yii::createObject([
                     'class' => CreateToken::class,
                     'username' => $signupUser->username,
                     'password' => $signupUser->password,
                     'userAgent' => $signupUser->userAgent,
                     'userIp' => $signupUser->userIp,
+                    'isRememberMe' => $signupUser->isRememberMe
                 ]);
 
                 $accessTokenCreate->create();
