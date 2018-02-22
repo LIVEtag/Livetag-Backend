@@ -1,0 +1,126 @@
+variables:
+  MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  MYSQL_ROOT_HOST: "%"
+  MYSQL_DATABASE: ${DB_NAME}
+  MYSQL_USER: ${DB_USERNAME}
+  MYSQL_PASSWORD: ${DB_PASSWORD}
+  DB_USERNAME: ${DB_USERNAME}
+  DB_PASSWORD: ${DB_PASSWORD}
+  DB_NAME: ${DB_NAME}
+  DB_PORT: ${DB_PORT}
+  DB_HOST: "mysql"
+
+.build_template: &build_project
+  script:
+    - echo "===== Move files ====="
+    - rm -fr /var/www/html
+    - ln -s ${CI_PROJECT_DIR} /var/www/html
+    - cd /var/www/html
+    - git log --pretty=format:'%h %an(%ae) - %B' --abbrev-commit --date=short -1 > ./version.txt
+    - composer install --no-progress
+    - php init --env=Dev --overwrite=All
+    - ./yii migrate --interactive=0
+    - echo "===== Cron setup ====="
+    - cat ./.cron > /var/spool/cron/crontabs/www-data
+    - echo >> /var/spool/cron/crontabs/www-data
+    - chown www-data:crontab /var/spool/cron/crontabs/www-data
+    - chmod 600 /var/spool/cron/crontabs/www-data
+    - cron
+    - echo "===== Final ownership fix ====="
+    - chown -R www-data:www-data /var/www/html/*
+    - echo "===== Run Apache ====="
+    - echo "===== Link -> $BUILD_URL ====="
+    - apache2-foreground
+
+stages:
+  - run
+
+run:dev-review:
+  stage: run
+  when: manual
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  services:
+    - name: mysql:5.7
+      alias: mysql
+      command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+  variables:
+    PROXY_build_DOMAIN: dev-${MAIN_DOMAIN}
+    MAIN_DOMAIN: dev-${MAIN_DOMAIN}
+    REST_DOMAIN: dev-${MAIN_DOMAIN}
+    BACKEND_DOMAIN: dev-${MAIN_DOMAIN}
+    BUILD_URL: https://dev-$MAIN_DOMAIN
+  cache:
+    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+    - vendor/
+  <<: *build_project
+  only:
+    - master
+  environment:
+    name: dev-review/$CI_PROJECT_PATH_SLUG
+    url: $BUILD_URL
+  tags:
+    - docker
+
+run:test-review:
+  stage: run
+  when: manual
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  services:
+    - name: mysql:5.7
+      alias: mysql
+      command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+  variables:
+    PROXY_build_DOMAIN: test-${MAIN_DOMAIN}
+    MAIN_DOMAIN: test-${MAIN_DOMAIN}
+    REST_DOMAIN: test-${MAIN_DOMAIN}
+    BACKEND_DOMAIN: test-${MAIN_DOMAIN}
+    BUILD_URL: https://test-$MAIN_DOMAIN
+  cache:
+    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+    - vendor/
+  <<: *build_project
+  only:
+    - master
+  environment:
+    name: test-review/$CI_PROJECT_PATH_SLUG
+    url: $BUILD_URL
+  tags:
+    - docker
+
+run:live-review:
+  stage: run
+  when: manual
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  services:
+    - name: mysql:5.7
+      alias: mysql
+      command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+  variables:
+    PROXY_build_DOMAIN: live-${MAIN_DOMAIN}
+    MAIN_DOMAIN: live-${MAIN_DOMAIN}
+    REST_DOMAIN: live-${MAIN_DOMAIN}
+    BACKEND_DOMAIN: live-${MAIN_DOMAIN}
+    BUILD_URL: https://live-$MAIN_DOMAIN
+  cache:
+    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+    - vendor/
+  <<: *build_project
+  only:
+    - master
+  environment:
+    name: live-review/$CI_PROJECT_PATH_SLUG
+    url: $BUILD_URL
+  tags:
+    - docker

@@ -70,14 +70,11 @@ if (empty($params['env'])) {
 
 $environments = getEnvironments();
 
-// choice files
-
-
 echo "\n  Start initialization ...\n\n";
 $files = getFileList(SCRIPT_ROOT . "/environments/{$env['path']}");
 if (isset($env['skipFiles'])) {
     $skipFiles = $env['skipFiles'];
-    array_walk($skipFiles, function(&$value) use($env) {
+    array_walk($skipFiles, function (&$value) use ($env) {
         $value = SCRIPT_ROOT . "/$value";
     });
     $files = array_diff($files, array_intersect_key($env['skipFiles'], array_filter($skipFiles, 'file_exists')));
@@ -137,12 +134,19 @@ function copyFile($root, $source, $target, &$all, $params, &$errorLogs, $environ
     }
 
     $contentSource = preg_replace_callback(
-        "/\{\{([\w\-]+)\}\}/",
-        function($matches) use (&$errorLogs, $environments) {
-            if (is_array($matches) && isset($matches[1]) && isset($environments[$matches[1]])) {
-                return $environments[$matches[1]];
+        "/\{\{([^\}]+?)\}\}/",
+        function ($matches) use (&$errorLogs, $environments) {
+            $key = $matches[1];
+            $errorLogs[$key] = $matches[0];
+            $envVar = getenv($key);
+            if ($envVar !== false) {
+                unset($errorLogs[$key]);
+                return $envVar;
+            } else if (isset($environments[$key])) {
+                unset($errorLogs[$key]);
+                return $environments[$key];
             }
-            $errorLogs[] = $matches[0];
+
             return '';
         }, file_get_contents($root . '/' . $source)
     );
@@ -300,15 +304,22 @@ function setRequestBaseUrl($root, $paths)
     switch ($answer) {
         case 1:
             // Add base .htaccess if not exists
-            if (!is_file('.htaccess')) {
-                copy('.htaccess.example', '.htaccess');
+            $htaccess = '.htaccess';
+            if (file_exists($htaccess)) {
+                unlink($htaccess);
             }
+            $environments = getEnvironments();
+            $content = file_get_contents('.htaccess.example');
+            foreach ($environments as $key => $value) {
+                $content = str_replace("{{" . $key . "}}", $value, $content);
+            }
+            file_put_contents($htaccess, $content);
             break;
     }
 
     echo "\n  Your choice: {$answer}\n";
 
-    $answer = (int) $answer;
+    $answer = (int)$answer;
 
     foreach ($paths as $file) {
         echo "   add base url in $file\n";
@@ -374,10 +385,10 @@ function createSymlink($root, $links)
 
 function getEnvironments()
 {
-    $files = @glob(SCRIPT_ROOT . '/\.*env');
+    $files = @glob(SCRIPT_ROOT . '/\([a-z])?\.env$');
 
     if (empty($files)) {
-        echo '\n File .env not found \n';
+        echo "\n File .env not found \n";
         return [];
     }
 
@@ -402,7 +413,7 @@ function getEnvironments()
         try {
             return parse_ini_file($files[$answer]);
         } catch (Exception $e) {
-            echo '\n\n Error. ' . $e->getMessage() . '\n\n';
+            echo "\n\n Error. " . $e->getMessage() . "\n\n";
             return [];
         }
 
@@ -416,7 +427,7 @@ function showErrorsAfterInit(array $errorLogs)
 {
     if (!empty($errorLogs)) {
         echo "\nYour application may not work correctly! \n";
-        echo "Next agrument not found: \n";
+        echo "Next argument not found: \n";
 
         foreach ($errorLogs as $error) {
             echo "  {$error}\n";

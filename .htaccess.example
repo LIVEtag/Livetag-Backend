@@ -7,6 +7,14 @@
     Options +FollowSymlinks
     RewriteEngine On
 
+    # For HTTP(s)
+    RewriteCond %{HTTP_HOST} {{MAIN_DOMAIN}}$ [NC] # MAIN_DOMAIN - variable from env
+    RewriteCond %{HTTPS} !=on
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
+
+    # For version file
+    RewriteRule ^version\.txt$ version.txt [L,PT]
+
     #Swagger
     RewriteCond %{REQUEST_URI} !^/swagger/dist/? [NC]
     RewriteRule ^swagger/?(.*)$ /swagger/dist/$1 [L]

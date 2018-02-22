@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+  web-php:
+    image: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/var/www/html
+      - ./dev/docker/apache2/php7.1/data/.composer:/root/.composer:rw
+      - ./dev/docker/apache2/php7.1/etc/ssl:/etc/apache2/ssl
+      - ./dev/docker/apache2/php7.1/log:/var/log/apache2
+      - ./dev/docker/apache2/php7.1/etc/cmd/entrypoint.sh:/entrypoint.sh
+    working_dir: /var/www/html
+    environment:
+      PHP_IDE_CONFIG: "serverName=world-shop.loc"
+      PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
+      # !!! Set your IP 10.0.75.1
+      # !!! Set your PORT 9123
+      XDEBUG_CONFIG: "idekey=PHPSTORM remote_autostart=0 remote_connect_back=0 remote_enable=1 remote_mode=req remote_port=9123 remote_host=10.0.75.1"
+    links:
+      - db
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./dev/docker/mysql/5.7/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: "%"
+    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"

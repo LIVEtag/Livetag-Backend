@@ -7,15 +7,15 @@
 use yii\db\Connection;
 use yii\swiftmailer\Mailer;
 
-Yii::setAlias('@base.domain', '{{WEB_HOST}}');
-Yii::setAlias('@rest.domain', '{{REST_WEB_HOST}}');
-Yii::setAlias('@backend.domain', '{{BACKEND_WEB_HOST}}');
+Yii::setAlias('@base.domain', '{{MAIN_DOMAIN}}');
+Yii::setAlias('@rest.domain', '{{REST_DOMAIN}}');
+Yii::setAlias('@backend.domain', '{{BACKEND_DOMAIN}}');
 
 return [
     'components' => [
         'db' => [
             'class' => Connection::class,
-            'dsn' => 'mysql:host={{DB_HOST}};dbname={{DB_NAME}}',
+            'dsn' => 'mysql:host={{DB_HOST}};dbname={{DB_NAME}};port={{DB_PORT}}',
             'username' => '{{DB_USERNAME}}',
             'password' => '{{DB_PASSWORD}}',
             'charset' => 'utf8',
