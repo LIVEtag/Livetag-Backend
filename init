@@ -385,12 +385,10 @@ function createSymlink($root, $links)
 
 function getEnvironments()
 {
-    try {
-        return (array) parse_ini_file(SCRIPT_ROOT . '/.env');
-    } catch (Exception $e) {
-        echo "\n\n Error. " . $e->getMessage() . "\n\n";
-        return [];
+    if (file_exists(SCRIPT_ROOT . '/.env')) {
+        return (array)parse_ini_file(SCRIPT_ROOT . '/.env');
     }
+    return [];
 }
 
 function showErrorsAfterInit(array $errorLogs)

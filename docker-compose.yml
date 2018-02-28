@@ -10,6 +10,7 @@ services:
       - ./dev/docker/apache2/php7.1/etc/cmd/entrypoint.sh:/entrypoint.sh
     working_dir: /var/www/html
     environment:
+      YII_BUILD_ENV: "Dev"
       GITHUB_KEY: ${GITHUB_KEY}
       PHP_IDE_CONFIG: "serverName=hostname.loc"
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
