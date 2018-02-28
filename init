@@ -385,41 +385,11 @@ function createSymlink($root, $links)
 
 function getEnvironments()
 {
-    $files = @glob(SCRIPT_ROOT . '/\([a-z])?\.env$');
-
-    if (empty($files)) {
-        echo "\n File .env not found \n";
+    try {
+        return (array) parse_ini_file(SCRIPT_ROOT . '/.env');
+    } catch (Exception $e) {
+        echo "\n\n Error. " . $e->getMessage() . "\n\n";
         return [];
-    }
-
-    if (count($files) > 1) {
-        echo "\n  Please, select file .env for parser: \n";
-
-        foreach ($files as $key => $file) {
-            echo "[{$key}] => " . (substr($file, strrpos($file, '/') + 1)) . "\n";
-        }
-        echo "\n  Your choice [0-" . (count($files) - 1) . ', or "q" to quit] ';
-        $answer = trim(fgets(STDIN));
-
-        if ($answer === 'q') {
-            echo "\n  Quit initialization.\n";
-            exit(0);
-        }
-    } else {
-        $answer = '0';
-    }
-
-    if (isset($files[$answer])) {
-        try {
-            return parse_ini_file($files[$answer]);
-        } catch (Exception $e) {
-            echo "\n\n Error. " . $e->getMessage() . "\n\n";
-            return [];
-        }
-
-    } else {
-        echo "\n\n  Wrong answer!!! Try again \n\n";
-        return getEnvironments();
     }
 }
 

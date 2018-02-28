@@ -18,7 +18,7 @@ variables:
     - cd /var/www/html
     - git log --pretty=format:'%h %an(%ae) - %B' --abbrev-commit --date=short -1 > ./version.txt
     - composer install --no-progress
-    - php init --env=Dev --overwrite=All
+    - php init --env=$YII_BUILD_ENV --overwrite=All
     - ./yii migrate --interactive=0
     - echo "===== Cron setup ====="
     - cat ./.cron > /var/spool/cron/crontabs/www-data
@@ -26,6 +26,8 @@ variables:
     - chown www-data:crontab /var/spool/cron/crontabs/www-data
     - chmod 600 /var/spool/cron/crontabs/www-data
     - cron
+    - echo "===== Design build ====="
+    - cd design && npm i && npm run build
     - echo "===== Final ownership fix ====="
     - chown -R www-data:www-data /var/www/html/*
     - echo "===== Run Apache ====="
@@ -51,11 +53,13 @@ run:dev-review:
     REST_DOMAIN: dev-${MAIN_DOMAIN}
     BACKEND_DOMAIN: dev-${MAIN_DOMAIN}
     BUILD_URL: https://dev-$MAIN_DOMAIN
+    YII_BUILD_ENV: Dev
   cache:
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
-    - vendor/
+      - vendor/
+      - node_modules/
   <<: *build_project
   only:
     - master
@@ -81,11 +85,13 @@ run:test-review:
     REST_DOMAIN: test-${MAIN_DOMAIN}
     BACKEND_DOMAIN: test-${MAIN_DOMAIN}
     BUILD_URL: https://test-$MAIN_DOMAIN
+    YII_BUILD_ENV: Test
   cache:
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
-    - vendor/
+      - vendor/
+      - node_modules/
   <<: *build_project
   only:
     - master
@@ -111,11 +117,13 @@ run:live-review:
     REST_DOMAIN: live-${MAIN_DOMAIN}
     BACKEND_DOMAIN: live-${MAIN_DOMAIN}
     BUILD_URL: https://live-$MAIN_DOMAIN
+    YII_BUILD_ENV: Live
   cache:
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
-    - vendor/
+      - vendor/
+      - node_modules/
   <<: *build_project
   only:
     - master

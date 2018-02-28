@@ -7,13 +7,11 @@ services:
       - "443:443"
     volumes:
       - .:/var/www/html
-      - ./dev/docker/apache2/php7.1/data/.composer:/root/.composer:rw
-      - ./dev/docker/apache2/php7.1/etc/ssl:/etc/apache2/ssl
-      - ./dev/docker/apache2/php7.1/log:/var/log/apache2
       - ./dev/docker/apache2/php7.1/etc/cmd/entrypoint.sh:/entrypoint.sh
     working_dir: /var/www/html
     environment:
-      PHP_IDE_CONFIG: "serverName=world-shop.loc"
+      GITHUB_KEY: ${GITHUB_KEY}
+      PHP_IDE_CONFIG: "serverName=hostname.loc"
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
       # !!! Set your IP 10.0.75.1
       # !!! Set your PORT 9123
@@ -29,4 +27,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"

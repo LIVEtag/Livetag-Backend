@@ -25,6 +25,11 @@
     # API
     RewriteRule ^rest/?(.*)$ /rest/web/$1 [L]
 
+    # !!! Dev only
+    # RewriteCond %{REQUEST_URI} !^/design/dist/? [NC]
+    # RewriteCond "%{ENV:YII_BUILD_ENV}" ^Dev|Test$ [NC]
+    # RewriteRule ^design/?(.*)$ /design/dist/$1 [L]
+
     # Frontend
     RewriteCond %{REQUEST_URI} !^/swagger/? [NC] #For Swagger
     RewriteRule ^/?(.*)$ /frontend/web/$1 [L]
