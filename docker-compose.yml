@@ -8,6 +8,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./dev/docker/apache2/php7.1/etc/cmd/entrypoint.sh:/entrypoint.sh
+      - ./dev/etc/ssl:/etc/apache2/ssl
     working_dir: /var/www/html
     environment:
       YII_BUILD_ENV: "Dev"
