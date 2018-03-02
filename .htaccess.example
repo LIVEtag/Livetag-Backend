@@ -32,5 +32,6 @@
 
     # Frontend
     RewriteCond %{REQUEST_URI} !^/swagger/? [NC] #For Swagger
+    # RewriteCond %{REQUEST_URI} !^/design/? [NC] #For Design !!! Dev only
     RewriteRule ^/?(.*)$ /frontend/web/$1 [L]
 </IfModule>
