@@ -11,6 +11,10 @@ services:
       - ./dev/docker/apache2/php7.1/etc/ssl:/etc/apache2/ssl
     working_dir: /var/www/html
     environment:
+      # Custom user ID and group ID to start
+      # Get auto if not set
+      # DCUID: 99
+      # DCGID: 99
       YII_BUILD_ENV: "Dev"
       GITHUB_KEY: ${GITHUB_KEY}
       PHP_IDE_CONFIG: "serverName=hostname.loc"

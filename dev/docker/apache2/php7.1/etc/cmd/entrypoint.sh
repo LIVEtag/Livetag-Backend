@@ -5,8 +5,8 @@ set -e
 # Tune Apache user
 test -f /var/www/html/docker-compose.yml && \
  {
-  DCUID=`ls -lahn /var/www/html/docker-compose.yml | awk '{print $3;}'`
-  DCGID=`ls -lahn /var/www/html/docker-compose.yml | awk '{print $4;}'`
+  test -z "${DCUID}" && DCUID=`ls -lahn /var/www/html/docker-compose.yml | awk '{print $3;}'`
+  test -z "${DCGID}" && DCGID=`ls -lahn /var/www/html/docker-compose.yml | awk '{print $4;}'`
   sed -ri "s/^www-data:x:[[:digit:]]+:[[:digit:]]+:www-data/www-data:x:${DCUID}:${DCGID}:www-data/" /etc/passwd
   sed -ri "s/^www-data:x:[[:digit:]]+:/www-data:x:${DCGID}:/" /etc/group
   echo "Run Apache with UID=${DCUID} GID=${DCGID}"
