@@ -26,8 +26,8 @@ variables:
     - chown www-data:crontab /var/spool/cron/crontabs/www-data
     - chmod 600 /var/spool/cron/crontabs/www-data
     - cron
-    - echo "===== Design build ====="
-    - cd design && npm i && npm run build
+#    - echo "===== Design build =====" # !!!! If needed
+#    - cd design && npm i && npm run build
     - echo "===== Final ownership fix ====="
     - chown -R www-data:www-data /var/www/html/*
     - echo "===== Run Apache ====="
