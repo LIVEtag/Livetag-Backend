@@ -35,14 +35,20 @@ variables:
     - apache2-foreground
 
 stages:
+  - test
   - run
 
 test:codestyle:
-  stage: run
-  when: manual
+  stage: test
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
+  variables:
+    YII_BUILD_ENV: Dev
+  artifacts:
+    paths:
+    - dev/build
+    expire_in: 1 week
   cache:
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
@@ -53,6 +59,7 @@ test:codestyle:
     - echo "===== Move files ====="
     - composer install --no-progress
     - php init --env=$YII_BUILD_ENV --overwrite=All
+    - composer -v exec "phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend html ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/pmd.html --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/"
   tags:
     - shared
 
