@@ -37,6 +37,25 @@ variables:
 stages:
   - run
 
+test:codestyle:
+  stage: run
+  when: manual
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  cache:
+    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    untracked: true
+    paths:
+      - vendor/
+      - node_modules/
+  script:
+    - echo "===== Move files ====="
+    - composer install --no-progress
+    - php init --env=$YII_BUILD_ENV --overwrite=All
+  tags:
+    - shared
+
 run:dev-review:
   stage: run
   when: manual
