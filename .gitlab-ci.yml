@@ -46,16 +46,18 @@ test:codestyle:
   variables:
     YII_BUILD_ENV: Dev
   artifacts:
-    enabled: true
+    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    untracked: true
+    when: on_failure
     paths:
-    - ./dev/build
+    - dev/build/
     expire_in: 1 week
   cache:
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
-      - ./vendor
-      - ./node_modules
+      - vendor/
+      - node_modules/
   script:
     - echo "===== Move files ====="
     - composer install --no-progress
