@@ -47,10 +47,9 @@ test:codestyle:
     YII_BUILD_ENV: Dev
   artifacts:
     name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
-    untracked: true
     when: on_failure
     paths:
-    - dev/build/
+    - dev/build/*.html
     expire_in: 1 week
   cache:
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
