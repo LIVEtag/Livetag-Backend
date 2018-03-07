@@ -52,7 +52,7 @@ test:codestyle:
       - public
     expire_in: 1 week
   cache:
-    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+    key: "$CI_JOB_STAGE"
     untracked: true
     paths:
       - vendor/
@@ -63,7 +63,8 @@ test:codestyle:
     - php init --env=$YII_BUILD_ENV --overwrite=All
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend html ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/pmd.html --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
     - echo "===== Collect artifacts data ====="
-    - mv dev/build public
+    - mkdir ./public
+    - cp ./dev/build/* ./public
   tags:
     - shared
 
