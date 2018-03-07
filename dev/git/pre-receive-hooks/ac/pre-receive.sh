@@ -2,7 +2,7 @@
 #
 # check commit messages for AC issue numbers formatted as [task#<issue number>[-<issue number>]: <description>]
 
-REGEX="^(task#\d+(\-\d+)?: [^ ][a-zA-Z0-9_\- ]+([\n\s]+.*)+|(m|M)erge)"
+REGEX="(task#[0-9]+(\-[0-9]+)?:\s[^\s].*|merge)"
 
 ERROR_MSG="[POLICY] The commit doesn't reference a AC issue"
 

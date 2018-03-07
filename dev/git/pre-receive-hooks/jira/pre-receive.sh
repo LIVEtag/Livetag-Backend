@@ -2,7 +2,7 @@
 #
 # check commit messages for JIRA issue numbers formatted as [JIRA-<issue number>: <description>]
 
-REGEX="([A-Z]+?\-\d+: [^ ][a-zA-Z0-9_\- ]+([\n\s]+.*)+|(m|M)erge)"
+REGEX="([A-Z]+?\-[0-9]+:\s[^\s].*|merge)"
 
 ERROR_MSG="[POLICY] The commit doesn't reference a Jira issue"
 
