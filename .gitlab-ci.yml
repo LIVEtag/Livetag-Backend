@@ -56,7 +56,6 @@ test:codestyle:
     untracked: true
     paths:
       - vendor/
-      - node_modules/
   script:
     - echo "===== Move files ====="
     - composer install --no-progress
@@ -66,13 +65,14 @@ test:codestyle:
   tags:
     - shared
 
-test:collect:artifacts:
+pages:
   stage: collect_artifacts
   artifacts:
     untracked: true
     name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
     paths:
       - public
+      - dev/build/
     expire_in: 1 week
   script:
   - ls -la ${CI_PROJECT_DIR}/dev/build
