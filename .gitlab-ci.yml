@@ -47,7 +47,6 @@ codestyle:phpmd:
   variables:
     YII_BUILD_ENV: Dev
   artifacts:
-    untracked: true
     paths:
       - dev/build/
     when: on_failure
