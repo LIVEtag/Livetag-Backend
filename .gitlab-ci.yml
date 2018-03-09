@@ -35,12 +35,13 @@ variables:
     - apache2-foreground
 
 stages:
-  - test
+  - test-phpmd
+  - test-phpcpd
   - collect_artifacts
   - run
 
 codestyle:phpmd:
-  stage: test
+  stage: test-phpmd
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
@@ -61,7 +62,7 @@ codestyle:phpmd:
     - shared
 
 codestyle:phpcpd:
-  stage: test
+  stage: test-phpcpd
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
@@ -77,7 +78,7 @@ codestyle:phpcpd:
   script:
     - echo "===== Move files ====="
     - composer install --no-progress
-    - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml
+    - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml --min-lines 50
   tags:
     - shared
 
