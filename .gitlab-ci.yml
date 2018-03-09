@@ -64,6 +64,7 @@ test:codestyle:
 test:collect:artifacts:
   stage: collect_artifacts
   artifacts:
+    untracked: true
     name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
     paths:
       - public
