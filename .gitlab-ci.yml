@@ -75,6 +75,7 @@ test:collect:artifacts:
       - public
     expire_in: 1 week
   script:
+  - ls -la ${CI_PROJECT_DIR}/dev/build
   - mkdir public
   - cp -r ${CI_PROJECT_DIR}/dev/build public
   when: always
