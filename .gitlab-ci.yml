@@ -35,13 +35,12 @@ variables:
     - apache2-foreground
 
 stages:
-  - test-phpmd
-  - test-phpcpd
+  - tests
   - collect_artifacts
   - run
 
 codestyle:phpmd:
-  stage: test-phpmd
+  stage: tests
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
@@ -51,9 +50,11 @@ codestyle:phpmd:
     when: on_failure
     expire_in: 1 week
   cache:
+    key: tests
     untracked: true
     paths:
       - vendor/
+    policy: pull
   script:
     - echo "===== Move files ====="
     - composer install --no-progress
@@ -63,7 +64,7 @@ codestyle:phpmd:
     - shared
 
 codestyle:phpcpd:
-  stage: test-phpcpd
+  stage: tests
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
@@ -73,9 +74,11 @@ codestyle:phpcpd:
     when: on_failure
     expire_in: 1 week
   cache:
+    key: tests
     untracked: true
     paths:
       - vendor/
+    policy: pull
   script:
     - echo "===== Move files ====="
     - composer install --no-progress
