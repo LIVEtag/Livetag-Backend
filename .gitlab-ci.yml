@@ -39,7 +39,7 @@ stages:
   - collect_artifacts
   - run
 
-codestyle_phpmd:
+codestyle:phpmd:
   stage: test
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -48,6 +48,9 @@ codestyle_phpmd:
     YII_BUILD_ENV: Dev
   artifacts:
     untracked: true
+    paths:
+      - dev/build/
+    when: on_failure
     expire_in: 1 week
   cache:
     untracked: true
@@ -58,22 +61,20 @@ codestyle_phpmd:
     - composer install --no-progress
     - php init --env=$YII_BUILD_ENV --overwrite=All
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend html ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/pmd.html --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
-    - echo "===== Collect artifacts data ====="
   tags:
     - shared
 
-pages:
+collect:artifacts:
   stage: collect_artifacts
   artifacts:
+    untracked: true
     paths:
-    - public
+    - dev/build/
   script:
-    - ls -la ${CI_PROJECT_DIR}/dev/build
-    - mkdir public
-    - cp -r ${CI_PROJECT_DIR}/dev/build public
+    - echo "===== Collect artifacts data ====="
   when: always
   dependencies:
-    - codestyle_phpmd
+    - codestyle:phpmd
   tags:
     - shared
 
@@ -95,7 +96,6 @@ run:dev-review:
     BUILD_URL: https://dev-$MAIN_DOMAIN
     YII_BUILD_ENV: Dev
   cache:
-    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
       - vendor/
@@ -127,7 +127,6 @@ run:test-review:
     BUILD_URL: https://test-$MAIN_DOMAIN
     YII_BUILD_ENV: Test
   cache:
-    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
       - vendor/
@@ -159,7 +158,6 @@ run:live-review:
     BUILD_URL: https://live-$MAIN_DOMAIN
     YII_BUILD_ENV: Live
   cache:
-    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
     untracked: true
     paths:
       - vendor/
