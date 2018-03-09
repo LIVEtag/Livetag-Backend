@@ -44,8 +44,6 @@ codestyle:phpmd:
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
-  variables:
-    YII_BUILD_ENV: Dev
   artifacts:
     paths:
       - dev/build/
@@ -58,8 +56,28 @@ codestyle:phpmd:
   script:
     - echo "===== Move files ====="
     - composer install --no-progress
-    - php init --env=$YII_BUILD_ENV --overwrite=All
-    - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend html ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/pmd.html --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
+    - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend xml ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/phpmd.xml --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
+  tags:
+    - shared
+
+codestyle:phpcpd:
+  stage: test
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  artifacts:
+    paths:
+      - dev/build/
+    when: on_failure
+    expire_in: 1 week
+  cache:
+    untracked: true
+    paths:
+      - vendor/
+  script:
+    - echo "===== Move files ====="
+    - composer install --no-progress
+    - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml
   tags:
     - shared
 
@@ -74,6 +92,7 @@ collect:artifacts:
   when: always
   dependencies:
     - codestyle:phpmd
+    - codestyle:phpcpd
   tags:
     - shared
 
