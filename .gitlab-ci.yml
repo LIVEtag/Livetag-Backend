@@ -58,6 +58,7 @@ codestyle:phpmd:
     - echo "===== Move files ====="
     - composer install --no-progress
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend xml ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/phpmd.xml --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
+  when: always
   tags:
     - shared
 
@@ -79,6 +80,7 @@ codestyle:phpcpd:
     - echo "===== Move files ====="
     - composer install --no-progress
     - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml --min-lines 50
+  when: always
   tags:
     - shared
 
