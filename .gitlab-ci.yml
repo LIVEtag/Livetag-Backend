@@ -46,12 +46,6 @@ test:codestyle:
     entrypoint: [""]
   variables:
     YII_BUILD_ENV: Dev
-  artifacts:
-    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
-    when: on_failure
-    paths:
-      - public
-    expire_in: 1 week
   cache:
     key: "$CI_JOB_STAGE"
     untracked: true
@@ -64,16 +58,22 @@ test:codestyle:
     - php init --env=$YII_BUILD_ENV --overwrite=All
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend html ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/pmd.html --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
     - echo "===== Collect artifacts data ====="
-
   tags:
     - shared
 
 test:collect:artifacts:
   stage: collect_artifacts
+  artifacts:
+    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    paths:
+      - public
+    expire_in: 1 week
   script:
   - mkdir ./public
   - cp ./dev/build/* ./public
   when: always
+  tags:
+    - shared
 
 run:dev-review:
   stage: run
