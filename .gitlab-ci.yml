@@ -39,7 +39,7 @@ stages:
   - collect_artifacts
   - run
 
-test:codestyle:
+codestyle_phpmd:
   stage: test
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -48,9 +48,6 @@ test:codestyle:
     YII_BUILD_ENV: Dev
   artifacts:
     untracked: true
-    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
-    paths:
-      - dev/build/
     expire_in: 1 week
   cache:
     untracked: true
@@ -68,19 +65,15 @@ test:codestyle:
 pages:
   stage: collect_artifacts
   artifacts:
-    untracked: true
-    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
     paths:
-      - public
-      - dev/build/
-    expire_in: 1 week
+    - public
   script:
-  - ls -la ${CI_PROJECT_DIR}/dev/build
-  - mkdir public
-  - cp -r ${CI_PROJECT_DIR}/dev/build public
+    - ls -la ${CI_PROJECT_DIR}/dev/build
+    - mkdir public
+    - cp -r ${CI_PROJECT_DIR}/dev/build public
   when: always
   dependencies:
-    - test:codestyle
+    - codestyle_phpmd
   tags:
     - shared
 
