@@ -47,7 +47,7 @@ test:codestyle:
   variables:
     YII_BUILD_ENV: Dev
   cache:
-    key: "$CI_JOB_STAGE"
+    key: "$CI_PROJECT_ID-$CI_COMMIT_REF_NAME-$CI_ENVIRONMENT_SLUG"
     untracked: true
     paths:
       - vendor/
@@ -69,8 +69,8 @@ test:collect:artifacts:
       - public
     expire_in: 1 week
   script:
-  - mkdir ./public
-  - cp ./dev/build/* ./public
+  - mkdir ${CI_PROJECT_DIR}/public
+  - cp ${CI_PROJECT_DIR}/dev/build/* ${CI_PROJECT_DIR}/public
   when: always
   tags:
     - shared
