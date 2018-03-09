@@ -46,8 +46,13 @@ test:codestyle:
     entrypoint: [""]
   variables:
     YII_BUILD_ENV: Dev
+  artifacts:
+    untracked: true
+    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    paths:
+      - dev/build/
+    expire_in: 1 week
   cache:
-    key: "$CI_PROJECT_ID-$CI_COMMIT_REF_NAME"
     untracked: true
     paths:
       - vendor/
@@ -70,8 +75,8 @@ test:collect:artifacts:
       - public
     expire_in: 1 week
   script:
-  - mkdir ${CI_PROJECT_DIR}/public
-  - cp -r ${CI_PROJECT_DIR}/dev/build ${CI_PROJECT_DIR}/public
+  - mkdir public
+  - cp -r ${CI_PROJECT_DIR}/dev/build public
   when: always
   dependencies:
     - test:codestyle
