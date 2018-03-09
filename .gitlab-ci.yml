@@ -36,6 +36,7 @@ variables:
 
 stages:
   - test
+  - collect_artifacts
   - run
 
 test:codestyle:
@@ -63,10 +64,16 @@ test:codestyle:
     - php init --env=$YII_BUILD_ENV --overwrite=All
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend html ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/pmd.html --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
     - echo "===== Collect artifacts data ====="
-    - mkdir ./public
-    - cp ./dev/build/* ./public
+
   tags:
     - shared
+
+test:collect:artifacts:
+  stage: collect_artifacts
+  script:
+  - mkdir ./public
+  - cp ./dev/build/* ./public
+  when: always
 
 run:dev-review:
   stage: run
