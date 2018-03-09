@@ -70,7 +70,7 @@ test:collect:artifacts:
     expire_in: 1 week
   script:
   - mkdir ${CI_PROJECT_DIR}/public
-  - cp ${CI_PROJECT_DIR}/dev/build ${CI_PROJECT_DIR}/public
+  - cp -r ${CI_PROJECT_DIR}/dev/build ${CI_PROJECT_DIR}/public
   when: always
   tags:
     - shared
