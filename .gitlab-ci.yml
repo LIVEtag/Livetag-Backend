@@ -127,6 +127,7 @@ artifacts:
     expire_in: 1 week
   script:
     - echo "===== Collect artifacts data ====="
+    - rm -rf vendor
   when: always
   dependencies:
     - phpmd
