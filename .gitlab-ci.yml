@@ -35,9 +35,26 @@ variables:
     - apache2-foreground
 
 stages:
+  - build
   - tests
   - collect_artifacts
   - run
+
+build_vendor:
+  stage: build
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  cache:
+    key: tests
+    untracked: true
+    paths:
+      - vendor/
+      - node_modules/
+    policy: pull
+  when: always
+  tags:
+    - shared1
 
 phpmd:
   stage: tests
@@ -123,8 +140,9 @@ artifacts:
   dependencies:
     - phpmd
     - phpcpd
+    - phpcs
   tags:
-    - shared
+    - shared1
 
 run:dev-review:
   stage: run
@@ -155,7 +173,7 @@ run:dev-review:
     name: dev-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   tags:
-    - docker
+    - docker-dev
 
 run:test-review:
   stage: run
@@ -186,7 +204,7 @@ run:test-review:
     name: test-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   tags:
-    - docker
+    - docker-test
 
 run:live-review:
   stage: run
@@ -217,4 +235,4 @@ run:live-review:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   tags:
-    - docker
+    - docker-live
