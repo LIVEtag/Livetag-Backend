@@ -108,7 +108,7 @@ phpcs:
     expire_in: 1 week
   script:
     - echo "===== Run tests ====="
-    - php vendor/bin/phpcs --standard=${CI_PROJECT_DIR}/build/etc/phpcs/standard/ruleset.xml --report=checkstyle --report-file=${CI_PROJECT_DIR}/dev/build/phpcs.xml --extensions=php ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend
+    - php vendor/bin/phpcs --standard=${CI_PROJECT_DIR}/dev/etc/phpcs/standard/ruleset.xml --report=checkstyle --report-file=${CI_PROJECT_DIR}/dev/build/phpcs.xml --extensions=php ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend
   when: always
   dependencies:
     - build_vendor
