@@ -61,7 +61,7 @@ phpmd:
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend xml ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/phpmd.xml --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
   when: always
   tags:
-    - shared
+    - shared1
 
 phpcpd:
   stage: tests
@@ -85,7 +85,31 @@ phpcpd:
     - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml --min-lines 50
   when: always
   tags:
-    - shared
+    - shared2
+
+phpcs:
+  stage: tests
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  artifacts:
+    paths:
+      - dev/build/
+    when: on_failure
+    expire_in: 1 week
+  cache:
+    key: tests
+    untracked: true
+    paths:
+      - vendor/
+    policy: pull
+  script:
+    - echo "===== Move files ====="
+    - composer install --no-progress
+    - php vendor/bin/phpcs --standard=${CI_PROJECT_DIR}/etc/phpcs/standard/ruleset.xml --report=checkstyle --report-file=${CI_PROJECT_DIR}/dev/build/phpcs.xml --extensions=php ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend
+  when: always
+  tags:
+    - shared3
 
 artifacts:
   stage: collect_artifacts
