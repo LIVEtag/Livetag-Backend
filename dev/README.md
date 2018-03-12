@@ -1,9 +1,15 @@
-Functionality for testing of project
+Gitlab CI
 ======
 
-#### Статические тесты
-Для запуска статического анализа кода, использовать команду в root проекта:
-```bash
-./robo.sh style
-```
-Положительный результат - ошибок не найдено
+
+Docker compose
+======
+
+
+Robo
+======
+
+
+Git hook
+======
+
