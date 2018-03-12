@@ -45,13 +45,13 @@ build_vendor:
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
-  cache:
-    key: tests
+  artifacts:
     untracked: true
     paths:
       - vendor/
       - node_modules/
-    policy: pull
+    when: on_success
+    expire_in: 2h
   script:
     - echo "===== Install dependencies ====="
     - composer install --no-progress
@@ -69,17 +69,13 @@ phpmd:
       - dev/build/
     when: on_failure
     expire_in: 1 week
-  cache:
-    key: tests
-    untracked: true
-    paths:
-      - vendor/
-    policy: pull
   script:
     - echo "===== Install dependencies ====="
     - composer install --no-progress
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend xml ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/phpmd.xml --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
   when: always
+  dependencies:
+    - build_vendor
   tags:
     - shared1
 
@@ -93,17 +89,13 @@ phpcpd:
       - dev/build/
     when: on_failure
     expire_in: 1 week
-  cache:
-    key: tests
-    untracked: true
-    paths:
-      - vendor/
-    policy: pull
   script:
     - echo "===== Install dependencies ====="
     - composer install --no-progress
     - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml --min-lines 50
   when: always
+  dependencies:
+    - build_vendor
   tags:
     - shared2
 
@@ -117,17 +109,13 @@ phpcs:
       - dev/build/
     when: on_failure
     expire_in: 1 week
-  cache:
-    key: tests
-    untracked: true
-    paths:
-      - vendor/
-    policy: pull
   script:
     - echo "===== Install dependencies ====="
     - composer install --no-progress
     - php vendor/bin/phpcs --standard=${CI_PROJECT_DIR}/etc/phpcs/standard/ruleset.xml --report=checkstyle --report-file=${CI_PROJECT_DIR}/dev/build/phpcs.xml --extensions=php ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend
   when: always
+  dependencies:
+    - build_vendor
   tags:
     - shared3
 
@@ -164,17 +152,14 @@ run:dev-review:
     BACKEND_DOMAIN: dev-${MAIN_DOMAIN}
     BUILD_URL: https://dev-$MAIN_DOMAIN
     YII_BUILD_ENV: Dev
-  cache:
-    untracked: true
-    paths:
-      - vendor/
-      - node_modules/
   <<: *build_project
   only:
     - master
   environment:
     name: dev-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
+  dependencies:
+    - build_vendor
   tags:
     - docker-dev
 
@@ -195,17 +180,14 @@ run:test-review:
     BACKEND_DOMAIN: test-${MAIN_DOMAIN}
     BUILD_URL: https://test-$MAIN_DOMAIN
     YII_BUILD_ENV: Test
-  cache:
-    untracked: true
-    paths:
-      - vendor/
-      - node_modules/
   <<: *build_project
   only:
     - master
   environment:
     name: test-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
+  dependencies:
+    - build_vendor
   tags:
     - docker-test
 
@@ -226,16 +208,13 @@ run:live-review:
     BACKEND_DOMAIN: live-${MAIN_DOMAIN}
     BUILD_URL: https://live-$MAIN_DOMAIN
     YII_BUILD_ENV: Live
-  cache:
-    untracked: true
-    paths:
-      - vendor/
-      - node_modules/
   <<: *build_project
   only:
     - master
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
+  dependencies:
+    - build_vendor
   tags:
     - docker-live
