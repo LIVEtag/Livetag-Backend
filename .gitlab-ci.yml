@@ -39,7 +39,7 @@ stages:
   - collect_artifacts
   - run
 
-codestyle:phpmd:
+phpmd:
   stage: tests
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -63,7 +63,7 @@ codestyle:phpmd:
   tags:
     - shared
 
-codestyle:phpcpd:
+phpcpd:
   stage: tests
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -87,7 +87,7 @@ codestyle:phpcpd:
   tags:
     - shared
 
-collect:artifacts:
+artifacts:
   stage: collect_artifacts
   artifacts:
     untracked: true
