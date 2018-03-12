@@ -17,7 +17,6 @@ variables:
     - ln -s ${CI_PROJECT_DIR} /var/www/html
     - cd /var/www/html
     - git log --pretty=format:'%h %an(%ae) - %B' --abbrev-commit --date=short -1 > ./version.txt
-    - composer install --no-progress
     - php init --env=$YII_BUILD_ENV --overwrite=All
     - ./yii migrate --interactive=0
     - echo "===== Cron setup ====="
@@ -26,8 +25,6 @@ variables:
     - chown www-data:crontab /var/spool/cron/crontabs/www-data
     - chmod 600 /var/spool/cron/crontabs/www-data
     - cron
-#    - echo "===== Design build =====" # !!!! If needed
-#    - cd design && npm i && npm run build
     - echo "===== Final ownership fix ====="
     - chown -R www-data:www-data /var/www/html/*
     - echo "===== Run Apache ====="
@@ -49,12 +46,14 @@ build_vendor:
     untracked: true
     paths:
       - vendor/
-      - node_modules/
+#      - /design/node_modules/
+#      - design/dist/
     when: on_success
     expire_in: 2h
   script:
     - echo "===== Install dependencies ====="
     - composer install --no-progress
+    # - cd design && npm i && npm run build
   when: always
   tags:
     - shared1
@@ -70,8 +69,7 @@ phpmd:
     when: on_failure
     expire_in: 1 week
   script:
-    - echo "===== Install dependencies ====="
-    - composer install --no-progress
+    - echo "===== Run tests ====="
     - php vendor/bin/phpmd ${CI_PROJECT_DIR}/common,${CI_PROJECT_DIR}/console,${CI_PROJECT_DIR}/rest,${CI_PROJECT_DIR}/backend,${CI_PROJECT_DIR}/frontend xml ${CI_PROJECT_DIR}/dev/etc/phpmd/rules/rules.xml --reportfile ${CI_PROJECT_DIR}/dev/build/phpmd.xml --suffixes php --exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/
   when: always
   dependencies:
@@ -90,8 +88,7 @@ phpcpd:
     when: on_failure
     expire_in: 1 week
   script:
-    - echo "===== Install dependencies ====="
-    - composer install --no-progress
+    - echo "===== Run tests ====="
     - php vendor/bin/phpcpd ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend --log-pmd ${CI_PROJECT_DIR}/dev/build/phpcpd.xml --min-lines 50
   when: always
   dependencies:
@@ -110,8 +107,7 @@ phpcs:
     when: on_failure
     expire_in: 1 week
   script:
-    - echo "===== Install dependencies ====="
-    - composer install --no-progress
+    - echo "===== Run tests ====="
     - php vendor/bin/phpcs --standard=${CI_PROJECT_DIR}/etc/phpcs/standard/ruleset.xml --report=checkstyle --report-file=${CI_PROJECT_DIR}/dev/build/phpcs.xml --extensions=php ${CI_PROJECT_DIR}/common ${CI_PROJECT_DIR}/console ${CI_PROJECT_DIR}/rest ${CI_PROJECT_DIR}/backend ${CI_PROJECT_DIR}/frontend
   when: always
   dependencies:
