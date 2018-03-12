@@ -97,8 +97,8 @@ artifacts:
     - echo "===== Collect artifacts data ====="
   when: always
   dependencies:
-    - codestyle:phpmd
-    - codestyle:phpcpd
+    - phpmd
+    - phpcpd
   tags:
     - shared
 
