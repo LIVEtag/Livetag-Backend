@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2016 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 use rest\common\models\User;
