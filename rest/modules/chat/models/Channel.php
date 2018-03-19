@@ -87,12 +87,12 @@ class Channel extends \yii\db\ActiveRecord
 
     /**
      * use transactions for all scenarios
-     * @return type
+     * @return array
      */
     public function transactions(): array
     {
         $transactions = [];
-        foreach ($this->scenarios() as $scenario => $fields) {
+        foreach (array_keys($this->scenarios()) as $scenario) {
             $transactions[$scenario] = self::OP_ALL;
         }
         return $transactions;
@@ -232,6 +232,8 @@ class Channel extends \yii\db\ActiveRecord
      * @param bool $runValidation
      * @param array $attributeNames
      * @return bool
+     *
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function save($runValidation = true, $attributeNames = null): bool
     {

@@ -85,7 +85,7 @@ class ActiveController extends BaseActiveController
             'access' => [
                 'class' => AccessControl::className(),
                 'user' => Yii::$app->getModule('chat')->user,
-                'denyCallback' => function ($rule, $action) {
+                'denyCallback' => function () {
                     throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action'));
                 },
                 'ruleConfig' => ['class' => AccessRule::className(),],

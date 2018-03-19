@@ -194,48 +194,52 @@ class ChannelController extends ActiveController
      * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
      * @param array $params additional parameters
      * @throws ForbiddenHttpException if the user does not have access
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function checkAccess($action, $model = null, $params = [])
     {
         $userId = Yii::$app->getModule('chat')->user->id;
-        if ($model) {
-            switch ($action) {
-                case self::ACTION_UPDATE:
-                case self::ACTION_DELETE:
-                case self::ACTION_ADD_TO_CHAT:
-                case self::ACTION_REMOVE_FROM_CHAT:
-                    if (!$model->canManage($userId)) {
-                        throw new ForbiddenHttpException(
-                            Yii::t('app', 'You do no have permissions to manage this channel')
-                        );
-                    }
-                    break;
-                case self::ACTION_VIEW:
-                case self::ACTION_GET_MESSAGES:
-                case self::ACTION_GET_USERS:
-                    if (!$model->canAccess($userId)) {
-                        throw new ForbiddenHttpException(
-                            Yii::t('app', 'You are not allowed to perform this action!')
-                        );
-                    }
-                    break;
-                case self::ACTION_ADD_MESSAGE:
-                    if (!$model->canPost($userId)) {
-                        throw new ForbiddenHttpException(
-                            Yii::t('app', 'You do no have permissions to post message in this channel')
-                        );
-                    }
-                    break;
-                case self::ACTION_JOIN:
-                    if ($model->type == Channel::TYPE_PRIVATE) {
-                        throw new ForbiddenHttpException(
-                            Yii::t('app', 'You are not allowed to join private channels.')
-                        );
-                    }
-                    break;
-                default:
-                    break;
-            }
+        if (!$model) {
+            return;
+        }
+        switch ($action) {
+            case self::ACTION_UPDATE:
+            case self::ACTION_DELETE:
+            case self::ACTION_ADD_TO_CHAT:
+            case self::ACTION_REMOVE_FROM_CHAT:
+                if (!$model->canManage($userId)) {
+                    throw new ForbiddenHttpException(
+                        Yii::t('app', 'You do no have permissions to manage this channel')
+                    );
+                }
+                break;
+            case self::ACTION_VIEW:
+            case self::ACTION_GET_MESSAGES:
+            case self::ACTION_GET_USERS:
+                if (!$model->canAccess($userId)) {
+                    throw new ForbiddenHttpException(
+                        Yii::t('app', 'You are not allowed to perform this action!')
+                    );
+                }
+                break;
+            case self::ACTION_ADD_MESSAGE:
+                if (!$model->canPost($userId)) {
+                    throw new ForbiddenHttpException(
+                        Yii::t('app', 'You do no have permissions to post message in this channel')
+                    );
+                }
+                break;
+            case self::ACTION_JOIN:
+                if ($model->type == Channel::TYPE_PRIVATE) {
+                    throw new ForbiddenHttpException(
+                        Yii::t('app', 'You are not allowed to join private channels.')
+                    );
+                }
+                break;
+            default:
+                break;
         }
     }
 
