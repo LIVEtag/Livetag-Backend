@@ -94,6 +94,8 @@ task('gitlab:deploy', function () {
 
     set('release_path', __DIR__);
     set('deploy_path', __DIR__);
+    set('source_path', __DIR__);
+    set('dist_path', '/var/www/html');
 
     writeln('Move files');
 
