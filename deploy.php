@@ -101,7 +101,7 @@ task('gitlab:deploy', function () {
 
     invoke('gitlab:symlink');
     invoke('gitlab:version');
-    invoke('gitlab:yii');
+    invoke('yii:build');
     invoke('gitlab:cron');
 })->desc('Deploy project on Gitlab CI/CD');
 
