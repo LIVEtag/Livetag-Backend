@@ -10,8 +10,9 @@
         <priority>0</priority>
     </rule>
 
-    <rule ref="rulesets/cleancode.xml/ElseExpression">
-        <priority>0</priority>
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="StaticAccess"/>
+        <exclude name="ElseExpression"/>
     </rule>
 
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
