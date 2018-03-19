@@ -34,7 +34,7 @@ build_vendor:
     expire_in: 2h
   script:
     - echo "===== Install dependencies ====="
-    - composer install --no-interaction --optimize-autoloader
+    - ./composer-install.sh
     # - cd design && npm i && npm run build
   when: always
   tags:
