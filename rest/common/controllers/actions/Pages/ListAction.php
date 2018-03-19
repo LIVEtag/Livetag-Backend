@@ -28,7 +28,8 @@ class ListAction extends Action
                 'defaultOrder' => [
                     'sort_order' => SORT_ASC
                 ],
-            ]);
+            ]
+        );
 
         return new ActiveDataProvider(
             [

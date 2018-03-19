@@ -34,8 +34,7 @@ class CreateAction extends Action
         Controller $controller,
         SearchService $searchService,
         array $config = []
-    )
-    {
+    ) {
         parent::__construct($id, $controller, $config);
         $this->searchService = $searchService;
     }

@@ -7,6 +7,7 @@ namespace console\controllers;
 
 use console\models\views\User\SignupForm;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 
 /**
@@ -59,7 +60,6 @@ class UserController extends Controller
         );
 
         if (!$user->signup()) {
-
             $messages = '';
             foreach ($user->getErrors() as $attribute => $errors) {
                 $messages .= $this->ansiFormat($attribute, Console::FG_GREEN)
@@ -69,9 +69,9 @@ class UserController extends Controller
 
             echo "User creation is fail. Errors:" . PHP_EOL . $messages;
 
-            return Controller::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
-        return Controller::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 }

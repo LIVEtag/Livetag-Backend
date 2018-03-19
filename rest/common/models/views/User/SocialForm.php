@@ -117,7 +117,6 @@ class SocialForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             $socialProfile = SocialProfile::findBySocialId($this->socialId);
             if ($socialProfile === null) {
                 $socialProfile = new SocialProfile();
@@ -136,7 +135,6 @@ class SocialForm extends Model
             }
 
             $transaction->commit();
-
         } catch (\Exception $exception) {
             $transaction->rollBack();
             $this->addError('user', $exception->getMessage());
