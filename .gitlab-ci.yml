@@ -10,26 +10,8 @@ variables:
   DB_PORT: ${DB_PORT}
   DB_HOST: "mysql"
 
-.build_template: &build_project
-  script:
-    - echo "===== Move files ====="
-    - rm -fr /var/www/html
-    - ln -s ${CI_PROJECT_DIR} /var/www/html
-    - cd /var/www/html
-    - git log --pretty=format:'%h %an(%ae) - %B' --abbrev-commit --date=short -1 > ./version.txt
-    - php init --env=$YII_BUILD_ENV --overwrite=All
-    - ./yii migrate --interactive=0
-    - echo "===== Cron setup ====="
-    - cat ./.cron > /var/spool/cron/crontabs/www-data
-    - echo >> /var/spool/cron/crontabs/www-data
-    - chown www-data:crontab /var/spool/cron/crontabs/www-data
-    - chmod 600 /var/spool/cron/crontabs/www-data
-    - cron
-    - echo "===== Final ownership fix ====="
-    - chown -R www-data:www-data /var/www/html/*
-    - echo "===== Run Apache ====="
-    - echo "===== Link -> $BUILD_URL ====="
-    - apache2-foreground
+before_script:
+  - rm -fr /var/www/html
 
 stages:
   - build
@@ -52,7 +34,7 @@ build_vendor:
     expire_in: 2h
   script:
     - echo "===== Install dependencies ====="
-    - composer install --no-progress
+    - composer install --no-interaction --optimize-autoloader
     # - cd design && npm i && npm run build
   when: always
   tags:
@@ -153,9 +135,11 @@ run:dev-review:
     BACKEND_DOMAIN: dev-${MAIN_DOMAIN}
     BUILD_URL: https://dev-$MAIN_DOMAIN
     YII_BUILD_ENV: Dev
-  <<: *build_project
+  script:
+    - ./vendor/bin/dep gitlab:deploy
+    - apache2-foreground
   only:
-    - master
+    - develop
   environment:
     name: dev-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
@@ -181,9 +165,11 @@ run:test-review:
     BACKEND_DOMAIN: test-${MAIN_DOMAIN}
     BUILD_URL: https://test-$MAIN_DOMAIN
     YII_BUILD_ENV: Test
-  <<: *build_project
+  script:
+    - ./vendor/bin/dep gitlab:deploy
+    - apache2-foreground
   only:
-    - master
+    - develop
   environment:
     name: test-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
@@ -209,7 +195,9 @@ run:live-review:
     BACKEND_DOMAIN: live-${MAIN_DOMAIN}
     BUILD_URL: https://live-$MAIN_DOMAIN
     YII_BUILD_ENV: Live
-  <<: *build_project
+  script:
+    - ./vendor/bin/dep gitlab:deploy
+    - apache2-foreground
   only:
     - master
   environment:
