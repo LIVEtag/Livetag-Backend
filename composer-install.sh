@@ -3,6 +3,10 @@
 set -e
 
 # Install php libraries.
-echo "Start the update and the install"
-composer config -g github-oauth.github.com $GITHUB_KEY
+if [[ -z "${GITHUB_KEY}" ]]; then
+  echo "GITHUB_KEY is not available"
+else
+  omposer config -g github-oauth.github.com $GITHUB_KEY
+fi
+
 composer install --no-interaction --optimize-autoloader --no-progress
