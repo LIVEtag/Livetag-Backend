@@ -10,8 +10,8 @@ namespace rest\modules\chat\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
-use rest\modules\chat\models\User;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "message".
@@ -26,7 +26,7 @@ use yii\db\ActiveQuery;
  * @property Channel $channel
  * @property User $user
  */
-class ChannelMessage extends \yii\db\ActiveRecord
+class ChannelMessage extends ActiveRecord
 {
 
     /**
@@ -56,8 +56,20 @@ class ChannelMessage extends \yii\db\ActiveRecord
             [['channel_id', 'user_id', 'message'], 'required'],
             [['channel_id', 'user_id'], 'integer'],
             [['message'], 'string', 'max' => 255],
-            [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [
+                ['channel_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Channel::class,
+                'targetAttribute' => ['channel_id' => 'id']
+            ],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
@@ -124,7 +136,10 @@ class ChannelMessage extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert): bool
     {
-        if (!Yii::$app->getModule('chat')->centrifugo->setUser($this->user)->publishMessage($this->channel->url, $this->message)) {
+        if (!Yii::$app->getModule('chat')
+            ->centrifugo->setUser($this->user)
+            ->publishMessage($this->channel->url, $this->message)
+        ) {
             $this->addError('channel_id', Yii::t('app', 'Failed to send message to channel'));
             return false;
         }

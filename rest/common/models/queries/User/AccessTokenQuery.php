@@ -32,17 +32,17 @@ class AccessTokenQuery extends ActiveQuery
     public function findCurrentToken($userAgent, $userIp)
     {
         return $this->where(
-                [
-                    'and',
-                    'expired_at > :expired_at',
-                    'user_agent = :user_agent',
-                    'user_ip = :user_ip',
-                ],
-                [
-                    ':expired_at' => time(),
-                    ':user_agent' => (string) $userAgent,
-                    ':user_ip' =>  (string) $userIp,
-                ]
-            );
+            [
+                'and',
+                'expired_at > :expired_at',
+                'user_agent = :user_agent',
+                'user_ip = :user_ip',
+            ],
+            [
+                ':expired_at' => time(),
+                ':user_agent' => (string)$userAgent,
+                ':user_ip' => (string)$userIp,
+            ]
+        );
     }
 }

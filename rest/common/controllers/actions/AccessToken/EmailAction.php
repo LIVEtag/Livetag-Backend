@@ -23,10 +23,11 @@ class EmailAction extends AbstractAuthAction
         $accessTokenCreate->setAttributes($this->request->getBodyParams());
         $accessTokenCreate->username = $this->request->getBodyParam('email');
         $accessTokenCreate->isRememberMe = filter_var(
-            $this->request->getBodyParam('is_remember_me'), FILTER_VALIDATE_BOOLEAN
-        ) ?
-            CreateToken::YES_VALUE :
-            CreateToken::NO_VALUE;
+            $this->request->getBodyParam('is_remember_me'),
+            FILTER_VALIDATE_BOOLEAN
+        )
+            ? CreateToken::YES_VALUE
+            : CreateToken::NO_VALUE;
 
         $accessTokenCreate->userAgent = $this->request->getUserAgent();
         $accessTokenCreate->userIp = $this->request->getUserIP();

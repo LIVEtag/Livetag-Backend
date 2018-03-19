@@ -9,7 +9,6 @@ use common\components\user\SearchService;
 use rest\common\models\views\AccessToken\CreateToken;
 use rest\components\api\actions\Action;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\rest\Controller;
 use yii\web\ServerErrorHttpException;
 
@@ -35,7 +34,8 @@ class CreateAction extends Action
         Controller $controller,
         SearchService $searchService,
         array $config = []
-    ) {
+    )
+    {
         parent::__construct($id, $controller, $config);
         $this->searchService = $searchService;
     }
@@ -45,7 +45,6 @@ class CreateAction extends Action
      * Create access token
      *
      * @throws ServerErrorHttpException
-     * @throws InvalidParamException
      * @throws InvalidConfigException
      */
     public function run()
@@ -55,7 +54,10 @@ class CreateAction extends Action
 
         $accessTokenCreate->setAttributes($this->request->getBodyParams());
 
-        $accessTokenCreate->isRememberMe = filter_var($this->request->getBodyParam('is_remember_me'), FILTER_VALIDATE_BOOLEAN)
+        $accessTokenCreate->isRememberMe = filter_var(
+            $this->request->getBodyParam('is_remember_me'),
+            FILTER_VALIDATE_BOOLEAN
+        )
             ? CreateToken::YES_VALUE
             : CreateToken::NO_VALUE;
 

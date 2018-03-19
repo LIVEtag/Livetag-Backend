@@ -62,8 +62,9 @@ class UserController extends Controller
 
             $messages = '';
             foreach ($user->getErrors() as $attribute => $errors) {
-                $messages .= $this->ansiFormat($attribute, Console::FG_GREEN). ': '
-                    . $this->ansiFormat(implode(PHP_EOL, $errors) . PHP_EOL,Console::FG_RED);
+                $messages .= $this->ansiFormat($attribute, Console::FG_GREEN)
+                    . ': '
+                    . $this->ansiFormat(implode(PHP_EOL, $errors) . PHP_EOL, Console::FG_RED);
             }
 
             echo "User creation is fail. Errors:" . PHP_EOL . $messages;

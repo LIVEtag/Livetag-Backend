@@ -10,8 +10,6 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 use yii\filters\RateLimiter;
-use rest\components\api\AccessRule;
-use rest\components\api\AccessControl;
 use yii\rest\Controller as BaseController;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -65,8 +63,8 @@ class Controller extends BaseController
                 'except' => ['options'],
             ],
             'verbFilter' => [
-	            'class' => VerbFilter::class,
-	            'actions' => $this->verbs(),
+                'class' => VerbFilter::class,
+                'actions' => $this->verbs(),
             ],
         ];
     }

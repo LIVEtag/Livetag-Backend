@@ -17,6 +17,6 @@ class AccessTokenController extends Controller
      */
     public function actionClearExpired()
     {
-
+        //
     }
 }

@@ -21,10 +21,11 @@ class HistoryAction extends Action
     /**
      * Run action
      * @param string $hash
+     * @throws \yii\base\ExitException
      */
     public function run($hash = null)
     {
-    	\Yii::$app->response->format = Response::FORMAT_HTML;
+        \Yii::$app->response->format = Response::FORMAT_HTML;
         $builder = new CommandBuilder();
         $pathToJson = \Yii::getAlias('@swagger') . '/config/swagger.json';
         $ansi2html = \Yii::getAlias('@swagger') . '/console/ansi2html.sh';
@@ -76,7 +77,7 @@ class HistoryAction extends Action
             ->addArgument(new Argument('./' . basename($pathToJson)))
             ->build();
         echo '<table>';
-            echo stripslashes(shell_exec(implode('; ', $commands)));
+        echo stripslashes(shell_exec(implode('; ', $commands)));
         echo '</table>';
         \Yii::$app->end();
     }

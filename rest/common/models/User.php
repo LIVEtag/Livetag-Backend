@@ -25,14 +25,14 @@ class User extends CommonUser implements IdentityInterface
             \Yii::$app->request->getUserAgent(),
             \Yii::$app->request->getUserIP()
         )->andWhere(
-                [
-                    'and',
-                    'token = :token',
-                ],
-                [
-                    ':token' => $token,
-                ]
-            )->one();
+            [
+                'and',
+                'token = :token',
+            ],
+            [
+                ':token' => $token,
+            ]
+        )->one();
 
         if ($accessToken !== null) {
             return $accessToken->getUser()

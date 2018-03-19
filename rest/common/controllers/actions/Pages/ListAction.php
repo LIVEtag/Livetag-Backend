@@ -16,27 +16,28 @@ use yii\data\Sort;
 class ListAction extends Action
 {
     /**
-     * @return null|StaticPage
+     * @return null|ActiveDataProvider
      */
     public function run()
     {
         $sort = new Sort(
-        [
-            'attributes' => [
-                'sort_order',
-            ],
-            'defaultOrder' => [
-                'sort_order' => SORT_ASC
-            ],
-        ]);
+            [
+                'attributes' => [
+                    'sort_order',
+                ],
+                'defaultOrder' => [
+                    'sort_order' => SORT_ASC
+                ],
+            ]);
 
         return new ActiveDataProvider(
-        [
-            'query' => StaticPage::find(),
-            'pagination' => [
-                'defaultPageSize' => 10, //set page size here
-            ],
-            'sort' => $sort,
-        ]);
+            [
+                'query' => StaticPage::find(),
+                'pagination' => [
+                    'defaultPageSize' => 10, //set page size here
+                ],
+                'sort' => $sort,
+            ]
+        );
     }
 }

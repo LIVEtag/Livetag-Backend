@@ -1,10 +1,9 @@
 <?php
 namespace rest\modules\chat\controllers\actions;
 
+use rest\modules\chat\models\Channel;
 use Yii;
 use yii\base\Action;
-use rest\modules\chat\models\Channel;
-use yii\web\Response;
 
 /**
  * Class AuthAction
@@ -14,7 +13,6 @@ use yii\web\Response;
  */
 class AuthAction extends Action
 {
-
     public function run()
     {
         $user = Yii::$app->getModule('chat')->user->identity;

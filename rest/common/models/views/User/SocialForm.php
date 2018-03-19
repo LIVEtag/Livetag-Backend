@@ -5,14 +5,11 @@
  */
 namespace rest\common\models\views\User;
 
-use rest\common\models\User;
-use rest\common\models\views\AccessToken\CreateToken;
-use yii\base\Model;
-use yii\web\ServerErrorHttpException;
-use rest\common\models\views\User\SignupUser;
-use Yii;
-use rest\common\models\AccessToken;
 use common\models\User\SocialProfile;
+use rest\common\models\AccessToken;
+use rest\common\models\User;
+use Yii;
+use yii\base\Model;
 
 /**
  * Class SocialForm
@@ -94,7 +91,7 @@ class SocialForm extends Model
         $signupUser = new SignupUser();
         $signupUser->email = $this->email;
         $signupUser->username = $this->username;
-        $signupUser->password =  \Yii::$app->getSecurity()->generateRandomString();
+        $signupUser->password = \Yii::$app->getSecurity()->generateRandomString();
         $signupUser->userAgent = $this->userAgent;
         $signupUser->userIp = $this->userIp;
 
@@ -109,7 +106,8 @@ class SocialForm extends Model
      * Login user
      *
      * @throws \RuntimeException
-     * @return User
+     * @return User|bool
+     * @throws \yii\db\Exception
      */
     public function login()
     {
@@ -153,7 +151,7 @@ class SocialForm extends Model
      */
     private function createAcessToken(User $user)
     {
-       $accessToken = AccessToken::find()->findCurrentToken(
+        $accessToken = AccessToken::find()->findCurrentToken(
             $this->userAgent,
             $this->userIp
         )->andWhere(

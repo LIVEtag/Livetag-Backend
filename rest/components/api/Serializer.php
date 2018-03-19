@@ -20,7 +20,8 @@ class Serializer extends BaseSerializer
     /**
      * @inheritdoc
      */
-    public function serialize($data) {
+    public function serialize($data)
+    {
         $data = parent::serialize($data);
 
         $dataResult = [

@@ -43,5 +43,4 @@ class UpdateObserver
 
         $model->save();
     }
-
 }

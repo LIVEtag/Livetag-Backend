@@ -4,27 +4,26 @@
  * See LICENSE.txt for license details.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace rest\modules\chat\controllers;
 
-use Yii;
-use yii\helpers\ArrayHelper;
-use yii\web\ForbiddenHttpException;
-use yii\data\ActiveDataProvider;
-use rest\modules\chat\controllers\ActiveController;
-use rest\modules\chat\models\Channel;
-use rest\modules\chat\models\User;
-use rest\modules\chat\models\ChannelSearch;
+use rest\modules\chat\controllers\actions\AddAction;
+use rest\modules\chat\controllers\actions\AuthAction;
+use rest\modules\chat\controllers\actions\GetMessagesAction;
+use rest\modules\chat\controllers\actions\GetUsersAction;
 use rest\modules\chat\controllers\actions\JoinAction;
 use rest\modules\chat\controllers\actions\LeaveAction;
 use rest\modules\chat\controllers\actions\MessageAction;
-use rest\modules\chat\controllers\actions\GetMessagesAction;
-use rest\modules\chat\controllers\actions\GetUsersAction;
-use rest\modules\chat\controllers\actions\AddAction;
 use rest\modules\chat\controllers\actions\RemoveAction;
-use rest\modules\chat\controllers\actions\AuthAction;
 use rest\modules\chat\controllers\actions\SignAction;
+use rest\modules\chat\models\Channel;
+use rest\modules\chat\models\ChannelSearch;
+use rest\modules\chat\models\User;
+use Yii;
+use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Class ChannelController
@@ -102,36 +101,36 @@ class ChannelController extends ActiveController
     public function behaviors(): array
     {
         return ArrayHelper::merge(parent::behaviors(), [
-                'access' => [
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                self::ACTION_INDEX,
-                                self::ACTION_VIEW,
-                                self::ACTION_JOIN,
-                                self::ACTION_LEAVE,
-                                self::ACTION_ADD_MESSAGE,
-                                self::ACTION_GET_MESSAGES,
-                                self::ACTION_GET_USERS,
-                                self::ACTION_AUTH,
-                                self::ACTION_SIGN,
-                            ],
-                            'roles' => [User::ROLE_ADVANCED, User::ROLE_BASIC],
+            'access' => [
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            self::ACTION_INDEX,
+                            self::ACTION_VIEW,
+                            self::ACTION_JOIN,
+                            self::ACTION_LEAVE,
+                            self::ACTION_ADD_MESSAGE,
+                            self::ACTION_GET_MESSAGES,
+                            self::ACTION_GET_USERS,
+                            self::ACTION_AUTH,
+                            self::ACTION_SIGN,
                         ],
-                        [
-                            'allow' => true,
-                            'actions' => [
-                                self::ACTION_CREATE,
-                                self::ACTION_UPDATE,
-                                self::ACTION_DELETE,
-                                self::ACTION_ADD_TO_CHAT,
-                                self::ACTION_REMOVE_FROM_CHAT
-                            ],
-                            'roles' => [User::ROLE_ADVANCED],
+                        'roles' => [User::ROLE_ADVANCED, User::ROLE_BASIC],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => [
+                            self::ACTION_CREATE,
+                            self::ACTION_UPDATE,
+                            self::ACTION_DELETE,
+                            self::ACTION_ADD_TO_CHAT,
+                            self::ACTION_REMOVE_FROM_CHAT
                         ],
+                        'roles' => [User::ROLE_ADVANCED],
                     ],
                 ],
+            ],
         ]);
     }
 
@@ -141,50 +140,50 @@ class ChannelController extends ActiveController
     public function actions(): array
     {
         return ArrayHelper::merge(parent::actions(), [
-                self::ACTION_INDEX => [
-                    'prepareDataProvider' => [$this, 'prepareDataProvider']
-                ],
-                self::ACTION_AUTH => [
-                    'class' => AuthAction::class,
-                ],
-                self::ACTION_SIGN => [
-                    'class' => SignAction::class,
-                ],
-                self::ACTION_JOIN => [
-                    'class' => JoinAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
-                self::ACTION_LEAVE => [
-                    'class' => LeaveAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
-                self::ACTION_GET_MESSAGES => [
-                    'class' => GetMessagesAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
-                self::ACTION_GET_USERS => [
-                    'class' => GetUsersAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
-                self::ACTION_ADD_MESSAGE => [
-                    'class' => MessageAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
-                self::ACTION_ADD_TO_CHAT => [
-                    'class' => AddAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
-                self::ACTION_REMOVE_FROM_CHAT => [
-                    'class' => RemoveAction::class,
-                    'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess'],
-                ],
+            self::ACTION_INDEX => [
+                'prepareDataProvider' => [$this, 'prepareDataProvider']
+            ],
+            self::ACTION_AUTH => [
+                'class' => AuthAction::class,
+            ],
+            self::ACTION_SIGN => [
+                'class' => SignAction::class,
+            ],
+            self::ACTION_JOIN => [
+                'class' => JoinAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            self::ACTION_LEAVE => [
+                'class' => LeaveAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            self::ACTION_GET_MESSAGES => [
+                'class' => GetMessagesAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            self::ACTION_GET_USERS => [
+                'class' => GetUsersAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            self::ACTION_ADD_MESSAGE => [
+                'class' => MessageAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            self::ACTION_ADD_TO_CHAT => [
+                'class' => AddAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
+            self::ACTION_REMOVE_FROM_CHAT => [
+                'class' => RemoveAction::class,
+                'modelClass' => $this->modelClass,
+                'checkAccess' => [$this, 'checkAccess'],
+            ],
         ]);
     }
 
@@ -206,24 +205,32 @@ class ChannelController extends ActiveController
                 case self::ACTION_ADD_TO_CHAT:
                 case self::ACTION_REMOVE_FROM_CHAT:
                     if (!$model->canManage($userId)) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You do no have permissions to manage this channel'));
+                        throw new ForbiddenHttpException(
+                            Yii::t('app', 'You do no have permissions to manage this channel')
+                        );
                     }
                     break;
                 case self::ACTION_VIEW:
                 case self::ACTION_GET_MESSAGES:
                 case self::ACTION_GET_USERS:
                     if (!$model->canAccess($userId)) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to perform this action!'));
+                        throw new ForbiddenHttpException(
+                            Yii::t('app', 'You are not allowed to perform this action!')
+                        );
                     }
                     break;
                 case self::ACTION_ADD_MESSAGE:
                     if (!$model->canPost($userId)) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You do no have permissions to post message in this channel'));
+                        throw new ForbiddenHttpException(
+                            Yii::t('app', 'You do no have permissions to post message in this channel')
+                        );
                     }
                     break;
                 case self::ACTION_JOIN:
                     if ($model->type == Channel::TYPE_PRIVATE) {
-                        throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to join private channels.'));
+                        throw new ForbiddenHttpException(
+                            Yii::t('app', 'You are not allowed to join private channels.')
+                        );
                     }
                     break;
                 default:

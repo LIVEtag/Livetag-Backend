@@ -1,5 +1,5 @@
 <?php
-use yii\helpers\Html;
+// @codingStandardsIgnoreStart
 
 /* @var $this \yii\web\View view component instance */
 /* @var $message \yii\mail\MessageInterface the message being composed */
@@ -9,4 +9,6 @@ use yii\helpers\Html;
 <?php $this->beginBody() ?>
 <?= $content ?>
 <?php $this->endBody() ?>
-<?php $this->endPage() ?>
+<?php $this->endPage()
+// @codingStandardsIgnoreEnd
+?>

@@ -1,9 +1,9 @@
 <?php
 namespace rest\modules\chat\controllers\actions;
 
-use Yii;
-use yii\rest\Action;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveRecord;
+use yii\rest\Action;
 
 /**
  * Class GetUsersAction
@@ -13,6 +13,8 @@ class GetUsersAction extends Action
 
     /**
      * @param string $id channel id
+     * @return ActiveDataProvider
+     * @throws \yii\web\NotFoundHttpException
      */
     public function run($id)
     {
@@ -21,13 +23,11 @@ class GetUsersAction extends Action
         if ($this->checkAccess) {
             call_user_func($this->checkAccess, $this->id, $model);
         }
-        
+
         $dataProvider = new ActiveDataProvider([
             'query' => $model->getUsers(),
             'sort' => ['defaultOrder' => ['id' => SORT_ASC]]
         ]);
         return $dataProvider;
     }
-
-     
 }

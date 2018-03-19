@@ -9,8 +9,8 @@ declare(strict_types=1);
 namespace rest\modules\chat\models;
 
 use Yii;
-use rest\modules\chat\models\User;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "channel_user".
@@ -23,7 +23,7 @@ use yii\db\ActiveQuery;
  * @property Channel $channel
  * @property User $user
  */
-class ChannelUser extends \yii\db\ActiveRecord
+class ChannelUser extends ActiveRecord
 {
 
     /**
@@ -57,9 +57,26 @@ class ChannelUser extends \yii\db\ActiveRecord
         return [
             [['channel_id', 'user_id'], 'required'],
             [['channel_id', 'user_id', 'role'], 'integer'],
-            [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['channel_id'], 'unique', 'targetAttribute' => ['channel_id', 'user_id', 'role'], 'message' => 'User already in chat'],
+            [
+                ['channel_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Channel::class,
+                'targetAttribute' => ['channel_id' => 'id']
+            ],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['user_id' => 'id']
+            ],
+            [
+                ['channel_id'],
+                'unique',
+                'targetAttribute' => ['channel_id', 'user_id', 'role'],
+                'message' => 'User already in chat'
+            ],
         ];
     }
 

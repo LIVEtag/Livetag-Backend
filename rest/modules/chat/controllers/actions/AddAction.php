@@ -1,9 +1,10 @@
 <?php
 namespace rest\modules\chat\controllers\actions;
 
-use Yii;
-use yii\rest\Action;
 use rest\modules\chat\models\User;
+use Yii;
+use yii\db\ActiveRecord;
+use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -12,12 +13,12 @@ use yii\web\UnprocessableEntityHttpException;
  */
 class AddAction extends Action
 {
-
     /**
      * add user to channel
      *
      * @param int $id channel id
      * @param int $userId
+     * @return ActiveRecord
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
@@ -41,5 +42,7 @@ class AddAction extends Action
         }
 
         Yii::$app->getResponse()->setStatusCode(204);
+
+        return $model;
     }
 }

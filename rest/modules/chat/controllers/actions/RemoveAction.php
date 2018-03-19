@@ -1,9 +1,10 @@
 <?php
 namespace rest\modules\chat\controllers\actions;
 
-use Yii;
-use yii\rest\Action;
 use rest\modules\chat\models\User;
+use Yii;
+use yii\db\ActiveRecord;
+use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -18,6 +19,7 @@ class RemoveAction extends Action
      *
      * @param int $id channel id
      * @param int $userId
+     * @return ActiveRecord
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
@@ -35,7 +37,9 @@ class RemoveAction extends Action
         } elseif ($user->id == Yii::$app->getModule('chat')->user->id) {
             throw new UnprocessableEntityHttpException(Yii::t('app', "You can't remove self"));
         } elseif ($model->canManage($userId)) {
-            throw new UnprocessableEntityHttpException(Yii::t('app', "You can't remove other channel admin"));
+            throw new UnprocessableEntityHttpException(
+                Yii::t('app', "You can't remove other channel admin")
+            );
         }
 
         if (!$model->leaveUserFromChannel($user)) {

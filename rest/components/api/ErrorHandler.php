@@ -25,11 +25,16 @@ class ErrorHandler extends WebErrorHandler
     protected function convertExceptionToArray($exception)
     {
         if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
-            $exception = new HttpException(500, \Yii::t('yii', 'An internal server error occurred.'));
+            $exception = new HttpException(
+                500,
+                \Yii::t('yii', 'An internal server error occurred.')
+            );
         }
 
         $array = [
-            'name' => ($exception instanceof Exception || $exception instanceof ErrorException) ? $exception->getName() : 'Exception',
+            'name' => ($exception instanceof Exception || $exception instanceof ErrorException)
+                ? $exception->getName()
+                : 'Exception',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
         ];
