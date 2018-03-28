@@ -27,7 +27,7 @@ services:
   db:
     image: mysql:5.7
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:3306"
     volumes:
       - ./dev/docker/mysql/5.7/data:/var/lib/mysql
     environment:
