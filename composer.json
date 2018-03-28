@@ -15,7 +15,8 @@
         "kosinix/grafika": "2.0.8",
         "frostealth/yii2-aws-s3": "2.1.0",
         "kartik-v/yii2-widgets": "3.4.0",
-        "gbksoft/phpcent": "~1.0.5"
+        "gbksoft/phpcent": "~1.0.5",
+        "deployer/deployer": "6.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.9",
@@ -28,8 +29,7 @@
         "phpmd/phpmd": "2.6",
         "sebastian/phpcpd": "2.0.4",
         "squizlabs/php_codesniffer": "2.9.1",
-        "phpunit/phpunit": "4.*",
-        "deployer/deployer": "6.1"
+        "phpunit/phpunit": "4.*"
     },
 
     "config": {
