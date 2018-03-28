@@ -195,7 +195,7 @@ run:live-review:
     BUILD_URL: https://live-$MAIN_DOMAIN
     YII_BUILD_ENV: Live
   script:
-    - ./composer install --no-interaction --optimize-autoloader --no-progress --no-dev
+    - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
