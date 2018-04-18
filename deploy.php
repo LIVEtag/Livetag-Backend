@@ -103,7 +103,11 @@ task('yii:build', function () {
     ->desc('Gitlab CI tasks bundle');
 
 task('common:unlink', function () {
-    unlink(YII_PROJECT_ROOT . '/.dep/hosts.tml.yml');
+    $hostsFile = YII_PROJECT_ROOT . '/.dep/hosts.tml.yml';
+    if (!file_exists($hostsFile)) {
+        return;
+    }
+    unlink($hostsFile);
 })->setPrivate();
 
 task('gitlab:deploy', function () {
