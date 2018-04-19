@@ -76,9 +76,10 @@ class HistoryAction extends Action
             ->addFlag(new Flag('--'))
             ->addArgument(new Argument('./' . basename($pathToJson)))
             ->build();
-        echo '<table>';
-        echo stripslashes(shell_exec(implode('; ', $commands)));
-        echo '</table>';
+        $content = '<table>';
+        $content .= stripslashes(shell_exec(implode('; ', $commands)));
+        $content .= '</table>';
+        \Yii::$app->response->content = $content;
         \Yii::$app->end();
     }
 }
