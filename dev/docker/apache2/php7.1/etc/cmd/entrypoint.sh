@@ -25,9 +25,10 @@ test -z "${MAIN_DOMAIN}" || test -f /etc/apache2/ssl/ssl.key || \
   openssl x509 -req -in /etc/apache2/ssl/ssl.csr -CA /etc/apache2/ssl/TRUST.crt -CAkey /etc/apache2/ssl/TRUST.key -CAcreateserial -out /etc/apache2/ssl/ssl.crt -days 3650 -sha256 -extfile /tmp/v3.ext
   openssl verify -CAfile /etc/apache2/ssl/TRUST.crt /etc/apache2/ssl/ssl.crt || { echo "SSL certificate fail"; exit; }
  }
-sed -ri "s/#SSLCACertificateFile \/etc\/apache2\/ssl.crt\/ca-bundle.crt/SSLCACertificateFile \/etc\/apache2\/ssl\/TRUST.crt/" /etc/apache2/sites-available/default-ssl.conf
-echo "ServerName ${MAIN_DOMAIN}" >> /etc/apache2/conf-enabled/options.conf
+test -f /etc/apache2/ssl/TRUST.crt && sed -ri "s/#SSLCACertificateFile \/etc\/apache2\/ssl.crt\/ca-bundle.crt/SSLCACertificateFile \/etc\/apache2\/ssl\/TRUST.crt/" /etc/apache2/sites-available/default-ssl.conf
 test -f /etc/apache2/ssl/ssl.key && a2ensite default-ssl
+
+echo "ServerName ${MAIN_DOMAIN}" >> /etc/apache2/conf-enabled/options.conf
 
 # first arg is `-f` or `--some-option`
 if [ "${1#-}" != "$1" ]; then
