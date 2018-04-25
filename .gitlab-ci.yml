@@ -37,7 +37,7 @@ build_vendor:
     - chmod +x ./composer-install.sh && ./composer-install.sh
   when: always
   tags:
-    - shared1
+    - shared-cli
 
 phpmd:
   stage: tests
@@ -52,12 +52,12 @@ phpmd:
     expire_in: 2h
   script:
     - echo "===== Run tests ====="
-    - vendor/bin/dep tests:php_cs
+    - vendor/bin/dep tests:php_md
   when: always
   dependencies:
     - build_vendor
   tags:
-    - shared1
+    - shared-cli
 
 phpcpd:
   stage: tests
@@ -77,7 +77,7 @@ phpcpd:
   dependencies:
     - build_vendor
   tags:
-    - shared2
+    - shared-cli
 
 phpcs:
   stage: tests
@@ -97,7 +97,7 @@ phpcs:
   dependencies:
     - build_vendor
   tags:
-    - shared3
+    - shared-cli
 
 artifacts:
   stage: collect_artifacts
@@ -115,7 +115,7 @@ artifacts:
     - phpcpd
     - phpcs
   tags:
-    - shared1
+    - shared-cli
 
 run:dev-review:
   stage: run
@@ -145,7 +145,7 @@ run:dev-review:
   dependencies:
     - build_vendor
   tags:
-    - docker-dev
+    - shared-web
 
 run:test-review:
   stage: run
@@ -175,7 +175,7 @@ run:test-review:
   dependencies:
     - build_vendor
   tags:
-    - docker-test
+    - shared-web
 
 run:live-review:
   stage: run
@@ -204,4 +204,4 @@ run:live-review:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   tags:
-    - docker-live
+    - shared-web
