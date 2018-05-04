@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="Standard">
+    <config name="testVersion" value="7.1"/>
+
     <exclude-pattern>console/migrations/</exclude-pattern>
     <exclude-pattern>common/Yii.php</exclude-pattern>
     <exclude-pattern>bootstrap.php</exclude-pattern>
@@ -22,4 +24,6 @@
     <rule ref="Squiz.ControlStructures.ElseIfDeclaration">
         <severity>0</severity>
     </rule>
+
+    <rule ref="PHPCompatibility" />
 </ruleset>
