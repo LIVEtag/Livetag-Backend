@@ -13,8 +13,9 @@ services:
     environment:
       # Custom user ID and group ID to start
       # Get auto if not set
-      # DCUID: 99
-      # DCGID: 99
+#      DCUID: ${DCUID}
+#      DCGID: ${DCGID}
+      MAIN_DOMAIN: ${MAIN_DOMAIN}
       YII_BUILD_ENV: "Dev"
       GITHUB_KEY: ${GITHUB_KEY}
       PHP_IDE_CONFIG: "serverName=hostname.loc"

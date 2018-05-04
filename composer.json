@@ -30,6 +30,7 @@
         "phpmd/phpmd": "2.6",
         "sebastian/phpcpd": "2.0.4",
         "squizlabs/php_codesniffer": "2.9.1",
+        "wimg/php-compatibility": "8.1.0",
         "phpunit/phpunit": "4.*",
         "roave/security-advisories": "dev-master"
     },
