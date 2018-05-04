@@ -3,9 +3,38 @@
     Options -Indexes
     IndexIgnore */*
 </IfModule>
+
+<IfModule mod_security.c>
+    ## disable POST processing to not break multiple image upload
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+<IfModule mod_ssl.c>
+    ## make HTTPS env vars available for CGI mode
+    SSLOptions StdEnvVars
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header add X-Frame-Options "SAMEORIGIN"
+    Header add X-XSS-Protection "1; mode=block"
+    Header add X-Content-Type-Options "nosniff"
+
+    Header always unset "X-Powered-By"
+    Header unset "X-Powered-By"
+</IfModule>
+
 <IfModule mod_rewrite.c>
     Options +FollowSymlinks
     RewriteEngine On
+
+    ## workaround for HTTP authorization
+    ## in CGI environment
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    ## TRACE and TRACK HTTP methods disabled to prevent XSS attacks
+    RewriteCond %{REQUEST_METHOD} ^TRAC[EK]
+    RewriteRule .* - [L,R=405]
 
     # For HTTP(s)
     RewriteCond %{HTTP_HOST} {{MAIN_DOMAIN}}$ [NC] # MAIN_DOMAIN - variable from env
