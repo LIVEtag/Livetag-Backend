@@ -7,9 +7,9 @@
 use yii\db\Connection;
 use yii\swiftmailer\Mailer;
 
-Yii::setAlias('@base.domain', '{{MAIN_DOMAIN}}');
-Yii::setAlias('@rest.domain', '{{REST_DOMAIN}}');
-Yii::setAlias('@backend.domain', '{{BACKEND_DOMAIN}}');
+Yii::setAlias('@base.domain', '{{YII_MAIN_DOMAIN}}');
+Yii::setAlias('@rest.domain', '{{YII_REST_DOMAIN}}');
+Yii::setAlias('@backend.domain', '{{YII_BACKEND_DOMAIN}}');
 
 return [
     'components' => [
