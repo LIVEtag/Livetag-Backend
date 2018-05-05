@@ -79,7 +79,7 @@ task('gitlab:cron', function () {
     ->setPrivate();
 
 task('gitlab:success', function () {
-    writeln(sprintf('<info>{{application}} is UP! Domain: %s</info>', getenv('MAIN_DOMAIN')));
+    writeln(sprintf('<info>{{application}} is UP! Domain: %s</info>', getenv('BUILD_URL')));
 })->desc('Success task')
     ->local()
     ->setPrivate()

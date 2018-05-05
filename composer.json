@@ -16,7 +16,8 @@
         "frostealth/yii2-aws-s3": "2.1.0",
         "kartik-v/yii2-widgets": "3.4.0",
         "gbksoft/phpcent": "~1.0.5",
-        "deployer/deployer": "6.1"
+        "deployer/deployer": "6.1",
+        "dmstr/yii2-adminlte-asset": "2.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.9",
@@ -29,6 +30,7 @@
         "phpmd/phpmd": "2.6",
         "sebastian/phpcpd": "2.0.4",
         "squizlabs/php_codesniffer": "2.9.1",
+        "wimg/php-compatibility": "8.1.0",
         "phpunit/phpunit": "4.*",
         "roave/security-advisories": "dev-master"
     },

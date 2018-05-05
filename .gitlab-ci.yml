@@ -32,6 +32,11 @@ build_vendor:
 #      - design/dist/
     when: on_success
     expire_in: 2h
+  cache:
+    key: vendors-lib
+    paths:
+      - vendor/
+#        - /design/node_modules/
   script:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
@@ -129,9 +134,9 @@ run:dev-review:
       command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
   variables:
     PROXY_build_DOMAIN: dev-${MAIN_DOMAIN}
-    MAIN_DOMAIN: dev-${MAIN_DOMAIN}
-    REST_DOMAIN: dev-${MAIN_DOMAIN}
-    BACKEND_DOMAIN: dev-${MAIN_DOMAIN}
+    YII_MAIN_DOMAIN: dev-${MAIN_DOMAIN}
+    YII_REST_DOMAIN: dev-${MAIN_DOMAIN}
+    YII_BACKEND_DOMAIN: dev-${MAIN_DOMAIN}
     BUILD_URL: https://dev-$MAIN_DOMAIN
     YII_BUILD_ENV: Dev
   script:
@@ -159,9 +164,9 @@ run:test-review:
       command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
   variables:
     PROXY_build_DOMAIN: test-${MAIN_DOMAIN}
-    MAIN_DOMAIN: test-${MAIN_DOMAIN}
-    REST_DOMAIN: test-${MAIN_DOMAIN}
-    BACKEND_DOMAIN: test-${MAIN_DOMAIN}
+    YII_MAIN_DOMAIN: test-${MAIN_DOMAIN}
+    YII_REST_DOMAIN: test-${MAIN_DOMAIN}
+    YII_BACKEND_DOMAIN: test-${MAIN_DOMAIN}
     BUILD_URL: https://test-$MAIN_DOMAIN
     YII_BUILD_ENV: Test
   script:
@@ -189,9 +194,9 @@ run:live-review:
       command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
   variables:
     PROXY_build_DOMAIN: live-${MAIN_DOMAIN}
-    MAIN_DOMAIN: live-${MAIN_DOMAIN}
-    REST_DOMAIN: live-${MAIN_DOMAIN}
-    BACKEND_DOMAIN: live-${MAIN_DOMAIN}
+    YII_MAIN_DOMAIN: live-${MAIN_DOMAIN}
+    YII_REST_DOMAIN: live-${MAIN_DOMAIN}
+    YII_BACKEND_DOMAIN: live-${MAIN_DOMAIN}
     BUILD_URL: https://live-$MAIN_DOMAIN
     YII_BUILD_ENV: Live
   script:

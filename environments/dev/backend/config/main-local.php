@@ -5,6 +5,7 @@
  */
 
 use yii\debug\Module as DebugModule;
+use yii\gii\generators\crud\Generator;
 use yii\gii\Module as GiiModule;
 
 $config = [
@@ -36,6 +37,15 @@ if (!YII_ENV_TEST) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => GiiModule::class,
+        'allowedIPs' => ['127.0.0.1', '::1', '172.18.0.*'],
+        'generators' => [ //here
+            'crud' => [
+                'class' => Generator::class,
+                'templates' => [
+                    'adminlte' => '@vendor/dmstr/yii2-adminlte-asset/gii/templates/crud/simple',
+                ]
+            ]
+        ],
     ];
 }
 
