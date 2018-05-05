@@ -13,7 +13,6 @@ use rest\modules\chat\Module as ChatModule;
 use rest\modules\chat\controllers\ChannelController;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
-use yii\web\Request;
 use yii\web\Response;
 
 $params = array_merge(
@@ -61,10 +60,12 @@ return [
             'class' => ErrorHandler::class
         ],
         'request' => [
-            'class' => Request::class,
             'enableCookieValidation' => false,
             'parsers' => [
                 'application/json' => JsonParser::class,
+            ],
+            'trustedHosts' => [
+                '10.1.0.1',
             ],
         ],
         'urlManager' => [

@@ -49,6 +49,11 @@ return [
                 '<module:\w+>/<controller:[\w\-]+>/<action:[\w\-]+>' => '<module>/<controller>/<action>/',
             ],
         ],
+        'request' => [
+            'trustedHosts' => [
+                '10.1.0.1',
+            ],
+        ],
     ],
     'params' => $params,
 ];

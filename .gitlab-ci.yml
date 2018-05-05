@@ -32,6 +32,11 @@ build_vendor:
 #      - design/dist/
     when: on_success
     expire_in: 2h
+  cache:
+    key: vendors-lib
+    paths:
+      - vendor/
+#        - /design/node_modules/
   script:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
