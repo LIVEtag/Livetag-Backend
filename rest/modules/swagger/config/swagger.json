@@ -12,7 +12,7 @@
             "description": "Chat module"
         }
     ],
-    "schemes": ["http", "https"],
+    "schemes": ["https"],
     "paths": {
         "/v1/user/login/twitter": {
             "post": {
