@@ -17,6 +17,9 @@ services:
 #      DCGID: ${DCGID}
       MAIN_DOMAIN: ${MAIN_DOMAIN}
       YII_BUILD_ENV: "Dev"
+      YII_MAIN_DOMAIN: ${MAIN_DOMAIN}
+      YII_REST_DOMAIN: ${REST_DOMAIN}
+      YII_BACKEND_DOMAIN: ${BACKEND_DOMAIN}
       GITHUB_KEY: ${GITHUB_KEY}
       PHP_IDE_CONFIG: "serverName=hostname.loc"
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
