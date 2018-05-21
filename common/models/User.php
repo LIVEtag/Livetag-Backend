@@ -11,7 +11,7 @@ use yii\web\IdentityInterface;
  * User model
  *
  * @property integer $id
- * @property integer $role
+ * @property string $role
  * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
@@ -24,26 +24,30 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-
     /**
      * Disabled user (marked as deleted)
      */
-    const STATUS_DELETED = 0;
+    public const STATUS_DELETED = 0;
 
     /**
      * Default active user
      */
-    const STATUS_ACTIVE = 10;
+    public const STATUS_ACTIVE = 10;
+
+    /**
+     * Example role for guest user
+     */
+    public const ROLE_GUEST = 'guest';
 
     /**
      * Example role for default user
      */
-    const ROLE_BASIC = 1;
+    public const ROLE_BASIC = 'basic';
 
     /**
-     * Example role for pro user
+     * Example role for advanced user
      */
-    const ROLE_ADVANCED = 2;
+    public const ROLE_ADVANCED = 'advanced';
 
     /**
      * @inheritdoc
