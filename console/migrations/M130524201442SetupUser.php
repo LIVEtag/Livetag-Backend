@@ -18,7 +18,7 @@ class M130524201442SetupUser extends Migration
             '{{%user}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'role'=>$this->boolean()->notNull(),
+                'role'=>$this->string()->notNull(),
                 'username' => $this->string()->notNull()->unique(),
                 'auth_key' => $this->string(32)->notNull(),
                 'password_hash' => $this->string()->notNull(),

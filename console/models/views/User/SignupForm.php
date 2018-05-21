@@ -30,6 +30,11 @@ class SignupForm extends Model
     public $password;
 
     /**
+     * @var string
+     */
+    public $role;
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -58,13 +63,15 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            ['role', 'in', 'range' => [User::ROLE_ADVANCED, User::ROLE_BASIC], 'skipOnEmpty' => true]
         ];
     }
 
     /**
      * Signs user up.
      *
-     * @return User|null the saved model or null if saving fails
+     * @return User|bool the saved model or null if saving fails
      */
     public function signup()
     {
@@ -75,6 +82,7 @@ class SignupForm extends Model
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
+        $user->role = $this->role;
         $user->setPassword($this->password);
         $user->generateAuthKey();
 

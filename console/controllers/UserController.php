@@ -31,6 +31,11 @@ class UserController extends Controller
     public $email;
 
     /**
+     * @var string
+     */
+    public $role;
+
+    /**
      * @inheritdoc
      */
     public function options($actionID)
@@ -39,6 +44,7 @@ class UserController extends Controller
             'password',
             'username',
             'email',
+            'role',
         ];
     }
 
@@ -55,6 +61,7 @@ class UserController extends Controller
                 'password' => $this->password,
                 'username' => $this->username,
                 'email' => $this->email,
+                'role' => $this->role,
             ],
             ''
         );
