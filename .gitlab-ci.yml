@@ -140,6 +140,8 @@ run:dev-review:
     BUILD_URL: https://dev-$MAIN_DOMAIN
     YII_BUILD_ENV: Dev
   script:
+    - echo "===== All services ====="
+    - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
@@ -170,6 +172,8 @@ run:test-review:
     BUILD_URL: https://test-$MAIN_DOMAIN
     YII_BUILD_ENV: Test
   script:
+    - echo "===== All services ====="
+    - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
@@ -200,6 +204,8 @@ run:live-review:
     BUILD_URL: https://live-$MAIN_DOMAIN
     YII_BUILD_ENV: Live
   script:
+    - echo "===== All services ====="
+    - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
