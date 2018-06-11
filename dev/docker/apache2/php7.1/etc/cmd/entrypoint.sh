@@ -9,6 +9,7 @@ test -f /var/www/html/docker-compose.yml && \
   test -z "${DCGID}" && DCGID=`ls -lahn /var/www/html/docker-compose.yml | awk '{print $4;}'`
   sed -ri "s/^www-data:x:[[:digit:]]+:[[:digit:]]+:www-data/www-data:x:${DCUID}:${DCGID}:www-data/" /etc/passwd
   sed -ri "s/^www-data:x:[[:digit:]]+:/www-data:x:${DCGID}:/" /etc/group
+  chown www-data:www-data /var/www
   echo "Run Apache with UID=${DCUID} GID=${DCGID}"
  }
 
