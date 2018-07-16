@@ -9,11 +9,19 @@ test -f /var/www/html/docker-compose.yml && \
   test -z "${DCGID}" && DCGID=`ls -lahn /var/www/html/docker-compose.yml | awk '{print $4;}'`
   sed -ri "s/^www-data:x:[[:digit:]]+:[[:digit:]]+:www-data/www-data:x:${DCUID}:${DCGID}:www-data/" /etc/passwd
   sed -ri "s/^www-data:x:[[:digit:]]+:/www-data:x:${DCGID}:/" /etc/group
+  chown www-data:www-data /var/www
   echo "Run Apache with UID=${DCUID} GID=${DCGID}"
  }
 
+# Export environments
+test -f /var/www/html/.env && \
+ {
+  for envstr in `cat /var/www/html/.env | grep -vE "^;"`
+   do
+    export ${envstr}
+   done
+ }
 # Enable SSL
-test -f /var/www/html/.env && . /var/www/html/.env
 test -z "${MAIN_DOMAIN}" || test -f /etc/apache2/ssl/ssl.key || \
  {
   echo "authorityKeyIdentifier=keyid,issuer\nbasicConstraints=CA:FALSE\nkeyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment\nsubjectAltName = @alt_names\n\n" > /tmp/v3.ext
