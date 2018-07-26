@@ -8,7 +8,6 @@ namespace rest\common\models\views\User;
 use common\models\User\SocialProfile;
 use rest\common\models\AccessToken;
 use rest\common\models\User;
-use Yii;
 use yii\base\Model;
 
 /**
@@ -115,7 +114,7 @@ class SocialForm extends Model
             return false;
         }
 
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             $socialProfile = SocialProfile::findBySocialId($this->socialId);
             if ($socialProfile === null) {
