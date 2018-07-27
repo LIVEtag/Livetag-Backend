@@ -403,7 +403,15 @@
                 "tags": ["AnyBody"],
                 "produces": ["application/json"],
                 "operationId": "pagesView",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
