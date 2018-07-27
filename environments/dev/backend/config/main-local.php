@@ -42,7 +42,7 @@ if (!YII_ENV_TEST) {
             'crud' => [
                 'class' => Generator::class,
                 'templates' => [
-                    'adminlte' => '@vendor/dmstr/yii2-adminlte-asset/gii/templates/crud/simple',
+                    'adminlte' => '@backend/generators/crud/simple',
                 ]
             ]
         ],
