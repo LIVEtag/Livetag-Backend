@@ -8,7 +8,6 @@ namespace rest\common\controllers\actions\User;
 use rest\common\models\User;
 use rest\common\models\views\User\ChangePassword;
 use rest\components\api\actions\Action;
-use Yii;
 
 /**
  * Class ChangePasswordAction
@@ -23,8 +22,8 @@ class ChangePasswordAction extends Action
     public function run()
     {
         $model = new ChangePassword();
-        $user = User::findOne(Yii::$app->user->getId());
-        $model->setAttributes(Yii::$app->request->post());
+        $user = User::findOne(\Yii::$app->user->getId());
+        $model->setAttributes(\Yii::$app->request->post());
         $model->changePassword($user);
         return $model;
     }

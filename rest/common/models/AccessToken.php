@@ -3,6 +3,8 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+declare(strict_types = 1);
+
 namespace rest\common\models;
 
 use rest\common\models\queries\User\AccessTokenQuery;
