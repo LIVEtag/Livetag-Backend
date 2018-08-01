@@ -22,16 +22,21 @@
                 "operationId": "userCreateAccessTokenUsingTwitterAccount",
                 "parameters": [
                     {
-                        "in": "formData",
-                        "name": "token",
-                        "description": "Access token",
-                        "type": "string"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "tokenSecret",
-                        "description": "Access token secret",
-                        "type": "string"
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "token": {
+                                    "type": "string",
+                                    "description": "Access token"
+                                },
+                                "tokenSecret": {
+                                    "type": "string",
+                                    "description": "Access token secret"
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -80,11 +85,18 @@
                         "required": true
                     },
                     {
-                        "in": "formData",
-                        "name": "token",
-                        "type": "string",
-                        "required": true,
-                        "description": "Get token facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&response_type=token&redirect_uri={redirect_uri}&scope={scope}"
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "token": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "Get token facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&response_type=token&redirect_uri={redirect_uri}&scope={scope}"
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -122,18 +134,23 @@
                 "operationId": "userCreateAccessToken",
                 "parameters": [
                     {
-                        "in": "formData",
-                        "name": "username",
-                        "type": "string",
-                        "required": true,
-                        "description": "Username / e-mail<br>Minimum 2, maximum 255 characters"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "password",
-                        "type": "string",
-                        "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "Username / e-mail<br>Minimum 2, maximum 255 characters"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "Minimum 2, maximum 255 characters"
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -213,34 +230,34 @@
                 "operationId": "userCreate",
                 "parameters": [
                     {
-                        "in": "formData",
-                        "name": "username",
-                        "type": "string",
-                        "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "email",
-                        "type": "string",
-                        "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "password",
-                        "type": "string",
-                        "required": true,
-                        "description": "Minimum 2, maximum 255 characters"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "isRememberMe",
-                        "type": "string",
-                        "enum": ["yes", "no"],
-                        "default": "no",
-                        "required": false,
-                        "description": "are you need remember this token?"
+                        "name": "params",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "Minimum 2, maximum 255 characters"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "Minimum 2, maximum 255 characters"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "required": true,
+                                    "description": "Minimum 2, maximum 255 characters"
+                                },
+                                "isRememberMe": {
+                                    "enum": ["no", "yes"],
+                                    "default": "no",
+                                    "required": false,
+                                    "description": "are you need remember this token?"
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {
@@ -386,7 +403,15 @@
                 "tags": ["AnyBody"],
                 "produces": ["application/json"],
                 "operationId": "pagesView",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

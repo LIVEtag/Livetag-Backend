@@ -16,12 +16,13 @@ services:
 #      DCUID: ${DCUID}
 #      DCGID: ${DCGID}
       MAIN_DOMAIN: ${MAIN_DOMAIN}
+      DESIGN_REPO_URL: ${DESIGN_REPO_URL}
       YII_BUILD_ENV: "Dev"
       YII_MAIN_DOMAIN: ${MAIN_DOMAIN}
       YII_REST_DOMAIN: ${REST_DOMAIN}
       YII_BACKEND_DOMAIN: ${BACKEND_DOMAIN}
       GITHUB_KEY: ${GITHUB_KEY}
-      PHP_IDE_CONFIG: "serverName=hostname.loc"
+      PHP_IDE_CONFIG: "serverName=${MAIN_DOMAIN}"
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
       # !!! Set your IP 10.0.75.1
       # !!! Set your PORT 9123

@@ -52,9 +52,12 @@ class RecoveryPassword extends Model
 
         $user->generatePasswordResetToken();
         if ($user->save()) {
-            \Yii::$app->mailer->compose('recovery-password', [
-                'user' => $user,
-            ])->send();
+            \Yii::$app
+                ->mailer
+                ->compose('recovery-password', ['user' => $user])
+                ->setFrom(\Yii::$app->params['adminEmail'])
+                ->setTo($user->email)
+                ->send();
         }
 
         return $user->password_reset_token;

@@ -8,11 +8,13 @@ namespace Deployer;
 
 require 'recipe/common.php';
 
-// Project name
+// Global
 set('application', 'Base project');
+set('default_timeout', 0.0);
 
 // Environments variables
 set('yii_environment', getenv('YII_BUILD_ENV'));
+set('design_repo', getenv('DESIGN_REPO_URL'));
 
 $variables = [];
 $envFile = __DIR__ . '/.env';
@@ -40,6 +42,19 @@ if (file_exists(YII_PROJECT_ROOT . '/.dep/hosts.yml')) {
 
     file_put_contents(YII_PROJECT_ROOT . '/.dep/hosts.tmp.yml', $data);
     inventory(YII_PROJECT_ROOT . '/.dep/hosts.tmp.yml');
+}
+
+function designDirectory () {
+    $url = get('design_repo');
+    $data = parse_url($url);
+    $path = $data['path'] ?? null;
+
+    if ($path === null) {
+        throw new \RuntimeException('"path" key does not exists.');
+    }
+    [$dist,] = explode('.', $path);
+
+    return basename($dist);
 }
 
 // Tasks
@@ -118,6 +133,11 @@ task('gitlab:deploy', function () {
     set('source_path', YII_PROJECT_ROOT);
     set('dist_path', '/var/www/html');
 
+    // If are You using external a repository for frontend components, you must uncomment this code
+    // set('design_directory', designDirectory());
+    // set('design_path', YII_PROJECT_ROOT . '/design/' . get('design_directory'));
+    // invoke('design:prepare');
+
     writeln('Move files');
 
     invoke('gitlab:symlink');
@@ -157,24 +177,34 @@ task('deploy:run_migrations', function () {
     run('{{bin/php}} {{deploy_path}}/yii migrate up --interactive=0');
 })->desc('Run migrations');
 
+task('deploy:design_clone', function () {
+    run('rm -rf {{design_path}}');
+    cd(\dirname(get('design_path')));
+    run('git clone {{design_repo}}');
+})->desc('Clone design project');
+
 task('deploy:npm_install', function () {
-    set("design_path", YII_PROJECT_ROOT . "/design");
-    if (file_exists('{{design_path}')) {
+    if (\file_exists(get('design_path'))) {
         cd('{{design_path}}');
-        run('{{bin/npm}} install');
+        run('npm install');
     } else {
         writeln('No design dir found');
     }
 })->desc('Install node modules');
 
 task('deploy:npm_build', function () {
-    set("design_path", YII_PROJECT_ROOT . "/design");
-    if (file_exists('{{design_path}')) {
+    if (\file_exists(get('design_path'))) {
         writeln('Npm build project');
         cd('{{design_path}}');
-        run('{{bin/npm}} run build:' . strtolower(get('yii_environment')));
+        run('npm run build:prod');
     }
 })->desc('Build frontend');
+
+task('design:prepare', function () {
+    invoke('deploy:design_clone');
+    invoke('deploy:npm_install');
+    invoke('deploy:npm_build');
+})->desc('Prepare design');
 
 $testPaths = [
     YII_PROJECT_ROOT . '/common',
@@ -236,8 +266,6 @@ task('deploy', function () {
     invoke("deploy:composer");
     invoke('deploy:init');
     invoke('deploy:run_migrations');
-    invoke('deploy:npm_install');
-    invoke('deploy:npm_build');
     invoke('deploy:unlock');
     invoke('cleanup');
 });

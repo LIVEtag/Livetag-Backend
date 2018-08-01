@@ -7,6 +7,7 @@
     <exclude-pattern>console/migrations/</exclude-pattern>
     <exclude-pattern>common/Yii.php</exclude-pattern>
     <exclude-pattern>bootstrap.php</exclude-pattern>
+    <exclude-pattern>common/components/rbac/rules.php</exclude-pattern>
     <rule ref="PSR2"/>
 
     <rule ref="Generic.Files.LineLength">
@@ -25,5 +26,13 @@
 
     <rule ref="Squiz.ControlStructures.ElseIfDeclaration">
         <severity>0</severity>
+    </rule>
+
+    <!-- Lines can be 120 chars long, but never show errors -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="120"/>
+        </properties>
     </rule>
 </ruleset>
