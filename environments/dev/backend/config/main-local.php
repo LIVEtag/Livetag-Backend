@@ -7,6 +7,7 @@
 use yii\debug\Module as DebugModule;
 use yii\gii\generators\crud\Generator;
 use yii\gii\Module as GiiModule;
+use yii\gii\generators\model\Generator as ModelGenerator;
 
 $config = [
     'components' => [
@@ -43,6 +44,12 @@ if (!YII_ENV_TEST) {
                 'class' => Generator::class,
                 'templates' => [
                     'adminlte' => '@backend/generators/crud/simple',
+                ]
+            ],
+            'model' => [
+                'class' => ModelGenerator::class,
+                'templates' => [
+                    'php7' => '@backend/generators/model/default',
                 ]
             ]
         ],
