@@ -13,6 +13,21 @@
 /* @var $rules string[] list of validation rules */
 /* @var $relations array list of relations (name => relation declaration) */
 
+if ($queryClassName) {
+    $queryClassFullName = ($generator->ns === $generator->queryNs)
+        ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
+}
+
+/**
+ * @param $path
+ * @return mixed
+ */
+function getShortArName($path)
+{
+    $list = explode('\\', $path);
+    return array_pop($list);
+}
+
 echo "<?php\n";
 $year = date('Y');
 echo <<<EOF
@@ -22,10 +37,15 @@ echo <<<EOF
  */\n
 EOF;
 ?>
+declare(strict_types = 1);
 
 namespace <?= $generator->ns ?>;
 
 use yii\db\ActiveQuery;
+use <?= ltrim($generator->baseClass, '\\'); ?>;
+<?php if ($queryClassName) : ?>
+use <?= ltrim($queryClassFullName, '\\'); ?>;
+<?php endif; ?>
 
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
@@ -40,14 +60,14 @@ use yii\db\ActiveQuery;
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
+class <?= $className ?> extends <?= getShortArName('\\' . ltrim($generator->baseClass, '\\')) . "\n" ?>
 {
     /**
      * @inheritdoc
      */
     public static function tableName(): string
     {
-        return '{{%<?= $generator->generateTableName($tableName) ?>}}';
+        return '<?= $generator->generateTableName($tableName) ?>';
     }
 <?php if ($generator->db !== 'db') : ?>
 
@@ -91,17 +111,16 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
 <?php endforeach; ?>
 <?php if ($queryClassName) : ?>
 <?php
-    $queryClassFullName = ($generator->ns === $generator->queryNs)
-        ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
+
     echo "\n";
 ?>
     /**
      * @inheritdoc
-     * @return <?= $queryClassFullName ?> the active query used by this AR class.
+     * @return <?= $queryClassName ?> the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): <?= $queryClassName."\n" ?>
     {
-        return new <?= $queryClassFullName ?>(get_called_class());
+        return new <?= $queryClassName ?>(get_called_class());
     }
 <?php endif; ?>
 }

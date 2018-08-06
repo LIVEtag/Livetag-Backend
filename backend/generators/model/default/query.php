@@ -19,6 +19,16 @@ if ($generator->ns !== $generator->queryNs) {
     $modelFullClassName = '\\' . $generator->ns . '\\' . $modelFullClassName;
 }
 
+/**
+ * @param $path
+ * @return mixed
+ */
+function getShortAqName($path)
+{
+    $list = explode('\\', $path);
+    return array_pop($list);
+}
+
 echo "<?php\n";
 $year = date('Y');
 echo <<<EOF
@@ -28,24 +38,23 @@ echo <<<EOF
  */\n
 EOF;
 ?>
+declare(strict_types = 1);
 
 namespace <?= $generator->queryNs ?>;
+
+use <?= ltrim($modelFullClassName, '\\') . ";\n"; ?>
+use <?= ltrim($generator->queryBaseClass, '\\') . ";\n"; ?>
 
 /**
  * This is the ActiveQuery class for [[<?= $modelFullClassName ?>]].
  *
- * @see <?= $modelFullClassName . "\n" ?>
+ * @see <?= getShortAqName($modelFullClassName) . "\n" ?>
  */
-class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\') . "\n" ?>
+class <?= $className ?> extends <?= getShortAqName('\\' . ltrim($generator->queryBaseClass, '\\')) . "\n" ?>
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
-
     /**
      * @inheritdoc
-     * @return <?= $modelFullClassName ?>[]|array
+     * @return <?= getShortAqName($modelFullClassName) ?>[]|array
      */
     public function all($db = null)
     {
@@ -54,7 +63,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\
 
     /**
      * @inheritdoc
-     * @return <?= $modelFullClassName ?>|array|null
+     * @return <?= getShortAqName($modelFullClassName) ?>|array|null
      */
     public function one($db = null)
     {
