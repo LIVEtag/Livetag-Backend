@@ -167,8 +167,8 @@ run:dev-swagger-ui:
     API_URL: "https://dev-$MAIN_DOMAIN/rest/swagger/main/json"
   script:
     - echo "===== Run Swagger UI ====="
-    - echo "Swagger UI URL: https://swagger-ui-${MAIN_DOMAIN}"
-    - echo "JSON URL: https://dev-${MAIN_DOMAIN}/rest/swagger/main/json"
+    - echo "Swagger UI URL https://swagger-ui-${MAIN_DOMAIN}"
+    - echo "JSON URL https://dev-${MAIN_DOMAIN}/rest/swagger/main/json"
     - sh /usr/share/nginx/docker-run.sh
   only:
     - develop
