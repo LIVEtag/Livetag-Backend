@@ -13,8 +13,8 @@ services:
     environment:
       # Custom user ID and group ID to start
       # Get auto if not set
-#      DCUID: ${DCUID}
-#      DCGID: ${DCGID}
+      DCUID: ${DCUID}
+      DCGID: ${DCGID}
       MAIN_DOMAIN: ${MAIN_DOMAIN}
       DESIGN_REPO_URL: ${DESIGN_REPO_URL}
       YII_BUILD_ENV: "Dev"
@@ -42,3 +42,10 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+  swagger-ui:
+    container_name: swagger-ui
+    image: hub.ci.gbksoft.net:5000/pub/swagger:3
+    environment:
+      API_URL: "https://${REST_DOMAIN}/rest/swagger/main/json"
+    ports:
+      - "8080:8080"
