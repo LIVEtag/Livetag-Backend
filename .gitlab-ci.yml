@@ -162,18 +162,18 @@ run:dev-swagger-ui:
     name: hub.ci.gbksoft.net:5000/pub/swagger:3
   variables:
     PROXY_build_HTTPS: "443:8080"
-    PROXY_build_DOMAIN: swagger-ui-${MAIN_DOMAIN}
-    BUILD_URL: https://swagger-ui-${MAIN_DOMAIN}
+    PROXY_build_DOMAIN: dev-swagger-ui-${MAIN_DOMAIN}
+    BUILD_URL: https://dev-swagger-ui-${MAIN_DOMAIN}
     API_URL: "https://dev-$MAIN_DOMAIN/rest/swagger/main/json"
   script:
     - echo "===== Run Swagger UI ====="
-    - echo "Swagger UI URL https://swagger-ui-${MAIN_DOMAIN}"
-    - echo "JSON URL https://dev-${MAIN_DOMAIN}/rest/swagger/main/json"
+    - echo "Swagger UI URL ${BUILD_URL}"
+    - echo "JSON URL ${API_URL}"
     - sh /usr/share/nginx/docker-run.sh
   only:
     - develop
   environment:
-    name: swagger-ui/$CI_PROJECT_PATH_SLUG
+    name: dev-swagger-ui/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   dependencies:
     - run:dev-review
