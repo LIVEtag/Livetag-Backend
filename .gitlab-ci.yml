@@ -157,7 +157,6 @@ run:dev-review:
 
 run:dev-swagger-ui:
   stage: swagger
-  when: manual
   image:
     name: hub.ci.gbksoft.net:5000/pub/swagger:3
   variables:
@@ -171,7 +170,7 @@ run:dev-swagger-ui:
     - echo "JSON URL ${API_URL}"
     - sh /usr/share/nginx/docker-run.sh
   only:
-    - develop
+    - triggers
   environment:
     name: dev-swagger-ui/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
