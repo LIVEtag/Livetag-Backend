@@ -276,16 +276,9 @@ live:review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - web
     - master
-  except:
-    - branches
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
-  dependencies:
-    - phpmd
-    - phpcpd
-    - phpcs
   tags:
     - shared-web
