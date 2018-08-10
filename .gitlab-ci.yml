@@ -280,5 +280,9 @@ live:review:
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
+  dependencies:
+    - phpmd
+    - phpcpd
+    - phpcs
   tags:
     - shared-web
