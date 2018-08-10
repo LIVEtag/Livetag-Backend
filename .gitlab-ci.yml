@@ -16,8 +16,10 @@ before_script:
 stages:
   - build
   - tests
-  - collect_artifacts
-  - run
+  - artifacts
+  - dev
+  - test
+  - live
 
 build_vendor:
   stage: build
@@ -37,6 +39,8 @@ build_vendor:
     paths:
       - vendor/
 #        - /design/node_modules/
+  only:
+    - web
   script:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
@@ -55,6 +59,8 @@ phpmd:
       - dev/build/
     when: on_failure
     expire_in: 2h
+  only:
+    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_md
@@ -75,6 +81,8 @@ phpcpd:
       - dev/build/
     when: on_failure
     expire_in: 2h
+  only:
+    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cpd
@@ -95,6 +103,8 @@ phpcs:
       - dev/build/
     when: on_failure
     expire_in: 2h
+  only:
+    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cs
@@ -105,12 +115,14 @@ phpcs:
     - shared-cli
 
 artifacts:
-  stage: collect_artifacts
+  stage: artifacts
   artifacts:
     untracked: true
     paths:
     - dev/build/
     expire_in: 1 week
+  only:
+    - web
   script:
     - echo "===== Collect artifacts data ====="
     - rm -rf vendor
@@ -122,8 +134,8 @@ artifacts:
   tags:
     - shared-cli
 
-run:dev-review:
-  stage: run
+dev:review:
+  stage: dev
   when: manual
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -145,7 +157,9 @@ run:dev-review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - develop
+    - web
+  except:
+    - master
   environment:
     name: dev-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
@@ -154,8 +168,33 @@ run:dev-review:
   tags:
     - shared-web
 
-run:test-review:
-  stage: run
+dev:swagger:
+  stage: dev
+  when: manual
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/swagger:3
+  variables:
+    PROXY_build_HTTPS: "443:8080"
+    PROXY_build_DOMAIN: dev-swagger-ui-${MAIN_DOMAIN}
+    BUILD_URL: https://dev-swagger-ui-${MAIN_DOMAIN}
+    API_URL: "https://dev-$MAIN_DOMAIN/rest/swagger/main/json"
+  script:
+    - echo "===== Run Swagger UI ====="
+    - echo "Swagger UI URL ${BUILD_URL}"
+    - echo "JSON URL ${API_URL}"
+    - sh /usr/share/nginx/docker-run.sh
+  only:
+    - web
+  except:
+    - master
+  environment:
+    name: dev-swagger-ui/$CI_PROJECT_PATH_SLUG
+    url: $BUILD_URL
+  tags:
+  - shared-web
+
+test:review:
+  stage: test
   when: manual
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -177,7 +216,9 @@ run:test-review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - develop
+    - web
+  except:
+    - master
   environment:
     name: test-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
@@ -186,8 +227,33 @@ run:test-review:
   tags:
     - shared-web
 
-run:live-review:
-  stage: run
+test:swagger:
+  stage: test
+  when: manual
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/swagger:3
+  variables:
+    PROXY_build_HTTPS: "443:8080"
+    PROXY_build_DOMAIN: test-swagger-ui-${MAIN_DOMAIN}
+    BUILD_URL: https://test-swagger-ui-${MAIN_DOMAIN}
+    API_URL: "https://test-$MAIN_DOMAIN/rest/swagger/main/json"
+  script:
+  - echo "===== Run Swagger UI ====="
+  - echo "Swagger UI URL ${BUILD_URL}"
+  - echo "JSON URL ${API_URL}"
+  - sh /usr/share/nginx/docker-run.sh
+  only:
+  - web
+  except:
+  - master
+  environment:
+    name: test-swagger-ui/$CI_PROJECT_PATH_SLUG
+    url: $BUILD_URL
+  tags:
+  - shared-web
+
+live:review:
+  stage: live
   when: manual
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
@@ -210,6 +276,7 @@ run:live-review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
+    - web
     - master
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG

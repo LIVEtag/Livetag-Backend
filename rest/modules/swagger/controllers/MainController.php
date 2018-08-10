@@ -7,7 +7,6 @@ namespace rest\modules\swagger\controllers;
 
 use rest\modules\swagger\controllers\actions\Main\HistoryAction;
 use rest\modules\swagger\controllers\actions\Main\JsonAction;
-use Yii;
 use yii\filters\AccessControl;
 use yii\filters\Cors;
 use yii\helpers\ArrayHelper;
@@ -23,13 +22,11 @@ class MainController extends Controller
      */
     public function behaviors()
     {
-        $isSecure = Yii::$app->getRequest()->getIsSecureConnection();
-
         return ArrayHelper::merge(
             parent::behaviors(),
             [
                 'access' => [
-                    'class' => AccessControl::className(),
+                    'class' => AccessControl::class,
                     'rules' => [
                         [
                             'actions' => ['json', 'history'],
@@ -38,14 +35,15 @@ class MainController extends Controller
                     ],
                 ],
                 'corsFilter' => [
-                    'class' => Cors::className(),
+                    'class' => Cors::class,
                     'cors' => [
-                        'Origin' => [
-                            $isSecure ? 'https://' : 'http://'. Yii::getAlias('@backend.domain'),
-                        ],
+                        'Origin' => ['*'],
                         'Access-Control-Request-Method' => ['GET'],
+                        'Access-Control-Request-Headers' => ['*'],
+                        'Access-Control-Max-Age' => 86400,
+                        'Access-Control-Allow-Credentials' => true,
+                        'Access-Control-Allow-Headers' => ['Content-Type'],
                     ],
-
                 ],
             ]
         );
@@ -57,9 +55,6 @@ class MainController extends Controller
     public function actions()
     {
         return [
-            'history' => [
-                'class' => HistoryAction::class,
-            ],
             'json' => [
                 'class' => JsonAction::class
             ]
