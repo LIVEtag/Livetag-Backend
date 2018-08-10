@@ -278,8 +278,6 @@ live:review:
   only:
     - web
     - master
-  except:
-    - branches
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
