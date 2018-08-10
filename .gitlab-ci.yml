@@ -39,12 +39,12 @@ build_vendor:
     paths:
       - vendor/
 #        - /design/node_modules/
-  only:
-    - web
   script:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
   when: always
+  only:
+    - web
   tags:
     - shared-cli
 
@@ -59,12 +59,12 @@ phpmd:
       - dev/build/
     when: on_failure
     expire_in: 2h
-  only:
-    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_md
   when: always
+  only:
+    - web
   dependencies:
     - build_vendor
   tags:
@@ -81,12 +81,12 @@ phpcpd:
       - dev/build/
     when: on_failure
     expire_in: 2h
-  only:
-    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cpd
   when: always
+  only:
+    - web
   dependencies:
     - build_vendor
   tags:
@@ -103,12 +103,12 @@ phpcs:
       - dev/build/
     when: on_failure
     expire_in: 2h
-  only:
-    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cs
   when: always
+  only:
+    - web
   dependencies:
     - build_vendor
   tags:
@@ -276,12 +276,16 @@ live:review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - master
     - web
+    - /^master$/
+  except:
+    - branches
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   dependencies:
-    - build_vendor
+    - phpmd
+    - phpcpd
+    - phpcs
   tags:
     - shared-web
