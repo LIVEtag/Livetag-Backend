@@ -277,7 +277,7 @@ live:review:
     - apache2-foreground
   only:
     - web
-    - /^master$/
+    - master
   except:
     - branches
   environment:
