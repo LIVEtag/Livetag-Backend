@@ -277,7 +277,6 @@ live:review:
     - apache2-foreground
   only:
     - master
-    - web
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
