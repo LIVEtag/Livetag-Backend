@@ -276,8 +276,8 @@ live:review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - web
     - master
+    - web
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
