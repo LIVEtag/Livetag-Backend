@@ -156,6 +156,8 @@ dev:review:
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
+  only:
+    - web
   except:
     - master
   environment:
@@ -181,6 +183,8 @@ dev:swagger:
     - echo "Swagger UI URL ${BUILD_URL}"
     - echo "JSON URL ${API_URL}"
     - sh /usr/share/nginx/docker-run.sh
+  only:
+    - web
   except:
     - master
   environment:
@@ -211,6 +215,8 @@ test:review:
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
+  only:
+    - web
   except:
     - master
   environment:
@@ -236,6 +242,8 @@ test:swagger:
   - echo "Swagger UI URL ${BUILD_URL}"
   - echo "JSON URL ${API_URL}"
   - sh /usr/share/nginx/docker-run.sh
+  only:
+    - web
   except:
     - master
   environment:
@@ -268,7 +276,8 @@ live:review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - master
+    - /^master$/
+    - web
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
