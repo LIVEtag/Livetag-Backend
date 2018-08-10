@@ -243,9 +243,9 @@ test:swagger:
   - echo "JSON URL ${API_URL}"
   - sh /usr/share/nginx/docker-run.sh
   only:
-  - web
+    - web
   except:
-  - master
+    - master
   environment:
     name: test-swagger-ui/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
@@ -276,7 +276,6 @@ live:review:
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
-    - web
     - master
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
