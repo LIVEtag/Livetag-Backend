@@ -39,12 +39,12 @@ build_vendor:
     paths:
       - vendor/
 #        - /design/node_modules/
-  only:
-    - web
   script:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
   when: always
+  only:
+    - web
   tags:
     - shared-cli
 
@@ -59,12 +59,12 @@ phpmd:
       - dev/build/
     when: on_failure
     expire_in: 2h
-  only:
-    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_md
   when: always
+  only:
+    - web
   dependencies:
     - build_vendor
   tags:
@@ -81,12 +81,12 @@ phpcpd:
       - dev/build/
     when: on_failure
     expire_in: 2h
-  only:
-    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cpd
   when: always
+  only:
+    - web
   dependencies:
     - build_vendor
   tags:
@@ -103,12 +103,12 @@ phpcs:
       - dev/build/
     when: on_failure
     expire_in: 2h
-  only:
-    - web
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cs
   when: always
+  only:
+    - web
   dependencies:
     - build_vendor
   tags:
@@ -156,8 +156,6 @@ dev:review:
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
-  only:
-    - web
   except:
     - master
   environment:
@@ -183,8 +181,6 @@ dev:swagger:
     - echo "Swagger UI URL ${BUILD_URL}"
     - echo "JSON URL ${API_URL}"
     - sh /usr/share/nginx/docker-run.sh
-  only:
-    - web
   except:
     - master
   environment:
@@ -215,8 +211,6 @@ test:review:
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
-  only:
-    - web
   except:
     - master
   environment:
@@ -242,8 +236,6 @@ test:swagger:
   - echo "Swagger UI URL ${BUILD_URL}"
   - echo "JSON URL ${API_URL}"
   - sh /usr/share/nginx/docker-run.sh
-  only:
-    - web
   except:
     - master
   environment:
@@ -277,11 +269,12 @@ live:review:
     - apache2-foreground
   only:
     - master
-    - web
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   dependencies:
-    - build_vendor
+    - phpmd
+    - phpcpd
+    - phpcs
   tags:
     - shared-web
