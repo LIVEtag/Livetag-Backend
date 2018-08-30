@@ -9,6 +9,7 @@ variables:
   DB_NAME: ${DB_NAME}
   DB_PORT: ${DB_PORT}
   DB_HOST: "mysql"
+  DB_TEST_HOST: "mysql"
 
 before_script:
   - rm -fr /var/www/html
@@ -114,6 +115,49 @@ phpcs:
   tags:
     - shared-cli
 
+codecept:
+  stage: tests
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  services:
+    - name: mysql:5.7
+      alias: mysql
+      command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+  artifacts:
+    untracked: true
+    paths:
+      - frontend/tests/
+      - backend/tests/
+      - common/tests/
+    when: on_failure
+    expire_in: 2h
+  variables:
+    PROXY_build_DOMAIN: codecept-${MAIN_DOMAIN}
+    YII_MAIN_DOMAIN: codecept-${MAIN_DOMAIN}
+    YII_REST_DOMAIN: codecept-${MAIN_DOMAIN}
+    YII_BACKEND_DOMAIN: codecept-${MAIN_DOMAIN}
+    BUILD_URL: https://codecept-$MAIN_DOMAIN
+    YII_BUILD_ENV: Dev
+  script:
+    - echo "===== All services ====="
+    - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - ./vendor/bin/dep gitlab:deploy
+    - /etc/init.d/apache2 start
+    - ./vendor/bin/codecept run
+  except:
+    - master
+  environment:
+    name: codecept-review/$CI_PROJECT_PATH_SLUG
+    url: $BUILD_URL
+  when: always
+  only:
+    - web
+  dependencies:
+    - build_vendor
+  tags:
+    - shared-web
+
 artifacts:
   stage: artifacts
   artifacts:
@@ -131,6 +175,7 @@ artifacts:
     - phpmd
     - phpcpd
     - phpcs
+    - codecept
   tags:
     - shared-cli
 
