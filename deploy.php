@@ -220,7 +220,7 @@ task('tests:php_md', function () use ($testPaths) {
         'xml '. YII_PROJECT_ROOT .'/dev/etc/phpmd/rules/rules.xml',
         '--reportfile '. YII_PROJECT_ROOT .'/dev/build/phpmd.xml',
         '--suffixes php',
-        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/',
+        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests',
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpmd ' . implode(' ', $params));
 })->desc('PHP MD static tests');
@@ -230,6 +230,7 @@ task('tests:php_cpd', function () use ($testPaths) {
         implode(' ', $testPaths),
         '--log-pmd '. YII_PROJECT_ROOT .'/dev/build/phpcpd.xml',
         '--min-lines 50',
+        '--exclude tests',
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcpd ' . implode(' ', $params));
 })->desc('PHP CPD static tests');;
