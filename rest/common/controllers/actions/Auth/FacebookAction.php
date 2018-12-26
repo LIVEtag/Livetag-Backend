@@ -42,6 +42,6 @@ class FacebookAction extends AbstractAuthAction
 
         $this->response->setStatusCode(201);
 
-        return $user;
+        return $user->accessToken;
     }
 }

@@ -26,19 +26,19 @@
                 ],
                 "operationId": "userCreateAccessTokenUsingTwitterAccount",
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status201"
                                         },
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/user"
+                                                    "$ref": "#/components/schemas/token"
                                                 }
                                             }
                                         }
@@ -103,19 +103,19 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status201"
                                         },
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/user"
+                                                    "$ref": "#/components/schemas/token"
                                                 }
                                             }
                                         }
@@ -161,14 +161,14 @@
                 ],
                 "operationId": "userCreateAccessToken",
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status201"
                                         },
                                         {
                                             "properties": {
@@ -230,7 +230,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status201"
                                         },
                                         {
                                             "properties": {
