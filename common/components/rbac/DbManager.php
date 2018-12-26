@@ -28,7 +28,7 @@ use yii\rbac\Rule;
  * The database connection is specified by [[db]]. The database schema could be initialized by applying migration:
  *
  * ```
- * yii migrate --migrationPath=@yii/rbac/migrations/
+ * yii migrate --migrationPath=@common/components/rbac/migrations/
  * ```
  *
  * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
