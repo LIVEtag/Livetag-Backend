@@ -74,7 +74,11 @@ class Channel extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
             [
                 'class' => BlameableBehavior::class,
                 'createdByAttribute' => 'createdBy',
