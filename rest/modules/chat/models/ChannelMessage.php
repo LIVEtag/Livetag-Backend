@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace rest\modules\chat\models;
 
@@ -43,7 +43,11 @@ class ChannelMessage extends ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
         ];
     }
 

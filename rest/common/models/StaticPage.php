@@ -32,6 +32,8 @@ class StaticPage extends ActiveRecord implements Linkable
         return [
             [
                 'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'updatedAt'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updatedAt'],

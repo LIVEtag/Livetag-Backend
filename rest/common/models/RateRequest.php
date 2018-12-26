@@ -3,6 +3,7 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace rest\common\models;
 
 use yii\behaviors\TimestampBehavior;
@@ -38,6 +39,8 @@ class RateRequest extends ActiveRecord
         return [
             [
                 'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'lastRequest'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['lastRequest'],

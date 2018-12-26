@@ -81,7 +81,6 @@ class User extends CommonUser implements IdentityInterface
             'id',
             'username',
             'email',
-            'accessToken'
         ];
     }
 }

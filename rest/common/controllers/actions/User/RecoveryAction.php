@@ -14,6 +14,7 @@ use rest\common\services\User\RateRequestService;
 use rest\components\api\actions\Action;
 use rest\components\api\actions\events\BeforeActionEvent;
 use yii\rest\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\TooManyRequestsHttpException;
 
 /**
@@ -57,10 +58,13 @@ class RecoveryAction extends Action
         $user = User::findByEmail(\Yii::$app->request->getBodyParam('email'));
 
         if ($user === null) {
-            throw new NotFoundException('User has been not found.');
+            throw new NotFoundHttpException('User has been not found.');
         }
 
-        return \Yii::createObject(RecoveryPassword::class)->generateAndSendEmail($user);
+        \Yii::createObject(RecoveryPassword::class)->generateAndSendEmail($user);
+
+        \Yii::$app->getResponse()->setStatusCode(204);
+        return;
     }
 
     /**

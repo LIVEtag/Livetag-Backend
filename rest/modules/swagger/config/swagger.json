@@ -173,7 +173,7 @@
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/user"
+                                                    "$ref": "#/components/schemas/token"
                                                 }
                                             }
                                         }
@@ -223,7 +223,7 @@
                 ],
                 "operationId": "userCreateAccessTokenByEmail",
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
                         "content": {
                             "application/json": {
@@ -235,7 +235,7 @@
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/user"
+                                                    "$ref": "#/components/schemas/token"
                                                 }
                                             }
                                         }
@@ -287,7 +287,7 @@
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/user"
+                                                    "$ref": "#/components/schemas/token"
                                                 }
                                             }
                                         }
@@ -604,21 +604,14 @@
                 ],
                 "operationId": "userRecoveryPasswordByEmail",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/user"
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -1914,8 +1907,7 @@
                 "type": "object",
                 "required": [
                     "username",
-                    "email",
-                    "accessToken"
+                    "email"
                 ],
                 "properties": {
                     "username": {
@@ -1923,9 +1915,6 @@
                     },
                     "email": {
                         "type": "string"
-                    },
-                    "accessToken": {
-                        "$ref": "#/components/schemas/token"
                     }
                 }
             },

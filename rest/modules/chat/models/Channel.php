@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace rest\modules\chat\models;
 
@@ -77,6 +77,8 @@ class Channel extends \yii\db\ActiveRecord
             TimestampBehavior::class,
             [
                 'class' => BlameableBehavior::class,
+                'createdByAttribute' => 'createdBy',
+                'updatedByAttribute' => 'updatedBy',
                 'value' => function () {
                     $user = Yii::$app->getModule('chat')->get('user', false);
                     return $user && !$user->isGuest ? $user->id : null;
@@ -125,10 +127,13 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function scenarios(): array
     {
-        return array_merge(parent::scenarios(), [
-            self::SCENARIO_CREATE => ['name', 'description', 'type'],
-            self::SCENARIO_UPDATE => ['name', 'description'], //do not allow change type
-        ]);
+        return array_merge(
+            parent::scenarios(),
+            [
+                self::SCENARIO_CREATE => ['name', 'description', 'type'],
+                self::SCENARIO_UPDATE => ['name', 'description'], //do not allow change type
+            ]
+        );
     }
 
     /**
@@ -328,14 +333,16 @@ class Channel extends \yii\db\ActiveRecord
     {
         $role = $this->getUsers()
             ->select('role')
-            ->andWhere([
-                ChannelUser::tableName() . '.userId' => $userId,
-            ])
+            ->andWhere(
+                [
+                    ChannelUser::tableName() . '.userId' => $userId,
+                ]
+            )
             ->scalar();
         if (!$role) {
             $role = ChannelUser::ROLE_NOBODY;
         }
-        return (int) $role;
+        return (int)$role;
     }
 
     /**
@@ -360,10 +367,13 @@ class Channel extends \yii\db\ActiveRecord
         if (!$role && $this->type == self::TYPE_PUBLIC) {
             return true;
         }
-        return in_array($role, [
-            ChannelUser::ROLE_USER,
-            ChannelUser::ROLE_ADMIN
-        ]);
+        return in_array(
+            $role,
+            [
+                ChannelUser::ROLE_USER,
+                ChannelUser::ROLE_ADMIN
+            ]
+        );
     }
 
     /**
@@ -373,10 +383,13 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function canPost(int $userId): bool
     {
-        return in_array($this->getUserRoleInChannel($userId), [
-            ChannelUser::ROLE_USER,
-            ChannelUser::ROLE_ADMIN
-        ]);
+        return in_array(
+            $this->getUserRoleInChannel($userId),
+            [
+                ChannelUser::ROLE_USER,
+                ChannelUser::ROLE_ADMIN
+            ]
+        );
     }
 
     /**
