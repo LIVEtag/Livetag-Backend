@@ -120,11 +120,13 @@ return [
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
                         'PATCH change-password' => 'change-password',
+                        'OPTIONS change-password' => 'options',
                         'POST recovery-password' => 'recovery-password',
                         'OPTIONS recovery-password' => 'options',
                         'POST new-password' => 'new-password',
                         'OPTIONS new-password' => 'options',
                         'POST logout' => 'logout',
+                        'OPTIONS logout' => 'options',
                     ],
                 ],
                 [
