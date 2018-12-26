@@ -118,8 +118,8 @@ class CreateToken extends Model
             $this->userAgent,
             $this->userIp
         )->andWhere(
-            'user_id = :user_id',
-            [':user_id' => $this->user->id]
+            'userId = :userId',
+            [':userId' => $this->user->id]
         )->one();
 
         if ($accessToken !== null) {
@@ -127,7 +127,7 @@ class CreateToken extends Model
         }
 
         $accessToken = new AccessToken();
-        $accessToken->user_id = $this->user->id;
+        $accessToken->userId = $this->user->id;
 
         $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         if ($this->isRememberMe === self::YES_VALUE) {
@@ -136,8 +136,8 @@ class CreateToken extends Model
 
         $accessToken->generateToken($expireTime);
 
-        $accessToken->user_ip = $this->userIp;
-        $accessToken->user_agent = $this->userAgent;
+        $accessToken->userIp = $this->userIp;
+        $accessToken->userAgent = $this->userAgent;
 
         return $accessToken->save() ? $accessToken : false;
     }

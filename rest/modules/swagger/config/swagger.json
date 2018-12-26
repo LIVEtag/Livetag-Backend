@@ -438,7 +438,7 @@
                     {
                         "in": "path",
                         "name": "sort",
-                        "description": "Sort ordering. You can use order=[-]sort_order as paremeter in Url",
+                        "description": "Sort ordering. You can use order=[-]sortOrder as parameter in Url",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -597,6 +597,7 @@
         },
         "/v1/user/recovery-password": {
             "post": {
+                "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
                     "User"
@@ -648,6 +649,7 @@
         },
         "/v1/user/new-password": {
             "post": {
+                "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
                     "User"
@@ -789,7 +791,7 @@
                     {
                         "in": "path",
                         "name": "sort",
-                        "description": "Sort ordering. You can use order=[-]sort_order as paremeter in Url",
+                        "description": "Sort ordering. You can use order=[-]sortOrder as parameter in Url",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -1690,7 +1692,7 @@
                 "properties": {
                     "field": {
                         "type": "string",
-                        "example": "user_id"
+                        "example": "userId"
                     },
                     "message": {
                         "type": "string",
@@ -1931,13 +1933,13 @@
                 "type": "object",
                 "required": [
                     "token",
-                    "expired_at"
+                    "expiredAt"
                 ],
                 "properties": {
                     "token": {
                         "type": "string"
                     },
-                    "expired_at": {
+                    "expiredAt": {
                         "type": "integer",
                         "format": "int32"
                     }
@@ -2025,7 +2027,7 @@
                     "type": {
                         "type": "integer"
                     },
-                    "created_at": {
+                    "createdAt": {
                         "type": "integer"
                     }
                 }

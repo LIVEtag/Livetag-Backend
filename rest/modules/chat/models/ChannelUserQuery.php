@@ -26,8 +26,8 @@ class ChannelUserQuery extends \yii\db\ActiveQuery
     public function byChannelAndUser(int $channelId, int $userId)
     {
         $this->andWhere([
-            ChannelUser::tableName() . '.user_id' => $userId,
-            ChannelUser::tableName() . '.channel_id' => $channelId,
+            ChannelUser::tableName() . '.userId' => $userId,
+            ChannelUser::tableName() . '.channelId' => $channelId,
         ]);
         return $this;
     }

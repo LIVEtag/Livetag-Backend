@@ -40,7 +40,7 @@ class AccessService extends Component
      * Base usages
      * ```
      * $query = new DataQuery();
-     * \Yii::$app->dataAccessManager->applyRules($query, ['user_id' => \Yii::$app->user->id]);
+     * \Yii::$app->dataAccessManager->applyRules($query, ['userId' => \Yii::$app->user->id]);
      * $list = $query->all();
      * $list === count(Records to which access is allowed)
      * ```

@@ -51,7 +51,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
     }
 } else {
     foreach ($generator->getTableSchema()->columns as $column) {
-        $format = stripos($column->name, 'created_at') !== false || stripos($column->name, 'updated_at') !== false ? 'datetime' : $generator->generateColumnFormat($column);
+        $format = stripos($column->name, 'createdAt') !== false || stripos($column->name, 'updatedAt') !== false ? 'datetime' : $generator->generateColumnFormat($column);
         echo "                '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
     }
 }

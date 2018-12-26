@@ -52,9 +52,9 @@ class ZeroingObserver
         );
 
         $time = time();
-        if (($time - $model->last_request) > $this->time) {
+        if (($time - $model->lastRequest) > $this->time) {
             $model->count = 0;
-            $model->last_request = $time;
+            $model->lastRequest = $time;
             $model->save();
         }
     }

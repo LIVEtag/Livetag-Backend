@@ -23,10 +23,10 @@ class ListAction extends Action
         $sort = new Sort(
             [
                 'attributes' => [
-                    'sort_order',
+                    'sortOrder',
                 ],
                 'defaultOrder' => [
-                    'sort_order' => SORT_ASC
+                    'sortOrder' => SORT_ASC
                 ],
             ]
         );

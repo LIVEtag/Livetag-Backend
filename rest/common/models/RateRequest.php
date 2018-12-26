@@ -11,12 +11,12 @@ use yii\db\ActiveRecord;
 /**
  * Class RateRequest
  * @property int $id
- * @property string $action_id
+ * @property string $actionId
  * @property string $ip
- * @property string $user_agent
- * @property int $created_at
+ * @property string $userAgent
+ * @property int $createdAt
  * @property int $count
- * @property int $last_request
+ * @property int $lastRequest
  */
 class RateRequest extends ActiveRecord
 {
@@ -26,7 +26,7 @@ class RateRequest extends ActiveRecord
     public function rules()
     {
         return [
-            [['action_id', 'ip', 'user_agent'], 'required'],
+            [['actionId', 'ip', 'userAgent'], 'required'],
         ];
     }
 
@@ -39,8 +39,8 @@ class RateRequest extends ActiveRecord
             [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'last_request'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => ['last_request'],
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'lastRequest'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['lastRequest'],
                 ],
             ],
         ];

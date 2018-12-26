@@ -17,22 +17,22 @@ class M160819134134CreateUserSocialProfileTable extends Migration
             '{{%user_social_profile}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'user_id' => $this->integer()->unsigned()->notNull(),
+                'userId' => $this->integer()->unsigned()->notNull(),
                 'type' => $this->smallInteger()->unsigned()->notNull(),
-                'social_id' => $this->string()->notNull(),
+                'socialId' => $this->string()->notNull(),
                 'email' => $this->string()->notNull(),
-                'created_at' => $this->integer()->unsigned()->notNull(),
-                'updated_at' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->integer()->unsigned()->notNull(),
+                'updatedAt' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );
 
-        $this->createIndex('idx_user_social_profile_user_id', '{{%user_social_profile}}', 'user_id');
+        $this->createIndex('idx_user_social_profile_userId', '{{%user_social_profile}}', 'userId');
 
         $this->addForeignKey(
             'fk_user_social_profile_to_user',
             '{{%user_social_profile}}',
-            'user_id',
+            'userId',
             '{{%user}}',
             'id',
             'CASCADE',
@@ -46,7 +46,7 @@ class M160819134134CreateUserSocialProfileTable extends Migration
     public function down()
     {
         $this->dropForeignKey('fk_user_social_profile_to_user', '{{%user_social_profile}}');
-        $this->dropIndex('idx_user_social_profile_user_id', '{{%user_social_profile}}');
+        $this->dropIndex('idx_user_social_profile_userId', '{{%user_social_profile}}');
         $this->dropTable('{{%user_social_profile}}');
     }
 }

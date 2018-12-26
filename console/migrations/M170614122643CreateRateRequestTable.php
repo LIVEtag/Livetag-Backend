@@ -17,12 +17,12 @@ class M170614122643CreateRateRequestTable extends Migration
             '{{%rate_request}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'action_id' => $this->string()->notNull(),
+                'actionId' => $this->string()->notNull(),
                 'ip' => $this->string()->notNull(),
-                'user_agent' => $this->string()->notNull(),
+                'userAgent' => $this->string()->notNull(),
                 'count' => $this->smallInteger()->unsigned()->notNull()->defaultValue(0),
-                'created_at' => $this->integer()->unsigned()->notNull(),
-                'last_request' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->integer()->unsigned()->notNull(),
+                'lastRequest' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );

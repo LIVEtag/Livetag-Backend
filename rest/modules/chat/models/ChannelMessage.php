@@ -17,11 +17,11 @@ use yii\db\ActiveRecord;
  * This is the model class for table "message".
  *
  * @property integer $id
- * @property integer $channel_id
- * @property integer $user_id
+ * @property integer $channelId
+ * @property integer $userId
  * @property string $message
- * @property integer $created_at
- * @property integer $updated_at
+ * @property integer $createdAt
+ * @property integer $updatedAt
  *
  * @property Channel $channel
  * @property User $user
@@ -53,22 +53,22 @@ class ChannelMessage extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['channel_id', 'user_id', 'message'], 'required'],
-            [['channel_id', 'user_id'], 'integer'],
+            [['channelId', 'userId', 'message'], 'required'],
+            [['channelId', 'userId'], 'integer'],
             [['message'], 'string', 'max' => 255],
             [
-                ['channel_id'],
+                ['channelId'],
                 'exist',
                 'skipOnError' => true,
                 'targetClass' => Channel::class,
-                'targetAttribute' => ['channel_id' => 'id']
+                'targetAttribute' => ['channelId' => 'id']
             ],
             [
-                ['user_id'],
+                ['userId'],
                 'exist',
                 'skipOnError' => true,
                 'targetClass' => User::class,
-                'targetAttribute' => ['user_id' => 'id']
+                'targetAttribute' => ['userId' => 'id']
             ],
         ];
     }
@@ -82,7 +82,7 @@ class ChannelMessage extends ActiveRecord
             'user',
             'message',
             'date' => function () {
-                return $this->created_at;
+                return $this->createdAt;
             }
         ];
     }
@@ -105,11 +105,11 @@ class ChannelMessage extends ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'channel_id' => Yii::t('app', 'Channel ID'),
-            'user_id' => Yii::t('app', 'User ID'),
+            'channelId' => Yii::t('app', 'Channel ID'),
+            'userId' => Yii::t('app', 'User ID'),
             'message' => Yii::t('app', 'Message'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'createdAt' => Yii::t('app', 'Created At'),
+            'updatedAt' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -118,7 +118,7 @@ class ChannelMessage extends ActiveRecord
      */
     public function getChannel(): ?ActiveQuery
     {
-        return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
+        return $this->hasOne(Channel::className(), ['id' => 'channelId']);
     }
 
     /**
@@ -126,7 +126,7 @@ class ChannelMessage extends ActiveRecord
      */
     public function getUser(): ?ActiveQuery
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'userId']);
     }
 
     /**
@@ -140,7 +140,7 @@ class ChannelMessage extends ActiveRecord
             ->centrifugo->setUser($this->user)
             ->publishMessage($this->channel->url, $this->message)
         ) {
-            $this->addError('channel_id', Yii::t('app', 'Failed to send message to channel'));
+            $this->addError('channelId', Yii::t('app', 'Failed to send message to channel'));
             return false;
         }
 

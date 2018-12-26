@@ -33,8 +33,8 @@ class StaticPage extends ActiveRecord implements Linkable
             [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'updatedAt'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updatedAt'],
                 ],
             ],
         ];
@@ -47,9 +47,9 @@ class StaticPage extends ActiveRecord implements Linkable
     {
         return [
             [['name', 'content', 'slug'], 'required'],
-            [['content', 'meta_description'], 'string'],
-            [['name', 'meta_title', 'slug'], 'string', 'max' => 255],
-            [['sort_order', 'created_at', 'updated_at'], 'integer'],
+            [['content', 'metaDescription'], 'string'],
+            [['name', 'metaTitle', 'slug'], 'string', 'max' => 255],
+            [['sortOrder', 'createdAt', 'updatedAt'], 'integer'],
         ];
     }
 

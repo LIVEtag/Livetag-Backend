@@ -18,13 +18,13 @@ use yii\web\IdentityInterface;
  * @property integer $id
  * @property string $role
  * @property string $username
- * @property string $password_hash
- * @property string $password_reset_token
+ * @property string $passwordHash
+ * @property string $passwordResetToken
  * @property string $email
- * @property string $auth_key
+ * @property string $authKey
  * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
+ * @property integer $createdAt
+ * @property integer $updatedAt
  * @property string $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -68,7 +68,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
         ];
     }
 
@@ -135,10 +139,12 @@ class User extends ActiveRecord implements IdentityInterface
             return null;
         }
 
-        return static::findOne([
-                'password_reset_token' => $token,
+        return static::findOne(
+            [
+                'passwordResetToken' => $token,
                 'status' => self::STATUS_ACTIVE,
-        ]);
+            ]
+        );
     }
 
     /**
@@ -153,7 +159,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -171,7 +177,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->auth_key;
+        return $this->authKey;
     }
 
     /**
@@ -190,7 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password, $this->password_hash);
+        return \Yii::$app->security->validatePassword($password, $this->passwordHash);
     }
 
     /**
@@ -200,7 +206,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
+        $this->passwordHash = \Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
@@ -208,7 +214,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->auth_key = \Yii::$app->security->generateRandomString();
+        $this->authKey = \Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -216,7 +222,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
+        $this->passwordResetToken = \Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
@@ -224,6 +230,6 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function removePasswordResetToken()
     {
-        $this->password_reset_token = null;
+        $this->passwordResetToken = null;
     }
 }

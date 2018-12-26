@@ -46,10 +46,10 @@ class PasswordResetRequestFormTest extends \Codeception\Test\Unit
         
         $model = new PasswordResetRequestForm();
         $model->email = $userFixture['email'];
-        $user = User::findOne(['password_reset_token' => $userFixture['password_reset_token']]);
+        $user = User::findOne(['passwordResetToken' => $userFixture['passwordResetToken']]);
 
         expect_that($model->sendEmail());
-        expect_that($user->password_reset_token);
+        expect_that($user->passwordResetToken);
 
         $emailMessage = $this->tester->grabLastSentEmail();
         expect('valid email is sent', $emailMessage)->isInstanceOf('yii\mail\MessageInterface');
