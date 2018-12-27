@@ -32,7 +32,7 @@ class ChannelQuery extends \yii\db\ActiveQuery
                         ],
                         [
                             Channel::tableName() . '.type' => Channel::TYPE_PRIVATE,
-                            ChannelUser::tableName() . '.user_id' => $user->id
+                            ChannelUser::tableName() . '.userId' => $user->id
                         ],
                     ]
                 );

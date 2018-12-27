@@ -22,11 +22,11 @@ class LogoutAction extends Action
     {
         $accessToken = AccessToken::find()
             ->findCurrentToken($this->request->getUserAgent(), $this->request->getUserIP())
-            ->andWhere('user_id = :user_id', [':user_id' => Yii::$app->user->id])
+            ->andWhere('userId = :userId', [':userId' => Yii::$app->user->id])
             ->one();
         if ($accessToken) {
-            $accessToken->expired_at = time();
-            $accessToken->save(false, ['expired_at']);
+            $accessToken->expiredAt = time();
+            $accessToken->save(false, ['expiredAt']);
         }
 
         Yii::$app->getResponse()->setStatusCode(204);

@@ -60,7 +60,7 @@ class RecoveryPassword extends Model
                 ->send();
         }
 
-        return $user->password_reset_token;
+        return $user->passwordResetToken;
     }
 
     /**

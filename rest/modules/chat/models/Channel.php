@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace rest\modules\chat\models;
 
@@ -24,10 +24,10 @@ use yii\db\ActiveQuery;
  * @property string $name
  * @property string $description
  * @property integer $type
- * @property integer $created_by
- * @property integer $updated_by
- * @property integer $created_at
- * @property integer $updated_at
+ * @property integer $createdBy
+ * @property integer $updatedBy
+ * @property integer $createdAt
+ * @property integer $updatedAt
  *
  * @property ChannelUser[] $users
  * @property ChannelMessage[] $messages
@@ -74,9 +74,15 @@ class Channel extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
             [
                 'class' => BlameableBehavior::class,
+                'createdByAttribute' => 'createdBy',
+                'updatedByAttribute' => 'updatedBy',
                 'value' => function () {
                     $user = Yii::$app->getModule('chat')->get('user', false);
                     return $user && !$user->isGuest ? $user->id : null;
@@ -125,10 +131,13 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function scenarios(): array
     {
-        return array_merge(parent::scenarios(), [
-            self::SCENARIO_CREATE => ['name', 'description', 'type'],
-            self::SCENARIO_UPDATE => ['name', 'description'], //do not allow change type
-        ]);
+        return array_merge(
+            parent::scenarios(),
+            [
+                self::SCENARIO_CREATE => ['name', 'description', 'type'],
+                self::SCENARIO_UPDATE => ['name', 'description'], //do not allow change type
+            ]
+        );
     }
 
     /**
@@ -142,10 +151,10 @@ class Channel extends \yii\db\ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'description' => Yii::t('app', 'Description'),
             'type' => Yii::t('app', 'Type'),
-            'created_by' => Yii::t('app', 'Created By'),
-            'updated_by' => Yii::t('app', 'Updated By'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'createdBy' => Yii::t('app', 'Created By'),
+            'updatedBy' => Yii::t('app', 'Updated By'),
+            'createdAt' => Yii::t('app', 'Created At'),
+            'updatedAt' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -160,7 +169,7 @@ class Channel extends \yii\db\ActiveRecord
             'name',
             'description',
             'type',
-            'created_at'
+            'createdAt'
         ];
     }
 
@@ -204,7 +213,7 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function getUsers(): ?ActiveQuery
     {
-        return $this->hasMany(ChannelUser::className(), ['channel_id' => 'id']);
+        return $this->hasMany(ChannelUser::className(), ['channelId' => 'id']);
     }
 
     /**
@@ -212,7 +221,7 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function getMessages(): ?ActiveQuery
     {
-        return $this->hasMany(ChannelMessage::className(), ['channel_id' => 'id']);
+        return $this->hasMany(ChannelMessage::className(), ['channelId' => 'id']);
     }
 
     /**
@@ -252,7 +261,7 @@ class Channel extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
         if ($insert) {
             //add user as channel admin
-            $this->createChannelUserRecord($this->created_by, ChannelUser::ROLE_ADMIN);
+            $this->createChannelUserRecord($this->createdBy, ChannelUser::ROLE_ADMIN);
             if ($this->hasErrors()) {
                 throw new AfterSaveException();
             }
@@ -269,8 +278,8 @@ class Channel extends \yii\db\ActiveRecord
     public function createChannelUserRecord(int $userId, int $role = ChannelUser::ROLE_USER): bool
     {
         $model = new ChannelUser();
-        $model->channel_id = $this->id;
-        $model->user_id = $userId;
+        $model->channelId = $this->id;
+        $model->userId = $userId;
         $model->role = $role;
         if (!$model->save()) {
             $this->addErrors($model->getErrors());
@@ -328,14 +337,16 @@ class Channel extends \yii\db\ActiveRecord
     {
         $role = $this->getUsers()
             ->select('role')
-            ->andWhere([
-                ChannelUser::tableName() . '.user_id' => $userId,
-            ])
+            ->andWhere(
+                [
+                    ChannelUser::tableName() . '.userId' => $userId,
+                ]
+            )
             ->scalar();
         if (!$role) {
             $role = ChannelUser::ROLE_NOBODY;
         }
-        return (int) $role;
+        return (int)$role;
     }
 
     /**
@@ -360,10 +371,13 @@ class Channel extends \yii\db\ActiveRecord
         if (!$role && $this->type == self::TYPE_PUBLIC) {
             return true;
         }
-        return in_array($role, [
-            ChannelUser::ROLE_USER,
-            ChannelUser::ROLE_ADMIN
-        ]);
+        return in_array(
+            $role,
+            [
+                ChannelUser::ROLE_USER,
+                ChannelUser::ROLE_ADMIN
+            ]
+        );
     }
 
     /**
@@ -373,10 +387,13 @@ class Channel extends \yii\db\ActiveRecord
      */
     public function canPost(int $userId): bool
     {
-        return in_array($this->getUserRoleInChannel($userId), [
-            ChannelUser::ROLE_USER,
-            ChannelUser::ROLE_ADMIN
-        ]);
+        return in_array(
+            $this->getUserRoleInChannel($userId),
+            [
+                ChannelUser::ROLE_USER,
+                ChannelUser::ROLE_ADMIN
+            ]
+        );
     }
 
     /**
@@ -402,7 +419,7 @@ class Channel extends \yii\db\ActiveRecord
             ->byChannelAndUser($this->id, $user->id)
             ->one();
         if (!$channelUser) {
-            $this->addError('channel_id', Yii::t('app', 'User not in channel'));
+            $this->addError('channelId', Yii::t('app', 'User not in channel'));
             return false;
         }
         return $channelUser->delete() ? true : false;

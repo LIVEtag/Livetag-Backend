@@ -36,17 +36,17 @@ class RateRequestService
     /**
      * Search RateRequest (model for count requests)
      *
-     * @param string $action_id
+     * @param string $actionId
      * @param string $ip
-     * @param string $user_agent
+     * @param string $userAgent
      * @return array|RateRequest
      */
-    public function search($action_id, $ip, $user_agent)
+    public function search($actionId, $ip, $userAgent)
     {
         $attributes = [
-            'action_id' => $action_id,
+            'actionId' => $actionId,
             'ip' => $ip,
-            'user_agent' => $user_agent
+            'userAgent' => $userAgent
         ];
         return RateRequest::find()->where($attributes)->one() ?: new RateRequest($attributes);
     }

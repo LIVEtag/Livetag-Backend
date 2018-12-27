@@ -14,10 +14,10 @@ class M171011114726ChatTables extends Migration
                 'name'=>$this->string(255)->notNull(),
                 'description'=>$this->string(255)->notNull(),
                 'type'=>$this->boolean()->notNull()->comment('1-public; 2-private')->defaultValue(1),
-                'created_by' => $this->integer()->unsigned()->notNull(),
-                'updated_by' => $this->integer()->unsigned()->notNull(),
-                'created_at' => $this->integer()->unsigned()->notNull(),
-                'updated_at' => $this->integer()->unsigned()->notNull(),
+                'createdBy' => $this->integer()->unsigned()->notNull(),
+                'updatedBy' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->integer()->unsigned()->notNull(),
+                'updatedAt' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );
@@ -27,19 +27,19 @@ class M171011114726ChatTables extends Migration
             '{{%channel_user}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'channel_id' => $this->integer()->unsigned()->notNull(),
-                'user_id' => $this->integer()->unsigned()->notNull(),
+                'channelId' => $this->integer()->unsigned()->notNull(),
+                'userId' => $this->integer()->unsigned()->notNull(),
                 'role' => $this->boolean()->notNull()->comment('1-user; 2-admin')->defaultValue(1),
             ],
             self::TABLE_OPTIONS
         );
         
-        $this->createIndex('idx_channel_user_unique', '{{%channel_user}}', 'channel_id,user_id,role', true);
+        $this->createIndex('idx_channel_user_unique', '{{%channel_user}}', 'channelId,userId,role', true);
 
         $this->addForeignKey(
             'fk_channel_user_to_user',
             '{{%channel_user}}',
-            'user_id',
+            'userId',
             '{{%user}}',
             'id',
             'CASCADE',
@@ -48,7 +48,7 @@ class M171011114726ChatTables extends Migration
         $this->addForeignKey(
             'fk_channel_user_to_channel',
             '{{%channel_user}}',
-            'channel_id',
+            'channelId',
             '{{%channel}}',
             'id',
             'CASCADE',
@@ -59,18 +59,18 @@ class M171011114726ChatTables extends Migration
             '{{%channel_message}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'channel_id' => $this->integer()->unsigned()->notNull(),
-                'user_id' => $this->integer()->unsigned()->notNull(),
+                'channelId' => $this->integer()->unsigned()->notNull(),
+                'userId' => $this->integer()->unsigned()->notNull(),
                 'message' => $this->string(255)->notNull(),
-                'created_at' => $this->integer()->unsigned()->notNull(),
-                'updated_at' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->integer()->unsigned()->notNull(),
+                'updatedAt' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );
         $this->addForeignKey(
             'fk_channel_message_to_user',
             '{{%channel_message}}',
-            'user_id',
+            'userId',
             '{{%user}}',
             'id',
             'CASCADE',
@@ -79,7 +79,7 @@ class M171011114726ChatTables extends Migration
         $this->addForeignKey(
             'fk_channel_message_to_channel',
             '{{%channel_message}}',
-            'channel_id',
+            'channelId',
             '{{%channel}}',
             'id',
             'CASCADE',

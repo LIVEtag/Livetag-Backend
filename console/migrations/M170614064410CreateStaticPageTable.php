@@ -18,12 +18,12 @@ class M170614064410CreateStaticPageTable extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'content' => $this->getDb()->getSchema()->createColumnSchemaBuilder('longtext')->notNull(),
-            'meta_title' => $this->string()->notNull(),
-            'meta_description' => $this->text()->notNull(),
+            'metaTitle' => $this->string()->notNull(),
+            'metaDescription' => $this->text()->notNull(),
             'slug' => $this->string()->notNull()->unique(),
-            'sort_order' => $this->integer()->unsigned()->notNull(),
-            'created_at' => $this->integer()->unsigned()->notNull(),
-            'updated_at' => $this->integer()->unsigned()->notNull(),
+            'sortOrder' => $this->integer()->unsigned()->notNull(),
+            'createdAt' => $this->integer()->unsigned()->notNull(),
+            'updatedAt' => $this->integer()->unsigned()->notNull(),
         ]);
     }
 

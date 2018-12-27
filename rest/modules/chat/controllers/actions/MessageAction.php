@@ -24,8 +24,8 @@ class MessageAction extends Action
         $user = Yii::$app->getModule('chat')->user->identity;
         $message = new ChannelMessage();
         $message->setAttributes(Yii::$app->request->getBodyParams());
-        $message->user_id = $user->id;
-        $message->channel_id = $model->id;
+        $message->userId = $user->id;
+        $message->channelId = $model->id;
         $message->save();
         return $message;
     }

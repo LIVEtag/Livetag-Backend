@@ -26,7 +26,7 @@ class ChannelSearch extends Channel
     public function rules(): array
     {
         return [
-            [['id', 'type', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'type', 'createdBy', 'updatedBy', 'createdAt', 'updatedAt'], 'integer'],
             [['url', 'name', 'description'], 'safe'],
         ];
     }
@@ -71,10 +71,10 @@ class ChannelSearch extends Channel
         $query->andFilterWhere([
             'id' => $this->id,
             'type' => $this->type,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'createdBy' => $this->createdBy,
+            'updatedBy' => $this->updatedBy,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt,
         ]);
 
         $query->andFilterWhere(['like', 'url', $this->url])

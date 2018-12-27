@@ -1,66 +1,79 @@
 {
-    "swagger": "2.0",
+    "openapi": "3.0.0",
     "info": {
         "description": "API for mobile && js applications.",
         "version": "1.0.0",
         "title": "GBKSOFT Test API"
     },
-    "basePath": "/rest",
-    "tags": [        
+    "security": [
+        {
+            "Bearer": []
+        }
+    ],
+    "tags": [
         {
             "name": "Channel",
             "description": "Chat module"
         }
     ],
-    "schemes": ["https"],
     "paths": {
         "/v1/user/login/twitter": {
             "post": {
+                "security": [],
                 "summary": "Create access token for APP using twitter account",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
+                "tags": [
+                    "AnyBody"
+                ],
                 "operationId": "userCreateAccessTokenUsingTwitterAccount",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "token": {
-                                    "type": "string",
-                                    "description": "Access token"
-                                },
-                                "tokenSecret": {
-                                    "type": "string",
-                                    "description": "Access token secret"
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status201"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/token"
+                                                }
+                                            }
+                                        }
+                                    ]
                                 }
                             }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
-                                        }
-                                    }
-                                }
-                            ]
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "description": "Access token"
+                                    },
+                                    "tokenSecret": {
+                                        "type": "string",
+                                        "description": "Access token secret"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -68,59 +81,72 @@
         },
         "/v1/user/login/{type}": {
             "post": {
+                "security": [],
                 "summary": "Create access token for APP using social account",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
+                "tags": [
+                    "AnyBody"
+                ],
                 "operationId": "userCreateAccessTokenUsingSocialAccount",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "type",
-                        "type": "string",
-                        "enum": [
-                            "facebook",
-                            "linkedin",
-                            "google"
-                        ],
-                        "required": true
-                    },
-                    {
-                        "name": "params",
-                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "token": {
-                                    "type": "string",
-                                    "required": true,
-                                    "description": "Get token facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&response_type=token&redirect_uri={redirect_uri}&scope={scope}"
-                                }
-                            }
+                            "type": "string",
+                            "enum": [
+                                "facebook",
+                                "linkedin",
+                                "google"
+                            ]
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status201"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/token"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "description": "Get token facebook example: https://www.facebook.com/dialog/oauth?client_id={client_id}&response_type=token&redirect_uri={redirect_uri}&scope={scope}"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -128,53 +154,61 @@
         },
         "/v1/user/login": {
             "post": {
+                "security": [],
                 "summary": "Create access token for APP",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
+                "tags": [
+                    "AnyBody"
+                ],
                 "operationId": "userCreateAccessToken",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "username": {
-                                    "type": "string",
-                                    "required": true,
-                                    "description": "Username / e-mail<br>Minimum 2, maximum 255 characters"
-                                },
-                                "password": {
-                                    "type": "string",
-                                    "required": true,
-                                    "description": "Minimum 2, maximum 255 characters"
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status201"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/token"
+                                                }
+                                            }
+                                        }
+                                    ]
                                 }
                             }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
-                                        }
-                                    }
-                                }
-                            ]
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "description": "Username / e-mail Minimum 2, maximum 255 characters"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "Minimum 2, maximum 255 characters"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -182,41 +216,51 @@
         },
         "/v1/user/login/email": {
             "post": {
+                "security": [],
                 "summary": "Create access token for APP by email",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
-                "operationId": "userCreateAccessTokenByEmail",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/loginEmail"
-                        }
-                    }
+                "tags": [
+                    "AnyBody"
                 ],
+                "operationId": "userCreateAccessTokenByEmail",
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status201"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/token"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/loginEmail"
+                            }
                         }
                     }
                 }
@@ -224,64 +268,73 @@
         },
         "/v1/user/register": {
             "post": {
+                "security": [],
                 "summary": "Create user for APP",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
-                "operationId": "userCreate",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "username": {
-                                    "type": "string",
-                                    "required": true,
-                                    "description": "Minimum 2, maximum 255 characters"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "required": true,
-                                    "description": "Minimum 2, maximum 255 characters"
-                                },
-                                "password": {
-                                    "type": "string",
-                                    "required": true,
-                                    "description": "Minimum 2, maximum 255 characters"
-                                },
-                                "isRememberMe": {
-                                    "enum": ["no", "yes"],
-                                    "default": "no",
-                                    "required": false,
-                                    "description": "are you need remember this token?"
-                                }
-                            }
-                        }
-                    }
+                "tags": [
+                    "AnyBody"
                 ],
+                "operationId": "userCreate",
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/token"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "description": "Minimum 2, maximum 255 characters"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Minimum 2, maximum 255 characters"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "Minimum 2, maximum 255 characters"
+                                    },
+                                    "isRememberMe": {
+                                        "enum": [
+                                            "no",
+                                            "yes"
+                                        ],
+                                        "default": "no",
+                                        "description": "are you need remember this token?"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -290,32 +343,40 @@
         "/v1/user/current": {
             "get": {
                 "summary": "Current user for APP",
-                "tags": ["User"],
-                "produces": ["application/json"],
+                "tags": [
+                    "User"
+                ],
                 "operationId": "userCurrent",
-                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     }
                 }
@@ -324,25 +385,33 @@
         "/v1/user/logout": {
             "post": {
                 "summary": "Logout current user",
-                "tags": ["User"],
-                "produces": ["application/json"],
+                "tags": [
+                    "User"
+                ],
                 "operationId": "userLogout",
-                "parameters": [],
                 "responses": {
                     "204": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status204"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
+                                        }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     }
                 }
@@ -350,48 +419,62 @@
         },
         "/v1/pages": {
             "get": {
+                "security": [],
                 "summary": "Static pages list",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
+                "tags": [
+                    "AnyBody"
+                ],
                 "operationId": "pagesIndex",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "fields",
                         "description": "Fields list in response",
-                        "required": false,
-                        "type": "string"
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "in": "path",
                         "name": "sort",
-                        "description": "Sort ordering. You can use order=[-]sort_order as paremeter in Url",
-                        "required": false,
-                        "type": "string"
+                        "description": "Sort ordering. You can use order=[-]sortOrder as parameter in Url",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/staticPage"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/staticPage"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     }
                 }
@@ -399,41 +482,53 @@
         },
         "/v1/pages/{slug}": {
             "get": {
+                "security": [],
                 "summary": "Static page view",
-                "tags": ["AnyBody"],
-                "produces": ["application/json"],
+                "tags": [
+                    "AnyBody"
+                ],
                 "operationId": "pagesView",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "slug",
                         "description": "",
-                        "required": false,
-                        "type": "string"
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/staticPage"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/staticPage"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     }
                 }
@@ -442,46 +537,59 @@
         "/v1/user/change-password": {
             "patch": {
                 "summary": "Change User Password",
-                "tags": ["User"],
-                "produces": ["application/json"],
-                "operationId": "userChangePassword",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/changePassword"
-                        }
-                    }
+                "tags": [
+                    "User"
                 ],
+                "operationId": "userChangePassword",
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/changePassword"
+                            }
                         }
                     }
                 }
@@ -489,41 +597,44 @@
         },
         "/v1/user/recovery-password": {
             "post": {
+                "security": [],
                 "summary": "Recovery user password by email",
-                "tags": ["User"],
-                "produces": ["application/json"],
-                "operationId": "userRecoveryPasswordByEmail",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/recoveryPasswordRequest"
-                        }
-                    }
+                "tags": [
+                    "User"
                 ],
+                "operationId": "userRecoveryPasswordByEmail",
                 "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                    "204": {
+                        "description": "No Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/recoveryPasswordRequest"
+                            }
                         }
                     }
                 }
@@ -531,107 +642,134 @@
         },
         "/v1/user/new-password": {
             "post": {
+                "security": [],
                 "summary": "Recovery user password by email",
-                "tags": ["User"],
-                "produces": ["application/json"],
-                "operationId": "userRecoveryPasswordChange",
-                "parameters": [
-                    {
-                        "name": "params",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/recoveryPassword"
-                        }
-                    }
+                "tags": [
+                    "User"
                 ],
+                "operationId": "userRecoveryPasswordChange",
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/user"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/recoveryPassword"
+                            }
                         }
                     }
                 }
             }
         },
-        "/v1/channel/sign": {           
+        "/v1/channel/sign": {
             "post": {
                 "summary": "Sign in channel (get user token and additional channel config)",
                 "description": "This method also required by centrifugo for connection check",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelSign",
-                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
-                    }                    
+                    }
                 }
             }
         },
-        "/v1/channel/auth": {           
+        "/v1/channel/auth": {
             "post": {
                 "summary": "Check access for private channel",
                 "description": "This method required by centrifugo for private channel access",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelAuth",
-                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
-                    }                    
+                    }
                 }
             }
         },
         "/v1/channel": {
             "get": {
                 "summary": "Get Avaliable channels list",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelIndex",
                 "parameters": [
                     {
@@ -639,113 +777,152 @@
                         "name": "fields",
                         "description": "Fields list in response",
                         "required": false,
-                        "type": "string"
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "in": "path",
                         "name": "sort",
-                        "description": "Sort ordering. You can use order=[-]sort_order as paremeter in Url",
-                        "required": false,
-                        "type": "string"
+                        "description": "Sort ordering. You can use order=[-]sortOrder as parameter in Url",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     {
                         "in": "query",
                         "name": "expand",
                         "description": " additional fields to return (comma separated) [inside,users,messages]",
-                        "type": "string"
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/channel"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/channel"
+                                                    }
+                                                }
                                             }
-                                        } 
-                                    }
+                                        }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     }
                 }
             },
             "post": {
                 "summary": "Create new channel",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
-                "operationId": "channelCreate",
-                "parameters": [
-                    {
-                        "in": "formData",
-                        "name": "name",
-                        "type": "string",
-                        "required": true
-                    },
-                    {
-                        "in": "formData",
-                        "name": "description",
-                        "type": "string",
-                        "required": true
-                    },                    
-                    {
-                        "in": "formData",
-                        "name": "type",
-                        "type": "integer",
-                        "enum": [1, 2],
-                        "default": "1",
-                        "required": true,
-                        "description": "Type of channel [1-public, 2-private]"
-                    }
+                "tags": [
+                    "Channel"
                 ],
+                "operationId": "channelCreate",
                 "responses": {
                     "201": {
                         "description": "Created",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status201"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/channel"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status201"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/channel"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "description": "Type of channel [1-public, 2-private]",
+                                        "type": "integer",
+                                        "enum": [
+                                            1,
+                                            2
+                                        ],
+                                        "default": "1"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "type"
+                                ]
+                            }
                         }
                     }
                 }
@@ -754,8 +931,9 @@
         "/v1/channel/{id}": {
             "get": {
                 "summary": "Get channel info",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelView",
                 "parameters": [
                     {
@@ -763,44 +941,58 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
                         "in": "query",
                         "name": "fields",
                         "description": "Fields list in response",
                         "required": false,
-                        "type": "string"
-                    },                    
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "in": "query",
                         "name": "expand",
                         "description": " additional fields to return (comma separated) [inside,users,messages]",
-                        "type": "string"
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/channel"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/channel"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     }
                 }
@@ -808,8 +1000,9 @@
             "put": {
                 "summary": "Update channel",
                 "description": "Action avaliable for channel admin",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelUpdate",
                 "parameters": [
                     {
@@ -817,55 +1010,82 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "name",
-                        "type": "string",
-                        "required": true
-                    },
-                    {
-                        "in": "formData",
-                        "name": "description",
-                        "type": "string",
-                        "required": true
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/channel"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/channel"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "description"
+                                ]
+                            }
                         }
                     }
                 }
@@ -873,8 +1093,9 @@
             "delete": {
                 "summary": "Remove channel",
                 "description": "Action avaliable for channel admin",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelRemove",
                 "parameters": [
                     {
@@ -882,40 +1103,55 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    }                        
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "204": {
                         "description": "No Response",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status204"
-                                }                               
-                            ]
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
+                                        }
+                                    ]
+                                }
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     }
                 }
             }
         },
-        "/v1/channel/{id}/join": {           
+        "/v1/channel/{id}/join": {
             "put": {
                 "summary": "Join channel",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelJoin",
                 "parameters": [
                     {
@@ -923,53 +1159,72 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    }                   
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/channel"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/channel"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
                         }
                     }
                 }
             }
         },
-        "/v1/channel/{id}/leave": {           
+        "/v1/channel/{id}/leave": {
             "put": {
                 "summary": "Leave channel",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelLeave",
                 "parameters": [
                     {
@@ -977,53 +1232,72 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    }                   
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/channel"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/channel"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
                         }
                     }
                 }
             }
         },
-        "/v1/channel/{id}/message": {           
+        "/v1/channel/{id}/message": {
             "get": {
                 "summary": "Get channel messages",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelGetMessages",
                 "parameters": [
                     {
@@ -1031,48 +1305,63 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    }                
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/channelMessage"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/channelMessage"
+                                                    }
+                                                }
                                             }
-                                        } 
-                                    }
+                                        }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     }
                 }
             },
             "post": {
                 "summary": "Create message in channel",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelCreateMessage",
                 "parameters": [
                     {
@@ -1080,59 +1369,89 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    },
-                    {
-                        "in": "formData",
-                        "name": "message",
-                        "type": "string",
-                        "required": true
-                    }                      
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "$ref": "#/definitions/channelMessage"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/channelMessage"
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     },
                     "422": {
                         "description": "Validation Error",
-                        "schema": {
-                            "$ref": "#/definitions/status422"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status422"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "message"
+                                ]
+                            }
                         }
                     }
                 }
             }
         },
-        "/v1/channel/{id}/user": {           
+        "/v1/channel/{id}/user": {
             "get": {
                 "summary": "Get channel users",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelGetUsers",
                 "parameters": [
                     {
@@ -1140,51 +1459,66 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
-                    }                
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status200"
-                                },
-                                {
-                                    "properties": {
-                                        "result": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/channelUser"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/channelUser"
+                                                    }
+                                                }
                                             }
-                                        } 
-                                    }
+                                        }
+                                    ]
                                 }
-                            ]
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     }
                 }
-            }            
+            }
         },
-        "/v1/channel/{id}/user/{userId}": {           
+        "/v1/channel/{id}/user/{userId}": {
             "post": {
                 "summary": "Add user to channel",
                 "description": "Action avaliable for channel admin",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelAddUser",
                 "parameters": [
                     {
@@ -1192,37 +1526,53 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
                         "in": "path",
                         "name": "userId",
                         "description": "User id",
                         "required": true,
-                        "type": "integer"
-                    }                   
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "204": {
                         "description": "No Response",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status204"
-                                }                               
-                            ]
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
+                                        }
+                                    ]
+                                }
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     }
                 }
@@ -1230,8 +1580,9 @@
             "delete": {
                 "summary": "Remove user from channel",
                 "description": "Action avaliable for channel admin",
-                "tags": ["Channel"],
-                "produces": ["application/json"],
+                "tags": [
+                    "Channel"
+                ],
                 "operationId": "channelRemoveUser",
                 "parameters": [
                     {
@@ -1239,435 +1590,473 @@
                         "name": "id",
                         "description": "Channel id",
                         "required": true,
-                        "type": "integer"
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
                         "in": "path",
                         "name": "userId",
                         "description": "User id",
                         "required": true,
-                        "type": "integer"
-                    }                          
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "204": {
                         "description": "No Response",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/status204"
-                                }                               
-                            ]
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
+                                        }
+                                    ]
+                                }
+                            }
                         }
                     },
                     "401": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status401"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
                         }
                     },
                     "403": {
                         "description": "Error",
-                        "schema": {
-                            "$ref": "#/definitions/status403"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status403"
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     },
-    "definitions": {
-
-        "responseModel": {
-            "type": "object",
-            "required": [
-                "code",
-                "status",
-                "message"
-            ],
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "result": {
-                    "type": "object"
-                }
+    "servers": [
+        {
+            "url": "/rest"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "description": "",
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": ""
             }
         },
-        "validateError": {
-            "type": "object",
-            "properties": {
-                "field": {
-                    "type": "string",
-                    "example": "user_id"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "User ID must be an integer."
-                }
-            }
-        },
-        "status200": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "200 OK",
-                    "properties": {
-                        "code": {
-                            "example": "200"
-                        },
-                        "status": {
-                            "example": "success"
-                        }
+        "schemas": {
+            "responseModel": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "status",
+                    "message"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "type": "object"
                     }
                 }
-            ]
-        },
-        "status201": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "201 Created",
-                    "properties": {
-                        "code": {
-                            "example": "201"
-                        },
-                        "status": {
-                            "example": "success"
-                        },
-                        "message": {
-                            "example": "Created"
-                        }
+            },
+            "validateError": {
+                "type": "object",
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "example": "userId"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "User ID must be an integer."
                     }
                 }
-            ]
-        },
-        "status204": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "204 No Content",
-                    "properties": {
-                        "code": {
-                            "example": "204"
-                        },
-                        "status": {
-                            "example": "success"
-                        }
-                    }
-                }
-            ]
-        },
-        "status400": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "400 Bad Request",
-                    "properties": {
-                        "code": {
-                            "example": "400"
-                        },
-                        "status": {
-                            "example": "error"
-                        },
-                        "message": {
-                            "example": "Bad Request"
-                        }
-                    }
-                }
-            ]
-        },
-        "status401": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "401 Unauthorized",
-                    "properties": {
-                        "code": {
-                            "example": "401"
-                        },
-                        "status": {
-                            "example": "error"
-                        },
-                        "message": {
-                            "example": "Unauthorized"
-                        }
-                    }
-                }
-            ]
-        },
-        "status404": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "401 Not Found",
-                    "properties": {
-                        "code": {
-                            "example": "404"
-                        },
-                        "status": {
-                            "example": "error"
-                        },
-                        "message": {
-                            "example": "Not Found"
-                        }
-                    }
-                }
-            ]
-        },
-        "status422": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "422 Unprocessable Entity",
-                    "properties": {
-                        "code": {
-                            "example": "422"
-                        },
-                        "status": {
-                            "example": "error"
-                        },
-                        "message": {
-                            "example": "Unprocessable Entity"
-                        },
-                        "result": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/validateError"
+            },
+            "status200": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "200 OK",
+                        "properties": {
+                            "code": {
+                                "example": "200"
+                            },
+                            "status": {
+                                "example": "success"
                             }
                         }
                     }
-                }
-            ]
-        },
-        "status500": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "500 Internal Server Error",
-                    "properties": {
-                        "code": {
-                            "example": "500"
-                        },
-                        "status": {
-                            "example": "error"
-                        },
-                        "message": {
-                            "example": "Internal Server Error"
+                ]
+            },
+            "status201": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "201 Created",
+                        "properties": {
+                            "code": {
+                                "example": "201"
+                            },
+                            "status": {
+                                "example": "success"
+                            },
+                            "message": {
+                                "example": "Created"
+                            }
                         }
                     }
-                }
-            ]
-        },
-        "status503": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/responseModel"
-                },
-                {
-                    "title": "503 Service Unavailable",
-                    "properties": {
-                        "code": {
-                            "example": "503"
-                        },
-                        "status": {
-                            "example": "error"
-                        },
-                        "message": {
-                            "example": "Service Unavailable"
+                ]
+            },
+            "status204": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "204 No Content",
+                        "properties": {
+                            "code": {
+                                "example": "204"
+                            },
+                            "status": {
+                                "example": "success"
+                            }
                         }
                     }
+                ]
+            },
+            "status400": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "400 Bad Request",
+                        "properties": {
+                            "code": {
+                                "example": "400"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Bad Request"
+                            }
+                        }
+                    }
+                ]
+            },
+            "status401": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "401 Unauthorized",
+                        "properties": {
+                            "code": {
+                                "example": "401"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Unauthorized"
+                            }
+                        }
+                    }
+                ]
+            },
+            "status403": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "403 Forbidden",
+                        "properties": {
+                            "code": {
+                                "example": "403"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Forbidden"
+                            }
+                        }
+                    }
+                ]
+            },
+            "status404": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "401 Not Found",
+                        "properties": {
+                            "code": {
+                                "example": "404"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Not Found"
+                            }
+                        }
+                    }
+                ]
+            },
+            "status422": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "422 Unprocessable Entity",
+                        "properties": {
+                            "code": {
+                                "example": "422"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Unprocessable Entity"
+                            },
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/validateError"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "status500": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "500 Internal Server Error",
+                        "properties": {
+                            "code": {
+                                "example": "500"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Internal Server Error"
+                            }
+                        }
+                    }
+                ]
+            },
+            "status503": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/responseModel"
+                    },
+                    {
+                        "title": "503 Service Unavailable",
+                        "properties": {
+                            "code": {
+                                "example": "503"
+                            },
+                            "status": {
+                                "example": "error"
+                            },
+                            "message": {
+                                "example": "Service Unavailable"
+                            }
+                        }
+                    }
+                ]
+            },
+            "user": {
+                "type": "object",
+                "required": [
+                    "username",
+                    "email"
+                ],
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
                 }
-            ]
-        },
-        "user": {
-            "type": "object",
-            "required": [
-                "username",
-                "email",
-                "accessToken"
-            ],
-            "properties": {
-                "username": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "accessToken": {
-                    "$ref": "#/definitions/token"
+            },
+            "token": {
+                "type": "object",
+                "required": [
+                    "token",
+                    "expiredAt"
+                ],
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "expiredAt": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
                 }
-            }
-        },
-        "token": {
-            "type": "object",
-            "required": [
-                "token",
-                "expired_at"
-            ],
-            "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "expired_at": {
-                    "type": "integer",
-                    "format": "int32"
+            },
+            "staticPage": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
                 }
-            }
-        },
-        "staticPage": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "string"
+            },
+            "loginEmail": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Minimum 2, maximum 255 characters"
+                    }
                 }
-            }
-        },
-        "loginEmail": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "required": true,
-                    "description": "Email"
-                },
-                "password": {
-                    "type": "string",
-                    "required": true,
-                    "description": "Minimum 2, maximum 255 characters"
+            },
+            "changePassword": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    },
+                    "newPassword": {
+                        "type": "string"
+                    },
+                    "confirmPassword": {
+                        "type": "string"
+                    }
                 }
-            }
-        },
-        "changePassword": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string",
-                    "required": true
-                },
-                "newPassword": {
-                    "type": "string",
-                    "required": true
-                },
-                "confirmPassword": {
-                    "type": "string",
-                    "required": true
+            },
+            "recoveryPasswordRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email"
+                    }
                 }
-            }
-        },
-        "recoveryPasswordRequest": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "required": true,
-                    "description": "Email"
+            },
+            "recoveryPassword": {
+                "type": "object",
+                "properties": {
+                    "resetToken": {
+                        "type": "string",
+                        "description": "Password reset token"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Minimum 2, maximum 255 characters"
+                    },
+                    "confirmPassword": {
+                        "type": "string",
+                        "description": "Minimum 2, maximum 255 characters"
+                    }
                 }
-            }
-        },
-        "recoveryPassword": {
-            "type": "object",
-            "properties": {
-                "resetToken": {
-                    "type": "string",
-                    "required": true,
-                    "description": "Password reset token"
-                },
-                "password": {
-                    "type": "string",
-                    "required": true,
-                    "description": "Minimum 2, maximum 255 characters"
-                },
-                "confirmPassword": {
-                    "type": "string",
-                    "required": true,
-                    "description": "Minimum 2, maximum 255 characters"
+            },
+            "channel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    }
                 }
-            }
-        },
-        "channel": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "integer"
-                },
-                "created_at": {
-                    "type": "integer"
+            },
+            "miniChannelUser": {
+                "type": "object",
+                "title": "User identity model for channel (minified format)",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
                 }
-            }
-        },
-        "miniChannelUser": {
-            "type": "object",
-            "title": "User identity model for channel (minified format)",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
+            },
+            "channelMessage": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/miniChannelUser"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string"
+                    }
                 }
-            }
-        },
-        "channelMessage": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "$ref": "#/definitions/miniChannelUser"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string"
-                }                
-            }
-        },
-        "channelUser": {
-            "type": "object",
-            "properties": {
-                "user": {
-                    "type": "integer"
-                },
-                "role": {
-                    "type": "integer"
-                }                
+            },
+            "channelUser": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "integer"
+                    }
+                }
             }
         }
     }

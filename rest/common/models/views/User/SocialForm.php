@@ -119,9 +119,9 @@ class SocialForm extends Model
             $socialProfile = SocialProfile::findBySocialId($this->socialId);
             if ($socialProfile === null) {
                 $socialProfile = new SocialProfile();
-                $socialProfile->user_id = $this->user->id;
+                $socialProfile->userId = $this->user->id;
                 $socialProfile->type = $this->socialType;
-                $socialProfile->social_id = $this->socialId;
+                $socialProfile->socialId = $this->socialId;
                 $socialProfile->email = $this->email;
 
                 if (!$socialProfile->save()) {
@@ -152,8 +152,8 @@ class SocialForm extends Model
             $this->userAgent,
             $this->userIp
         )->andWhere(
-            'user_id = :user_id',
-            [':user_id' => $user->id]
+            'userId = :userId',
+            [':userId' => $user->id]
         )->one();
 
         if ($accessToken !== null) {
@@ -161,10 +161,10 @@ class SocialForm extends Model
         }
 
         $accessToken = new AccessToken();
-        $accessToken->user_id = $user->id;
+        $accessToken->userId = $user->id;
         $accessToken->generateToken(AccessToken::NOT_REMEMBER_ME_TIME);
-        $accessToken->user_ip = $this->userIp;
-        $accessToken->user_agent = $this->userAgent;
+        $accessToken->userIp = $this->userIp;
+        $accessToken->userAgent = $this->userAgent;
 
         return $accessToken->save();
     }

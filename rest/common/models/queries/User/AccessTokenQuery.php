@@ -34,14 +34,14 @@ class AccessTokenQuery extends ActiveQuery
         return $this->where(
             [
                 'and',
-                'expired_at > :expired_at',
-                'user_agent = :user_agent',
-                'user_ip = :user_ip',
+                'expiredAt > :expiredAt',
+                'userAgent = :userAgent',
+                'userIp = :userIp',
             ],
             [
-                ':expired_at' => time(),
-                ':user_agent' => (string)$userAgent,
-                ':user_ip' => (string)$userIp,
+                ':expiredAt' => time(),
+                ':userAgent' => (string)$userAgent,
+                ':userIp' => (string)$userIp,
             ]
         );
     }
