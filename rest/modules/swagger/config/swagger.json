@@ -420,11 +420,11 @@
         "/v1/config": {
             "get": {
                 "security": [],
-                "summary": "Static page view",
+                "summary": "Rest application config",
                 "tags": [
                     "AnyBody"
                 ],
-                "operationId": "configView",
+                "operationId": "configIndex",
                 "responses": {
                     "200": {
                         "description": "OK",
