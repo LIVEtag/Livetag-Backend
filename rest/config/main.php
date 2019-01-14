@@ -165,6 +165,12 @@ return [
                     'pluralize' => false,
                 ],
                 'demo-chat/<action:.*>' => 'chat/demo/index',
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/config' => 'v1/config'
+                    ],
+                ],
             ],
         ],
     ],

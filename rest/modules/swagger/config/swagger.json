@@ -417,6 +417,39 @@
                 }
             }
         },
+        "/v1/config": {
+            "get": {
+                "security": [],
+                "summary": "Static page view",
+                "tags": [
+                    "AnyBody"
+                ],
+                "operationId": "configView",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/config"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/pages": {
             "get": {
                 "security": [],
@@ -1941,6 +1974,14 @@
                         "type": "string"
                     },
                     "content": {
+                        "type": "string"
+                    }
+                }
+            },
+            "config": {
+                "type": "object",
+                "properties": {
+                    "name": {
                         "type": "string"
                     }
                 }
