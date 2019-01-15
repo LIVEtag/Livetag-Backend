@@ -13,5 +13,7 @@ return [
         'minor' => 1,
         'patch' => 1,
         'commit' => (file_exists($versionFilePath)) ? file_get_contents($versionFilePath) : null
-    ]
+    ],
+    'parameters' => [],
+    'errors' => []
 ];

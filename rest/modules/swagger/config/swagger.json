@@ -1981,8 +1981,30 @@
             "config": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string"
+                    "version": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "integer"
+                            },
+                            "minor": {
+                                "type": "integer"
+                            },
+                            "patch": {
+                                "type": "integer"
+                            },
+                            "commit": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "properties": {}
+                    },
+                    "errors": {
+                        "type": "object",
+                        "properties": {}
                     }
                 }
             },
