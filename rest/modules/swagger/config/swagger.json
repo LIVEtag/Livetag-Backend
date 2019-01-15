@@ -417,6 +417,39 @@
                 }
             }
         },
+        "/v1/config": {
+            "get": {
+                "security": [],
+                "summary": "Rest application config",
+                "tags": [
+                    "AnyBody"
+                ],
+                "operationId": "configIndex",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/config"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/pages": {
             "get": {
                 "security": [],
@@ -1942,6 +1975,36 @@
                     },
                     "content": {
                         "type": "string"
+                    }
+                }
+            },
+            "config": {
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "type": "object",
+                        "properties": {
+                            "major": {
+                                "type": "integer"
+                            },
+                            "minor": {
+                                "type": "integer"
+                            },
+                            "patch": {
+                                "type": "integer"
+                            },
+                            "commit": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "properties": {}
+                    },
+                    "errors": {
+                        "type": "object",
+                        "properties": {}
                     }
                 }
             },

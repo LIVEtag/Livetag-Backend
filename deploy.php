@@ -76,7 +76,7 @@ task('gitlab:symlink', function () {
 task('gitlab:version', function () {
     writeln('Create version.txt file');
 
-    run("{{bin/git}} log --pretty=format:'%h %an(%ae) - %B' --abbrev-commit --date=short -1 > {{release_path}}/version.txt");
+    run("{{bin/git}} log --pretty=format:'%H' --abbrev-commit --date=short -1 > {{release_path}}/version.txt");
 })->desc('Create version file')
     ->setPrivate();
 
