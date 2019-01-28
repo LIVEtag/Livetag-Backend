@@ -3,7 +3,6 @@
 $faker = Faker\Factory::create();
 return [
     [
-        'username' => 'bayer.hudson',
         'authKey' => \Yii::$app->getSecurity()->generateRandomString(),
         //password_0
         'passwordHash' => '$2y$13$EjaPFBnZOQsHdGuHI.xvhuDp1fHpo8hKRSk6yshqa9c5EG8s3C3lO',
@@ -11,6 +10,6 @@ return [
         'role' => 'basic',
         'createdAt' => $faker->unixTime,
         'updatedAt' => $faker->unixTime,
-        'email' => $faker->email,
+        'email' => 'bayer.hudson@test.com',
     ],
 ];

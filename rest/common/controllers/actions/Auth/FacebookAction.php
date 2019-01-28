@@ -27,7 +27,6 @@ class FacebookAction extends AbstractAuthAction
         $socialForm->socialType = SocialProfile::TYPE_FACEBOOK;
         $socialForm->socialId = $attributes['id'];
         $socialForm->userIp = $this->request->getUserIP();
-        $socialForm->username = substr($socialForm->email, 0, strpos($socialForm->email, '@'));
         $socialForm->userAgent = $this->request->getUserAgent();
 
         $user = $socialForm->login();

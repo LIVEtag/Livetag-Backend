@@ -13,11 +13,6 @@ class SignupForm extends Model
     /**
      * @var string
      */
-    public $username;
-
-    /**
-     * @var string
-     */
     public $email;
 
     /**
@@ -31,16 +26,6 @@ class SignupForm extends Model
     public function rules()
     {
         return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            [
-                'username',
-                'unique',
-                'targetClass' => User::class,
-                'message' => 'This username has already been taken.'
-            ],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
@@ -69,7 +54,6 @@ class SignupForm extends Model
         }
         
         $user = new User();
-        $user->username = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();

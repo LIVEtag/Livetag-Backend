@@ -17,7 +17,6 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $role
- * @property string $username
  * @property string $passwordHash
  * @property string $passwordResetToken
  * @property string $email
@@ -103,17 +102,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**

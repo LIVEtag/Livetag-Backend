@@ -79,7 +79,6 @@ class User extends CommonUser implements IdentityInterface
     {
         return [
             'id',
-            'username',
             'email',
         ];
     }

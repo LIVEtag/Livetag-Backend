@@ -33,7 +33,8 @@ class User extends RestUser implements IdentityInterface
      */
     public function getName(): string
     {
-        return $this->username ?? 'Unknown';
+        //TODO: replace with name or username if User model will contain this fields
+        return $this->email ? substr($this->email, 0, strpos($this->email, '@')) : 'Unknown';
     }
 
     /**

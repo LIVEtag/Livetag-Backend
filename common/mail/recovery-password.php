@@ -10,7 +10,7 @@ use yii\helpers\Html;
 $resetLink = Yii::$app->params['projectDomain'] . $user->passwordResetToken;
 ?>
 <div class="password-reset">
-    <p>Hello <?= Html::encode($user->username) ?>,</p>
+    <p>Hello <?= Html::encode($user->email) ?>,</p>
 
     <p>Follow the link below to reset your password:</p>
 

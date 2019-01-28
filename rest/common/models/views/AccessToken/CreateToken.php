@@ -23,7 +23,7 @@ class CreateToken extends Model
     /**
      * @var string
      */
-    public $username;
+    public $email;
 
     /**
      * @var string
@@ -73,7 +73,7 @@ class CreateToken extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['email', 'password'], 'required'],
             ['password', 'validatePassword'],
             [['isRememberMe'], 'in', 'range' => [self::YES_VALUE, self::NO_VALUE]],
             [['userIp', 'userAgent'], 'string'],
@@ -95,10 +95,10 @@ class CreateToken extends Model
             return;
         }
 
-        $this->user = $this->searchService->getUser($this->username);
+        $this->user = $this->searchService->getUser($this->email);
 
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
-            $this->addError($attribute, 'Incorrect username or password.');
+            $this->addError($attribute, 'Incorrect email or password.');
         }
     }
 

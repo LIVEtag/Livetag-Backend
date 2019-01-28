@@ -29,7 +29,6 @@ class TwitterAction extends AbstractAuthAction
         $socialForm->socialType = SocialProfile::TYPE_TWITTER;
         $socialForm->socialId = $attributes['id_str'];
         $socialForm->userIp = $this->request->getUserIP();
-        $socialForm->username = substr($socialForm->email, 0, strpos($socialForm->email, '@'));
         $socialForm->userAgent = $this->request->getUserAgent();
 
         $user = $socialForm->login();
