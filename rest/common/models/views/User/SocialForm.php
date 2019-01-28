@@ -23,11 +23,6 @@ class SocialForm extends Model
     /**
      * @var string
      */
-    public $username;
-
-    /**
-     * @var string
-     */
     public $email;
 
     /**
@@ -56,10 +51,6 @@ class SocialForm extends Model
     public function rules()
     {
         return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
             [['userIp'], 'string', 'max' => 46],
             [['userAgent', 'socialId',], 'string'],
             [['socialType'], 'integer'],
@@ -89,7 +80,6 @@ class SocialForm extends Model
 
         $signupUser = new SignupUser();
         $signupUser->email = $this->email;
-        $signupUser->username = $this->username;
         $signupUser->password = \Yii::$app->getSecurity()->generateRandomString();
         $signupUser->userAgent = $this->userAgent;
         $signupUser->userIp = $this->userIp;

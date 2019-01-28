@@ -22,11 +22,6 @@ class SignupUser extends Model
     /**
      * @var string
      */
-    public $username;
-
-    /**
-     * @var string
-     */
     public $email;
 
     /**
@@ -55,16 +50,6 @@ class SignupUser extends Model
     public function rules()
     {
         return [
-            ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            [
-                'username',
-                'unique',
-                'targetClass' => User::class,
-                'message' => 'This username has already been taken.'
-            ],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
             [['userIp'], 'string', 'max' => 46],
             [['userAgent'], 'string'],
 
@@ -98,7 +83,6 @@ class SignupUser extends Model
         }
 
         $user = new User();
-        $user->username = $this->username;
         $user->email = $this->email;
 
         $signupUser = $this;
@@ -107,7 +91,7 @@ class SignupUser extends Model
             function () use ($user, $signupUser) {
                 $accessTokenCreate = \Yii::createObject([
                     'class' => CreateToken::class,
-                    'username' => $signupUser->username,
+                    'email' => $signupUser->email,
                     'password' => $signupUser->password,
                     'userAgent' => $signupUser->userAgent,
                     'userIp' => $signupUser->userIp,

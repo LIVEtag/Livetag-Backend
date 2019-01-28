@@ -8,9 +8,9 @@
                 <div class="panel-body">
                     <form name="loginForm" class="search-wrapper" ng-submit="login();submitted = true" novalidate>
                         <div class="form-group">
-                            <input class="form-control" ng-class="{'error': (submitted && (loginForm.username.$error.required))}" data-ng-model="model.username" name="username" placeholder="Username" required tabindex="1">
+                            <input class="form-control" ng-class="{'error': (submitted && (loginForm.email.$error.required))}" data-ng-model="model.email" name="email" placeholder="Email" required tabindex="1">
                             <span style="color:red">                    
-                                <span ng-show="loginForm.username.$invalid">{{errors.username}}</span>
+                                <span ng-show="loginForm.email.$invalid">{{errors.email}}</span>
                             </span>
                         </div>
                         <div class="form-group">

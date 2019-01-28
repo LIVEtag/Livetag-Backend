@@ -20,7 +20,7 @@ class LoginForm extends Model
     /**
      * @var string
      */
-    public $username;
+    public $email;
 
     /**
      * @var string
@@ -60,8 +60,8 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
-            [['username', 'password'], 'required'],
+            // email and password are both required
+            [['email', 'password'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -82,15 +82,15 @@ class LoginForm extends Model
             return;
         }
 
-        $this->user = $this->searchService->getUser($this->username);
+        $this->user = $this->searchService->getUser($this->email);
 
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
-            $this->addError($attribute, 'Incorrect username/e-mail or password.');
+            $this->addError($attribute, 'Incorrect e-mail or password.');
         }
     }
 
     /**
-     * Logs in a user using the provided username and password.
+     * Logs in a user using the provided email and password.
      *
      * @return boolean whether the user is logged in successfully
      * @throws InvalidConfigException

@@ -199,67 +199,15 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "username": {
+                                    "email": {
                                         "type": "string",
-                                        "description": "Username / e-mail Minimum 2, maximum 255 characters"
+                                        "description": "E-mail Minimum 2, maximum 255 characters"
                                     },
                                     "password": {
                                         "type": "string",
                                         "description": "Minimum 2, maximum 255 characters"
                                     }
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/user/login/email": {
-            "post": {
-                "security": [],
-                "summary": "Create access token for APP by email",
-                "tags": [
-                    "AnyBody"
-                ],
-                "operationId": "userCreateAccessTokenByEmail",
-                "responses": {
-                    "201": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status201"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/token"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/status422"
-                                }
-                            }
-                        }
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/loginEmail"
                             }
                         }
                     }
@@ -313,10 +261,6 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    },
                                     "email": {
                                         "type": "string",
                                         "description": "Minimum 2, maximum 255 characters"
@@ -1939,13 +1883,9 @@
             "user": {
                 "type": "object",
                 "required": [
-                    "username",
                     "email"
                 ],
                 "properties": {
-                    "username": {
-                        "type": "string"
-                    },
                     "email": {
                         "type": "string"
                     }
@@ -2005,19 +1945,6 @@
                     "errors": {
                         "type": "object",
                         "properties": {}
-                    }
-                }
-            },
-            "loginEmail": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string",
-                        "description": "Email"
-                    },
-                    "password": {
-                        "type": "string",
-                        "description": "Minimum 2, maximum 255 characters"
                     }
                 }
             },

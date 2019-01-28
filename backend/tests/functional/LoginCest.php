@@ -33,7 +33,7 @@ class LoginCest
     public function loginUser(FunctionalTester $I)
     {
         $I->amOnPage('/backend/site/login');
-        $I->fillField(['name' => 'LoginForm[username]'], 'erau');
+        $I->fillField(['name' => 'LoginForm[email]'], 'admin@test.com');
         $I->fillField(['name' => 'LoginForm[password]'], 'password_0');
         $I->click('login-button');
 
