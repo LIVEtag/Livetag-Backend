@@ -6,6 +6,7 @@
 namespace rest\components\api;
 
 use yii\rest\Serializer as BaseSerializer;
+use rest\components\validation\ErrorMessage;
 
 /**
  * Class Serializer
@@ -35,5 +36,37 @@ class Serializer extends BaseSerializer
         }
 
         return $dataResult;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function serializeModelErrors($model)
+    {
+        $this->response->setStatusCode(422, 'Data Validation Failed.');
+        $result = [];
+        foreach ($model->getFirstErrors() as $attribute => $message) {
+            if ($message instanceof ErrorMessage) {
+                $code = $message->getCode();
+                $params = $message->getParams();
+            } else {
+                $code = 1000; //TODO: change to default error code
+                $params = [];
+            }
+            $serializedParams = [];
+            foreach ($params as $name => $value) {
+                $serializedParams[] = [
+                    'name' => $name,
+                    'value' => (string) $value,
+                ];
+            }
+            $result[] = [
+                'field' => $attribute,
+                'message' => (string) $message,
+                'code' => $code,
+                'params' => $serializedParams
+            ];
+        }
+        return $result;
     }
 }

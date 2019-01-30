@@ -173,5 +173,10 @@ return [
             ],
         ],
     ],
+    'container' => [
+        'definitions' => [
+            \yii\validators\StringValidator::class => \rest\components\validation\validators\StringValidator::class,
+        ],
+    ],
     'params' => $params,
 ];
