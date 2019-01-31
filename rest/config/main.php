@@ -10,6 +10,7 @@ use rest\components\api\ErrorHandler;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
 use rest\modules\chat\Module as ChatModule;
+use rest\components\validation\validators as RestValidators;
 use rest\modules\chat\controllers\ChannelController;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
@@ -175,8 +176,13 @@ return [
     ],
     'container' => [
         'definitions' => [
-            \yii\validators\StringValidator::class => \rest\components\validation\validators\StringValidator::class,
+            \yii\validators\StringValidator::class => RestValidators\StringValidator::class,
+            \yii\validators\EmailValidator::class => RestValidators\EmailValidator::class,
+            \yii\validators\ImageValidator::class => RestValidators\ImageValidator::class,
         ],
+        'singletons' => [
+            \rest\components\validation\ErrorListInterface::class => \rest\components\validation\ErrorList::class,
+        ]
     ],
     'params' => $params,
 ];

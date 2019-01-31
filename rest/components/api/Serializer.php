@@ -7,6 +7,7 @@ namespace rest\components\api;
 
 use yii\rest\Serializer as BaseSerializer;
 use rest\components\validation\ErrorMessage;
+use rest\components\validation\ErrorListInterface;
 
 /**
  * Class Serializer
@@ -50,7 +51,7 @@ class Serializer extends BaseSerializer
                 $code = $message->getCode();
                 $params = $message->getParams();
             } else {
-                $code = 1000; //TODO: change to default error code
+                $code = ErrorListInterface::ERR_BASIC;
                 $params = [];
             }
             $serializedParams = [];

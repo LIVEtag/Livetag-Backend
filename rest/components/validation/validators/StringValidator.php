@@ -8,32 +8,29 @@ declare(strict_types=1);
 namespace rest\components\validation\validators;
 
 use yii\validators\StringValidator as BaseValidator;
-use rest\components\validation\ErrorsList;
-use rest\components\validation\ErrorFormatterTrait;
+use rest\components\validation\ErrorList;
+use rest\components\validation\ValidationErrorTrait;
 
 class StringValidator extends BaseValidator
 {
-    use ErrorFormatterTrait;
+    use ValidationErrorTrait;
 
     /**
      * {@inheritdoc}
      */
     public function init()
     {
-        /** @var ErrorsList $errorList */
-        $errorList = \Yii::createObject(ErrorsList::class);
-
         if ($this->message === null) {
-            $this->message = $errorList->createMessage(ErrorsList::ERR_STRING);
+            $this->message = $this->errorList->createErrorMessage(ErrorList::STRING_ONLY);
         }
         if ($this->tooShort === null) {
-            $this->tooShort = $errorList->createMessage(ErrorsList::ERR_STRING_TOO_SHORT);
+            $this->tooShort = $this->errorList->createErrorMessage(ErrorList::STRING_TOO_SHORT);
         }
         if ($this->tooLong === null) {
-            $this->tooLong = $errorList->createMessage(ErrorsList::ERR_STRING_TOO_LONG);
+            $this->tooLong = $this->errorList->createErrorMessage(ErrorList::STRING_TOO_LONG);
         }
         if ($this->notEqual === null) {
-            $this->notEqual = $errorList->createMessage(ErrorsList::ERR_STRING_NOT_EQUAL);
+            $this->notEqual = $this->errorList->createErrorMessage(ErrorList::STRING_NOT_EQUAL);
         }
         parent::init();
     }

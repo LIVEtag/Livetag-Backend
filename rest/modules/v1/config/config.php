@@ -15,5 +15,5 @@ return [
         'commit' => (file_exists($versionFilePath)) ? file_get_contents($versionFilePath) : null
     ],
     'parameters' => [],
-    'errors' => \Yii::createObject(\rest\components\validation\ErrorsList::class),
+    'errors' => \Yii::createObject(\rest\components\validation\ErrorList::class),
 ];

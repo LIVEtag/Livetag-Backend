@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace rest\components\validation;
 
-trait ErrorFormatterTrait
+/**
+ * Trait ValidationErrorTrait
+ * @property-read ErrorListInterface $errorList
+ */
+trait ValidationErrorTrait
 {
     /**
      * Formats a message using the I18N, or simple strtr if `\Yii::$app` is not available.
@@ -25,5 +29,14 @@ trait ErrorFormatterTrait
             $message = parent::formatMessage($message, $params);
         }
         return $message;
+    }
+
+    /**
+     * @return ErrorListInterface
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function getErrorList(): ErrorListInterface
+    {
+        return \Yii::createObject(ErrorListInterface::class);
     }
 }
