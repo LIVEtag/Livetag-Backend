@@ -24,7 +24,7 @@ class NumberValidator extends BaseValidator
             if ($this->integerOnly) {
                 $this->message = $this->errorList->createErrorMessage(ErrorList::NUMBER_INTEGER_ONLY);
             } else {
-                $this->message = $this->errorList->createErrorMessage(ErrorList::NUMBER_ONLY);
+                $this->message = $this->errorList->createErrorMessage(ErrorList::NUMBER_INVALID);
             }
         }
         if ($this->tooSmall === null) {

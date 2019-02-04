@@ -21,7 +21,7 @@ class BooleanValidator extends BaseValidator
     public function init()
     {
         if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::BOOLEAN_ONLY);
+            $this->message = $this->errorList->createErrorMessage(ErrorList::BOOLEAN_INVALID);
         }
         parent::init();
     }

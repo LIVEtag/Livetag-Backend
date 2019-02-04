@@ -21,7 +21,7 @@ class StringValidator extends BaseValidator
     public function init()
     {
         if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::STRING_ONLY);
+            $this->message = $this->errorList->createErrorMessage(ErrorList::STRING_INVALID);
         }
         if ($this->tooShort === null) {
             $this->tooShort = $this->errorList->createErrorMessage(ErrorList::STRING_TOO_SHORT);

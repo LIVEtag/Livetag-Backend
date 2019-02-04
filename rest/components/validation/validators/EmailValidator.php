@@ -18,7 +18,7 @@ class EmailValidator extends BaseValidator
     public function init()
     {
         if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::EMAIL_ONLY);
+            $this->message = $this->errorList->createErrorMessage(ErrorList::EMAIL_INVALID);
         }
         parent::init();
     }

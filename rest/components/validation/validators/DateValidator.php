@@ -18,7 +18,7 @@ class DateValidator extends BaseValidator
     public function init()
     {
         if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::DATE_ONLY);
+            $this->message = $this->errorList->createErrorMessage(ErrorList::DATE_INVALID);
         }
         if ($this->tooSmall === null) {
             $this->tooSmall = $this->errorList->createErrorMessage(ErrorList::DATE_TOO_SMALL);

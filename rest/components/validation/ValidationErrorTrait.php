@@ -22,6 +22,7 @@ trait ValidationErrorTrait
                 $params['attr'] = $params['attribute'];
                 unset($params['attribute']);
             }
+            $this->beforeFormatMessage($message, $params);
             $message
                 ->setMessage(parent::formatMessage((string) $message, $params))
                 ->setParams($params);
@@ -29,6 +30,14 @@ trait ValidationErrorTrait
             $message = parent::formatMessage($message, $params);
         }
         return $message;
+    }
+
+    /**
+     * @param ErrorMessage $message
+     * @param $params
+     */
+    protected function beforeFormatMessage(ErrorMessage $message, array &$params): void
+    {
     }
 
     /**

@@ -175,17 +175,18 @@ return [
         ],
     ],
     'container' => [
+        'singletons' => [
+            \rest\components\validation\ErrorListInterface::class => \rest\components\validation\ErrorList::class,
+        ],
         'definitions' => [
             \yii\validators\StringValidator::class => RestValidators\StringValidator::class,
             \yii\validators\EmailValidator::class => RestValidators\EmailValidator::class,
+            \yii\validators\FileValidator::class => RestValidators\FileValidator::class,
             \yii\validators\ImageValidator::class => RestValidators\ImageValidator::class,
             \yii\validators\BooleanValidator::class => RestValidators\BooleanValidator::class,
             \yii\validators\NumberValidator::class => RestValidators\NumberValidator::class,
             \yii\validators\DateValidator::class => RestValidators\DateValidator::class,
         ],
-        'singletons' => [
-            \rest\components\validation\ErrorListInterface::class => \rest\components\validation\ErrorList::class,
-        ]
     ],
     'params' => $params,
 ];
