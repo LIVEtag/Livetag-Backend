@@ -39,12 +39,30 @@ class ErrorList implements ErrorListInterface
     public const STRING_TOO_LONG = 1082;
     public const STRING_NOT_EQUAL = 1083;
 
-
+    public const URL_INVALID = 1090;
 
     public const BOOLEAN_INVALID = 1100;
 
-    public const RANGE_INVALID = 1120;
+    public const COMPARE_EQUAL = 1110;
+    public const COMPARE_NOT_EQUAL = 1111;
+    public const COMPARE_GREATER_THEN = 1112;
+    public const COMPARE_GREATER_OR_EQUAL = 1113;
+    public const COMPARE_LESS_THEN = 1114;
+    public const COMPARE_LESS_OR_EQUAL = 1115;
 
+    public const IN_INVALID = 1120;
+
+    public const IP_INVALID = 1130;
+    public const IP_V6_NOT_ALLOWED = 1131;
+    public const IP_V4_NOT_ALLOWED = 1132;
+    public const IP_WRONG_CIDR = 1133;
+    public const IP_NO_SUBNET = 1134;
+    public const IP_HAS_SUBNET = 1135;
+    public const IP_NOT_IN_RANGE = 1136;
+
+    // Custom errors
+    public const CREDENTIALS_INVALID = 1200;
+    public const ENTITY_BLOCKED = 1210;
 
     protected const ERRORS = [
         self::EMAIL_INVALID => '{attr} is not a valid email address.',
@@ -83,10 +101,31 @@ class ErrorList implements ErrorListInterface
         self::STRING_TOO_LONG => '{attr} should contain at most {max} character(s).',
         self::STRING_NOT_EQUAL => '{attr} should contain {length} character(s).',
 
+        self::URL_INVALID => '{attr} is not a valid link.}',
 
         self::BOOLEAN_INVALID => '{attr} must be either "{true}" or "{false}"',
 
-        self::RANGE_INVALID => '{attr} is not allowed.',
+        self::COMPARE_EQUAL => '{attr} must be equal to "{compareValueOrAttr}".',
+        self::COMPARE_NOT_EQUAL => '{attr} must not be equal to "{compareValueOrAttr}".',
+        self::COMPARE_GREATER_THEN => '{attr} must be greater than "{compareValueOrAttr}".',
+        self::COMPARE_GREATER_OR_EQUAL => '{attr} must be greater than or equal to "{compareValueOrAttr}".',
+        self::COMPARE_LESS_THEN => '{attr} must be less than "{compareValueOrAttr}".',
+        self::COMPARE_LESS_OR_EQUAL => '{attr} must be less than or equal to "{compareValueOrAttr}".',
+
+        self::IN_INVALID => '{attr} is not allowed.',
+
+        self::IP_INVALID => '{attr} must be a valid IP address.',
+        self::IP_V6_NOT_ALLOWED => '{attr} must not be an IPv6 address.',
+        self::IP_V4_NOT_ALLOWED => '{attr} must not be an IPv4 address.',
+        self::IP_WRONG_CIDR => '{attr} contains wrong subnet mask.',
+        self::IP_NO_SUBNET => '{attr} must be an IP address with specified subnet.',
+        self::IP_HAS_SUBNET => '{attr} must not be a subnet.',
+        self::IP_NOT_IN_RANGE => '{attr} is not in the allowed range.',
+
+
+        // Custom errors
+        self::CREDENTIALS_INVALID => 'Incorrect {email} and/or password',
+        self::ENTITY_BLOCKED => '{entity} is blocked',
     ];
 
     /**

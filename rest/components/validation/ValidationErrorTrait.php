@@ -18,14 +18,9 @@ trait ValidationErrorTrait
     protected function formatMessage($message, $params)
     {
         if ($message instanceof ErrorMessage) {
-            if (isset($params['attribute'])) {
-                $params['attr'] = $params['attribute'];
-                unset($params['attribute']);
-            }
+            $params = $this->renameArrayKeys($params, ['attribute' => 'attr']);
             $this->beforeFormatMessage($message, $params);
-            $message
-                ->setMessage(parent::formatMessage((string) $message, $params))
-                ->setParams($params);
+            $message->setParams($params);
         } else {
             $message = parent::formatMessage($message, $params);
         }
@@ -47,5 +42,20 @@ trait ValidationErrorTrait
     protected function getErrorList(): ErrorListInterface
     {
         return \Yii::createObject(ErrorListInterface::class);
+    }
+
+    /**
+     * Rename $source array key to new values from $names
+     * @param array $source
+     * @param array $names
+     * @return array
+     */
+    protected function renameArrayKeys(array $source, array $names): array
+    {
+        $destination = [];
+        foreach ($source as $key => $value) {
+            $destination[array_key_exists($key, $names) ? $names[$key] : $key] = $value;
+        }
+        return $destination;
     }
 }

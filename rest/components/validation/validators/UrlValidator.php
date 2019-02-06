@@ -7,18 +7,21 @@ declare(strict_types=1);
 
 namespace rest\components\validation\validators;
 
-use yii\validators\RangeValidator as BaseValidator;
+use yii\validators\UrlValidator as BaseValidator;
 use rest\components\validation\ErrorList;
 use rest\components\validation\ValidationErrorTrait;
 
-class RangeValidator extends BaseValidator
+class UrlValidator extends BaseValidator
 {
     use ValidationErrorTrait;
 
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
         if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::IN_INVALID);
+            $this->message = $this->errorList->createErrorMessage(ErrorList::URL_INVALID);
         }
         parent::init();
     }

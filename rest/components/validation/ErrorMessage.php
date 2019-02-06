@@ -21,7 +21,13 @@
  * public function validatePassword($attribute)
  * {
  *      ...
- *      $this->addError('password', new ErrorMessage('Email or Password is not correct', XXX));
+ *      /** @var ErrorListInterface $errorsList
+ *      $errorsList = \Yii::createObject(ErrorListInterface::class);
+ *
+ *      $this->addError($attribute, $errorsList
+ *          ->createErrorMessage(ErrorList::CREDENTIALS_INVALID)
+ *          ->setParams(['email' => $this->email])
+ *      );
  * }
  * ```
  */
@@ -30,6 +36,7 @@ declare(strict_types=1);
 namespace rest\components\validation;
 
 use JsonSerializable;
+use yii\validators\Validator;
 
 class ErrorMessage implements JsonSerializable
 {
@@ -47,10 +54,33 @@ class ErrorMessage implements JsonSerializable
      * @param string $message
      * @param int $code
      */
-    public function __construct(string $message, int $code)
+    public function __construct(string $message, int $code = ErrorListInterface::ERR_BASIC)
     {
         $this->message = $message;
         $this->code = $code;
+    }
+
+    /**
+     * Formats a message using the I18N, or simple strtr if `\Yii::$app` is not available.
+     * Copied from validator for formatting custom errors
+     * @see Validator::formatMessage()
+     *
+     * @param string $message
+     * @param array $params
+     * @return string
+     */
+    protected function formatMessage(string $message, array $params): string
+    {
+        if (\Yii::$app !== null) {
+            return \Yii::$app->getI18n()->format($message, $params, \Yii::$app->language);
+        }
+
+        $placeholders = [];
+        foreach ($params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
 
     /**
@@ -59,7 +89,7 @@ class ErrorMessage implements JsonSerializable
      */
     public function __toString()
     {
-        return $this->message;
+        return $this->formatMessage($this->message, $this->params);
     }
 
     /**
@@ -82,34 +112,12 @@ class ErrorMessage implements JsonSerializable
     }
 
     /**
-     * Set error message
-     * @param string $message
-     * @return $this
-     */
-    public function setMessage(string $message): self
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    /**
      * Get error code
      * @return int
      */
     public function getCode(): int
     {
         return $this->code;
-    }
-
-    /**
-     * Set error code
-     * @param int $code
-     * @return $this
-     */
-    public function setCode(int $code): self
-    {
-        $this->code = $code;
-        return $this;
     }
 
     /**
