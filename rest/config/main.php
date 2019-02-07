@@ -192,6 +192,8 @@ return [
             \yii\validators\UrlValidator::class => RestValidators\UrlValidator::class,
             \yii\validators\CompareValidator::class => RestValidators\CompareValidator::class,
             \yii\validators\IpValidator::class => RestValidators\IpValidator::class,
+            \yii\validators\UniqueValidator::class => RestValidators\UniqueValidator::class,
+            \yii\validators\ExistValidator::class => RestValidators\ExistValidator::class,
         ],
     ],
     'params' => $params,

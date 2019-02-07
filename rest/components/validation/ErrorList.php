@@ -60,7 +60,13 @@ class ErrorList implements ErrorListInterface
     public const IP_HAS_SUBNET = 1135;
     public const IP_NOT_IN_RANGE = 1136;
 
+    public const UNIQUE_INVALID = 1150;
+    public const UNIQUE_COMBO_INVALID = 1151;
+
+    public const EXIST_INVALID = 1160;
+
     // Custom errors
+    public const CAPTCHA_INVALID = 1140;
     public const CREDENTIALS_INVALID = 1200;
     public const ENTITY_BLOCKED = 1210;
 
@@ -122,8 +128,13 @@ class ErrorList implements ErrorListInterface
         self::IP_HAS_SUBNET => '{attr} must not be a subnet.',
         self::IP_NOT_IN_RANGE => '{attr} is not in the allowed range.',
 
+        self::UNIQUE_INVALID => '{attr} "{value}" has already been taken.',
+        self::UNIQUE_COMBO_INVALID => 'The combination {values} of {attributes} has already been taken.',
+
+        self::EXIST_INVALID => '{attr} is invalid.',
 
         // Custom errors
+        self::CAPTCHA_INVALID => 'Wrong captcha provided',
         self::CREDENTIALS_INVALID => 'Incorrect {email} and/or password',
         self::ENTITY_BLOCKED => '{entity} is blocked',
     ];
