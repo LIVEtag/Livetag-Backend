@@ -420,6 +420,15 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "perPage",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Per page items"
                     }
                 ],
                 "responses": {
@@ -1285,6 +1294,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "perPage",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Per page items"
                     }
                 ],
                 "responses": {
@@ -1439,6 +1457,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "perPage",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": false,
+                        "description": "Per page items"
                     }
                 ],
                 "responses": {
