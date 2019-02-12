@@ -11,6 +11,7 @@ use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
 use rest\modules\chat\Module as ChatModule;
 use rest\modules\chat\controllers\ChannelController;
+use yii\data\Pagination;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Response;
@@ -174,4 +175,11 @@ return [
         ],
     ],
     'params' => $params,
+    'container' => [
+        'definitions' => [
+            Pagination::class => [
+                'pageSizeParam' => 'perPage',
+            ],
+        ],
+    ]
 ];

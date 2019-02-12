@@ -41,7 +41,7 @@ class MainController extends Controller
                         'Access-Control-Request-Method' => ['GET'],
                         'Access-Control-Request-Headers' => ['*'],
                         'Access-Control-Max-Age' => 86400,
-                        'Access-Control-Allow-Credentials' => true,
+                        'Access-Control-Allow-Credentials' => false,
                         'Access-Control-Allow-Headers' => ['Content-Type'],
                     ],
                 ],
