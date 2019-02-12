@@ -112,7 +112,7 @@ class ErrorList implements ErrorListInterface
         self::STRING_TOO_LONG => '{attr} should contain at most {max} character(s).',
         self::STRING_NOT_EQUAL => '{attr} should contain {length} character(s).',
 
-        self::URL_INVALID => '{attr} is not a valid link.}',
+        self::URL_INVALID => '{attr} is not a valid link.',
 
         self::BOOLEAN_INVALID => '{attr} must be either "{true}" or "{false}"',
 
@@ -139,8 +139,8 @@ class ErrorList implements ErrorListInterface
         self::EXIST_INVALID => '{attr} is invalid.',
 
         // Custom errors
-        self::CAPTCHA_INVALID => 'Wrong captcha provided',
-        self::CREDENTIALS_INVALID => 'Incorrect {email} and/or password',
+        self::CAPTCHA_INVALID => 'Wrong captcha provided.',
+        self::CREDENTIALS_INVALID => 'Incorrect email address and/or password',
         self::ENTITY_BLOCKED => '{entity} is blocked',
     ];
 
