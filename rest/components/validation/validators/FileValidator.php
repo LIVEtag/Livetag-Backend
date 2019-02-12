@@ -17,32 +17,28 @@ class FileValidator extends BaseValidator
 {
     use ValidationErrorTrait;
 
+    /**
+     * @inheritdoc
+     * @phpcsSuppress Generic.Files.LineLength.MaxExceeded
+     */
     public function init()
     {
-        if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::FILE_INVALID);
-        }
-        if ($this->uploadRequired === null) {
-            $this->uploadRequired = $this->errorList->createErrorMessage(ErrorList::FILE_UPLOAD_REQUIRED);
-        }
-        if ($this->tooMany === null) {
-            $this->tooMany = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_MANY);
-        }
-        if ($this->tooFew === null) {
-            $this->tooFew = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_FEW);
-        }
-        if ($this->wrongExtension === null) {
-            $this->wrongExtension = $this->errorList->createErrorMessage(ErrorList::FILE_WRONG_EXTENSION);
-        }
-        if ($this->tooBig === null) {
-            $this->tooBig = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_BIG);
-        }
-        if ($this->tooSmall === null) {
-            $this->tooSmall = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_SMALL);
-        }
-        if ($this->wrongMimeType === null) {
-            $this->wrongMimeType = $this->errorList->createErrorMessage(ErrorList::FILE_WRONG_MIME_TYPE);
-        }
+        $this->message = $this->message ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_INVALID);
+        $this->uploadRequired = $this->uploadRequired ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_UPLOAD_REQUIRED);
+        $this->tooMany = $this->tooMany ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_MANY);
+        $this->tooFew = $this->tooFew ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_FEW);
+        $this->wrongExtension = $this->wrongExtension ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_WRONG_EXTENSION);
+        $this->tooBig = $this->tooBig ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_BIG);
+        $this->tooSmall = $this->tooSmall ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_SMALL);
+        $this->wrongMimeType = $this->wrongMimeType ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_WRONG_MIME_TYPE);
         parent::init();
     }
 

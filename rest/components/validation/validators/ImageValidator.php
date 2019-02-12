@@ -17,50 +17,40 @@ class ImageValidator extends BaseValidator
 {
     use ValidationErrorTrait;
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         // File validator
-        if ($this->message === null) {
-            $this->message = $this->errorList->createErrorMessage(ErrorList::FILE_INVALID);
-        }
-        if ($this->uploadRequired === null) {
-            $this->uploadRequired = $this->errorList->createErrorMessage(ErrorList::FILE_UPLOAD_REQUIRED);
-        }
-        if ($this->tooMany === null) {
-            $this->tooMany = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_MANY);
-        }
-        if ($this->tooFew === null) {
-            $this->tooFew = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_FEW);
-        }
-        if ($this->wrongExtension === null) {
-            $this->wrongExtension = $this->errorList->createErrorMessage(ErrorList::FILE_WRONG_EXTENSION);
-        }
-        if ($this->tooBig === null) {
-            $this->tooBig = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_BIG);
-        }
-        if ($this->tooSmall === null) {
-            $this->tooSmall = $this->errorList->createErrorMessage(ErrorList::FILE_TOO_SMALL);
-        }
-        if ($this->wrongMimeType === null) {
-            $this->wrongMimeType = $this->errorList->createErrorMessage(ErrorList::FILE_WRONG_MIME_TYPE);
-        }
+        $this->message = $this->message ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_INVALID);
+        $this->uploadRequired = $this->uploadRequired ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_UPLOAD_REQUIRED);
+        $this->tooMany = $this->tooMany ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_MANY);
+        $this->tooFew = $this->tooFew ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_FEW);
+        $this->wrongExtension = $this->wrongExtension ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_WRONG_EXTENSION);
+        $this->tooBig = $this->tooBig ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_BIG);
+        $this->tooSmall = $this->tooSmall ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_TOO_SMALL);
+        $this->wrongMimeType = $this->wrongMimeType ?? $this->errorList
+                ->createErrorMessage(ErrorList::FILE_WRONG_MIME_TYPE);
 
         // Image validator
-        if ($this->notImage === null) {
-            $this->notImage = $this->errorList->createErrorMessage(ErrorList::IMAGE_INVALID);
-        }
-        if ($this->underWidth === null) {
-            $this->underWidth = $this->errorList->createErrorMessage(ErrorList::IMAGE_UNDER_WIDTH);
-        }
-        if ($this->underHeight === null) {
-            $this->underHeight = $this->errorList->createErrorMessage(ErrorList::IMAGE_UNDER_HEIGHT);
-        }
-        if ($this->overWidth === null) {
-            $this->overWidth = $this->errorList->createErrorMessage(ErrorList::IMAGE_OVER_WIDTH);
-        }
-        if ($this->overHeight === null) {
-            $this->overHeight = $this->errorList->createErrorMessage(ErrorList::IMAGE_OVER_HEIGHT);
-        }
+        $this->notImage = $this->notImage ?? $this->errorList->
+            createErrorMessage(ErrorList::IMAGE_INVALID);
+        $this->underWidth = $this->underWidth ?? $this->errorList
+                ->createErrorMessage(ErrorList::IMAGE_UNDER_WIDTH);
+        $this->underHeight = $this->underHeight ?? $this->errorList
+                ->createErrorMessage(ErrorList::IMAGE_UNDER_HEIGHT);
+        $this->overWidth = $this->overWidth ?? $this->errorList
+                ->createErrorMessage(ErrorList::IMAGE_OVER_WIDTH);
+        $this->overHeight = $this->overHeight ?? $this->errorList
+                ->createErrorMessage(ErrorList::IMAGE_OVER_HEIGHT);
         parent::init();
     }
 

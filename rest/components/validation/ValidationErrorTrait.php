@@ -28,8 +28,10 @@ trait ValidationErrorTrait
     }
 
     /**
+     * Format message pre-processor
      * @param ErrorMessage $message
      * @param $params
+     * @SuppressWarnings("PMD.UnusedFormalParameter")
      */
     protected function beforeFormatMessage(ErrorMessage $message, array &$params): void
     {

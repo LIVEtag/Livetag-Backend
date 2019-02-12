@@ -12,7 +12,12 @@
  * public function rules()
  * {
  *      return [
- *          ['amount', 'integer', 'min' => 1, 'tooSmall' => new ErrorMessage('Item can has only positive quantity', XXX)],
+ *          [
+ *              'amount',
+ *              'integer',
+ *              'min' => 1,
+ *              'tooSmall' => new ErrorMessage('Item can has only positive quantity', XXX)
+ *          ],
  *      ];
  * }
  * ```

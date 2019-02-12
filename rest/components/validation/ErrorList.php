@@ -1,6 +1,11 @@
 <?php
 namespace rest\components\validation;
 
+/**
+ * Class ErrorList
+ * @package rest\components\validation
+ * @codingStandardsIgnoreFile Generic.Files.LineLength.MaxExceeded
+ */
 class ErrorList implements ErrorListInterface
 {
     public const EMAIL_INVALID = 1010;
@@ -89,7 +94,7 @@ class ErrorList implements ErrorListInterface
         self::IMAGE_INVALID => 'The file "{file}" is not an image.',
         self::IMAGE_UNDER_WIDTH => 'The image "{file}" is too small. The width cannot be smaller than {limit} pixel(s).',
         self::IMAGE_UNDER_HEIGHT => 'The image "{file}" is too small. The height cannot be smaller than {limit} pixel(s).',
-        self::IMAGE_OVER_WIDTH => 'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.',
+        self::IMAGE_OVER_WIDTH => 'The image "{file}" is too large. The width cannot be larger than {limit} pixel(s).',
         self::IMAGE_OVER_HEIGHT => 'The image "{file}" is too large. The height cannot be larger than {limit} pixel(s).',
 
         self::NUMBER_INVALID => '{attr} must be a number.',

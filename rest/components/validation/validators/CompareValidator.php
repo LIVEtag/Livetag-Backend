@@ -49,8 +49,7 @@ class CompareValidator extends BaseValidator
     }
 
     /**
-     * @param ErrorMessage $message
-     * @param $params
+     * @inheritdoc
      */
     protected function beforeFormatMessage(ErrorMessage $message, array &$params): void
     {

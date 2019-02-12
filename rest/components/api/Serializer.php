@@ -34,9 +34,9 @@ class Serializer extends BaseSerializer
     {
         if ($data instanceof Model && $data->hasErrors()) {
             $serializedData = $this->serializeModelErrors($data);
-        } elseif ($data instanceof Arrayable) {
+        } else if ($data instanceof Arrayable) {
             $serializedData = $this->serializeModel($data);
-        } elseif ($data instanceof DataProviderInterface) {
+        } else if ($data instanceof DataProviderInterface) {
             $serializedData = $this->serializeDataProvider($data);
         } else {
             $serializedData = ['result' => $data];
@@ -101,7 +101,7 @@ class Serializer extends BaseSerializer
 
         if ($this->request->getIsHead()) {
             return null;
-        } elseif (!$this->collectionEnvelope) {
+        } else if (!$this->collectionEnvelope) {
             return $models;
         }
 
