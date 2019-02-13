@@ -6,6 +6,11 @@
 namespace rest\components\api;
 
 use yii\rest\Serializer as BaseSerializer;
+use rest\components\validation\ErrorMessage;
+use rest\components\validation\ErrorListInterface;
+use yii\base\Arrayable;
+use yii\base\Model;
+use yii\data\DataProviderInterface;
 
 /**
  * Class Serializer
@@ -15,25 +20,106 @@ class Serializer extends BaseSerializer
     /**
      * @inheritdoc
      */
-    public $collectionEnvelope = 'items';
+    public $collectionEnvelope = 'result';
+
+    /**
+     * @var bool Add pagination headers to response
+     */
+    public $addPaginationHeaders = false;
 
     /**
      * @inheritdoc
      */
     public function serialize($data)
     {
-        $data = parent::serialize($data);
+        if ($data instanceof Model && $data->hasErrors()) {
+            $serializedData = $this->serializeModelErrors($data);
+        } else if ($data instanceof Arrayable) {
+            $serializedData = $this->serializeModel($data);
+        } else if ($data instanceof DataProviderInterface) {
+            $serializedData = $this->serializeDataProvider($data);
+        } else {
+            $serializedData = ['result' => $data];
+        }
+        return array_merge(
+            [
+                'code' => $this->response->getStatusCode(),
+                'status' => $this->response->getIsSuccessful() ? 'success' : 'error',
+            ],
+            $serializedData
+        );
+    }
 
-        $dataResult = [
-            'code' => $this->response->getStatusCode(),
-            'status' => $this->response->getIsSuccessful() ? 'success' : 'error',
-            'result' => $data,
-        ];
+    /**
+     * @inheritdoc
+     */
+    protected function serializeModelErrors($model)
+    {
+        $this->response->setStatusCode(422, 'Data Validation Failed.');
+        $result = [];
+        foreach ($model->getFirstErrors() as $attribute => $message) {
+            if ($message instanceof ErrorMessage) {
+                $code = $message->getCode();
+                $params = $message->getParams();
+            } else {
+                $code = ErrorListInterface::ERR_BASIC;
+                $params = [];
+            }
+            $serializedParams = [];
+            foreach ($params as $name => $value) {
+                $serializedParams[] = [
+                    'name' => $name,
+                    'value' => (string) $value,
+                ];
+            }
+            $result[] = [
+                'field' => $attribute,
+                'message' => (string) $message,
+                'code' => $code,
+                'params' => $serializedParams
+            ];
+        }
+        return ['result' => $result];
+    }
 
-        if (is_array($data) && isset($data[$this->collectionEnvelope])) {
-            $dataResult['result'] = $data[$this->collectionEnvelope];
+    /**
+     * @inheritdoc
+     */
+    protected function serializeDataProvider($dataProvider)
+    {
+        if ($this->preserveKeys) {
+            $models = $dataProvider->getModels();
+        } else {
+            $models = array_values($dataProvider->getModels());
+        }
+        $models = $this->serializeModels($models);
+        $pagination = $dataProvider->getPagination();
+
+        if ($pagination !== false && $this->addPaginationHeaders) {
+            $this->addPaginationHeaders($pagination);
         }
 
-        return $dataResult;
+        if ($this->request->getIsHead()) {
+            return null;
+        } else if (!$this->collectionEnvelope) {
+            return $models;
+        }
+
+        $result = [
+            $this->collectionEnvelope => $models,
+        ];
+        if ($pagination !== false) {
+            $serializedPagination = $this->serializePagination($pagination);
+            $result[$this->metaEnvelope]['pagination'] = $serializedPagination[$this->metaEnvelope];
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function serializeModel($model)
+    {
+        return ['result' => parent::serializeModel($model)];
     }
 }

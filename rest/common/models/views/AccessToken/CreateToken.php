@@ -7,6 +7,8 @@ namespace rest\common\models\views\AccessToken;
 
 use rest\common\models\AccessToken;
 use rest\common\models\User;
+use rest\components\validation\ErrorList;
+use rest\components\validation\ErrorListInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use common\components\user\SearchService;
@@ -98,7 +100,11 @@ class CreateToken extends Model
         $this->user = $this->searchService->getUser($this->email);
 
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
-            $this->addError($attribute, 'Incorrect email or password.');
+            /** @var ErrorListInterface $errorList */
+            $errorList = \Yii::createObject(ErrorListInterface::class);
+            $this->addError($attribute, $errorList->createErrorMessage(ErrorList::CREDENTIALS_INVALID)
+                ->setParams(['email' => $this->email])
+            );
         }
     }
 
