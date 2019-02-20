@@ -102,8 +102,9 @@ class CreateToken extends Model
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
             /** @var ErrorListInterface $errorList */
             $errorList = \Yii::createObject(ErrorListInterface::class);
-            $this->addError($attribute, $errorList->createErrorMessage(ErrorList::CREDENTIALS_INVALID)
-                ->setParams(['email' => $this->email])
+            $this->addError(
+                $attribute,
+                $errorList->createErrorMessage(ErrorList::CREDENTIALS_INVALID)->setParams(['email' => $this->email])
             );
         }
     }
