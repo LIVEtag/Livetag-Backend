@@ -18,6 +18,7 @@ trait ValidationErrorTrait
     protected function formatMessage($message, $params)
     {
         if ($message instanceof ErrorMessage) {
+            $message = clone $message;
             $params = $this->renameArrayKeys($params, ['attribute' => 'attr']);
             $this->beforeFormatMessage($message, $params);
             $message->setParams($params);
