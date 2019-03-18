@@ -8,8 +8,8 @@ variables:
   DB_PASSWORD: ${DB_PASSWORD}
   DB_NAME: ${DB_NAME}
   DB_PORT: ${DB_PORT}
-  DB_HOST: "mysql"
-  DB_TEST_HOST: "mysql"
+  DB_HOST: ${DB_HOST}
+  DB_TEST_HOST: ${DB_HOST}
 
 before_script:
   - rm -fr /var/www/html
