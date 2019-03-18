@@ -7,6 +7,8 @@ namespace rest\common\models\views\AccessToken;
 
 use rest\common\models\AccessToken;
 use rest\common\models\User;
+use rest\components\validation\ErrorList;
+use rest\components\validation\ErrorListInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use common\components\user\SearchService;
@@ -23,7 +25,7 @@ class CreateToken extends Model
     /**
      * @var string
      */
-    public $username;
+    public $email;
 
     /**
      * @var string
@@ -73,7 +75,7 @@ class CreateToken extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['email', 'password'], 'required'],
             ['password', 'validatePassword'],
             [['isRememberMe'], 'in', 'range' => [self::YES_VALUE, self::NO_VALUE]],
             [['userIp', 'userAgent'], 'string'],
@@ -95,10 +97,15 @@ class CreateToken extends Model
             return;
         }
 
-        $this->user = $this->searchService->getUser($this->username);
+        $this->user = $this->searchService->getUser($this->email);
 
         if ($this->user === null || !$this->user->validatePassword($this->password)) {
-            $this->addError($attribute, 'Incorrect username or password.');
+            /** @var ErrorListInterface $errorList */
+            $errorList = \Yii::createObject(ErrorListInterface::class);
+            $this->addError(
+                $attribute,
+                $errorList->createErrorMessage(ErrorList::CREDENTIALS_INVALID)->setParams(['email' => $this->email])
+            );
         }
     }
 
@@ -118,8 +125,8 @@ class CreateToken extends Model
             $this->userAgent,
             $this->userIp
         )->andWhere(
-            'user_id = :user_id',
-            [':user_id' => $this->user->id]
+            'userId = :userId',
+            [':userId' => $this->user->id]
         )->one();
 
         if ($accessToken !== null) {
@@ -127,7 +134,7 @@ class CreateToken extends Model
         }
 
         $accessToken = new AccessToken();
-        $accessToken->user_id = $this->user->id;
+        $accessToken->userId = $this->user->id;
 
         $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         if ($this->isRememberMe === self::YES_VALUE) {
@@ -136,8 +143,8 @@ class CreateToken extends Model
 
         $accessToken->generateToken($expireTime);
 
-        $accessToken->user_ip = $this->userIp;
-        $accessToken->user_agent = $this->userAgent;
+        $accessToken->userIp = $this->userIp;
+        $accessToken->userAgent = $this->userAgent;
 
         return $accessToken->save() ? $accessToken : false;
     }

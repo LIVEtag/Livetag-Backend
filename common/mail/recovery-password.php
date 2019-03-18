@@ -7,10 +7,10 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
-$resetLink = Yii::$app->params['projectDomain'] . $user->password_reset_token;
+$resetLink = Yii::$app->params['projectDomain'] . $user->passwordResetToken;
 ?>
 <div class="password-reset">
-    <p>Hello <?= Html::encode($user->username) ?>,</p>
+    <p>Hello <?= Html::encode($user->email) ?>,</p>
 
     <p>Follow the link below to reset your password:</p>
 

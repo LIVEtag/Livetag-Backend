@@ -19,14 +19,14 @@ class M160226133453SetupAccessToken extends Migration
             '{{%access_token}}',
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'user_id' => $this->integer()->unsigned()->notNull(),
+                'userId' => $this->integer()->unsigned()->notNull(),
                 'token' => $this->string(128)->notNull(),
                 // @link http://stackoverflow.com/a/20473371
-                'user_ip' => $this->string(46)->notNull()->defaultValue(''),
+                'userIp' => $this->string(46)->notNull()->defaultValue(''),
                 // @link http://stackoverflow.com/a/20746656
-                'user_agent' => $this->text(),
-                'created_at' => $this->integer()->unsigned()->notNull(),
-                'expired_at' => $this->integer()->unsigned()->notNull(),
+                'userAgent' => $this->text(),
+                'createdAt' => $this->integer()->unsigned()->notNull(),
+                'expiredAt' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );
@@ -34,13 +34,13 @@ class M160226133453SetupAccessToken extends Migration
         $this->addForeignKey(
             'fk_access_token_to_user',
             '{{%access_token}}',
-            'user_id',
+            'userId',
             '{{%user}}',
             'id',
             'CASCADE'
         );
         $this->createIndex('idx_user_token', '{{%access_token}}', 'token');
-        $this->createIndex('idx_user_token_expired', '{{%access_token}}', ['token', 'expired_at']);
+        $this->createIndex('idx_user_token_expired', '{{%access_token}}', ['token', 'expiredAt']);
     }
 
     public function down()

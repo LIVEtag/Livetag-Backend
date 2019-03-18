@@ -19,14 +19,13 @@ class M130524201442SetupUser extends Migration
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'role'=>$this->string()->notNull(),
-                'username' => $this->string()->notNull()->unique(),
-                'auth_key' => $this->string(32)->notNull(),
-                'password_hash' => $this->string()->notNull(),
-                'password_reset_token' => $this->string()->unique(),
                 'email' => $this->string()->notNull()->unique(),
+                'authKey' => $this->string(32)->notNull(),
+                'passwordHash' => $this->string()->notNull(),
+                'passwordResetToken' => $this->string()->unique(),
                 'status' => $this->smallInteger()->notNull()->defaultValue(10),
-                'created_at' => $this->integer()->unsigned()->notNull(),
-                'updated_at' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->integer()->unsigned()->notNull(),
+                'updatedAt' => $this->integer()->unsigned()->notNull(),
             ],
             self::TABLE_OPTIONS
         );

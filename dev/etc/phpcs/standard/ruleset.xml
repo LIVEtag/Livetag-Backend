@@ -5,9 +5,14 @@
     <rule ref="PHPCompatibility" />
 
     <exclude-pattern>console/migrations/</exclude-pattern>
+    <exclude-pattern>frontend/tests/</exclude-pattern>
+    <exclude-pattern>common/tests/</exclude-pattern>
+    <exclude-pattern>common/fixtures/</exclude-pattern>
+    <exclude-pattern>backend/tests/</exclude-pattern>
     <exclude-pattern>common/Yii.php</exclude-pattern>
     <exclude-pattern>bootstrap.php</exclude-pattern>
     <exclude-pattern>common/components/rbac/rules.php</exclude-pattern>
+    <exclude-pattern>common/components/rbac/migrations/</exclude-pattern>
     <rule ref="PSR2"/>
 
     <rule ref="Generic.Files.LineLength">

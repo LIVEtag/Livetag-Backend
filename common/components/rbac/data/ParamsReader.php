@@ -20,10 +20,10 @@ class ParamsReader
      */
     public static function readUserId(array $params): int
     {
-        if (!isset($params['user_id'])) {
-            throw new InvalidArgumentException('Key `user_id` does not exists.');
+        if (!isset($params['userId'])) {
+            throw new InvalidArgumentException('Key `userId` does not exists.');
         }
 
-        return (int) $params['user_id'];
+        return (int) $params['userId'];
     }
 }

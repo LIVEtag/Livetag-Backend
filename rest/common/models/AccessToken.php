@@ -16,12 +16,12 @@ use yii\db\ActiveRecord;
  * Class AccessToken
  *
  * @property integer $id
- * @property integer $user_id
+ * @property integer $userId
  * @property string $token
- * @property string $user_ip
- * @property string $user_agent
- * @property integer $created_at
- * @property integer $expired_at
+ * @property string $userIp
+ * @property string $userAgent
+ * @property integer $createdAt
+ * @property integer $expiredAt
  */
 class AccessToken extends ActiveRecord
 {
@@ -55,7 +55,7 @@ class AccessToken extends ActiveRecord
         return [
             [
                 'class' => TimestampBehavior::className(),
-                'createdAtAttribute' => 'created_at',
+                'createdAtAttribute' => 'createdAt',
                 'updatedAtAttribute' => false
             ],
         ];
@@ -67,13 +67,13 @@ class AccessToken extends ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'token'], 'required'],
-            [['user_id'], 'integer'],
-            [['user_agent'], 'string'],
-            [['user_ip'], 'string', 'max' => 46],
-            [['user_ip', 'user_agent'], 'default', 'value' => ''],
+            [['userId', 'token'], 'required'],
+            [['userId'], 'integer'],
+            [['userAgent'], 'string'],
+            [['userIp'], 'string', 'max' => 46],
+            [['userIp', 'userAgent'], 'default', 'value' => ''],
             [['token'], 'string', 'min' => self::TOKEN_LENGTH, 'max' => self::TOKEN_LENGTH],
-            [['created_at', 'expired_at'], 'safe'],
+            [['createdAt', 'expiredAt'], 'safe'],
         ];
     }
 
@@ -82,7 +82,7 @@ class AccessToken extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'userId']);
     }
 
     /**
@@ -109,7 +109,7 @@ class AccessToken extends ActiveRecord
     {
         return [
             'token',
-            'expired_at',
+            'expiredAt',
         ];
     }
 
@@ -124,7 +124,7 @@ class AccessToken extends ActiveRecord
             $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
         }
 
-        $this->expired_at = $expireTime + time();
+        $this->expiredAt = $expireTime + time();
         $this->token = $this->createToken();
     }
 
@@ -136,7 +136,7 @@ class AccessToken extends ActiveRecord
         $security = \Yii::$app->getSecurity();
 
         $hash = $security->hashData(
-            $this->user_id,
+            $this->userId,
             $security->generateRandomString(self::RANDOM_HASH_LENGTH)
         );
         $hash .= '_';

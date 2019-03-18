@@ -10,12 +10,12 @@ use rest\common\models\User;
  * This is the model class for table "user_social_profile".
  *
  * @property integer $id
- * @property integer $user_id
+ * @property integer $userId
  * @property integer $type
- * @property string $social_id
+ * @property string $socialId
  * @property string $email
- * @property integer $created_at
- * @property integer $updated_at
+ * @property integer $createdAt
+ * @property integer $updatedAt
  *
  * @property User $user
  */
@@ -40,7 +40,11 @@ class SocialProfile extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
         ];
     }
 
@@ -50,15 +54,15 @@ class SocialProfile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'type', 'social_id', 'email'], 'required'],
-            [['user_id', 'type', 'created_at', 'updated_at'], 'integer'],
-            [['social_id', 'email'], 'string', 'max' => 255],
+            [['userId', 'type', 'socialId', 'email'], 'required'],
+            [['userId', 'type', 'createdAt', 'updatedAt'], 'integer'],
+            [['socialId', 'email'], 'string', 'max' => 255],
             [
-                ['user_id'],
+                ['userId'],
                 'exist',
                 'skipOnError' => true,
                 'targetClass' => User::className(),
-                'targetAttribute' => ['user_id' => 'id']
+                'targetAttribute' => ['userId' => 'id']
             ],
         ];
     }
@@ -70,12 +74,12 @@ class SocialProfile extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
+            'userId' => 'User ID',
             'type' => 'Type',
-            'social_id' => 'Social ID',
+            'socialId' => 'Social ID',
             'email' => 'Email',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'createdAt' => 'Created At',
+            'updatedAt' => 'Updated At',
         ];
     }
 
@@ -84,7 +88,7 @@ class SocialProfile extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'userId']);
     }
 
     /**
@@ -96,7 +100,7 @@ class SocialProfile extends \yii\db\ActiveRecord
     public static function findBySocialId($socialId)
     {
         return static::find()
-            ->andWhere('social_id = :social_id', ['social_id' => $socialId])
+            ->andWhere('socialId = :socialId', ['socialId' => $socialId])
             ->one();
     }
 }

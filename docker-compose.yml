@@ -24,11 +24,10 @@ services:
       GITHUB_KEY: ${GITHUB_KEY}
       PHP_IDE_CONFIG: "serverName=${MAIN_DOMAIN}"
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
-      # !!! Set your IP 10.0.75.1
-      # !!! Set your PORT 9123
-      XDEBUG_CONFIG: "idekey=PHPSTORM remote_autostart=0 remote_connect_back=0 remote_enable=1 remote_mode=req remote_port=9123 remote_host=10.0.75.1"
+      XDEBUG_CONFIG: "idekey=PHPSTORM remote_autostart=0 remote_connect_back=0 remote_enable=1 remote_mode=req remote_host=${XDEBUG_HOST}"
     links:
       - db
+      - dbtest
   db:
     image: mysql:5.7
     ports:
@@ -39,6 +38,19 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+  dbtest:
+    image: mysql:5.7
+    ports:
+      - "${DB_TEST_PORT}:3306"
+    volumes:
+      - ./dev/docker/mysql/5.7/test:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: ${DB_TEST_NAME}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"

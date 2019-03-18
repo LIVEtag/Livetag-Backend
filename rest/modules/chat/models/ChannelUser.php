@@ -16,8 +16,8 @@ use yii\db\ActiveRecord;
  * This is the model class for table "channel_user".
  *
  * @property integer $id
- * @property integer $channel_id
- * @property integer $user_id
+ * @property integer $channelId
+ * @property integer $userId
  * @property integer $role
  *
  * @property Channel $channel
@@ -55,26 +55,26 @@ class ChannelUser extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['channel_id', 'user_id'], 'required'],
-            [['channel_id', 'user_id', 'role'], 'integer'],
+            [['channelId', 'userId'], 'required'],
+            [['channelId', 'userId', 'role'], 'integer'],
             [
-                ['channel_id'],
+                ['channelId'],
                 'exist',
                 'skipOnError' => true,
                 'targetClass' => Channel::class,
-                'targetAttribute' => ['channel_id' => 'id']
+                'targetAttribute' => ['channelId' => 'id']
             ],
             [
-                ['user_id'],
+                ['userId'],
                 'exist',
                 'skipOnError' => true,
                 'targetClass' => User::class,
-                'targetAttribute' => ['user_id' => 'id']
+                'targetAttribute' => ['userId' => 'id']
             ],
             [
-                ['channel_id'],
+                ['channelId'],
                 'unique',
-                'targetAttribute' => ['channel_id', 'user_id', 'role'],
+                'targetAttribute' => ['channelId', 'userId', 'role'],
                 'message' => 'User already in chat'
             ],
         ];
@@ -87,8 +87,8 @@ class ChannelUser extends ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'channel_id' => Yii::t('app', 'Channel ID'),
-            'user_id' => Yii::t('app', 'User ID'),
+            'channelId' => Yii::t('app', 'Channel ID'),
+            'userId' => Yii::t('app', 'User ID'),
             'role' => Yii::t('app', 'Role'),
         ];
     }
@@ -109,7 +109,7 @@ class ChannelUser extends ActiveRecord
      */
     public function getChannel(): ?ActiveQuery
     {
-        return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
+        return $this->hasOne(Channel::className(), ['id' => 'channelId']);
     }
 
     /**
@@ -117,7 +117,7 @@ class ChannelUser extends ActiveRecord
      */
     public function getUser(): ?ActiveQuery
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::className(), ['id' => 'userId']);
     }
 
     /**

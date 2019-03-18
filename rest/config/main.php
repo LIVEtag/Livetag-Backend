@@ -10,7 +10,9 @@ use rest\components\api\ErrorHandler;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
 use rest\modules\chat\Module as ChatModule;
+use rest\components\validation\validators as RestValidators;
 use rest\modules\chat\controllers\ChannelController;
+use yii\data\Pagination;
 use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Response;
@@ -106,7 +108,6 @@ return [
                     'extraPatterns' => [
                         'POST login' => 'create',
                         'OPTIONS login' => 'options',
-                        'POST login/email' => 'email',
                     ],
                 ],
                 [
@@ -120,9 +121,13 @@ return [
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
                         'PATCH change-password' => 'change-password',
+                        'OPTIONS change-password' => 'options',
                         'POST recovery-password' => 'recovery-password',
+                        'OPTIONS recovery-password' => 'options',
                         'POST new-password' => 'new-password',
+                        'OPTIONS new-password' => 'options',
                         'POST logout' => 'logout',
+                        'OPTIONS logout' => 'options',
                     ],
                 ],
                 [
@@ -141,21 +146,63 @@ return [
                     ],
                     'extraPatterns' => [
                         'PUT <id:\d+>/join' => ChannelController::ACTION_JOIN,
+                        'OPTIONS  <id:\d+>/join' => 'options',
                         'PUT <id:\d+>/leave' => ChannelController::ACTION_LEAVE,
+                        'OPTIONS  <id:\d+>/leave' => 'options',
                         'GET <id:\d+>/message' => ChannelController::ACTION_GET_MESSAGES,
                         'POST <id:\d+>/message' => ChannelController::ACTION_ADD_MESSAGE,
+                        'OPTIONS  <id:\d+>/message' => 'options',
                         'GET <id:\d+>/user' => ChannelController::ACTION_GET_USERS,
+                        'OPTIONS  <id:\d+>/user' => 'options',
                         'POST <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_ADD_TO_CHAT,
                         'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
+                        'OPTIONS  <id:\d+>/user/<userId:\d+>' => 'options',
                         'POST auth' => ChannelController::ACTION_AUTH,
+                        'OPTIONS auth' => 'options',
                         'POST sign' => ChannelController::ACTION_SIGN,
+                        'OPTIONS sign' => 'options',
                         //'GET demo/<route:\*>'=>
                     ],
                     'pluralize' => false,
                 ],
                 'demo-chat/<action:.*>' => 'chat/demo/index',
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/config' => 'v1/config'
+                    ],
+                ],
             ],
         ],
     ],
+    'container' => [
+        'singletons' => [
+            \rest\components\validation\ErrorListInterface::class => \rest\components\validation\ErrorList::class,
+        ],
+        'definitions' => [
+            \yii\validators\StringValidator::class => RestValidators\StringValidator::class,
+            \yii\validators\EmailValidator::class => RestValidators\EmailValidator::class,
+            \yii\validators\FileValidator::class => RestValidators\FileValidator::class,
+            \yii\validators\ImageValidator::class => RestValidators\ImageValidator::class,
+            \yii\validators\BooleanValidator::class => RestValidators\BooleanValidator::class,
+            \yii\validators\NumberValidator::class => RestValidators\NumberValidator::class,
+            \yii\validators\DateValidator::class => RestValidators\DateValidator::class,
+            \yii\validators\RangeValidator::class => RestValidators\RangeValidator::class,
+            \yii\validators\RequiredValidator::class => RestValidators\RequiredValidator::class,
+            \yii\validators\RegularExpressionValidator::class => RestValidators\RegularExpressionValidator::class,
+            \yii\validators\UrlValidator::class => RestValidators\UrlValidator::class,
+            \yii\validators\CompareValidator::class => RestValidators\CompareValidator::class,
+            \yii\validators\IpValidator::class => RestValidators\IpValidator::class,
+            \yii\validators\UniqueValidator::class => RestValidators\UniqueValidator::class,
+            \yii\validators\ExistValidator::class => RestValidators\ExistValidator::class,
+        ],
+    ],
     'params' => $params,
+    'container' => [
+        'definitions' => [
+            Pagination::class => [
+                'pageSizeParam' => 'perPage',
+            ],
+        ],
+    ]
 ];

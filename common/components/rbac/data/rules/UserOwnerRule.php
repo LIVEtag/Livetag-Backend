@@ -23,6 +23,6 @@ class UserOwnerRule implements QueryRuleInterface
     {
         $id = ParamsReader::readUserId($params);
 
-        $query->andWhere(['user_id' => $id]);
+        $query->andWhere(['userId' => $id]);
     }
 }

@@ -23,11 +23,6 @@ class UserController extends Controller
     /**
      * @var string
      */
-    public $username;
-
-    /**
-     * @var string
-     */
     public $email;
 
     /**
@@ -42,7 +37,6 @@ class UserController extends Controller
     {
         return [
             'password',
-            'username',
             'email',
             'role',
         ];
@@ -59,7 +53,6 @@ class UserController extends Controller
         $user->load(
             [
                 'password' => $this->password,
-                'username' => $this->username,
                 'email' => $this->email,
                 'role' => $this->role,
             ],

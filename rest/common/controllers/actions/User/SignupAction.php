@@ -37,6 +37,6 @@ class SignupAction extends Action
 
         $this->response->setStatusCode(201);
 
-        return $user;
+        return $user->accessToken;
     }
 }

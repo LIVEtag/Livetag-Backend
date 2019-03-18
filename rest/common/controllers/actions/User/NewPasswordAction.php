@@ -5,7 +5,7 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use League\Container\Exception\NotFoundException;
+use yii\web\NotFoundHttpException;
 use rest\common\models\User;
 use rest\common\models\views\User\RecoveryPassword;
 use rest\common\observers\UpdateObserver;
@@ -56,7 +56,7 @@ class NewPasswordAction extends Action
         $params = \Yii::$app->request->getBodyParams();
         $user = User::findByPasswordResetToken($params['resetToken']);
         if ($user === null) {
-            throw new NotFoundException('User has been not found.');
+            throw new NotFoundHttpException('User has been not found.');
         }
 
         /** @var RecoveryPassword $recovery */

@@ -26,13 +26,13 @@ class AccessTokenController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['create', 'options', 'email'],
+                    'except' => ['create', 'options'],
                 ],
                 'access' => [
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['create', 'email'],
+                            'actions' => ['create'],
                             'roles' => ['?'],
                         ],
                     ],
@@ -53,9 +53,6 @@ class AccessTokenController extends Controller
             'options' => [
                 'class' => OptionsAction::class,
             ],
-            'email' => [
-                'class' => EmailAction::class
-            ],
         ];
     }
 
@@ -66,7 +63,6 @@ class AccessTokenController extends Controller
     {
         return [
             'create' => ['POST'],
-            'email' => ['POST'],
         ];
     }
 }
