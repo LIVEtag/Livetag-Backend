@@ -10,7 +10,7 @@ use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
-use yii\filters\RateLimiter;
+use rest\components\filters\RateLimiter;
 use yii\rest\Controller as BaseController;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -56,6 +56,8 @@ class Controller extends BaseController
             ],
             'rateLimiter' => [
                 'class' => RateLimiter::class,
+                'except' => ['options'],
+                //'isActive' => YII_ENV_PROD,
             ],
             'access' => [
                 'class' => AccessControl::class,
