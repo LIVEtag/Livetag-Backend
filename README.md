@@ -1,33 +1,92 @@
 Yii2 base
 =====
 
-Конфигурирование проекта через .env
+General requirements
+-------------------
+PHP 7.1+
+MySQL 5.6+
+Git
+Composer
+Docker - If running via docker
+
+
+Project setup via .env
 -------------------
 
-##### Добавляем конфигурацию в файл .env :
-* Создаем файл .env (или другой файл с суффиксом .env - например .dev.env)
-* Переносим базовый набор настроек из файла .env.example, в файл который Вы создали (!!ВАЖНО переменные которые присутствуют в .env.example являются обязательными для использования и должны присутствовать в .env или должны быть удалены из конфигурационных файлов *.php среды)
-* Для создания новых настроек необходимо использовать шаблон в названии плейсхолдера - {{SOME_KEY}}, вместо которого будет вставлено значение из .env
+### How to add configuration to .env file:
+* Make .env file (or other file with .env suffix - like .dev.env)
+* Move base set of options from .env.example to file you made (!!IMPORTANT variables present in .env.example are required and must be in .env file or have to be removed from *.php environment configuration )
+* To create new configuration option use template in placeholder's name - {{SOME_KEY}}, will be replaced with value from .env file
+* !!!IMPORTANT Do not use quotes in .env file
 ```
     SOME_KEY=<some value>
 ```
+##### Most common .env variables
+```
+    MAIN_DOMAIN= application domain
+    REST_DOMAIN= API domain
+    BACKEND_DOMAIN= admin domain
+    DEPLOY_DOMAIN= domain to deploy remotely 
+    DEPLOY_USER= deploy user when deploy remotely
+    DEPLOY_PORT=deploy port when deploy remotely
+    DEPLOY_KEY_PATH= deploy key when deploy remotely
+    DEPLOY_PATH= deploy path when deploy remotely
+    DB_USERNAME= db username
+    DB_PASSWORD= db password
+    DB_NAME= db name
+    DB_HOST= db host
+    DB_PORT= db post
+    DB_ROOT_PASSWORD= db password when need more permissions (default root username  is root)
+    DB_TEST_HOST= test env host
+    DB_TEST_NAME= test env name
+    DB_TEST_PORT= test env port
+
+```
 
 
-##### Как это работает:
- Скрипт вычитывает конфигурацию из выбранного .env файла
- При нахождении {{SOME_KEY}}, выполняет замену данного плейсхолдера на значение
+### How this works?:
+ Script reads configuration from chosen .env file
+ On finding {{SOME_KEY}}, replacing this placeholder with value
 
-> Все плейсхолдеры которые не удалось заменить на значения, в конце работы скрипта будут показаны.
-> Файл также используется для `docker-compose`
+> All placeholders unable to replace will be shown at the end of work
+> File used for `docker-compose` also
 
-Детали настройки окружения
+Environment configuration details
 -------------------
-[Смотреть тут](dev/README.md)
+[See here](dev/README.md)
 
-Детали по переменным окружения для Gitlab CI
+Environmental variables details for Gitlab CI
 -------------------
-[Смотреть тут](.gitlab-ci/README.md)
+[See here](.gitlab-ci/README.md)
 
-Использование Swagger
+Swagger usage
 -------------------
-[Смотреть тут](swagger-ui/README.md)
+[See here](swagger-ui/README.md)
+
+
+Installation instructions
+-------------------
+
+#### Locally (not recommended)
+
+Clone a project repository
+
+Make a copy of .env.example to .env and fill all the configuration variables
+
+Run `php init --env={env} --overwrite=All` (env - environemnt name, like dev, test, etc.)
+
+Run `composer install`
+
+Run `php yii migrate --no-interactive`
+
+#### Locally via docker
+
+Clone a project repository
+
+Make a copy of .env.example to .env and fill all the configuration variables
+
+Run `docker-compose up`
+
+On demand run `docker login`
+
+
