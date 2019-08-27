@@ -195,14 +195,10 @@ return [
             \yii\validators\IpValidator::class => RestValidators\IpValidator::class,
             \yii\validators\UniqueValidator::class => RestValidators\UniqueValidator::class,
             \yii\validators\ExistValidator::class => RestValidators\ExistValidator::class,
-        ],
-    ],
-    'params' => $params,
-    'container' => [
-        'definitions' => [
             Pagination::class => [
                 'pageSizeParam' => 'perPage',
             ],
         ],
-    ]
+    ],
+    'params' => $params,
 ];
