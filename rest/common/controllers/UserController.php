@@ -14,6 +14,7 @@ use rest\common\controllers\actions\User\CurrentAction;
 use rest\common\controllers\actions\User\NewPasswordAction;
 use rest\common\controllers\actions\User\LogoutAction;
 use rest\components\api\Controller;
+use rest\components\filters\RateLimiter\Rules\RouteRateLimitRule;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -45,7 +46,20 @@ class UserController extends Controller
                             'roles' => ['@'],
                         ],
                     ],
-                ]
+                ],
+                'rateLimiter' => [
+                    'rules' => [
+                        [
+                            'class' => RouteRateLimitRule::class,
+                            'actions' => [
+                                'recovery-password',
+                                'new-password',
+                            ],
+                            'maxCount' => 3,
+                            'interval' => 3600,
+                        ],
+                    ]
+                ],
             ]
         );
     }
