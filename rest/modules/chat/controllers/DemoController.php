@@ -8,6 +8,7 @@ namespace rest\modules\chat\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
@@ -44,6 +45,6 @@ class DemoController extends Controller
 
             return $this->getView()->renderFile($file);
         }
-        throw new \yii\web\NotFoundHttpException();
+        throw new NotFoundHttpException();
     }
 }

@@ -54,7 +54,8 @@ class ErrorHandler extends WebErrorHandler
                 }
             }
         }
-        if (($prev = $exception->getPrevious()) !== null) {
+        $prev = $exception->getPrevious();
+        if ($prev !== null) {
             $array['previous'] = $this->convertExceptionToArray($prev);
         }
 
