@@ -52,8 +52,8 @@ $config = [
                     'attributeNames' => [
                         'email-address',
                     ],
-                    'consumerKey' => '{{LINKEDIN_CLIENT_ID}}',
-                    'consumerSecret' => '{{LINKEDIN_CLIENT_SECRET}}',
+                    'clientId' => '{{LINKEDIN_CLIENT_ID}}',
+                    'clientSecret' => '{{LINKEDIN_CLIENT_SECRET}}',
                 ]
             ],
         ],

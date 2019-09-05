@@ -6,6 +6,8 @@
 
 namespace rest\components\api;
 
+use rest\components\api\exceptions\ThirdPartyParser;
+use rest\components\validation\ErrorList;
 use yii\web\ErrorHandler as WebErrorHandler;
 use yii\base\Exception;
 use yii\base\ErrorException;
@@ -20,7 +22,10 @@ use yii\web\HttpException;
 class ErrorHandler extends WebErrorHandler
 {
     /**
-     * @inheritdoc
+     * Converts an exception into an array.
+     * @param \Exception|\Error|ThirdPartyParser $exception the exception being converted
+     * @return array the array representation of the exception.
+     * @throws \yii\base\InvalidConfigException
      */
     protected function convertExceptionToArray($exception)
     {

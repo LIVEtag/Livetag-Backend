@@ -14,6 +14,8 @@ use yii\web\IdentityInterface;
 
 /**
  * User model
+ *
+ * @property AccessToken $accessToken
  */
 class User extends CommonUser implements IdentityInterface
 {
