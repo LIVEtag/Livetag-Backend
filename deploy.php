@@ -218,7 +218,6 @@ task('tests:php_md', function () use ($testPaths) {
     $params = [
         implode(',', $testPaths),
         'xml '. YII_PROJECT_ROOT .'/dev/etc/phpmd/rules/rules.xml',
-        '--reportfile '. YII_PROJECT_ROOT .'/dev/build/phpmd.xml',
         '--suffixes php',
         '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests',
     ];
@@ -228,7 +227,6 @@ task('tests:php_md', function () use ($testPaths) {
 task('tests:php_cpd', function () use ($testPaths) {
     $params = [
         implode(' ', $testPaths),
-        '--log-pmd '. YII_PROJECT_ROOT .'/dev/build/phpcpd.xml',
         '--min-lines 50',
         '--exclude tests',
     ];
@@ -239,7 +237,6 @@ task('tests:php_cs', function ()  use ($testPaths) {
     $params = [
         '--standard='. YII_PROJECT_ROOT .'/dev/etc/phpcs/standard/ruleset.xml',
         '--report=checkstyle',
-        '--report-file='. YII_PROJECT_ROOT .'/dev/build/phpcs.xml',
         '--extensions=php',
         '-qn',
         implode(' ', $testPaths),

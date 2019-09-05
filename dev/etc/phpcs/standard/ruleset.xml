@@ -26,7 +26,6 @@
         <exclude-pattern>/views/layouts/.*</exclude-pattern>
     </rule>
 
-
     <!-- Lines can be 120 chars long, but never show errors -->
     <rule ref="Generic.Files.LineLength">
         <properties>
