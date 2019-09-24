@@ -47,6 +47,7 @@ Project setup via .env
 ### How this works?:
  Script reads configuration from chosen .env file
  On finding {{SOME_KEY}}, replacing this placeholder with value
+ 
 
 > All placeholders unable to replace will be shown at the end of work
 > File used for `docker-compose` also
@@ -62,6 +63,11 @@ Environmental variables details for Gitlab CI
 Swagger usage
 -------------------
 [See here](swagger-ui/README.md)
+
+GIT Workflow
+-------------------
+[See here](https://wiki.gbksoft.net/git:workflow:prod).
+
 
 
 Installation instructions
@@ -88,5 +94,13 @@ Make a copy of .env.example to .env and fill all the configuration variables
 Run `docker-compose up`
 
 On demand run `docker login`
+
+#### On GitLab
+
+Get access to repository from admin
+
+Copy variables from .env.example to CI/CD -> Settings -> variables
+
+Configure .gitlab-ci.yml file
 
 
