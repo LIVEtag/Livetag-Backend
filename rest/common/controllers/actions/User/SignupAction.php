@@ -3,11 +3,12 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace rest\common\controllers\actions\User;
 
 use rest\common\models\views\User\SignupUser;
 use rest\components\api\actions\Action;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class SignupAction
@@ -25,18 +26,10 @@ class SignupAction extends Action
         $signupUser->userAgent = $this->request->getUserAgent();
         $signupUser->userIp = $this->request->getUserIP();
 
-        $user = $signupUser->signup();
-
-        if ($user === null && !$signupUser->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to create new user.');
-        }
-
-        if ($signupUser->hasErrors()) {
+        if (!$signupUser->validate()) {
             return $signupUser;
         }
 
-        $this->response->setStatusCode(201);
-
-        return $user->accessToken;
+        return $signupUser->signup();
     }
 }

@@ -8,8 +8,8 @@ declare(strict_types=1);
 namespace rest\components\filters\RateLimiter\Rules;
 
 use rest\components\filters\RateLimiter\MatchActionsTrait;
-use rest\components\filters\RateLimiter\RateLimitRestrictionInterface;
-use rest\components\filters\RateLimiter\RateLimitRuleInterface;
+use rest\components\filters\RateLimiter\Interfaces\RateLimitRestrictionInterface;
+use rest\components\filters\RateLimiter\Interfaces\RateLimitRuleInterface;
 use yii\base\Component;
 use yii\base\Action;
 use yii\web\Request;

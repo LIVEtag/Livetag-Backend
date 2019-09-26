@@ -3,9 +3,10 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace rest\common\controllers\actions\User;
 
-use rest\common\models\User;
 use rest\common\models\views\User\ChangePassword;
 use rest\components\api\actions\Action;
 
@@ -19,10 +20,10 @@ class ChangePasswordAction extends Action
      * Load post params to ChangePassword Model
      * @return ChangePassword
      */
-    public function run()
+    public function run(): ChangePassword
     {
         $model = new ChangePassword();
-        $user = User::findOne(\Yii::$app->user->getId());
+        $user = \Yii::$app->user->identity;
         $model->setAttributes(\Yii::$app->request->post());
         $model->changePassword($user);
         return $model;

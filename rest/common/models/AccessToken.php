@@ -143,4 +143,14 @@ class AccessToken extends ActiveRecord
 
         return $hash . $security->generateRandomString(self::TOKEN_LENGTH - strlen($hash));
     }
+
+    /**
+     * Invalidate access token
+     * @inheritdoc
+     */
+    public function invalidate(): void
+    {
+        $this->expiredAt = time();
+        $this->save(false, ['expiredAt']);
+    }
 }

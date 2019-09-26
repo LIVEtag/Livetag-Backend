@@ -5,7 +5,7 @@
  */
 namespace common\components\user;
 
-use rest\common\models\User;
+use common\models\User;
 
 /**
  * Class SearchService

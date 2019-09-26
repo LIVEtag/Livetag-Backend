@@ -1,10 +1,16 @@
 <?php
+/**
+ * Copyright © 2019 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+declare(strict_types=1);
 
 namespace common\models\User;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
-use rest\common\models\User;
+use yii\db\ActiveRecord;
+use common\models\User;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "user_social_profile".
@@ -19,17 +25,19 @@ use rest\common\models\User;
  *
  * @property User $user
  */
-class SocialProfile extends \yii\db\ActiveRecord
+class SocialProfile extends ActiveRecord
 {
-    const TYPE_GOOGLE = 1;
-    const TYPE_LINKEDIN = 2;
-    const TYPE_FACEBOOK = 3;
-    const TYPE_TWITTER = 4;
+    public const TYPE_GOOGLE = 1;
+    public const TYPE_LINKEDIN = 2;
+    public const TYPE_FACEBOOK = 3;
+    public const TYPE_TWITTER = 4;
+
+    private const MAX_STRING_LENGHT = 255;
 
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%user_social_profile}}';
     }
@@ -37,7 +45,7 @@ class SocialProfile extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -51,17 +59,17 @@ class SocialProfile extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['userId', 'type', 'socialId', 'email'], 'required'],
             [['userId', 'type', 'createdAt', 'updatedAt'], 'integer'],
-            [['socialId', 'email'], 'string', 'max' => 255],
+            [['socialId', 'email'], 'string', 'max' => self::MAX_STRING_LENGHT],
             [
                 ['userId'],
                 'exist',
                 'skipOnError' => true,
-                'targetClass' => User::className(),
+                'targetClass' => User::class,
                 'targetAttribute' => ['userId' => 'id']
             ],
         ];
@@ -70,7 +78,7 @@ class SocialProfile extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -84,20 +92,18 @@ class SocialProfile extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
-        return $this->hasOne(User::className(), ['id' => 'userId']);
+        return $this->hasOne(User::class, ['id' => 'userId']);
     }
 
     /**
-     *
-     *
      * @param string $socialId
-     * @return
+     * @return ActiveRecord|null
      */
-    public static function findBySocialId($socialId)
+    public static function findBySocialId($socialId): ?ActiveRecord
     {
         return static::find()
             ->andWhere('socialId = :socialId', ['socialId' => $socialId])

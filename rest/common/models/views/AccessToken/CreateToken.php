@@ -121,18 +121,6 @@ class CreateToken extends Model
             return false;
         }
 
-        $accessToken = AccessToken::find()->findCurrentToken(
-            $this->userAgent,
-            $this->userIp
-        )->andWhere(
-            'userId = :userId',
-            [':userId' => $this->user->id]
-        )->one();
-
-        if ($accessToken !== null) {
-            return $accessToken;
-        }
-
         $accessToken = new AccessToken();
         $accessToken->userId = $this->user->id;
 

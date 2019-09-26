@@ -3,32 +3,23 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace rest\common\controllers\actions\User;
 
-use Yii;
 use rest\components\api\actions\Action;
-use rest\common\models\AccessToken;
 
 /**
  * Class LogoutAction
  */
 class LogoutAction extends Action
 {
-
     /**
      * set current user access token inactive
      */
-    public function run()
+    public function run(): void
     {
-        $accessToken = AccessToken::find()
-            ->findCurrentToken($this->request->getUserAgent(), $this->request->getUserIP())
-            ->andWhere('userId = :userId', [':userId' => Yii::$app->user->id])
-            ->one();
-        if ($accessToken) {
-            $accessToken->expiredAt = time();
-            $accessToken->save(false, ['expiredAt']);
-        }
-
-        Yii::$app->getResponse()->setStatusCode(204);
+        \Yii::$app->user->accessToken->invalidate();
+        \Yii::$app->getResponse()->setStatusCode(204);
     }
 }

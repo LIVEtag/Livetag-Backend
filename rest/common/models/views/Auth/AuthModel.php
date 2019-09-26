@@ -7,12 +7,10 @@ declare(strict_types=1);
 
 namespace rest\common\models\views\Auth;
 
-use common\models\User\SocialProfile;
 use rest\common\models\views\User\SocialForm;
 use rest\common\services\Auth\AuthClientService;
 use rest\components\api\exceptions\AbstractOauthException;
 use rest\components\validation\ErrorList;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\BadRequestHttpException;
@@ -101,10 +99,10 @@ class AuthModel extends Model
     {
         $socialForm = new SocialForm();
         $socialForm->email = $this->attributes['email'];
-        $socialForm->socialType = SocialProfile::TYPE_LINKEDIN;
+        $socialForm->socialType = $this->clientType;
         $socialForm->socialId = $this->attributes['id'];
-        $socialForm->userIp = Yii::$app->request->getUserIP();
-        $socialForm->userAgent = Yii::$app->request->getUserAgent();
+        $socialForm->userIp = \Yii::$app->request->getUserIP();
+        $socialForm->userAgent = \Yii::$app->request->getUserAgent();
 
         return $socialForm;
     }
