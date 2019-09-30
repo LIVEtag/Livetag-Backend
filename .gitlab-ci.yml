@@ -96,6 +96,22 @@ phpcs:
   tags:
     - shared-cli
 
+phpsa:
+  stage: tests
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  script:
+    - echo "===== Run tests ====="
+    - vendor/bin/dep tests:php_sa
+  when: always
+  only:
+    - web
+  dependencies:
+    - build_vendor
+  tags:
+    - shared-cli
+
 codecept:
   stage: tests
   image:
