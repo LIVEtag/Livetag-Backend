@@ -5,7 +5,7 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use rest\common\models\User;
+use common\models\User;
 use rest\common\models\views\User\RecoveryPassword;
 use rest\components\api\actions\Action;
 use yii\web\NotFoundHttpException;

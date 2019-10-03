@@ -5,7 +5,7 @@
  */
 namespace rest\common\models\views\User;
 
-use rest\common\models\User;
+use common\models\User;
 use yii\base\Model;
 
 /**

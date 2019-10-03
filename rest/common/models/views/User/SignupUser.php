@@ -6,7 +6,7 @@
 
 namespace rest\common\models\views\User;
 
-use rest\common\models\User;
+use common\models\User;
 use rest\common\models\views\AccessToken\CreateToken;
 use yii\base\Model;
 
@@ -82,29 +82,34 @@ class SignupUser extends Model
             return null;
         }
 
+        /** @var User $user */
+        $user = $this->createUser();
+        if (!$user) {
+            return null;
+        }
+
+        /** @var CreateToken $accessTokenCreate */
+        $accessTokenCreate = \Yii::createObject([
+            'class' => CreateToken::class,
+            'email' => $this->email,
+            'password' => $this->password,
+            'userAgent' => $this->userAgent,
+            'userIp' => $this->userIp,
+            'isRememberMe' => $this->isRememberMe
+        ]);
+
+        return $accessTokenCreate->create();
+    }
+
+    /**
+     * @return User|null
+     */
+    private function createUser(): ?User
+    {
         $user = new User();
         $user->email = $this->email;
-
-        $signupUser = $this;
-        $user->on(
-            User::EVENT_AFTER_INSERT,
-            function () use ($user, $signupUser) {
-                $accessTokenCreate = \Yii::createObject([
-                    'class' => CreateToken::class,
-                    'email' => $signupUser->email,
-                    'password' => $signupUser->password,
-                    'userAgent' => $signupUser->userAgent,
-                    'userIp' => $signupUser->userIp,
-                    'isRememberMe' => $signupUser->isRememberMe
-                ]);
-
-                $accessTokenCreate->create();
-            }
-        );
-
         $user->setPassword($this->password);
         $user->generateAuthKey();
-
         return $user->save() ? $user : null;
     }
 }

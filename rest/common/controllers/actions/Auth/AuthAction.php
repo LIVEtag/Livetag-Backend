@@ -28,9 +28,9 @@ class AuthAction extends Action
         }
 
         $socialForm = $authModel->createSocialForm();
-        $user = $socialForm->login();
+        $accessToken = $socialForm->login();
 
-        if ($user === null && !$socialForm->hasErrors()) {
+        if ($accessToken === null && !$socialForm->hasErrors()) {
             throw new ServerErrorHttpException('Failed to create new user.');
         }
 
@@ -40,7 +40,7 @@ class AuthAction extends Action
 
         $this->response->setStatusCode(201);
 
-        return $user->accessToken;
+        return $accessToken;
     }
 
     /**
