@@ -127,6 +127,7 @@ codecept:
       - frontend/tests/
       - backend/tests/
       - common/tests/
+      - rest/tests/
     when: on_failure
     expire_in: 2h
   variables:

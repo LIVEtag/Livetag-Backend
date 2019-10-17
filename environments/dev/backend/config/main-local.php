@@ -6,8 +6,8 @@
 
 use yii\debug\Module as DebugModule;
 use yii\gii\generators\crud\Generator;
-use yii\gii\Module as GiiModule;
 use yii\gii\generators\model\Generator as ModelGenerator;
+use yii\gii\Module as GiiModule;
 
 $config = [
     'components' => [
@@ -51,7 +51,7 @@ if (!YII_ENV_TEST) {
                 'templates' => [
                     'php7' => '@backend/generators/model/default',
                 ]
-            ]
+            ],
         ],
     ];
 }

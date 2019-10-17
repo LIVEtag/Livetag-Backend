@@ -7,6 +7,8 @@
 namespace rest\common\models\views\User;
 
 use common\models\User;
+use rest\components\validation\ErrorList;
+use rest\components\validation\ErrorMessage;
 use yii\base\Model;
 use yii\db\Exception;
 
@@ -29,20 +31,9 @@ class ChangePassword extends Model
     {
         return [
             [['password', 'newPassword', 'confirmPassword'], 'required'],
-            ['newPassword', 'validateNewPassword'],
+            ['newPassword', 'compare', 'compareAttribute' => 'confirmPassword'],
             ['newPassword', 'validateSame'],
         ];
-    }
-
-    /**
-     * Validate Users's new password
-     * @param $attribute
-     */
-    public function validateNewPassword($attribute)
-    {
-        if ($this->newPassword != $this->confirmPassword) {
-            $this->addError($attribute, 'Passwords do not match');
-        }
     }
 
     /**
@@ -52,15 +43,21 @@ class ChangePassword extends Model
     public function validateSame($attribute)
     {
         if ($this->newPassword == $this->password) {
-            $this->addError($attribute, 'New password can not be the same as old password');
+            $this->addError(
+                $attribute,
+                (new ErrorMessage(
+                    'New password can not be the same as old password',
+                    ErrorList::SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD
+                ))
+            );
         }
     }
 
     /**
      * Change user password.
      * @param User $user
-     * @throws Exception
      * @return bool|User $user
+     * @throws Exception
      */
     public function changePassword(User $user)
     {
@@ -68,7 +65,10 @@ class ChangePassword extends Model
             return false;
         }
         if (!$user || !$user->validatePassword($this->password)) {
-            $this->addError('password', 'Wrong password');
+            $this->addError(
+                'password',
+                new ErrorMessage('Current password is wrong.', ErrorList::CURRENT_PASSWORD_IS_WRONG)
+            );
             return false;
         }
         $user->setPassword($this->newPassword);

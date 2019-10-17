@@ -7,15 +7,16 @@
 namespace common\fixtures;
 
 use yii\test\ActiveFixture;
-use common\models\User;
+use common\models\AccessToken;
 
 /**
- * Class UserFixture
+ * Class AccessTokenFixture
  */
-class UserFixture extends ActiveFixture
+class AccessTokenFixture extends ActiveFixture
 {
     public const USER = 1;
     public const DELETED = 2;
 
-    public $modelClass = User::class;
+    public $modelClass = AccessToken::class;
+    public $depends = [UserFixture::class];
 }
