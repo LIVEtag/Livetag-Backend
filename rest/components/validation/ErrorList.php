@@ -74,6 +74,8 @@ class ErrorList implements ErrorListInterface
     public const CAPTCHA_INVALID = 1140;
     public const CREDENTIALS_INVALID = 1200;
     public const ENTITY_BLOCKED = 1210;
+    public const CURRENT_PASSWORD_IS_WRONG = 1220;
+    public const SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD = 1230;
 
     public const THIRD_PARTY_NOT_DOCUMENTED_ERROR = 3000;
 
@@ -159,6 +161,8 @@ class ErrorList implements ErrorListInterface
         self::CAPTCHA_INVALID => 'Wrong captcha provided.',
         self::CREDENTIALS_INVALID => 'Incorrect email address and/or password',
         self::ENTITY_BLOCKED => '{entity} is blocked',
+        self::CURRENT_PASSWORD_IS_WRONG => 'Current password is wrong.',
+        self::SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD => 'New password can not be the same as old password',
 
         self::THIRD_PARTY_NOT_DOCUMENTED_ERROR => 'Not documented error.',
 

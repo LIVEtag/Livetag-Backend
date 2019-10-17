@@ -58,7 +58,8 @@ class UserController extends Controller
                             'maxCount' => 3,
                             'interval' => 3600,
                         ],
-                    ]
+                    ],
+                    'isActive' => YII_ENV_PROD
                 ],
             ]
         );

@@ -3,7 +3,7 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace rest\common\models;
 
@@ -55,6 +55,7 @@ class User extends BaseUser
      * @param string $token
      * @param null $type
      * @return IdentityInterface|null
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function loginByAccessToken($token, $type = null)
     {

@@ -3,11 +3,12 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
-$resetLink = Yii::$app->params['projectDomain'] . $user->passwordResetToken;
+$resetLink = Yii::$app->params['projectDomain'] . '/reset-password/' . $user->passwordResetToken;
 ?>
 <div class="password-reset">
     <p>Hello <?= Html::encode($user->email) ?>,</p>

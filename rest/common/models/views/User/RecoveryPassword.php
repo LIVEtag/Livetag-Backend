@@ -35,7 +35,7 @@ class RecoveryPassword extends Model
     {
         return [
             [['resetToken', 'password', 'confirmPassword'], 'required'],
-            ['password', 'compare', 'compareAttribute' => 'confirmPassword', 'message' => 'Passwords do not match.']
+            ['password', 'compare', 'compareAttribute' => 'confirmPassword']
         ];
     }
 
@@ -73,10 +73,10 @@ class RecoveryPassword extends Model
     {
         if ($this->validate()) {
             $user->setPassword($this->password);
+            $user->removePasswordResetToken();
         } else {
             $this->addError('resetToken', 'Token or password is invalid.');
         }
-        $user->removePasswordResetToken();
         $user->save();
 
         return $this;

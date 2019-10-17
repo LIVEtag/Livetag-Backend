@@ -219,7 +219,7 @@ task('tests:php_md', function () use ($testPaths) {
         implode(',', $testPaths),
         'xml '. YII_PROJECT_ROOT .'/dev/etc/phpmd/rules/rules.xml',
         '--suffixes php',
-        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests',
+        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests,rest/tests/_support',
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpmd ' . implode(' ', $params));
 })->desc('PHP MD static tests');
