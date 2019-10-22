@@ -104,3 +104,16 @@ Copy variables from .env.example to CI/CD -> Settings -> variables
 Configure .gitlab-ci.yml file
 
 
+###### Functional branches
+
+**develop** - main development branch
+
+**login-by-phone** - User includes phone with ability to sign in/sign up with it
+
+**login-by-username** - User includes username with ability to sign in with it
+
+**centrifugo** - Connect centrifugo service to project with basic chat implementation
+
+**confirm-email** - Add basic functionallity of email confirmation
+
+
