@@ -116,4 +116,4 @@ Configure .gitlab-ci.yml file
 
 **confirm-email** - Add basic functionallity of email confirmation
 
-
+**ext-filestorage** - File storage based on S3 with optional image resize class
