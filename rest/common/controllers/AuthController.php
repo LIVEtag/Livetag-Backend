@@ -6,11 +6,8 @@
 
 namespace rest\common\controllers;
 
-use rest\common\controllers\actions\Auth\FacebookAction;
-use rest\common\controllers\actions\Auth\GoogleAction;
-use rest\common\controllers\actions\Auth\LinkedinAction;
+use rest\common\controllers\actions\Auth\AuthAction;
 use rest\common\controllers\actions\Auth\OptionsAction;
-use rest\common\controllers\actions\Auth\TwitterAction;
 use rest\components\api\Controller;
 use yii\filters\auth\HttpBearerAuth;
 use yii\helpers\ArrayHelper;
@@ -29,19 +26,13 @@ class AuthController extends Controller
             'authenticator' => [
                 'class' => HttpBearerAuth::class,
                 'except' => [
-                    'facebook',
-                    'linkedin',
-                    'google',
-                    'twitter',
+                    'auth',
                     'options'
                 ],
             ],
             'access' => [
                 'except' => [
-                    'facebook',
-                    'linkedin',
-                    'google',
-                    'twitter',
+                    'auth',
                     'options'
                 ],
             ],
@@ -54,17 +45,8 @@ class AuthController extends Controller
     public function actions()
     {
         return [
-            'facebook' => [
-                'class' => FacebookAction::class,
-            ],
-            'linkedin' => [
-                'class' => LinkedinAction::class,
-            ],
-            'google' => [
-                'class' => GoogleAction::class,
-            ],
-            'twitter' => [
-                'class' => TwitterAction::class
+            'auth' => [
+                'class' => AuthAction::class,
             ],
             'options' => [
                 'class' => OptionsAction::class,
@@ -78,10 +60,7 @@ class AuthController extends Controller
     protected function verbs()
     {
         return [
-            'facebook' => ['POST'],
-            'linkedin' => ['POST'],
-            'google' => ['POST'],
-            'twitter' => ['POST'],
+            'auth' => ['POST'],
             'options' => ['OPTIONS'],
         ];
     }

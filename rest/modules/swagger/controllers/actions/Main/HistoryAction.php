@@ -25,6 +25,7 @@ class HistoryAction extends Action
      */
     public function run($hash = null)
     {
+        //phpcs:disable PHPCS_SecurityAudit.BadFunctions.SystemExecFunctions
         \Yii::$app->response->format = Response::FORMAT_HTML;
         $builder = new CommandBuilder();
         $pathToJson = \Yii::getAlias('@swagger') . '/config/swagger.json';

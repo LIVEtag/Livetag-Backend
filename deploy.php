@@ -218,9 +218,8 @@ task('tests:php_md', function () use ($testPaths) {
     $params = [
         implode(',', $testPaths),
         'xml '. YII_PROJECT_ROOT .'/dev/etc/phpmd/rules/rules.xml',
-        '--reportfile '. YII_PROJECT_ROOT .'/dev/build/phpmd.xml',
         '--suffixes php',
-        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests',
+        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests,rest/tests/_support',
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpmd ' . implode(' ', $params));
 })->desc('PHP MD static tests');
@@ -228,7 +227,6 @@ task('tests:php_md', function () use ($testPaths) {
 task('tests:php_cpd', function () use ($testPaths) {
     $params = [
         implode(' ', $testPaths),
-        '--log-pmd '. YII_PROJECT_ROOT .'/dev/build/phpcpd.xml',
         '--min-lines 50',
         '--exclude tests',
     ];
@@ -239,7 +237,6 @@ task('tests:php_cs', function ()  use ($testPaths) {
     $params = [
         '--standard='. YII_PROJECT_ROOT .'/dev/etc/phpcs/standard/ruleset.xml',
         '--report=checkstyle',
-        '--report-file='. YII_PROJECT_ROOT .'/dev/build/phpcs.xml',
         '--extensions=php',
         '-qn',
         implode(' ', $testPaths),
@@ -247,10 +244,32 @@ task('tests:php_cs', function ()  use ($testPaths) {
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
 })->desc('PHP CS static tests');
 
+task('tests:php_sa', function ()  use ($testPaths) {
+    // solution until PHPCS_SecurityAudit rule exclude-pattern will be fixed
+    // https://github.com/FloeDesignTechnologies/phpcs-security-audit/issues/45
+    run('if [ ! -d "'.
+        YII_PROJECT_ROOT .'/vendor/squizlabs/php_codesniffer/src/Standards/PHPCS_SecurityAudit" ]; then
+        if [ -d "'. YII_PROJECT_ROOT .'/vendor/pheromone" ]; then
+            ln -s '. YII_PROJECT_ROOT .'/vendor/pheromone/phpcs-security-audit/Security '
+        . YII_PROJECT_ROOT .'/vendor/squizlabs/php_codesniffer/src/Standards/PHPCS_SecurityAudit
+        fi
+    fi
+    ');
+
+    $params = [
+        '--standard='. YII_PROJECT_ROOT .'/dev/etc/phpcs/standard/security.xml',
+        '--extensions=php',
+        implode(' ', $testPaths),
+    ];
+    run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
+})->desc('PHP CS security audit tests');
+
+
 task('tests', function() {
     invoke('tests:php_md');
     invoke('tests:php_cpd');
     invoke('tests:php_cs');
+    invoke('tests:php_sa');
 });
 
 task('deploy', function () {

@@ -74,6 +74,25 @@ class ErrorList implements ErrorListInterface
     public const CAPTCHA_INVALID = 1140;
     public const CREDENTIALS_INVALID = 1200;
     public const ENTITY_BLOCKED = 1210;
+    public const CURRENT_PASSWORD_IS_WRONG = 1220;
+    public const SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD = 1230;
+
+    public const THIRD_PARTY_NOT_DOCUMENTED_ERROR = 3000;
+
+    //facebook oauth error
+    public const FACEBOOK_INVALID_APP_SECRET = 3101;
+    public const FACEBOOK_ERROR_TOKEN_VALIDATION = 3102;
+    public const FACEBOOK_INVALID_OAUTH_TOKEN = 3103;
+    public const FACEBOOK_MALFORMED_ACCESS_TOKEN = 3104;
+
+    //linkedin oauth error
+    public const LINKEDIN_INVALID_OAUTH_TOKEN = 3203;
+
+    //google oauth error
+    public const GOOGLE_INVALID_OAUTH_TOKEN = 3303;
+
+    //twitter oauth error
+    public const TWITTER_INVALID_OAUTH_TOKEN = 3403;
 
     protected const ERRORS = [
         self::EMAIL_INVALID => '{attr} is not a valid email address.',
@@ -142,6 +161,21 @@ class ErrorList implements ErrorListInterface
         self::CAPTCHA_INVALID => 'Wrong captcha provided.',
         self::CREDENTIALS_INVALID => 'Incorrect email address and/or password',
         self::ENTITY_BLOCKED => '{entity} is blocked',
+        self::CURRENT_PASSWORD_IS_WRONG => 'Current password is wrong.',
+        self::SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD => 'New password can not be the same as old password',
+
+        self::THIRD_PARTY_NOT_DOCUMENTED_ERROR => 'Not documented error.',
+
+        self::FACEBOOK_MALFORMED_ACCESS_TOKEN => 'Malformed access token.',
+        self::FACEBOOK_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
+        self::FACEBOOK_INVALID_APP_SECRET => 'Invalid appsecret_proof provided in the API argument.',
+        self::FACEBOOK_ERROR_TOKEN_VALIDATION => 'Error validating access token: Session has expired.',
+
+        self::LINKEDIN_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
+
+        self::GOOGLE_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
+
+        self::TWITTER_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
     ];
 
     /**

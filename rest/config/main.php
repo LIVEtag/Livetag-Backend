@@ -4,13 +4,15 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-use rest\common\models\User;
+
+use common\models\User;
 use rest\components\api\UrlRule;
 use rest\components\api\ErrorHandler;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
 use rest\modules\chat\Module as ChatModule;
 use rest\components\validation\validators as RestValidators;
+use rest\common\models\User as RestUser;
 use rest\modules\chat\controllers\ChannelController;
 use yii\data\Pagination;
 use yii\log\FileTarget;
@@ -41,6 +43,7 @@ return [
     ],
     'components' => [
         'user' => [
+            'class' => RestUser::class,
             'identityClass' => User::class,
             'enableSession' => false,
         ],
@@ -89,14 +92,8 @@ return [
                         'v1/user' => 'v1/auth',
                     ],
                     'extraPatterns' => [
-                        'POST login/facebook' => 'facebook',
-                        'POST login/linkedin' => 'linkedin',
-                        'POST login/google' => 'google',
-                        'POST login/twitter' => 'twitter',
-                        'OPTIONS login/facebook' => 'options',
-                        'OPTIONS login/linkedin' => 'options',
-                        'OPTIONS login/google' => 'options',
-                        'OPTIONS login/twitter' => 'options',
+                        'POST login/<type:\w+>' => 'auth',
+                        'OPTIONS login/<type:\w+>' => 'options',
                     ],
                     'pluralize' => false,
                 ],

@@ -9,6 +9,7 @@
     <exclude-pattern>common/tests/</exclude-pattern>
     <exclude-pattern>common/fixtures/</exclude-pattern>
     <exclude-pattern>backend/tests/</exclude-pattern>
+    <exclude-pattern>backend/generators/</exclude-pattern>
     <exclude-pattern>common/Yii.php</exclude-pattern>
     <exclude-pattern>bootstrap.php</exclude-pattern>
     <exclude-pattern>common/components/rbac/rules.php</exclude-pattern>
@@ -23,14 +24,6 @@
     <rule ref="PSR2.Files.ClosingTag">
         <exclude-pattern>/views/.*</exclude-pattern>
         <exclude-pattern>/views/layouts/.*</exclude-pattern>
-    </rule>
-
-    <rule ref="PSR2">
-        <exclude name="PSR2.ControlStructures.ElseIfDeclaration"/>
-    </rule>
-
-    <rule ref="Squiz.ControlStructures.ElseIfDeclaration">
-        <severity>0</severity>
     </rule>
 
     <!-- Lines can be 120 chars long, but never show errors -->

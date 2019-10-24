@@ -1,5 +1,4 @@
 <?php
-
 use common\models\User;
 use yii\log\FileTarget;
 

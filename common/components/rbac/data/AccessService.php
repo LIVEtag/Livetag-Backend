@@ -86,7 +86,6 @@ class AccessService extends Component
         if (is_file($this->itemFile)) {
             return require $this->itemFile;
         }
-
         return [];
     }
 }

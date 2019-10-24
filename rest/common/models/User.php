@@ -3,64 +3,32 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace rest\common\models;
 
-use common\models\User as CommonUser;
-use rest\common\models\queries\User\AccessTokenQuery;
+use yii\web\User as BaseUser;
 use rest\common\models\queries\User\UserQuery;
 use yii\web\IdentityInterface;
+use rest\common\services\AccessToken\AccessTokenSearchService;
+use rest\common\models\views\AccessToken\AccessTokenInterface;
 
 /**
  * User model
+ *
+ * @property AccessToken $accessToken
  */
-class User extends CommonUser implements IdentityInterface
+class User extends BaseUser
 {
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function fields(): array
     {
-        /** @var $accessToken AccessToken */
-        $accessToken = AccessToken::find()->findCurrentToken(
-            \Yii::$app->request->getUserAgent(),
-            \Yii::$app->request->getUserIP()
-        )->andWhere(
-            [
-                'and',
-                'token = :token',
-            ],
-            [
-                ':token' => $token,
-            ]
-        )->one();
-
-        if ($accessToken !== null) {
-            return $accessToken->getUser()
-                ->andWhere('status = :status', [':status' => self::STATUS_ACTIVE])
-                ->one();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return null|AccessTokenQuery
-     */
-    public function getAccessToken()
-    {
-        return $this->hasOne(AccessToken::class, ['userId' => 'id'])
-            ->where('expiredAt > :expiredAt', [':expiredAt' => time()]);
-    }
-
-    /**
-     * @return null|AccessTokenQuery
-     */
-    public function getAccessTokens()
-    {
-        return $this->hasMany(AccessToken::class, ['userId' => 'id'])
-            ->where('expiredAt > :expiredAt', [':expiredAt' => time()]);
+        return [
+            'id',
+            'email',
+        ];
     }
 
     /**
@@ -72,14 +40,38 @@ class User extends CommonUser implements IdentityInterface
         return \Yii::createObject(UserQuery::class, [get_called_class()]);
     }
 
+    /** @var AccessTokenInterface */
+    protected $accessToken;
+
     /**
-     * @inheritdoc
+     * @return AccessToken
      */
-    public function fields(): array
+    public function getAccessToken(): AccessToken
     {
-        return [
-            'id',
-            'email',
-        ];
+        return $this->accessToken;
+    }
+
+    /**
+     * @param string $token
+     * @param null $type
+     * @return IdentityInterface|null
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function loginByAccessToken($token, $type = null)
+    {
+        $accessToken = AccessToken::find()
+            ->byToken($token)
+            ->valid()
+            ->one();
+        if ($accessToken) {
+            $this->accessToken = $accessToken;
+            /* @var $class IdentityInterface */
+            $class = $this->identityClass;
+            $identity = $class::findIdentity($accessToken->userId);
+            if ($identity && $this->login($identity)) {
+                return $identity;
+            }
+        }
+        return null;
     }
 }

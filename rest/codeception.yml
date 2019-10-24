@@ -1,0 +1,32 @@
+namespace: rest\tests
+actor_suffix: Tester
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
+coverage:
+    enabled: true
+    remote: false
+    work_dir: /var/www/html
+    include:
+    - modules/*
+    - components/*
+    - listeners/*
+    exclude:
+    - config/*
+    - runtime/*
+    - web/*
+    - tests/*
+params:
+    - env # load params from environment vars
+modules:
+    config:
+        Yii2:
+            configFile: 'config/codeception-local.php'
+            cleanup: false
+            transaction: true

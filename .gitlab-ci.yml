@@ -17,7 +17,6 @@ before_script:
 stages:
   - build
   - tests
-  - artifacts
   - dev
   - test
   - live
@@ -34,7 +33,7 @@ build_vendor:
 #      - /design/node_modules/
 #      - design/dist/
     when: on_success
-    expire_in: 2h
+    expire_in: 2 days
   cache:
     key: vendors-lib
     paths:
@@ -54,12 +53,6 @@ phpmd:
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
-  artifacts:
-    untracked: true
-    paths:
-      - dev/build/
-    when: on_failure
-    expire_in: 2h
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_md
@@ -76,12 +69,6 @@ phpcpd:
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
-  artifacts:
-    untracked: true
-    paths:
-      - dev/build/
-    when: on_failure
-    expire_in: 2h
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cpd
@@ -98,15 +85,25 @@ phpcs:
   image:
     name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
     entrypoint: [""]
-  artifacts:
-    untracked: true
-    paths:
-      - dev/build/
-    when: on_failure
-    expire_in: 2h
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cs
+  when: always
+  only:
+    - web
+  dependencies:
+    - build_vendor
+  tags:
+    - shared-cli
+
+phpsa:
+  stage: tests
+  image:
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    entrypoint: [""]
+  script:
+    - echo "===== Run tests ====="
+    - vendor/bin/dep tests:php_sa
   when: always
   only:
     - web
@@ -130,6 +127,7 @@ codecept:
       - frontend/tests/
       - backend/tests/
       - common/tests/
+      - rest/tests/
     when: on_failure
     expire_in: 2h
   variables:
@@ -157,27 +155,6 @@ codecept:
     - build_vendor
   tags:
     - shared-web
-
-artifacts:
-  stage: artifacts
-  artifacts:
-    untracked: true
-    paths:
-    - dev/build/
-    expire_in: 1 week
-  only:
-    - web
-  script:
-    - echo "===== Collect artifacts data ====="
-    - rm -rf vendor
-  when: always
-  dependencies:
-    - phpmd
-    - phpcpd
-    - phpcs
-    - codecept
-  tags:
-    - shared-cli
 
 dev:review:
   stage: dev

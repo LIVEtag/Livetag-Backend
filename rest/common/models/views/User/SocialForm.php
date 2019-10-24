@@ -3,11 +3,13 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace rest\common\models\views\User;
 
 use common\models\User\SocialProfile;
 use rest\common\models\AccessToken;
-use rest\common\models\User;
+use common\models\User;
 use yii\base\Model;
 
 /**
@@ -15,6 +17,9 @@ use yii\base\Model;
  */
 class SocialForm extends Model
 {
+    private const IP_LENGHT = 46;
+    private const EMAIL_LENGHT = 255;
+
     /**
      * @var User
      */
@@ -48,18 +53,17 @@ class SocialForm extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['userIp'], 'string', 'max' => 46],
+            [['userIp'], 'string', 'max' => self::IP_LENGHT],
             [['userAgent', 'socialId',], 'string'],
             [['socialType'], 'integer'],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'string', 'max' => 255],
+            ['email', 'string', 'max' => self::EMAIL_LENGHT],
             ['email', 'signupUser'],
         ];
     }
@@ -67,7 +71,7 @@ class SocialForm extends Model
     /**
      * Sing up user
      */
-    public function signupUser()
+    public function signupUser(): void
     {
         if ($this->hasErrors()) {
             return;
@@ -119,7 +123,8 @@ class SocialForm extends Model
                 }
             }
 
-            if (!$this->createAcessToken($this->user)) {
+            $accessToken = $this->createAcessToken($this->user);
+            if (!$accessToken) {
                 throw new \RuntimeException('Cannot create aceess token');
             }
 
@@ -129,33 +134,25 @@ class SocialForm extends Model
             $this->addError('user', $exception->getMessage());
         }
 
-        return $this->user;
+        return $accessToken ?? null;
     }
 
     /**
      * @param User $user
-     * @return bool
+     * @return bool|AccessToken
      */
     private function createAcessToken(User $user)
     {
-        $accessToken = AccessToken::find()->findCurrentToken(
-            $this->userAgent,
-            $this->userIp
-        )->andWhere(
-            'userId = :userId',
-            [':userId' => $user->id]
-        )->one();
-
-        if ($accessToken !== null) {
-            return true;
-        }
-
         $accessToken = new AccessToken();
         $accessToken->userId = $user->id;
         $accessToken->generateToken(AccessToken::NOT_REMEMBER_ME_TIME);
         $accessToken->userIp = $this->userIp;
         $accessToken->userAgent = $this->userAgent;
 
-        return $accessToken->save();
+        if ($accessToken->save()) {
+            return $accessToken;
+        }
+
+        return false;
     }
 }

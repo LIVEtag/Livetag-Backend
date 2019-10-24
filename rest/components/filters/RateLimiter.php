@@ -13,6 +13,7 @@ use yii\caching\CacheInterface;
 use rest\components\filters\RateLimiter\Interfaces\RateLimitRuleInterface;
 use rest\components\filters\RateLimiter\Interfaces\RateLimitRestrictionInterface;
 use rest\components\filters\RateLimiter\RateLimitAllowance;
+use InvalidArgumentException;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\User as WebUser;
@@ -69,7 +70,7 @@ class RateLimiter extends ActionFilter
                 $rule = Yii::createObject($rule);
             }
             if (!($rule instanceof RateLimitRuleInterface)) {
-                throw new \InvalidArgumentException('Invalid rule configuration');
+                throw new InvalidArgumentException('Invalid rule configuration');
             }
         }
     }
@@ -170,7 +171,8 @@ class RateLimiter extends ActionFilter
         array $identity,
         RateLimitRestrictionInterface $restriction
     ): RateLimitAllowance {
-        if (($data = $this->cache->get($identity)) === false) {
+        $data = $this->cache->get($identity);
+        if ($data === false) {
             $rateLimitAllowance = new RateLimitAllowance([
                 'quantity' => $restriction->getMaxCount(),
                 'timestamp' => time()
