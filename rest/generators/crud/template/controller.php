@@ -33,7 +33,6 @@ echo "<?php\n";
 
 namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
 
-use Yii;
 use yii\helpers\ArrayHelper;
 use <?=$generator->modelClass?>;
 use rest\components\api\ActiveController;
