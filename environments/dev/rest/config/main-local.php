@@ -11,6 +11,7 @@ use yii\authclient\clients\Twitter;
 use yii\authclient\Collection;
 use yii\debug\Module as DebugModule;
 use yii\gii\Module as GiiModule;
+use rest\generators\crud\Generator;
 
 $config = [
     'components' => [
@@ -72,6 +73,15 @@ if (!YII_ENV_TEST) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => GiiModule::class,
+        'allowedIPs' => ['*'],
+        'generators' => [
+            'restcrud' => [
+                'class' =>  Generator::class,
+                'templates' => [
+                    'default' => '@rest/generators/crud/template',
+                ]
+            ]
+        ],
     ];
 }
 
