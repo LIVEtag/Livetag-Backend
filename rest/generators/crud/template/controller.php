@@ -1,25 +1,26 @@
 <?php
 
 use yii\helpers\StringHelper;
+use rest\components\api\ActiveController;
 
 /* @var $this yii\web\View */
 /* @var $generator \rest\generators\crud\Generator */
 
-$authenticator = $generator->actionUpdate && $generator->actionUpdateAuthenticatorExcept ? '\'update\',' :'';
-$authenticator .= $generator->actionIndex && $generator->actionIndexAuthenticatorExcept ? '\'index\',' :'';
-$authenticator .= $generator->actionView && $generator->actionViewAuthenticatorExcept ? '\'view\',' :'';
-$authenticator .= $generator->actionCreate && $generator->actionCreateAuthenticatorExcept ? '\'create\',' :'';
-$authenticator .= $generator->actionDelete &&  $generator->actionDeleteAuthenticatorExcept ? '\'delete\',' :'';
+$authenticator = $generator->actionUpdate && $generator->actionUpdateAuthenticatorExcept ? '\''.ActiveController::ACTION_UPDATE.'\',' :'';
+$authenticator .= $generator->actionIndex && $generator->actionIndexAuthenticatorExcept ? '\''.ActiveController::ACTION_INDEX.'\',' :'';
+$authenticator .= $generator->actionView && $generator->actionViewAuthenticatorExcept ? '\''.ActiveController::ACTION_VIEW.'\',' :'';
+$authenticator .= $generator->actionCreate && $generator->actionCreateAuthenticatorExcept ? '\''.ActiveController::ACTION_CREATE.'\',' :'';
+$authenticator .= $generator->actionDelete &&  $generator->actionDeleteAuthenticatorExcept ? '\''.ActiveController::ACTION_DELETE.'\',' :'';
 $authenticator = trim($authenticator,',');
 
 $rulesMap = [];
 foreach ($generator->getRulesList() as $keyRule => $rule){
 
-    $rulesMap[$rule] = $generator->actionIndex && $keyRule === $generator->actionIndexRules ? '\'index\',' :'';
-    $rulesMap[$rule] .= $generator->actionView && $keyRule === $generator->actionViewRules ? '\'view\',' :'';
-    $rulesMap[$rule] .= $generator->actionUpdate && $keyRule === $generator->actionUpdateRules ? '\'update\',' :'';
-    $rulesMap[$rule] .= $generator->actionDelete && $keyRule === $generator->actionDeleteRules ? '\'delete\',' :'';
-    $rulesMap[$rule] .= $generator->actionCreate && $keyRule === $generator->actionCreateRules ? '\'create\',' :'';
+    $rulesMap[$rule] = $generator->actionIndex && $keyRule === $generator->actionIndexRules ? '\''.ActiveController::ACTION_INDEX.'\',' :'';
+    $rulesMap[$rule] .= $generator->actionView && $keyRule === $generator->actionViewRules ? '\''.ActiveController::ACTION_VIEW.'\',' :'';
+    $rulesMap[$rule] .= $generator->actionUpdate && $keyRule === $generator->actionUpdateRules ? '\''.ActiveController::ACTION_UPDATE.'\',' :'';
+    $rulesMap[$rule] .= $generator->actionDelete && $keyRule === $generator->actionDeleteRules ? '\''.ActiveController::ACTION_DELETE.'\',' :'';
+    $rulesMap[$rule] .= $generator->actionCreate && $keyRule === $generator->actionCreateRules ? '\''.ActiveController::ACTION_CREATE.'\',' :'';
     $rulesMap[$rule] = trim($rulesMap[$rule],',');
 
 }
