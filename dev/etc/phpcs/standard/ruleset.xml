@@ -10,6 +10,7 @@
     <exclude-pattern>common/fixtures/</exclude-pattern>
     <exclude-pattern>backend/tests/</exclude-pattern>
     <exclude-pattern>backend/generators/</exclude-pattern>
+    <exclude-pattern>rest/generators/</exclude-pattern>
     <exclude-pattern>common/Yii.php</exclude-pattern>
     <exclude-pattern>bootstrap.php</exclude-pattern>
     <exclude-pattern>common/components/rbac/rules.php</exclude-pattern>

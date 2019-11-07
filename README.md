@@ -47,6 +47,7 @@ Project setup via .env
 ### How this works?:
  Script reads configuration from chosen .env file
  On finding {{SOME_KEY}}, replacing this placeholder with value
+ 
 
 > All placeholders unable to replace will be shown at the end of work
 > File used for `docker-compose` also
@@ -62,6 +63,11 @@ Environmental variables details for Gitlab CI
 Swagger usage
 -------------------
 [See here](swagger-ui/README.md)
+
+GIT Workflow
+-------------------
+[See here](https://wiki.gbksoft.net/git:workflow:prod).
+
 
 
 Installation instructions
@@ -89,4 +95,25 @@ Run `docker-compose up`
 
 On demand run `docker login`
 
+#### On GitLab
 
+Get access to repository from admin
+
+Copy variables from .env.example to CI/CD -> Settings -> variables
+
+Configure .gitlab-ci.yml file
+
+
+###### Functional branches
+
+**develop** - main development branch
+
+**login-by-phone** - User includes phone with ability to sign in/sign up with it
+
+**login-by-username** - User includes username with ability to sign in with it
+
+**centrifugo** - Connect centrifugo service to project with basic chat implementation
+
+**confirm-email** - Add basic functionallity of email confirmation
+
+**ext-filestorage** - File storage based on S3 with optional image resize class
