@@ -6,21 +6,30 @@ use rest\components\api\ActiveController;
 /* @var $this yii\web\View */
 /* @var $generator \rest\generators\crud\Generator */
 
-$authenticator = $generator->actionUpdate && $generator->actionUpdateAuthenticatorExcept ? '\''.ActiveController::ACTION_UPDATE.'\',' :'';
-$authenticator .= $generator->actionIndex && $generator->actionIndexAuthenticatorExcept ? '\''.ActiveController::ACTION_INDEX.'\',' :'';
-$authenticator .= $generator->actionView && $generator->actionViewAuthenticatorExcept ? '\''.ActiveController::ACTION_VIEW.'\',' :'';
-$authenticator .= $generator->actionCreate && $generator->actionCreateAuthenticatorExcept ? '\''.ActiveController::ACTION_CREATE.'\',' :'';
-$authenticator .= $generator->actionDelete &&  $generator->actionDeleteAuthenticatorExcept ? '\''.ActiveController::ACTION_DELETE.'\',' :'';
-$authenticator = trim($authenticator,',');
+/**
+ * @param $action
+ * @param int $tab
+ * @return string
+ */
+$behaviorsAction = function ($action,$tab = 11){
+    return PHP_EOL.str_repeat(" ",$tab * 4).$action.',';
+};
+
+$authenticator = $generator->actionIndex && $generator->actionIndexAuthenticatorExcept ? $behaviorsAction('self::ACTION_INDEX',9) :'';
+$authenticator .= $generator->actionUpdate && $generator->actionUpdateAuthenticatorExcept ? $behaviorsAction('self::ACTION_UPDATE',9) :'';
+$authenticator .= $generator->actionView && $generator->actionViewAuthenticatorExcept ? $behaviorsAction('self::ACTION_VIEW',9) :'';
+$authenticator .= $generator->actionCreate && $generator->actionCreateAuthenticatorExcept ? $behaviorsAction('self::ACTION_CREATE',9) :'';
+$authenticator .= $generator->actionDelete &&  $generator->actionDeleteAuthenticatorExcept ? $behaviorsAction('self::ACTION_DELETE',9) :'';
+$authenticator = trim($authenticator,",");
 
 $rulesMap = [];
 foreach ($generator->getRulesList() as $keyRule => $rule){
 
-    $rulesMap[$rule] = $generator->actionIndex && $keyRule === $generator->actionIndexRules ? '\''.ActiveController::ACTION_INDEX.'\',' :'';
-    $rulesMap[$rule] .= $generator->actionView && $keyRule === $generator->actionViewRules ? '\''.ActiveController::ACTION_VIEW.'\',' :'';
-    $rulesMap[$rule] .= $generator->actionUpdate && $keyRule === $generator->actionUpdateRules ? '\''.ActiveController::ACTION_UPDATE.'\',' :'';
-    $rulesMap[$rule] .= $generator->actionDelete && $keyRule === $generator->actionDeleteRules ? '\''.ActiveController::ACTION_DELETE.'\',' :'';
-    $rulesMap[$rule] .= $generator->actionCreate && $keyRule === $generator->actionCreateRules ? '\''.ActiveController::ACTION_CREATE.'\',' :'';
+    $rulesMap[$rule] = $generator->actionIndex && $keyRule === $generator->actionIndexRules ? $behaviorsAction('self::ACTION_INDEX') :'';
+    $rulesMap[$rule] .= $generator->actionView && $keyRule === $generator->actionViewRules ? $behaviorsAction('self::ACTION_VIEW') :'';
+    $rulesMap[$rule] .= $generator->actionUpdate && $keyRule === $generator->actionUpdateRules ? $behaviorsAction('self::ACTION_UPDATE') :'';
+    $rulesMap[$rule] .= $generator->actionCreate && $keyRule === $generator->actionCreateRules ? $behaviorsAction('self::ACTION_CREATE') :'';
+    $rulesMap[$rule] .= $generator->actionDelete && $keyRule === $generator->actionDeleteRules ? $behaviorsAction('self::ACTION_DELETE') :'';
     $rulesMap[$rule] = trim($rulesMap[$rule],',');
 
 }
@@ -57,7 +66,9 @@ class <?= $generator::getClassName($generator->controllerClass)?> extends Active
                 <?php if($authenticator !== ''):?>
 
                 'authenticator' => [
-                    'except' => [<?=$authenticator?>],
+                    'except' => [<?=$authenticator?>
+
+                                ],
                 ],
                 <?php endif;?>
 
@@ -68,7 +79,9 @@ class <?= $generator::getClassName($generator->controllerClass)?> extends Active
 
                         [
                             'allow' => true,
-                            'actions' => [<?=$action?>],
+                            'actions' => [<?=$action?>
+
+                                          ],
                             'roles' => ['<?=$role?>']
                         ],
                         <?php endif;?>
