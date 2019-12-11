@@ -291,3 +291,22 @@ task('deploy', function () {
 });
 
 after('deploy', 'common:unlink');
+
+$gitlabOptions = [
+    'db_ip' => 'IP of mysql',
+    'token' => 'Gitlab private token',
+    'var_name' => 'Variable Name',
+    'project' => 'Gitlab project ID'
+];
+
+foreach ($gitlabOptions as $optionKey => $option) {
+    option($optionKey, null, InputOption::VALUE_REQUIRED, $option);
+}
+
+task('external_config', function () use ($gitlabOptions) {
+    foreach ($gitlabOptions as $key => $gitlabOption) {
+        ${$key} = input()->getOption($key);
+    }
+    //TODO create a console command within a project
+    run('curl --request PUT --header "PRIVATE-TOKEN: '. $token .'" "https://gitlab.gbksoft.net/api/v4/projects/'. $project .'/variables/'. $var_name .'" --form "value='. $db_ip .'"');
+});

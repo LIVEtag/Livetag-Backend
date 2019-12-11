@@ -235,6 +235,8 @@ test:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - export DB_IP=`cat /etc/hosts | grep "${DB_HOST}" | awk '{print$1;}'`
+    - ./vendor/bin/dep external_config --db_ip=${DB_IP} --var_name=DB_IP --token=${GITLAB_TOKEN} --project=$CI_PROJECT_ID
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
