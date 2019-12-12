@@ -5,11 +5,29 @@
  */
 
 use rest\components\validation\ErrorList;
+use common\fixtures\UserFixture;
+use common\models\User;
+
+/** @var User $user */
+$user = $I->grabFixture('users', UserFixture::USER);
 
 return [
+    'login' => [
+        [
+            'dataComment' => 'Check correct login',
+            'request' => [
+                'email' => $user->email,
+                'password' => UserFixture::DEFAULT_PASSWORD,
+            ],
+            'response' => [
+                'token' => 'string',
+                'expiredAt' => 'integer'
+            ]
+        ]
+    ],
     'validation' => [
         [
-            'goingTo' => 'Check incorrect email is not allowed',
+            'dataComment' => 'Check incorrect email is not allowed',
             'request' => [
                 'email' => 'rand@test.com',
                 'password' => 'password_0',
@@ -23,7 +41,7 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check incorrect password is not allowed',
+            'dataComment' => 'Check incorrect password is not allowed',
             'request' => [
                 'email' => 'user@test.com',
                 'password' => 'password_'
@@ -37,7 +55,7 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check that required fields cannot be blank',
+            'dataComment' => 'Check that required fields cannot be blank',
             'request' => [
                 'email' => '',
                 'password' => ''

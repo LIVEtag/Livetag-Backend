@@ -177,6 +177,11 @@ task('deploy:run_migrations', function () {
     run('{{bin/php}} {{deploy_path}}/yii migrate up --interactive=0');
 })->desc('Run migrations');
 
+task('deploy:fixtures', function () {
+    set('deploy_path', YII_PROJECT_ROOT);
+    run('{{bin/php}} {{deploy_path}}/yii fixture/load "*" --interactive=0');
+})->desc('Fill DB with fixtures');
+
 task('deploy:design_clone', function () {
     run('rm -rf {{design_path}}');
     cd(\dirname(get('design_path')));
@@ -265,6 +270,10 @@ task('tests:php_sa', function ()  use ($testPaths) {
 })->desc('PHP CS security audit tests');
 
 
+task('tests:codeception', function () {
+    run('php '. YII_PROJECT_ROOT .'/vendor/bin/codecept run');
+})->desc('Codeception tests');
+
 task('tests', function() {
     invoke('tests:php_md');
     invoke('tests:php_cpd');
@@ -281,9 +290,9 @@ task('deploy', function () {
     invoke('deploy:prepare');
     invoke('deploy:lock');
     invoke('deploy:release');
-    invoke("deploy:upload");
-    invoke("deploy:symlink");
-    invoke("deploy:composer");
+    invoke('deploy:upload');
+    invoke('deploy:symlink');
+    invoke('deploy:composer');
     invoke('deploy:init');
     invoke('deploy:run_migrations');
     invoke('deploy:unlock');

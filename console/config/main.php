@@ -58,6 +58,10 @@ return [
                 'rest\modules\chat\migrations'// chat module migrations
             ],
         ],
+        'fixture' => [
+            'class' => 'yii\console\controllers\FixtureController',
+            'namespace' => 'common\fixtures',
+        ],
     ],
     'params' => $params,
 ];

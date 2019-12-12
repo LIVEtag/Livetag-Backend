@@ -5,14 +5,38 @@
  */
 
 use rest\components\validation\ErrorList;
+use common\fixtures\UserFixture;
+use common\models\User;
+use rest\tests\ApiTester;
+
+/**
+ * @var ApiTester $I
+ */
+/** @var User $user */
+$user = $I->grabFixture('users', UserFixture::USER);
+$email = $I->generator->unique()->email;
+$password = $I->generator->password(8, 15);
 
 return [
+    'create' => [
+        [
+            'dataComment' => 'Correct register',
+            'request' => [
+                'email' => $email,
+                'password' => $password,
+            ],
+            'response' => [
+                'token' => 'string',
+                'expiredAt' => 'integer'
+            ]
+        ]
+    ],
     'validation' => [
         [
-            'goingTo' => 'Check that email validation works',
+            'dataComment' => 'Check that email validation works',
             'request' => [
-                'email' => 'rand',
-                'password' => '',
+                'email' => 'wrongEmail',
+                'password' => $password,
             ],
             'response' => [
                 [
@@ -23,21 +47,21 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check that email must be unique',
+            'dataComment' => 'Check that email must be unique',
             'request' => [
-                'email' => 'user@test.com',
-                'password' => '1234',
+                'email' => $user->email,
+                'password' => UserFixture::DEFAULT_PASSWORD,
             ],
             'response' => [
                 [
                     'field' => 'email',
-                    'message' => 'Email "user@test.com" has already been taken.',
+                    'message' => "Email \"{$user->email}\" has already been taken.",
                     'code' => ErrorList::UNIQUE_INVALID,
                 ],
             ]
         ],
         [
-            'goingTo' => 'Check that required fields cannot be blank',
+            'dataComment' => 'Check that required fields cannot be blank',
             'request' => [
                 'email' => '',
                 'password' => ''
@@ -56,7 +80,7 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check that password length validation works',
+            'dataComment' => 'Check that password length validation works',
             'request' => [
                 'password' => 1234
             ],

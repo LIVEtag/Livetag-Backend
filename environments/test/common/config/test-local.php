@@ -1,7 +1,4 @@
 <?php
-
-use yii\caching\DummyCache;
-
 return yii\helpers\ArrayHelper::merge(
     require __DIR__ . '/main.php',
     require __DIR__ . '/main-local.php',
@@ -11,9 +8,6 @@ return yii\helpers\ArrayHelper::merge(
             'db' => [
                 'dsn' => 'mysql:host={{DB_TEST_HOST}};dbname={{DB_TEST_NAME}}',
             ]
-        ],
-        'cache' => [
-            'class' => DummyCache::class,
         ],
         'container' => [
             'singletons' => [

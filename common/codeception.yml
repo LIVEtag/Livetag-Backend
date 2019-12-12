@@ -13,3 +13,5 @@ modules:
     config:
         Yii2:
             configFile: 'config/codeception-local.php'
+            cleanup: false # cleanup fixtures after each test
+            transaction: true # wrap test in a transaction and roll it back after it

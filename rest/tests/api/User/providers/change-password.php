@@ -5,15 +5,37 @@
  */
 
 use rest\components\validation\ErrorList;
+use common\fixtures\UserFixture;
+use rest\tests\ApiTester;
+
+/**
+ * @var ApiTester $I
+ */
+$password = $I->generator->password(8, 15);
 
 return [
+    'update' => [
+        [
+            'dataComment' => 'Correct change password',
+            'request' => [
+                'password' => UserFixture::DEFAULT_PASSWORD,
+                'newPassword' => $password,
+                'confirmPassword' => $password,
+            ],
+            'response' => [
+                'password' => UserFixture::DEFAULT_PASSWORD,
+                'newPassword' => $password,
+                'confirmPassword' => $password,
+            ]
+        ]
+    ],
     'validation' => [
         [
-            'goingTo' => 'Check that incorrect current password is not allowed',
+            'dataComment' => 'Check that incorrect current password is not allowed',
             'request' => [
-                'password' => 'password_1',
-                'newPassword' => 'password_2',
-                'confirmPassword' => 'password_2'
+                'password' => $password,
+                'newPassword' => $password . '2',
+                'confirmPassword' => $password . '2',
             ],
             'response' => [
                 [
@@ -24,11 +46,11 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check that not same newPassword and confirmPassword are not allowed',
+            'dataComment' => 'Check that not same newPassword and confirmPassword are not allowed',
             'request' => [
-                'password' => 'password_0',
-                'newPassword' => 'password_2',
-                'confirmPassword' => 'password_3'
+                'password' => UserFixture::DEFAULT_PASSWORD,
+                'newPassword' => $password,
+                'confirmPassword' => $password . '1'
             ],
             'response' => [
                 [
@@ -39,11 +61,11 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check that newPassword cannot be the same as the current password',
+            'dataComment' => 'Check that newPassword cannot be the same as the current password',
             'request' => [
-                'password' => 'password_0',
-                'newPassword' => 'password_0',
-                'confirmPassword' => 'password_0'
+                'password' => UserFixture::DEFAULT_PASSWORD,
+                'newPassword' => UserFixture::DEFAULT_PASSWORD,
+                'confirmPassword' => UserFixture::DEFAULT_PASSWORD,
             ],
             'response' => [
                 [
@@ -54,7 +76,7 @@ return [
             ]
         ],
         [
-            'goingTo' => 'Check that required fields cannot be blank',
+            'dataComment' => 'Check that required fields cannot be blank',
             'request' => [
                 'password' => '',
                 'newPassword' => '',
