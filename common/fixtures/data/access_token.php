@@ -7,23 +7,15 @@
 use common\fixtures\AccessTokenFixture;
 use common\fixtures\UserFixture;
 
+/** @var AccessTokenFixture $this */
+
 return [
-    AccessTokenFixture::USER => [
-        'id' => AccessTokenFixture::USER,
+    UserFixture::USER => [
         'userId' => UserFixture::USER,
         'token' => 'user',
-        'userIp' => '127.0.0.1',
-        'userAgent' => 'Symfony BrowserKit',
-        'expiredAt' => time() + 30000000,
-        'createdAt' => 0,
     ],
     AccessTokenFixture::DELETED => [
-        'id' => AccessTokenFixture::DELETED,
         'userId' => UserFixture::DELETED,
         'token' => 'deleted',
-        'userIp' => '127.0.0.1',
-        'userAgent' => 'Symfony BrowserKit',
-        'expiredAt' => time() + 30000000,
-        'createdAt' => 0,
     ]
 ];
