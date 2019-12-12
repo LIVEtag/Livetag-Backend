@@ -71,7 +71,8 @@ abstract class ActiveFixture extends \yii\test\ActiveFixture
      */
     public function generateItem(array $values = [], ?array $return = null): array
     {
-        if ($required = array_keys(array_diff_key(array_flip($this->requiredAttributes), $values))) {
+        $required = array_keys(array_diff_key(array_flip($this->requiredAttributes), $values));
+        if ($required) {
             throw new InvalidArgumentException('Set attribute(s): ' . implode(', ', $required));
         }
         $data = array_merge(
