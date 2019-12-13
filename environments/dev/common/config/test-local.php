@@ -12,9 +12,6 @@ return yii\helpers\ArrayHelper::merge(
                 'dsn' => 'mysql:host={{DB_TEST_HOST}};dbname={{DB_TEST_NAME}}',
             ]
         ],
-        'cache' => [
-            'class' => DummyCache::class,
-        ],
         'container' => [
             'singletons' => [
                 \Faker\Generator::class => function () {

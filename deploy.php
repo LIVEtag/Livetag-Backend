@@ -266,6 +266,7 @@ task('tests:php_sa', function ()  use ($testPaths) {
     $params = [
         '--standard='. YII_PROJECT_ROOT .'/dev/etc/phpcs/standard/security.xml',
         '--extensions=php',
+        '--ignore='.YII_PROJECT_ROOT.'/rest/tests/_support/*',
         implode(' ', $testPaths),
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
