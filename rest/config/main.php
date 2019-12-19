@@ -37,9 +37,6 @@ return [
         'v1' => [
             'class' => V1Module::class,
         ],
-        'chat' => [
-            'class' => ChatModule::class,
-        ]
     ],
     'components' => [
         'user' => [
@@ -136,33 +133,6 @@ return [
                         'GET <slug>' => 'view',
                     ],
                 ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
-                        'v1/channel' => 'chat/channel'
-                    ],
-                    'extraPatterns' => [
-                        'PUT <id:\d+>/join' => ChannelController::ACTION_JOIN,
-                        'OPTIONS  <id:\d+>/join' => 'options',
-                        'PUT <id:\d+>/leave' => ChannelController::ACTION_LEAVE,
-                        'OPTIONS  <id:\d+>/leave' => 'options',
-                        'GET <id:\d+>/message' => ChannelController::ACTION_GET_MESSAGES,
-                        'POST <id:\d+>/message' => ChannelController::ACTION_ADD_MESSAGE,
-                        'OPTIONS  <id:\d+>/message' => 'options',
-                        'GET <id:\d+>/user' => ChannelController::ACTION_GET_USERS,
-                        'OPTIONS  <id:\d+>/user' => 'options',
-                        'POST <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_ADD_TO_CHAT,
-                        'DELETE <id:\d+>/user/<userId:\d+>' => ChannelController::ACTION_REMOVE_FROM_CHAT,
-                        'OPTIONS  <id:\d+>/user/<userId:\d+>' => 'options',
-                        'POST auth' => ChannelController::ACTION_AUTH,
-                        'OPTIONS auth' => 'options',
-                        'POST sign' => ChannelController::ACTION_SIGN,
-                        'OPTIONS sign' => 'options',
-                        //'GET demo/<route:\*>'=>
-                    ],
-                    'pluralize' => false,
-                ],
-                'demo-chat/<action:.*>' => 'chat/demo/index',
                 [
                     'class' => UrlRule::class,
                     'controller' => [
