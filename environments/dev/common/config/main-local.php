@@ -29,4 +29,13 @@ return [
             'useFileTransport' => false,
         ],
     ],
+    'container' => [
+        'singletons' => [
+            \Faker\Generator::class => function () {
+                $generator = \Faker\Factory::create('en_EN');
+                $generator->addProvider(new \common\components\test\faker\IncrementalTimeProvider($generator));
+                return $generator;
+            },
+        ]
+    ],
 ];

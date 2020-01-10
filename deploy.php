@@ -6,6 +6,8 @@
 
 namespace Deployer;
 
+use Symfony\Component\Console\Input\InputOption;
+
 require 'recipe/common.php';
 
 // Global
@@ -177,6 +179,11 @@ task('deploy:run_migrations', function () {
     run('{{bin/php}} {{deploy_path}}/yii migrate up --interactive=0');
 })->desc('Run migrations');
 
+task('deploy:fixtures', function () {
+    set('deploy_path', YII_PROJECT_ROOT);
+    run('{{bin/php}} {{deploy_path}}/yii fixture/load "*" --interactive=0');
+})->desc('Fill DB with fixtures');
+
 task('deploy:design_clone', function () {
     run('rm -rf {{design_path}}');
     cd(\dirname(get('design_path')));
@@ -219,7 +226,7 @@ task('tests:php_md', function () use ($testPaths) {
         implode(',', $testPaths),
         'xml '. YII_PROJECT_ROOT .'/dev/etc/phpmd/rules/rules.xml',
         '--suffixes php',
-        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests,rest/tests/_support',
+        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests,rest/tests',
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpmd ' . implode(' ', $params));
 })->desc('PHP MD static tests');
@@ -259,11 +266,16 @@ task('tests:php_sa', function ()  use ($testPaths) {
     $params = [
         '--standard='. YII_PROJECT_ROOT .'/dev/etc/phpcs/standard/security.xml',
         '--extensions=php',
+        '--ignore='.YII_PROJECT_ROOT.'/rest/tests/*',
         implode(' ', $testPaths),
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
 })->desc('PHP CS security audit tests');
 
+
+task('tests:codeception', function () {
+    run('php '. YII_PROJECT_ROOT .'/vendor/bin/codecept run');
+})->desc('Codeception tests');
 
 task('tests', function() {
     invoke('tests:php_md');
@@ -281,9 +293,9 @@ task('deploy', function () {
     invoke('deploy:prepare');
     invoke('deploy:lock');
     invoke('deploy:release');
-    invoke("deploy:upload");
-    invoke("deploy:symlink");
-    invoke("deploy:composer");
+    invoke('deploy:upload');
+    invoke('deploy:symlink');
+    invoke('deploy:composer');
     invoke('deploy:init');
     invoke('deploy:run_migrations');
     invoke('deploy:unlock');
@@ -291,3 +303,22 @@ task('deploy', function () {
 });
 
 after('deploy', 'common:unlink');
+
+$gitlabOptions = [
+    'db_ip' => 'IP of mysql',
+    'token' => 'Gitlab private token',
+    'var_name' => 'Variable Name',
+    'project' => 'Gitlab project ID'
+];
+
+foreach ($gitlabOptions as $optionKey => $option) {
+    option($optionKey, null, InputOption::VALUE_REQUIRED, $option);
+}
+
+task('external_config', function () use ($gitlabOptions) {
+    foreach ($gitlabOptions as $key => $gitlabOption) {
+        ${$key} = input()->getOption($key);
+    }
+    //TODO create a console command within a project
+    run('curl --request PUT --header "PRIVATE-TOKEN: '. $token .'" "https://gitlab.gbksoft.net/api/v4/projects/'. $project .'/variables/'. $var_name .'" --form "value='. $db_ip .'"');
+});

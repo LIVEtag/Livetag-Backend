@@ -26,6 +26,7 @@
         <exclude-pattern>*/config/*</exclude-pattern>
         <exclude-pattern>/rest/modules/swagger/controllers/actions/*</exclude-pattern>
         <exclude-pattern>/rest/modules/chat/controllers/DemoController.php</exclude-pattern>
+        <exclude-pattern>/rest/generators/*</exclude-pattern>
         <exclude-pattern>/common/components/rbac/data/AccessService.php</exclude-pattern>
     </rule>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.FringeFunctions"/>
@@ -37,7 +38,9 @@
     <rule ref="PHPCS_SecurityAudit.BadFunctions.Mysqli"/>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.NoEvals"/>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.Phpinfos"/>
-    <rule ref="PHPCS_SecurityAudit.BadFunctions.PregReplace"/>
+    <rule ref="PHPCS_SecurityAudit.BadFunctions.PregReplace">
+        <exclude-pattern>/rest/generators/*</exclude-pattern>
+    </rule>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.SQLFunctions"/>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.SystemExecFunctions"/>
 

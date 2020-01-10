@@ -1,0 +1,13 @@
+suite_namespace: rest\tests\api
+actor: ApiTester
+modules:
+    enabled:
+        - \rest\tests\Helper\Api
+        - REST:
+              url: /rest/v1
+              depends: Yii2
+        - Yii2:
+              part: [ORM, fixtures, email]
+        - Asserts
+    config:
+        - Yii2

@@ -5,10 +5,22 @@
  */
 
 use yii\gii\Module as GiiModule;
+use rest\generators\crud\Generator;
 
 return [
     'bootstrap' => ['gii'],
     'modules' => [
-        'gii' => GiiModule::class,
+        'gii' => [
+            'class' => GiiModule::class,
+            'allowedIPs' => ['*'],
+            'generators' => [
+                'restcrud' => [
+                    'class' => Generator::class,
+                    'templates' => [
+                        'default' => '@rest/generators/crud/template',
+                    ]
+                ]
+            ],
+        ]
     ],
 ];
