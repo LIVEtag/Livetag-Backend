@@ -1,0 +1,1 @@
+* * * * * /usr/local/bin/php /var/www/html/yii schedule/run --scheduleFile=@console/config/schedule.php 1>> /dev/null 2>&1

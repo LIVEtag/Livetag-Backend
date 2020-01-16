@@ -36,6 +36,13 @@ test -z "${MAIN_DOMAIN}" || test -f /etc/apache2/ssl/ssl.key || \
 test -f /etc/apache2/ssl/TRUST.crt && sed -ri "s/#SSLCACertificateFile \/etc\/apache2\/ssl.crt\/ca-bundle.crt/SSLCACertificateFile \/etc\/apache2\/ssl\/TRUST.crt/" /etc/apache2/sites-available/default-ssl.conf
 test -f /etc/apache2/ssl/ssl.key && a2ensite default-ssl
 
+#configure & run cron
+cat ./.cron > /var/spool/cron/crontabs/www-data
+echo >> /var/spool/cron/crontabs/www-data
+chown www-data:crontab /var/spool/cron/crontabs/www-data
+chmod 600 /var/spool/cron/crontabs/www-data
+cron
+
 echo "ServerName ${MAIN_DOMAIN}" >> /etc/apache2/conf-enabled/options.conf
 
 # first arg is `-f` or `--some-option`
