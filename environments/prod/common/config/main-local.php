@@ -18,7 +18,7 @@ return [
             'dsn' => 'mysql:host={{DB_HOST}};dbname={{DB_NAME}};port={{DB_PORT}}',
             'username' => '{{DB_USERNAME}}',
             'password' => '{{DB_PASSWORD}}',
-            'charset' => 'utf8',
+            'charset' => 'utf8mb4',
         ],
         'mailer' => [
             'class' => Mailer::class,
