@@ -17,7 +17,8 @@
         "kartik-v/yii2-widgets": "3.4.0",
         "gbksoft/phpcent": "~1.0.5",
         "deployer/deployer": "6.1",
-        "dmstr/yii2-adminlte-asset": "2.5"
+        "dmstr/yii2-adminlte-asset": "2.5",
+        "omnilight/yii2-scheduling": "^1.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.14",
