@@ -43,8 +43,6 @@ build_vendor:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
   when: always
-  only:
-    - web
   tags:
     - shared-cli
 
@@ -73,8 +71,6 @@ phpcpd:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cpd
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
@@ -89,8 +85,6 @@ phpcs:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cs
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
@@ -105,8 +99,6 @@ phpsa:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_sa
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
@@ -149,8 +141,6 @@ codecept:
     name: codecept-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
