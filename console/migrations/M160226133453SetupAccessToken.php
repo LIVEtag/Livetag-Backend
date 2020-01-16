@@ -27,8 +27,7 @@ class M160226133453SetupAccessToken extends Migration
                 'userAgent' => $this->text(),
                 'createdAt' => $this->integer()->unsigned()->notNull(),
                 'expiredAt' => $this->integer()->unsigned()->notNull(),
-            ],
-            self::TABLE_OPTIONS
+            ]
         );
 
         $this->addForeignKey(
