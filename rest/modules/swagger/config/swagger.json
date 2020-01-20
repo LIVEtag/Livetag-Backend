@@ -333,11 +333,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status204"
-                                        }
-                                    ]
+                                    "$ref": "#/components/schemas/status204"
                                 }
                             }
                         }
@@ -522,21 +518,14 @@
                 ],
                 "operationId": "userChangePassword",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/user"
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }

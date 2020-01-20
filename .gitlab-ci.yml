@@ -13,6 +13,7 @@ variables:
 
 before_script:
   - rm -fr /var/www/html
+  - test -e /usr/local/etc/php/conf.d && cp ./dev/docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 stages:
   - build
@@ -123,6 +124,9 @@ codecept:
     when: on_failure
     expire_in: 2h
   variables:
+    DB_TEST_HOST: ${DB_HOST}
+    DB_TEST_NAME: ${DB_NAME}
+    DB_TEST_PORT: ${DB_PORT}
     PROXY_build_DOMAIN: codecept-${MAIN_DOMAIN}
     YII_MAIN_DOMAIN: codecept-${MAIN_DOMAIN}
     YII_REST_DOMAIN: codecept-${MAIN_DOMAIN}
@@ -166,6 +170,14 @@ dev:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - echo "===== Run SSH ====="
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
+    - echo "SSH Password ${CI_COMMIT_SHA}"
+    - sed -ri "s/^sshlogin/${GITLAB_USER_LOGIN}/" /etc/passwd
+    - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
+    - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
+
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
   only:
@@ -226,6 +238,14 @@ test:review:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - export DB_IP=`cat /etc/hosts | grep "${DB_HOST}" | awk '{print$1;}'`
+    - echo "===== Run SSH ====="
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
+    - echo "SSH Password ${CI_COMMIT_SHA}"
+    - sed -ri "s/^sshlogin/${GITLAB_USER_LOGIN}/" /etc/passwd
+    - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
+    - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
+
     - ./vendor/bin/dep external_config --db_ip=${DB_IP} --var_name=DB_IP --token=${GITLAB_TOKEN} --project=$CI_PROJECT_ID
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
@@ -286,6 +306,14 @@ live:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - echo "===== Run SSH ====="
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
+    - echo "SSH Password ${CI_COMMIT_SHA}"
+    - sed -ri "s/^sshlogin/${GITLAB_USER_LOGIN}/" /etc/passwd
+    - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
+    - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
+
     - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground

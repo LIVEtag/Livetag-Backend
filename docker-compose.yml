@@ -9,6 +9,7 @@ services:
       - .:/var/www/html
       - ./dev/docker/apache2/php7.1/etc/cmd/entrypoint.sh:/entrypoint.sh
       - ./dev/docker/apache2/php7.1/etc/ssl:/etc/apache2/ssl
+      - ./dev/docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     working_dir: /var/www/html
     environment:
       # Custom user ID and group ID to start

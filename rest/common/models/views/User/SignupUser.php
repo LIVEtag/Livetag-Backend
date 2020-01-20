@@ -55,7 +55,7 @@ class SignupUser extends Model
             [['userIp'], 'string', 'max' => 46],
             [['userAgent'], 'string'],
 
-            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'filter', 'filter' => 'trim', 'skipOnEmpty' => true],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],

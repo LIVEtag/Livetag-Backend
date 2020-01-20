@@ -60,7 +60,7 @@ class SocialForm extends Model
             [['userAgent', 'socialId',], 'string'],
             [['socialType'], 'integer'],
 
-            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'filter', 'filter' => 'trim', 'skipOnEmpty' => true],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => self::EMAIL_LENGHT],
