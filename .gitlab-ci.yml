@@ -25,7 +25,7 @@ stages:
 build_vendor:
   stage: build
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   artifacts:
     untracked: true
@@ -50,7 +50,7 @@ build_vendor:
 phpmd:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
@@ -66,7 +66,7 @@ phpmd:
 phpcpd:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
@@ -80,7 +80,7 @@ phpcpd:
 phpcs:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
@@ -94,7 +94,7 @@ phpcs:
 phpsa:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
@@ -108,7 +108,7 @@ phpsa:
 codecept:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -154,7 +154,7 @@ dev:review:
   stage: dev
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -221,7 +221,7 @@ test:review:
   stage: test
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -290,7 +290,7 @@ live:review:
   stage: live
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     entrypoint: [""]
   services:
     - name: mysql:5.7
