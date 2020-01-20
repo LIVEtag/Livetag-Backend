@@ -73,27 +73,27 @@ GIT Workflow
 Installation instructions
 -------------------
 
-#### Locally (not recommended)
+#### Locally
 
 Clone a project repository
 
 Make a copy of .env.example to .env and fill all the configuration variables
-
-Run `php init --env={env} --overwrite=All` (env - environemnt name, like dev, test, etc.)
-
-Run `composer install`
-
-Run `php yii migrate --no-interactive`
 
 #### Locally via docker
-
-Clone a project repository
-
-Make a copy of .env.example to .env and fill all the configuration variables
 
 Run `docker-compose up`
 
 On demand run `docker login`
+
+Enter to container `docker-compose exec --user=www-data web-php bash`
+
+Run `composer install`
+
+Run `php init --env={env} --overwrite=All` (env - environemnt name, like dev, test, etc.)
+
+Run `php yii migrate --no-interactive`
+
+If need run `./yii fixture/load "*"`
 
 #### On GitLab
 
