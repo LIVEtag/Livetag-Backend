@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   web-php:
-    image: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    image: hub.ci.gbksoft.net:5000/pub/php-apache-prestissimo:7.1
     ports:
       - "80:80"
       - "443:443"
