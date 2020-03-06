@@ -121,3 +121,5 @@ Configure .gitlab-ci.yml file
 **pdf-generator** - Added service to create pdf from html
 
 **pdf-generator-queue** - Added service to create pdf from html via queue
+
+**GB-120-inApp-subscriptions** - In App purchases and subscriptions base version, for details see `common/components/purchase/README.md`
