@@ -63,7 +63,8 @@ class SocialProfile extends ActiveRecord
     {
         return [
             [['userId', 'type', 'socialId', 'email'], 'required'],
-            [['userId', 'type', 'createdAt', 'updatedAt'], 'integer'],
+            [['userId', 'createdAt', 'updatedAt'], 'integer'],
+            ['type', 'string'],
             [['socialId', 'email'], 'string', 'max' => self::MAX_STRING_LENGHT],
             [
                 ['userId'],
@@ -90,6 +91,23 @@ class SocialProfile extends ActiveRecord
             'updatedAt' => 'Updated At',
         ];
     }
+
+    /**
+     * @param int $type
+     * @return string
+     */
+    public static function getSocialNameByType(int $type)
+    {
+        $names = [
+            SocialProfile::TYPE_FACEBOOK => 'Facebook',
+            SocialProfile::TYPE_GOOGLE => 'Google',
+            SocialProfile::TYPE_LINKEDIN => 'LinkedIn',
+            SocialProfile::TYPE_TWITTER => 'Twitter',
+        ];
+
+        return $names[$type];
+    }
+
 
     /**
      * @return ActiveQuery

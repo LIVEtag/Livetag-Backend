@@ -98,7 +98,7 @@ class AuthModel extends Model
     public function createSocialForm(): SocialForm
     {
         $socialForm = new SocialForm();
-        $socialForm->email = $this->attributes['email'];
+        $socialForm->email = $this->attributes['email'] ?? null;
         $socialForm->socialType = $this->clientType;
         $socialForm->socialId = $this->attributes['id'];
         $socialForm->userIp = \Yii::$app->request->getUserIP();
