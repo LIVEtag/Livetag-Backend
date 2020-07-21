@@ -27,7 +27,6 @@ $params = array_merge(
 return [
     'id' => 'rest-api',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
     'modules' => [
         'swagger' => [
             'class' => SwaggerModule::class,
@@ -41,15 +40,6 @@ return [
             'class' => RestUser::class,
             'identityClass' => User::class,
             'enableSession' => false,
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => FileTarget::class,
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
         ],
         'response' => [
             'format' => Response::FORMAT_JSON,
