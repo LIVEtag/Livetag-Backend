@@ -34,7 +34,7 @@ return [
         ],
         'sentry' => [
             'class' => SentryComponent::class,
-            'dsn' => '{{SENTRY_DNS}}',
+            'dsn' => '{{SENTRY_DSN}}',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

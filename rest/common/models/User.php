@@ -7,18 +7,16 @@ declare(strict_types=1);
 
 namespace rest\common\models;
 
-use yii\web\User as BaseUser;
+use common\models\User as CommonUser;
 use rest\common\models\queries\User\UserQuery;
 use yii\web\IdentityInterface;
-use rest\common\services\AccessToken\AccessTokenSearchService;
-use rest\common\models\views\AccessToken\AccessTokenInterface;
 
 /**
  * User model
  *
  * @property AccessToken $accessToken
  */
-class User extends BaseUser
+class User extends CommonUser
 {
     /**
      * @inheritdoc
@@ -32,15 +30,15 @@ class User extends BaseUser
     }
 
     /**
-     * @inheritdoc
-     * @return UserQuery
+     * @return object|\yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
      */
     public static function find()
     {
         return \Yii::createObject(UserQuery::class, [get_called_class()]);
     }
 
-    /** @var AccessTokenInterface */
+    /** @var AccessToken */
     protected $accessToken;
 
     /**
@@ -52,26 +50,28 @@ class User extends BaseUser
     }
 
     /**
-     * @param string $token
+     * @param $token
      * @param null $type
-     * @return IdentityInterface|null
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @return User|void|IdentityInterface|null
      */
-    public function loginByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null)
     {
+        /** @var $accessToken AccessToken */
         $accessToken = AccessToken::find()
             ->byToken($token)
             ->valid()
             ->one();
-        if ($accessToken) {
-            $this->accessToken = $accessToken;
-            /* @var $class IdentityInterface */
-            $class = $this->identityClass;
-            $identity = $class::findIdentity($accessToken->userId);
-            if ($identity && $this->login($identity)) {
-                return $identity;
+
+        if ($accessToken !== null) {
+            $user = static::findOne(['id' => $accessToken->userId, 'status' => self::STATUS_ACTIVE]);
+            if (!empty($user)) {
+                // set current access token
+                $user->accessToken = $accessToken;
             }
+
+            return $user;
         }
+
         return null;
     }
 }

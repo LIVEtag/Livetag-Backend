@@ -1,21 +1,19 @@
 <?php
-
 /**
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 
-use common\models\User;
-use rest\components\api\UrlRule;
+use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
+use rest\components\api\UrlRule;
+use rest\components\validation\validators as RestValidators;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
-use rest\components\validation\validators as RestValidators;
-use rest\common\models\User as RestUser;
 use yii\data\Pagination;
-use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Response;
+use yii\web\User;
 
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -37,8 +35,8 @@ return [
     ],
     'components' => [
         'user' => [
-            'class' => RestUser::class,
-            'identityClass' => User::class,
+            'class' => User::class,
+            'identityClass' => RestUser::class,
             'enableSession' => false,
         ],
         'response' => [
