@@ -5,4 +5,6 @@
  */
 
 return [
+    'supportEmail' => '{{SUPPORT_EMAIL}}',
+    'adminEmail' => '{{ADMIN_EMAIL}}',
 ];

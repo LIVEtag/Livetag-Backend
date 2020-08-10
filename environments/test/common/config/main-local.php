@@ -30,7 +30,15 @@ return [
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => true,
+            'transport' => [
+                'class' => Swift_SmtpTransport::class,
+                'host' => '{{MAIL_HOST}}',
+                'username' => '{{MAIL_USERNAME}}',
+                'password' => '{{MAIL_PASSWORD}}',
+                'port' => '{{MAIL_PORT}}',
+                'encryption' => '{{MAIL_ENCRYPTION}}',
+            ],
+            'useFileTransport' => filter_var('{{MAIL_USEFILETRANSPORT}}', FILTER_VALIDATE_BOOLEAN),
         ],
         'sentry' => [
             'class' => SentryComponent::class,

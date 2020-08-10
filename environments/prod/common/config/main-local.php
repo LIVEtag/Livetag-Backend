@@ -27,6 +27,14 @@ return [
         'mailer' => [
             'class' => Mailer::class,
             'viewPath' => '@common/mail',
+            'transport' => [
+                'class' => Swift_SmtpTransport::class,
+                'host' => '{{MAIL_HOST}}',
+                'username' => '{{MAIL_USERNAME}}',
+                'password' => '{{MAIL_PASSWORD}}',
+                'port' => '{{MAIL_PORT}}',
+                'encryption' => '{{MAIL_ENCRYPTION}}',
+            ],
         ],
         'sentry' => [
             'class' => SentryComponent::class,
