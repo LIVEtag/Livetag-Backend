@@ -76,6 +76,7 @@ class ErrorList implements ErrorListInterface
     public const ENTITY_BLOCKED = 1210;
     public const CURRENT_PASSWORD_IS_WRONG = 1220;
     public const SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD = 1230;
+    public const USER_NOT_FOUND = 1231;
 
     public const THIRD_PARTY_NOT_DOCUMENTED_ERROR = 3000;
 
@@ -176,6 +177,7 @@ class ErrorList implements ErrorListInterface
         self::GOOGLE_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
 
         self::TWITTER_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
+        self::USER_NOT_FOUND => 'User not found.',
     ];
 
     /**

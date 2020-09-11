@@ -6,7 +6,9 @@
 namespace rest\common\controllers\actions\User;
 
 use common\models\User;
+use rest\common\models\views\User\ChangePassword;
 use rest\common\models\views\User\RecoveryPassword;
+use rest\common\models\views\User\SendRecoveryEmailForm;
 use rest\components\api\actions\Action;
 use yii\web\NotFoundHttpException;
 
@@ -15,18 +17,15 @@ use yii\web\NotFoundHttpException;
  */
 class RecoveryAction extends Action
 {
-    /**
-     * @return User
-     */
     public function run()
     {
-        $user = User::findByEmail(\Yii::$app->request->getBodyParam('email'));
-
-        if ($user === null) {
-            throw new NotFoundHttpException('User has been not found.');
+        $model = new SendRecoveryEmailForm();
+        $model->setAttributes($this->request->post());
+        if (!$model->validate()) {
+            return $model;
         }
 
-        \Yii::createObject(RecoveryPassword::class)->generateAndSendEmail($user);
+        $model->generateAndSendEmail();
 
         \Yii::$app->getResponse()->setStatusCode(204);
     }
