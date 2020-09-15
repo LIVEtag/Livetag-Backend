@@ -38,7 +38,7 @@
  */
 declare(strict_types=1);
 
-namespace rest\components\validation;
+namespace common\components\validation;
 
 use JsonSerializable;
 use yii\validators\Validator;

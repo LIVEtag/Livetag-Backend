@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace rest\components\validation;
+namespace common\components\validation;
+
+use yii\web\ServerErrorHttpException;
 
 /**
  * Trait ValidationErrorTrait
@@ -19,7 +21,6 @@ trait ValidationErrorTrait
     {
         if ($message instanceof ErrorMessage) {
             $message = clone $message;
-            $params = $this->renameArrayKeys($params, ['attribute' => 'attr']);
             $this->beforeFormatMessage($message, $params);
             $message->setParams($params);
         } else {

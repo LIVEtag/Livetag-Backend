@@ -11,7 +11,7 @@ use common\models\User\SocialProfile;
 use rest\common\models\views\User\SocialForm;
 use rest\common\services\Auth\AuthClientService;
 use rest\components\api\exceptions\AbstractOauthException;
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;

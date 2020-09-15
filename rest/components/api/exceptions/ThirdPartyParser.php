@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace rest\components\api\exceptions;
 
-use rest\components\validation\ErrorListInterface;
-use rest\components\validation\ErrorMessage;
+use common\components\validation\ErrorListInterface;
+use common\components\validation\ErrorMessage;
 
 /**
  * Interface ThirdPartyParser

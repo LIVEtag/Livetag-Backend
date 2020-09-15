@@ -5,11 +5,11 @@
  */
 declare(strict_types=1);
 
-namespace rest\components\validation\validators;
+namespace common\components\validation\validators;
 
 use yii\validators\RegularExpressionValidator as BaseValidator;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ValidationErrorTrait;
+use common\components\validation\ErrorList;
+use common\components\validation\ValidationErrorTrait;
 
 class RegularExpressionValidator extends BaseValidator
 {

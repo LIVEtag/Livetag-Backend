@@ -1,9 +1,9 @@
 <?php
-namespace rest\components\validation;
+namespace common\components\validation;
 
 /**
  * Class ErrorList
- * @package rest\components\validation
+ * @package common\components\validation
  * @codingStandardsIgnoreFile Generic.Files.LineLength.MaxExceeded
  */
 class ErrorList implements ErrorListInterface
@@ -95,11 +95,11 @@ class ErrorList implements ErrorListInterface
     public const TWITTER_INVALID_OAUTH_TOKEN = 3403;
 
     protected const ERRORS = [
-        self::EMAIL_INVALID => '{attr} is not a valid email address.',
+        self::EMAIL_INVALID => '{attribute} is not a valid email address.',
 
-        self::DATE_INVALID => 'The format of {attr} is invalid.',
-        self::DATE_TOO_SMALL => '{attr} must be no less than {min}.',
-        self::DATE_TOO_BIG => '{attr} must be no greater than {max}.',
+        self::DATE_INVALID => 'The format of {attribute} is invalid.',
+        self::DATE_TOO_SMALL => '{attribute} must be no less than {min}.',
+        self::DATE_TOO_BIG => '{attribute} must be no greater than {max}.',
 
         self::FILE_INVALID => 'File upload failed.',
         self::FILE_UPLOAD_REQUIRED => 'Please upload a file.',
@@ -116,46 +116,46 @@ class ErrorList implements ErrorListInterface
         self::IMAGE_OVER_WIDTH => 'The image "{file}" is too large. The width cannot be larger than {limit} pixel(s).',
         self::IMAGE_OVER_HEIGHT => 'The image "{file}" is too large. The height cannot be larger than {limit} pixel(s).',
 
-        self::NUMBER_INVALID => '{attr} must be a number.',
-        self::NUMBER_INTEGER_ONLY => '{attr} must be an integer.',
-        self::NUMBER_TOO_SMALL => '{attr} must be no less than {min}.',
-        self::NUMBER_TOO_BIG => '{attr} must be no greater than {max}.',
+        self::NUMBER_INVALID => '{attribute} must be a number.',
+        self::NUMBER_INTEGER_ONLY => '{attribute} must be an integer.',
+        self::NUMBER_TOO_SMALL => '{attribute} must be no less than {min}.',
+        self::NUMBER_TOO_BIG => '{attribute} must be no greater than {max}.',
 
-        self::REQUIRED_INVALID => '{attr} cannot be blank.',
-        self::REQUIRED_VALUE => '{attr} must be "{requiredValue}".',
+        self::REQUIRED_INVALID => '{attribute} cannot be blank.',
+        self::REQUIRED_VALUE => '{attribute} must be "{requiredValue}".',
 
-        self::REGULAR_EXPRESSION_INVALID => '{attr} is invalid.',
+        self::REGULAR_EXPRESSION_INVALID => '{attribute} is invalid.',
 
-        self::STRING_INVALID => '{attr} must be a string.',
-        self::STRING_TOO_SHORT => '{attr} should contain at least {min} character(s).',
-        self::STRING_TOO_LONG => '{attr} should contain at most {max} character(s).',
-        self::STRING_NOT_EQUAL => '{attr} should contain {length} character(s).',
+        self::STRING_INVALID => '{attribute} must be a string.',
+        self::STRING_TOO_SHORT => '{attribute} should contain at least {min} character(s).',
+        self::STRING_TOO_LONG => '{attribute} should contain at most {max} character(s).',
+        self::STRING_NOT_EQUAL => '{attribute} should contain {length} character(s).',
 
-        self::URL_INVALID => '{attr} is not a valid link.',
+        self::URL_INVALID => '{attribute} is not a valid link.',
 
-        self::BOOLEAN_INVALID => '{attr} must be either "{true}" or "{false}"',
+        self::BOOLEAN_INVALID => '{attribute} must be either "{true}" or "{false}"',
 
-        self::COMPARE_EQUAL => '{attr} must be equal to "{compareValueOrAttr}".',
-        self::COMPARE_NOT_EQUAL => '{attr} must not be equal to "{compareValueOrAttr}".',
-        self::COMPARE_GREATER_THEN => '{attr} must be greater than "{compareValueOrAttr}".',
-        self::COMPARE_GREATER_OR_EQUAL => '{attr} must be greater than or equal to "{compareValueOrAttr}".',
-        self::COMPARE_LESS_THEN => '{attr} must be less than "{compareValueOrAttr}".',
-        self::COMPARE_LESS_OR_EQUAL => '{attr} must be less than or equal to "{compareValueOrAttr}".',
+        self::COMPARE_EQUAL => '{attribute} must be equal to "{compareValueOrAttr}".',
+        self::COMPARE_NOT_EQUAL => '{attribute} must not be equal to "{compareValueOrAttr}".',
+        self::COMPARE_GREATER_THEN => '{attribute} must be greater than "{compareValueOrAttr}".',
+        self::COMPARE_GREATER_OR_EQUAL => '{attribute} must be greater than or equal to "{compareValueOrAttr}".',
+        self::COMPARE_LESS_THEN => '{attribute} must be less than "{compareValueOrAttr}".',
+        self::COMPARE_LESS_OR_EQUAL => '{attribute} must be less than or equal to "{compareValueOrAttr}".',
 
-        self::IN_INVALID => '{attr} is not allowed.',
+        self::IN_INVALID => '{attribute} is not allowed.',
 
-        self::IP_INVALID => '{attr} must be a valid IP address.',
-        self::IP_V6_NOT_ALLOWED => '{attr} must not be an IPv6 address.',
-        self::IP_V4_NOT_ALLOWED => '{attr} must not be an IPv4 address.',
-        self::IP_WRONG_CIDR => '{attr} contains wrong subnet mask.',
-        self::IP_NO_SUBNET => '{attr} must be an IP address with specified subnet.',
-        self::IP_HAS_SUBNET => '{attr} must not be a subnet.',
-        self::IP_NOT_IN_RANGE => '{attr} is not in the allowed range.',
+        self::IP_INVALID => '{attribute} must be a valid IP address.',
+        self::IP_V6_NOT_ALLOWED => '{attribute} must not be an IPv6 address.',
+        self::IP_V4_NOT_ALLOWED => '{attribute} must not be an IPv4 address.',
+        self::IP_WRONG_CIDR => '{attribute} contains wrong subnet mask.',
+        self::IP_NO_SUBNET => '{attribute} must be an IP address with specified subnet.',
+        self::IP_HAS_SUBNET => '{attribute} must not be a subnet.',
+        self::IP_NOT_IN_RANGE => '{attribute} is not in the allowed range.',
 
-        self::UNIQUE_INVALID => '{attr} "{value}" has already been taken.',
+        self::UNIQUE_INVALID => '{attribute} "{value}" has already been taken.',
         self::UNIQUE_COMBO_INVALID => 'The combination {values} of {attributes} has already been taken.',
 
-        self::EXIST_INVALID => '{attr} is invalid.',
+        self::EXIST_INVALID => '{attribute} is invalid.',
 
         // Custom errors
         self::CAPTCHA_INVALID => 'Wrong captcha provided.',

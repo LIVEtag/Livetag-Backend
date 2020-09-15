@@ -4,7 +4,7 @@ namespace rest\tests\api\User;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
 use rest\tests\ProviderDataTrait;
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 use common\fixtures\UserFixture;
 use common\models\User;
 use yii\base\Exception;
