@@ -7,9 +7,9 @@ declare(strict_types=1);
 
 namespace rest\common\models\views\User;
 
+use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
 use common\models\User;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ErrorListInterface;
 use yii\base\Model;
 
 class SendRecoveryEmailForm extends Model
