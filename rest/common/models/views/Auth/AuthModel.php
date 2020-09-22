@@ -10,7 +10,7 @@ namespace rest\common\models\views\Auth;
 use rest\common\models\views\User\SocialForm;
 use rest\common\services\Auth\AuthClientService;
 use rest\components\api\exceptions\AbstractOauthException;
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\BadRequestHttpException;

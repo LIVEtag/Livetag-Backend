@@ -8,8 +8,6 @@ namespace rest\common\models\views\User;
 
 use common\models\User;
 use rest\common\models\views\AccessToken\CreateToken;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ErrorMessage;
 use yii\base\Model;
 
 /**

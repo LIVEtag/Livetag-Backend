@@ -6,8 +6,8 @@
 namespace rest\components\api;
 
 use yii\rest\Serializer as BaseSerializer;
-use rest\components\validation\ErrorMessage;
-use rest\components\validation\ErrorListInterface;
+use common\components\validation\ErrorMessage;
+use common\components\validation\ErrorListInterface;
 use yii\base\Arrayable;
 use yii\base\Model;
 use yii\data\DataProviderInterface;

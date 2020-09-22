@@ -5,12 +5,12 @@
  */
 declare(strict_types=1);
 
-namespace rest\components\validation\validators;
+namespace common\components\validation\validators;
 
-use rest\components\validation\ErrorMessage;
+use common\components\validation\ErrorMessage;
 use yii\validators\CompareValidator as BaseValidator;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ValidationErrorTrait;
+use common\components\validation\ErrorList;
+use common\components\validation\ValidationErrorTrait;
 
 class CompareValidator extends BaseValidator
 {

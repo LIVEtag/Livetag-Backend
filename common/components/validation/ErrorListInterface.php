@@ -3,13 +3,13 @@
  * Copyright © 2019 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace rest\components\validation;
+namespace common\components\validation;
 
 use JsonSerializable;
 
 /**
  * Interface ErrorsListInterface
- * @package rest\components\validation
+ * @package common\components\validation
  */
 interface ErrorListInterface extends JsonSerializable
 {

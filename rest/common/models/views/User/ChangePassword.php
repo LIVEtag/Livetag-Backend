@@ -7,9 +7,9 @@
 namespace rest\common\models\views\User;
 
 use common\models\User;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ErrorListInterface;
-use rest\components\validation\ErrorMessage;
+use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
+use common\components\validation\ErrorMessage;
 use yii\base\Model;
 use yii\db\Exception;
 
