@@ -394,21 +394,27 @@
                 "operationId": "pagesIndex",
                 "parameters": [
                     {
-                        "in": "path",
+                        "in": "query",
                         "name": "fields",
                         "description": "Fields list in response",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "id,name,content,metaTitle,metaDescription,slug,sortOrder,createdAt,updatedAt"
                         }
                     },
                     {
-                        "in": "path",
+                        "in": "query",
                         "name": "sort",
                         "description": "Sort ordering. You can use order=[-]sortOrder as parameter in Url",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "price",
+                            "enum": [
+                                "sortOrder",
+                                "-sortOrder"
+                            ]
                         }
                     },
                     {
@@ -429,12 +435,15 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/staticPage"
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/staticPage"
+                                                    }
                                                 }
                                             }
                                         }
@@ -730,6 +739,44 @@
                     }
                 ]
             },
+            "status200DataProvider": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/status200"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "_meta": {
+                                "type": "object",
+                                "properties": {
+                                    "pagination": {
+                                        "type": "object",
+                                        "properties": {
+                                            "totalCount": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "pageCount": {
+                                                "type": "integer",
+                                                "example": 10
+                                            },
+                                            "currentPage": {
+                                                "type": "integer",
+                                                "example": 3
+                                            },
+                                            "perPage": {
+                                                "type": "integer",
+                                                "example": 20
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
             "status201": {
                 "allOf": [
                     {
@@ -952,11 +999,54 @@
             "staticPage": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "FAQ"
                     },
                     "content": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Some content"
+                    },
+                    "metaTitle": {
+                        "type": "string",
+                        "example": "SEO title"
+                    },
+                    "metaDescription": {
+                        "type": "string",
+                        "example": "SEO Description"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "faq"
+                    },
+                    "sortOrder": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "createdAt": {
+                        "type": "integer",
+                        "example": 123123
+                    },
+                    "updatedAt": {
+                        "type": "integer",
+                        "example": 123123
+                    },
+                    "_links": {
+                        "type": "object",
+                        "properties": {
+                            "self": {
+                                "type": "string",
+                                "example": "http://localhost/rest/v1/pages/faq"
+                            },
+                            "index": {
+                                "type": "string",
+                                "example": "http://localhost/rest/v1/pages"
+                            }
+                        }
                     }
                 }
             },
