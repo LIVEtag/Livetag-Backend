@@ -4,8 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-use common\components\sentry\Component as SentryComponent;
-use OlegTsvetkov\Yii2\Sentry\LogTarget as SentryLogTarget;
+use notamedia\sentry\SentryTarget;
 use yii\db\Connection;
 use yii\log\FileTarget;
 use yii\swiftmailer\Mailer;
@@ -15,7 +14,7 @@ Yii::setAlias('@rest.domain', '{{YII_REST_DOMAIN}}');
 Yii::setAlias('@backend.domain', '{{YII_BACKEND_DOMAIN}}');
 
 return [
-    'bootstrap' => ['sentry', 'log'],
+    'bootstrap' => ['log'],
     'components' => [
         'db' => [
             'class' => Connection::class,
@@ -40,10 +39,6 @@ return [
             ],
             'useFileTransport' => filter_var('{{MAIL_USEFILETRANSPORT}}', FILTER_VALIDATE_BOOLEAN),
         ],
-        'sentry' => [
-            'class' => SentryComponent::class,
-            'dsn' => '{{SENTRY_DSN}}',
-        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -52,12 +47,15 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
                 [
-                    'class' => SentryLogTarget::class,
+                    'class' => SentryTarget::class,
+                    'dsn' => '{{SENTRY_DSN}}',
                     'enabled' => filter_var('{{SENTRY_LOG_ENABLED}}', FILTER_VALIDATE_BOOLEAN),
                     'levels' => ['error', 'warning'],
                     'except' => [
                         'yii\web\HttpException:4**',
                     ],
+                    // Write the context information (the default is true):
+                    'context' => true,
                 ],
             ],
         ],
