@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\User;
 
+use Yii;
 use yii\web\NotFoundHttpException;
 use common\models\User;
 use rest\common\models\views\User\RecoveryPassword;
@@ -18,9 +19,9 @@ use rest\components\api\actions\Action;
 class NewPasswordAction extends Action
 {
     /**
-     * @return RecoveryPassword
+     * @return RecoveryPassword|void
      */
-    public function run(): RecoveryPassword
+    public function run()
     {
         $params = \Yii::$app->request->getBodyParams();
         $user = User::findByPasswordResetToken($params['resetToken']);
@@ -31,7 +32,11 @@ class NewPasswordAction extends Action
         /** @var RecoveryPassword $recovery */
         $recovery = \Yii::createObject(RecoveryPassword::class);
         $recovery->setAttributes($params);
+        $recovery->recovery($user);
+        if ($recovery->hasErrors()) {
+            return $recovery;
+        }
 
-        return $recovery->recovery($user);
+        Yii::$app->response->setStatusCode(204);
     }
 }

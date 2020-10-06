@@ -5,6 +5,5 @@
  */
 
 return [
-    'user.passwordResetTokenExpire' => 600,
     'projectDomain' => 'example.com/'
 ];
