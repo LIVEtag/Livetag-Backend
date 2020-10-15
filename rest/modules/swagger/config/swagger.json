@@ -627,21 +627,14 @@
                 ],
                 "operationId": "userRecoveryPasswordChange",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No content",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/user"
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }

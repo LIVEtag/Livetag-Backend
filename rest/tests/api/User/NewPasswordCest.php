@@ -162,7 +162,7 @@ class NewPasswordCest extends ActionCest
                 'confirmPassword' => $password
             ]
         );
-        $I->seeResponseResultIsOk();
+        $I->seeResponseResultIsNoContent();
         $I->seeRecord(User::class, ['id' => $user->id, 'passwordResetToken' => null]);
 
         $I->amGoingTo("Check than I can login with new password");
