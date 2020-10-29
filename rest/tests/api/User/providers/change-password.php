@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 use common\fixtures\UserFixture;
 use rest\tests\ApiTester;
 

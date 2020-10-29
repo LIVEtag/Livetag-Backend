@@ -8,8 +8,6 @@ namespace rest\common\models\views\User;
 
 use common\models\User;
 use rest\common\models\views\AccessToken\CreateToken;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ErrorMessage;
 use yii\base\Model;
 
 /**
@@ -55,7 +53,7 @@ class SignupUser extends Model
             [['userIp'], 'string', 'max' => 46],
             [['userAgent'], 'string'],
 
-            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'filter', 'filter' => 'trim', 'skipOnEmpty' => true],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],

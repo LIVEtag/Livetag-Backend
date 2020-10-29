@@ -39,8 +39,7 @@ class ChangePasswordCest extends ActionCest
         foreach ($this->getProviderData($I, 'update') as $data) {
             $this->dataComment($I, $data);
             $I->send($this->getMethod(), $this->getUrl($I), $data['request']);
-            $I->seeResponseResultIsOk();
-            $I->seeResponseContainsJson($data['response'], '$.result');
+            $I->seeResponseResultIsNoContent();
         }
     }
 

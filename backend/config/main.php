@@ -14,7 +14,6 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
     'layout' => 'container',
     'modules' => [],
     'components' => [
@@ -33,15 +32,6 @@ return [
         'session' => [
             'name' => '_backendSessionId',
             'savePath' => dirname(__DIR__) . '/runtime/session',
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => FileTarget::class,
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

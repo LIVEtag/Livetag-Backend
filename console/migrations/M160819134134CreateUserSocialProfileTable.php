@@ -23,8 +23,7 @@ class M160819134134CreateUserSocialProfileTable extends Migration
                 'email' => $this->string()->notNull(),
                 'createdAt' => $this->integer()->unsigned()->notNull(),
                 'updatedAt' => $this->integer()->unsigned()->notNull(),
-            ],
-            self::TABLE_OPTIONS
+            ]
         );
 
         $this->createIndex('idx_user_social_profile_userId', '{{%user_social_profile}}', 'userId');

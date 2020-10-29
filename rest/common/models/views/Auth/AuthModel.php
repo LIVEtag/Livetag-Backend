@@ -10,7 +10,7 @@ namespace rest\common\models\views\Auth;
 use rest\common\models\views\User\SocialForm;
 use rest\common\services\Auth\AuthClientService;
 use rest\components\api\exceptions\AbstractOauthException;
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\BadRequestHttpException;
@@ -98,7 +98,7 @@ class AuthModel extends Model
     public function createSocialForm(): SocialForm
     {
         $socialForm = new SocialForm();
-        $socialForm->email = $this->attributes['email'];
+        $socialForm->email = $this->attributes['email'] ?? null;
         $socialForm->socialType = $this->clientType;
         $socialForm->socialId = $this->attributes['id'];
         $socialForm->userIp = \Yii::$app->request->getUserIP();

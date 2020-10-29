@@ -17,8 +17,8 @@ use yii\base\Model;
  */
 class SocialForm extends Model
 {
-    private const IP_LENGHT = 46;
-    private const EMAIL_LENGHT = 255;
+    private const IP_LENGTH = 46;
+    private const EMAIL_LENGTH = 255;
 
     /**
      * @var User
@@ -56,14 +56,20 @@ class SocialForm extends Model
     public function rules(): array
     {
         return [
-            [['userIp'], 'string', 'max' => self::IP_LENGHT],
+            [['userIp'], 'string', 'max' => self::IP_LENGTH],
             [['userAgent', 'socialId',], 'string'],
-            [['socialType'], 'integer'],
+            [['socialType'], 'string'],
 
-            ['email', 'filter', 'filter' => 'trim'],
-            ['email', 'required'],
+            ['email', 'filter', 'filter' => 'trim', 'skipOnEmpty' => true],
+            [
+                'email',
+                'required',
+                'message' =>
+                    'You have to allow ' . $this->socialType .' to return email on login',
+            ],
+
             ['email', 'email'],
-            ['email', 'string', 'max' => self::EMAIL_LENGHT],
+            ['email', 'string', 'max' => self::EMAIL_LENGTH],
             ['email', 'signupUser'],
         ];
     }

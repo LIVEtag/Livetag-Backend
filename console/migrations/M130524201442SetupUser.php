@@ -26,8 +26,7 @@ class M130524201442SetupUser extends Migration
                 'status' => $this->smallInteger()->notNull()->defaultValue(10),
                 'createdAt' => $this->integer()->unsigned()->notNull(),
                 'updatedAt' => $this->integer()->unsigned()->notNull(),
-            ],
-            self::TABLE_OPTIONS
+            ]
         );
     }
 

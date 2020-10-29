@@ -7,7 +7,7 @@
 namespace rest\components\api;
 
 use rest\components\api\exceptions\ThirdPartyParser;
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 use yii\web\ErrorHandler as WebErrorHandler;
 use yii\base\Exception;
 use yii\base\ErrorException;

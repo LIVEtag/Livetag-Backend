@@ -13,6 +13,7 @@ variables:
 
 before_script:
   - rm -fr /var/www/html
+  - test -e /usr/local/etc/php/conf.d && cp ./dev/docker/php/conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
 
 stages:
   - build
@@ -24,7 +25,7 @@ stages:
 build_vendor:
   stage: build
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   artifacts:
     untracked: true
@@ -43,79 +44,69 @@ build_vendor:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
   when: always
-  only:
-    - web
   tags:
     - shared-cli
 
 phpmd:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_md
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
-    - shared-cli
+    - shared-tests
 
 phpcpd:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cpd
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
-    - shared-cli
+    - shared-tests
 
 phpcs:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_cs
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
-    - shared-cli
+    - shared-tests
 
 phpsa:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   script:
     - echo "===== Run tests ====="
     - vendor/bin/dep tests:php_sa
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
-    - shared-cli
+    - shared-tests
 
 codecept:
   stage: tests
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -131,6 +122,9 @@ codecept:
     when: on_failure
     expire_in: 2h
   variables:
+    DB_TEST_HOST: ${DB_HOST}
+    DB_TEST_NAME: ${DB_NAME}
+    DB_TEST_PORT: ${DB_PORT}
     PROXY_build_DOMAIN: codecept-${MAIN_DOMAIN}
     YII_MAIN_DOMAIN: codecept-${MAIN_DOMAIN}
     YII_REST_DOMAIN: codecept-${MAIN_DOMAIN}
@@ -141,7 +135,6 @@ codecept:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
-    - /etc/init.d/apache2 start
     - ./vendor/bin/codecept run
   except:
     - master
@@ -149,18 +142,16 @@ codecept:
     name: codecept-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   when: always
-  only:
-    - web
   dependencies:
     - build_vendor
   tags:
-    - shared-web
+    - shared-tests
 
 dev:review:
   stage: dev
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -176,10 +167,16 @@ dev:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - echo "===== Run SSH ====="
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
+    - echo "SSH Password ${CI_COMMIT_SHA}"
+    - sed -ri "s/^sshlogin/${GITLAB_USER_LOGIN}/" /etc/passwd
+    - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
+    - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
+
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
-  only:
-    - web
   except:
     - master
   environment:
@@ -194,7 +191,7 @@ dev:swagger:
   stage: dev
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/swagger:3
+    name: hub.ci.gbksoft.net:5000/pub/swagger-ui:latest
   variables:
     PROXY_build_HTTPS: "443:8080"
     PROXY_build_DOMAIN: dev-swagger-ui-${MAIN_DOMAIN}
@@ -205,8 +202,6 @@ dev:swagger:
     - echo "Swagger UI URL ${BUILD_URL}"
     - echo "JSON URL ${API_URL}"
     - sh /usr/share/nginx/docker-run.sh
-  only:
-    - web
   except:
     - master
   environment:
@@ -219,7 +214,7 @@ test:review:
   stage: test
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -236,11 +231,17 @@ test:review:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - export DB_IP=`cat /etc/hosts | grep "${DB_HOST}" | awk '{print$1;}'`
+    - echo "===== Run SSH ====="
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
+    - echo "SSH Password ${CI_COMMIT_SHA}"
+    - sed -ri "s/^sshlogin/${GITLAB_USER_LOGIN}/" /etc/passwd
+    - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
+    - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
+
     - ./vendor/bin/dep external_config --db_ip=${DB_IP} --var_name=DB_IP --token=${GITLAB_TOKEN} --project=$CI_PROJECT_ID
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground
-  only:
-    - web
   except:
     - master
   environment:
@@ -255,7 +256,7 @@ test:swagger:
   stage: test
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/swagger:3
+    name: hub.ci.gbksoft.net:5000/pub/swagger-ui:latest
   variables:
     PROXY_build_HTTPS: "443:8080"
     PROXY_build_DOMAIN: test-swagger-ui-${MAIN_DOMAIN}
@@ -266,8 +267,6 @@ test:swagger:
   - echo "Swagger UI URL ${BUILD_URL}"
   - echo "JSON URL ${API_URL}"
   - sh /usr/share/nginx/docker-run.sh
-  only:
-    - web
   except:
     - master
   environment:
@@ -280,7 +279,7 @@ live:review:
   stage: live
   when: manual
   image:
-    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    name: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     entrypoint: [""]
   services:
     - name: mysql:5.7
@@ -296,6 +295,14 @@ live:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - echo "===== Run SSH ====="
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
+    - echo "SSH Password ${CI_COMMIT_SHA}"
+    - sed -ri "s/^sshlogin/${GITLAB_USER_LOGIN}/" /etc/passwd
+    - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
+    - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
+
     - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
     - apache2-foreground

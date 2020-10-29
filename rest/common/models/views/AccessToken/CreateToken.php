@@ -7,8 +7,8 @@ namespace rest\common\models\views\AccessToken;
 
 use rest\common\models\AccessToken;
 use rest\common\models\User;
-use rest\components\validation\ErrorList;
-use rest\components\validation\ErrorListInterface;
+use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use common\components\user\SearchService;

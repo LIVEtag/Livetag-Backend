@@ -6,6 +6,8 @@
 namespace common\models;
 
 use common\components\user\SearchService;
+use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
