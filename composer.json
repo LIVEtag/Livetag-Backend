@@ -4,10 +4,16 @@
     "type": "project",
     "license": "MTI",
     "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "require": {
-        "php": "~7.1.0",
-        "yiisoft/yii2": "2.0.16",
-        "yiisoft/yii2-bootstrap": "2.0.6",
+        "php": "~7.3.0",
+        "yiisoft/yii2": "2.0.38",
+        "yiisoft/yii2-bootstrap": "2.0.10",
         "yiisoft/yii2-swiftmailer": "2.0.7",
         "yiisoft/yii2-authclient": "2.1.8",
         "gbksoft/shell-command-builder": "1.0.1",
@@ -17,7 +23,9 @@
         "kartik-v/yii2-widgets": "3.4.0",
         "gbksoft/phpcent": "~1.0.5",
         "deployer/deployer": "6.1",
-        "dmstr/yii2-adminlte-asset": "2.5"
+        "dmstr/yii2-adminlte-asset": "2.5",
+        "omnilight/yii2-scheduling": "^1.1",
+        "notamedia/yii2-sentry": "^1.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.14",
@@ -31,7 +39,6 @@
         "sebastian/phpcpd": "3.0.1",
         "wimg/php-compatibility": "8.1.0",
         "phpunit/phpunit": "5.7.27",
-        "roave/security-advisories": "dev-master",
         "bizley/migration": "3.0.1",
         "squizlabs/php_codesniffer": "3.4.2",
         "pheromone/phpcs-security-audit": "2.0.1",

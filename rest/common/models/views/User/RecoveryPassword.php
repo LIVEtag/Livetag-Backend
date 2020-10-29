@@ -40,30 +40,6 @@ class RecoveryPassword extends Model
     }
 
     /**
-     * @param User $user
-     * @return User
-     * @throws \InvalidArgumentException
-     */
-    public function generateAndSendEmail(User $user)
-    {
-        if ($user->isNewRecord) {
-            throw new \InvalidArgumentException();
-        }
-
-        $user->generatePasswordResetToken();
-        if ($user->save()) {
-            \Yii::$app
-                ->mailer
-                ->compose('recovery-password', ['user' => $user])
-                ->setFrom(\Yii::$app->params['adminEmail'])
-                ->setTo($user->email)
-                ->send();
-        }
-
-        return $user->passwordResetToken;
-    }
-
-    /**
      * Set new users's password
      *
      * @param User $user

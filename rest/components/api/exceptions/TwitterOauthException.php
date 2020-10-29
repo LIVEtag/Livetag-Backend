@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace rest\components\api\exceptions;
 
-use rest\components\validation\ErrorList;
+use common\components\validation\ErrorList;
 
 /**
  * Class TwitterOauthException

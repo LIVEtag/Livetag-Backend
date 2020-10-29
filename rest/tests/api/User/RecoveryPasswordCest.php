@@ -54,7 +54,7 @@ class RecoveryPasswordCest extends ActionCest
         foreach ($this->getProviderData($I, 'validation') as $data) {
             $this->dataComment($I, $data);
             $I->send($this->getMethod(), $this->getUrl($I), $data['request']);
-            $I->seeResponseResultIsNotFound();
+            $I->seeResponseResultIsUnprocessableEntity();
         }
     }
 }

@@ -55,7 +55,6 @@ return [
             'migrationPath' => null,
             'migrationNamespaces' => [
                 'console\migrations', //base migrations
-                'rest\modules\chat\migrations'// chat module migrations
             ],
         ],
         'fixture' => [

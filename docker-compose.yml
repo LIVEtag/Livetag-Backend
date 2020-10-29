@@ -1,14 +1,15 @@
 version: '3.3'
 services:
   web-php:
-    image: hub.ci.gbksoft.net:5000/pub/php-apache:7.1
+    image: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - .:/var/www/html
-      - ./dev/docker/apache2/php7.1/etc/cmd/entrypoint.sh:/entrypoint.sh
-      - ./dev/docker/apache2/php7.1/etc/ssl:/etc/apache2/ssl
+      - ./dev/docker/apache2/php/etc/cmd/entrypoint.sh:/entrypoint.sh
+      - ./dev/docker/apache2/php/etc/ssl:/etc/apache2/ssl
+      - ./dev/docker/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     working_dir: /var/www/html
     environment:
       # Custom user ID and group ID to start
@@ -55,8 +56,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
   swagger-ui:
-    container_name: swagger-ui
-    image: hub.ci.gbksoft.net:5000/pub/swagger:3
+    image: hub.ci.gbksoft.net:5000/pub/swagger-ui:latest
     environment:
       API_URL: "https://${REST_DOMAIN}/rest/swagger/main/json"
     ports:

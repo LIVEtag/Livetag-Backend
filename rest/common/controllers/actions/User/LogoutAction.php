@@ -7,7 +7,9 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\User;
 
+use rest\common\models\User;
 use rest\components\api\actions\Action;
+use Yii;
 
 /**
  * Class LogoutAction
@@ -19,7 +21,9 @@ class LogoutAction extends Action
      */
     public function run(): void
     {
-        \Yii::$app->user->accessToken->invalidate();
-        \Yii::$app->getResponse()->setStatusCode(204);
+        /** @var User $user */
+        $user = Yii::$app->user->identity;
+        $user->accessToken->invalidate();
+        $this->response->setStatusCode(204);
     }
 }

@@ -1,23 +1,18 @@
 <?php
-
 /**
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 
-use common\models\User;
-use rest\components\api\UrlRule;
+use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
+use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
-use rest\modules\chat\Module as ChatModule;
-use rest\components\validation\validators as RestValidators;
-use rest\common\models\User as RestUser;
-use rest\modules\chat\controllers\ChannelController;
 use yii\data\Pagination;
-use yii\log\FileTarget;
 use yii\web\JsonParser;
 use yii\web\Response;
+use yii\web\User;
 
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
@@ -29,7 +24,6 @@ $params = array_merge(
 return [
     'id' => 'rest-api',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
     'modules' => [
         'swagger' => [
             'class' => SwaggerModule::class,
@@ -40,18 +34,9 @@ return [
     ],
     'components' => [
         'user' => [
-            'class' => RestUser::class,
-            'identityClass' => User::class,
+            'class' => User::class,
+            'identityClass' => RestUser::class,
             'enableSession' => false,
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => FileTarget::class,
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
         ],
         'response' => [
             'format' => Response::FORMAT_JSON,
@@ -143,25 +128,7 @@ return [
         ],
     ],
     'container' => [
-        'singletons' => [
-            \rest\components\validation\ErrorListInterface::class => \rest\components\validation\ErrorList::class,
-        ],
         'definitions' => [
-            \yii\validators\StringValidator::class => RestValidators\StringValidator::class,
-            \yii\validators\EmailValidator::class => RestValidators\EmailValidator::class,
-            \yii\validators\FileValidator::class => RestValidators\FileValidator::class,
-            \yii\validators\ImageValidator::class => RestValidators\ImageValidator::class,
-            \yii\validators\BooleanValidator::class => RestValidators\BooleanValidator::class,
-            \yii\validators\NumberValidator::class => RestValidators\NumberValidator::class,
-            \yii\validators\DateValidator::class => RestValidators\DateValidator::class,
-            \yii\validators\RangeValidator::class => RestValidators\RangeValidator::class,
-            \yii\validators\RequiredValidator::class => RestValidators\RequiredValidator::class,
-            \yii\validators\RegularExpressionValidator::class => RestValidators\RegularExpressionValidator::class,
-            \yii\validators\UrlValidator::class => RestValidators\UrlValidator::class,
-            \yii\validators\CompareValidator::class => RestValidators\CompareValidator::class,
-            \yii\validators\IpValidator::class => RestValidators\IpValidator::class,
-            \yii\validators\UniqueValidator::class => RestValidators\UniqueValidator::class,
-            \yii\validators\ExistValidator::class => RestValidators\ExistValidator::class,
             Pagination::class => [
                 'pageSizeParam' => 'perPage',
             ],
