@@ -68,8 +68,6 @@ if (empty($params['env'])) {
     }
 }
 
-$environments = getEnvironments();
-
 echo "\n  Start initialization ...\n\n";
 $files = getFileList(SCRIPT_ROOT . "/environments/{$env['path']}");
 if (isset($env['skipFiles'])) {
@@ -82,7 +80,7 @@ if (isset($env['skipFiles'])) {
 $all = false;
 foreach ($files as $file) {
 
-    if (!copyFile(SCRIPT_ROOT, "environments/{$env['path']}/$file", $file, $all, $params, $errorLogs, $environments)) {
+    if (!copyFile(SCRIPT_ROOT, "environments/{$env['path']}/$file", $file, $all, $params, $errorLogs)) {
         break;
     }
 }
@@ -126,31 +124,14 @@ function getFileList($root, $basePath = '')
     return $files;
 }
 
-function copyFile($root, $source, $target, &$all, $params, &$errorLogs, $environments = [])
+function copyFile($root, $source, $target, &$all, $params, &$errorLogs)
 {
     if (!is_file($root . '/' . $source)) {
         echo "       skip $target ($source not exist)\n";
         return true;
     }
 
-    $contentSource = preg_replace_callback(
-        "/\{\{([^\}]+?)\}\}/",
-        function ($matches) use (&$errorLogs, $environments) {
-            $key = $matches[1];
-            $errorLogs[$key] = $matches[0];
-            $envVar = getenv($key);
-            if ($envVar !== false) {
-                unset($errorLogs[$key]);
-                return $envVar;
-            } else if (isset($environments[$key])) {
-                unset($errorLogs[$key]);
-                return $environments[$key];
-            }
-
-            return '';
-        }, file_get_contents($root . '/' . $source)
-    );
-
+    $contentSource = (file_get_contents($root . '/' . $source)) ;
     if (is_file($root . '/' . $target)) {
         $contentTarget = file_get_contents($root . '/' . $target);
 

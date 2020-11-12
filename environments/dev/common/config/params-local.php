@@ -4,7 +4,4 @@
  * See LICENSE.txt for license details.
  */
 
-return [
-    'supportEmail' => '{{SUPPORT_EMAIL}}',
-    'adminEmail' => '{{ADMIN_EMAIL}}',
-];
+return [];

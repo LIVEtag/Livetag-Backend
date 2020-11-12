@@ -1,10 +1,11 @@
 version: '3.3'
 services:
   web-php:
+    container_name: ${PROJECT}_php
     image: hub.ci.gbksoft.net:5000/pub/php-apache:7.3
     ports:
-      - "80:80"
-      - "443:443"
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
     volumes:
       - .:/var/www/html
       - ./dev/docker/apache2/php/etc/cmd/entrypoint.sh:/entrypoint.sh
@@ -25,11 +26,12 @@ services:
       GITHUB_KEY: ${GITHUB_KEY}
       PHP_IDE_CONFIG: "serverName=${MAIN_DOMAIN}"
       PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
-      XDEBUG_CONFIG: "idekey=PHPSTORM remote_autostart=0 remote_connect_back=0 remote_enable=1 remote_mode=req remote_host=${XDEBUG_HOST}"
+      XDEBUG_CONFIG: "idekey=${XDEBUG_IDEKEY} remote_autostart=0 remote_connect_back=0 remote_enable=1 remote_mode=req remote_host=${XDEBUG_HOST}"
     links:
       - db
       - dbtest
   db:
+    container_name: ${PROJECT}_db
     image: mysql:5.7
     ports:
       - "${DB_PORT}:3306"
@@ -43,6 +45,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
   dbtest:
+    container_name: ${PROJECT}_dbtest
     image: mysql:5.7
     ports:
       - "${DB_TEST_PORT}:3306"
@@ -56,8 +59,10 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
     command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
   swagger-ui:
+    container_name: ${PROJECT}_swagger
     image: hub.ci.gbksoft.net:5000/pub/swagger-ui:latest
     environment:
       API_URL: "https://${REST_DOMAIN}/rest/swagger/main/json"
+      DOC_EXPANSION: "none"
     ports:
-      - "8080:8080"
+      - "${SWAGGER_PORT}:8080"

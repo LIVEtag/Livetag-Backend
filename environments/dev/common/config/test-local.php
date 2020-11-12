@@ -1,11 +1,10 @@
 <?php
-
 return yii\helpers\ArrayHelper::merge(
     require __DIR__ . '/main-local.php',
     [
         'components' => [
             'db' => [
-                'dsn' => 'mysql:host={{DB_TEST_HOST}};dbname={{DB_TEST_NAME}}',
+                'dsn' => 'mysql:host=' . getenv('DB_TEST_HOST') . ';dbname=' . getenv('DB_TEST_NAME'),
             ]
         ],
         'container' => [
