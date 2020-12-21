@@ -7,6 +7,7 @@
 namespace Deployer;
 
 use Symfony\Component\Console\Input\InputOption;
+use Dotenv\Dotenv;
 
 require 'recipe/common.php';
 
@@ -19,9 +20,8 @@ set('yii_environment', getenv('YII_BUILD_ENV'));
 set('design_repo', getenv('DESIGN_REPO_URL'));
 
 $variables = [];
-$envFile = __DIR__ . '/.env';
-if (file_exists($envFile)) {
-    $variables = (array)parse_ini_file($envFile);
+if (file_exists(__DIR__ . '/.env')) {
+    $variables = Dotenv::createArrayBacked(__DIR__)->load();
 }
 
 define('YII_PROJECT_ROOT', __DIR__);

@@ -9,6 +9,11 @@ use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\Module as V1Module;
+use yii\authclient\clients\Facebook;
+use yii\authclient\clients\Google;
+use yii\authclient\clients\LinkedIn;
+use yii\authclient\clients\Twitter;
+use yii\authclient\Collection;
 use yii\data\Pagination;
 use yii\web\JsonParser;
 use yii\web\Response;
@@ -53,6 +58,44 @@ return [
             ],
             'trustedHosts' => [
                 '10.1.0.1',
+            ],
+        ],
+        'authClientCollection' => [
+            'class' => Collection::class,
+            'clients' => [
+                'google' => [
+                    'class' => Google::class,
+                    'validateAuthState' => false,
+                    'scope' => 'email',
+                    'clientId' => getenv('GOOGLE_CLIENT_ID'),
+                    'clientSecret' => getenv('GOOGLE_CLIENT_SECRET'),
+                ],
+                'facebook' => [
+                    'class' => Facebook::class,
+                    'validateAuthState' => false,
+                    'attributeNames' => [
+                        'email'
+                    ],
+                    'clientId' => getenv('FACEBOOK_CLIENT_ID'),
+                    'clientSecret' => getenv('FACEBOOK_CLIENT_SECRET'),
+                ],
+                'twitter' => [
+                    'class' => Twitter::class,
+                    'attributeParams' => [
+                        'include_email' => 'true',
+                    ],
+                    'consumerKey' => getenv('TWITTER_CONSUMER_KEY'),
+                    'consumerSecret' => getenv('TWITTER_CONSUMER_SECRET'),
+                ],
+                'linkedin' => [
+                    'class' => LinkedIn::class,
+                    'validateAuthState' => false,
+                    'attributeNames' => [
+                        'email-address',
+                    ],
+                    'clientId' => getenv('LINKEDIN_CLIENT_ID'),
+                    'clientSecret' => getenv('LINKEDIN_CLIENT_SECRET'),
+                ]
             ],
         ],
         'urlManager' => [

@@ -3,19 +3,71 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
+use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
 use common\components\validation\validators as RestValidators;
+use notamedia\sentry\SentryTarget;
+use yii\caching\FileCache;
+use yii\db\Connection;
+use yii\log\FileTarget;
+use yii\swiftmailer\Mailer;
+
+Yii::setAlias('@base.domain', getenv('YII_MAIN_DOMAIN'));
+Yii::setAlias('@rest.domain', getenv('YII_REST_DOMAIN'));
+Yii::setAlias('@backend.domain', getenv('YII_BACKEND_DOMAIN'));
 
 return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'timeZone' => 'UTC',
+    'bootstrap' => ['log'],
     'components' => [
+        'db' => [
+            'class' => Connection::class,
+            'dsn' => 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';port=' . getenv('DB_PORT') . '',
+            'username' => getenv('DB_USERNAME'),
+            'password' => getenv('DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+        ],
+        'mailer' => [
+            'class' => Mailer::class,
+            'viewPath' => '@common/mail',
+            'transport' => [
+                'class' => Swift_SmtpTransport::class,
+                'host' => getenv('MAIL_HOST'),
+                'username' => getenv('MAIL_USERNAME'),
+                'password' => getenv('MAIL_PASSWORD'),
+                'port' => getenv('MAIL_PORT'),
+                'encryption' => getenv('MAIL_ENCRYPTION'),
+            ],
+        ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => FileTarget::class,
+                    'levels' => ['error', 'warning'],
+                ],
+                [
+                    'class' => SentryTarget::class,
+                    'dsn' => getenv('SENTRY_DSN'),
+                    'enabled' => filter_var(getenv('SENTRY_LOG_ENABLED'), FILTER_VALIDATE_BOOLEAN),
+                    'levels' => ['error', 'warning'],
+                    'except' => [
+                        'yii\web\HttpException:4**',
+                    ],
+                    // Write the context information (the default is true):
+                    'context' => true,
+                ],
+            ],
+        ],
+        // If the project uses a load balancer, the file cache must be replaced (redis, memcached etc.)
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => FileCache::class,
+            'cachePath' => Yii::getAlias('@rest') . '/runtime/cache'//to store cache it one place for invalidation
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -25,7 +77,7 @@ return [
     ],
     'container' => [
         'singletons' => [
-            \common\components\validation\ErrorListInterface::class => \common\components\validation\ErrorList::class,
+            ErrorListInterface::class => ErrorList::class,
         ],
         'definitions' => [
             \yii\validators\StringValidator::class => RestValidators\StringValidator::class,

@@ -25,7 +25,8 @@
         "deployer/deployer": "6.1",
         "dmstr/yii2-adminlte-asset": "2.5",
         "omnilight/yii2-scheduling": "^1.1",
-        "notamedia/yii2-sentry": "^1.5"
+        "notamedia/yii2-sentry": "^1.5",
+        "vlucas/phpdotenv": "^5.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.14",
