@@ -1,1 +1,1 @@
-^SKY2\-\d{1,4}\.\s.{4,}|Merge|Bump|Revert
+^SKY2\-\d{1,4}\.\s.{4,}|task#[0-9]+(\-[0-9]+)?: [^ ].*|Merge|Bump|Revert
