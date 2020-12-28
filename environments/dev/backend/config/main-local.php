@@ -5,8 +5,8 @@
  */
 
 use yii\debug\Module as DebugModule;
-use yii\gii\generators\crud\Generator;
-use yii\gii\generators\model\Generator as ModelGenerator;
+use backend\generators\crud\Generator as CrudGenerator;
+use backend\generators\model\Generator as ModelGenerator;
 use yii\gii\Module as GiiModule;
 
 $config = [
@@ -38,18 +38,18 @@ if (!YII_ENV_TEST) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => GiiModule::class,
-        'allowedIPs' => ['127.0.0.1', '::1', '172.18.0.*'],
+        'allowedIPs' => ['127.0.0.1', '::1', '172.*'],
         'generators' => [ //here
             'crud' => [
-                'class' => Generator::class,
+                'class' => CrudGenerator::class,
                 'templates' => [
-                    'adminlte' => '@backend/generators/crud/simple',
+                    'default' => '@backend/generators/crud/default',
                 ]
             ],
             'model' => [
                 'class' => ModelGenerator::class,
                 'templates' => [
-                    'php7' => '@backend/generators/model/default',
+                    'default' => '@backend/generators/model/default',
                 ]
             ],
         ],

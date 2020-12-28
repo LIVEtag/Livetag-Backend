@@ -14,10 +14,8 @@ Project setup via .env
 -------------------
 
 ### How to add configuration to .env file:
-* Make .env file (or other file with .env suffix - like .dev.env)
-* Move base set of options from .env.example to file you made (!!IMPORTANT variables present in .env.example are required and must be in .env file or have to be removed from *.php environment configuration )
-* To create new configuration option use template in placeholder's name - {{SOME_KEY}}, will be replaced with value from .env file
-* !!!IMPORTANT Do not use quotes in .env file
+* Make .env file
+* Move base set of options from .env.example to file you made
 ```
     SOME_KEY=<some value>
 ```
@@ -26,7 +24,7 @@ Project setup via .env
     MAIN_DOMAIN= application domain
     REST_DOMAIN= API domain
     BACKEND_DOMAIN= admin domain
-    DEPLOY_DOMAIN= domain to deploy remotely 
+    DEPLOY_DOMAIN= domain to deploy remotely
     DEPLOY_USER= deploy user when deploy remotely
     DEPLOY_PORT=deploy port when deploy remotely
     DEPLOY_KEY_PATH= deploy key when deploy remotely
@@ -45,11 +43,8 @@ Project setup via .env
 
 
 ### How this works?:
- Script reads configuration from chosen .env file
- On finding {{SOME_KEY}}, replacing this placeholder with value
- 
+ Script reads configuration from chosen .env file with [phpdotenv](https://github.com/vlucas/phpdotenv)
 
-> All placeholders unable to replace will be shown at the end of work
 > File used for `docker-compose` also
 
 Environment configuration details
@@ -85,7 +80,7 @@ Run `docker-compose up`
 
 On demand run `docker login`
 
-Enter to container `docker-compose exec --user=www-data web-php bash`
+Enter to container `docker exec -it --user=www-data livetag_php bash`
 
 Run `composer install`
 

@@ -17,6 +17,7 @@ Yii::setAlias('@rest.domain', getenv('YII_REST_DOMAIN'));
 Yii::setAlias('@backend.domain', getenv('YII_BACKEND_DOMAIN'));
 
 return [
+    'name' => 'LiveTag',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',

@@ -59,8 +59,9 @@
     # RewriteCond "%{ENV:YII_BUILD_ENV}" ^Dev|Test$ [NC]
     # RewriteRule ^design/?(.*)$ /design/dist/$1 [L]
 
-    # Frontend
+    # Swagger
     RewriteCond %{REQUEST_URI} !^/swagger/? [NC] #For Swagger
-    # RewriteCond %{REQUEST_URI} !^/design/? [NC] #For Design !!! Dev only
-    RewriteRule ^/?(.*)$ /frontend/web/$1 [L]
+
+    # Root path
+    RewriteRule ^/?(.*)$ /backend/web/$1 [L]
 </IfModule>

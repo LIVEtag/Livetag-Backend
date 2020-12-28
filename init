@@ -253,16 +253,10 @@ function setRequestBaseUrl($root, $paths)
             'rest' => [
                 'baseUrl' => '/rest',
             ],
-            'frontend' => [
-                'baseUrl' => '',
-                'csrfCookie' => '/',
-                'identityCookie' => '/',
-            ],
         ],
         2 => [ // domain
             'backend' => false,
             'rest' => false,
-            'frontend' => false,
         ]
     ];
 

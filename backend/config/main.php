@@ -1,7 +1,8 @@
 <?php
 
 use common\models\User;
-use yii\log\FileTarget;
+use dmstr\web\AdminLteAsset;
+use kartik\grid\Module;
 
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
@@ -14,8 +15,11 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'layout' => 'container',
-    'modules' => [],
+    'modules' => [
+        'gridview' => [
+            'class' => Module::class
+        ]
+    ],
     'components' => [
         'user' => [
             'identityClass' => User::class,
@@ -35,6 +39,13 @@ return [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'assetManager' => [
+            'bundles' => [
+                AdminLteAsset::class => [
+                    'skin' => 'skin-black',
+                ],
+            ],
         ],
         'urlManager' => [
             'rules' => [

@@ -4,9 +4,4 @@
  * See LICENSE.txt for license details.
  */
 
-use common\components\rbac\data\rules\UserOwnerRule;
-use common\models\User\SocialProfile;
-
-return [
-    SocialProfile::class => UserOwnerRule::class
-];
+return [];

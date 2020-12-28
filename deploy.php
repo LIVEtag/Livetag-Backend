@@ -17,7 +17,6 @@ set('default_timeout', 0.0);
 
 // Environments variables
 set('yii_environment', getenv('YII_BUILD_ENV'));
-set('design_repo', getenv('DESIGN_REPO_URL'));
 
 $variables = [];
 if (file_exists(__DIR__ . '/.env')) {
@@ -44,19 +43,6 @@ if (file_exists(YII_PROJECT_ROOT . '/.dep/hosts.yml')) {
 
     file_put_contents(YII_PROJECT_ROOT . '/.dep/hosts.tmp.yml', $data);
     inventory(YII_PROJECT_ROOT . '/.dep/hosts.tmp.yml');
-}
-
-function designDirectory () {
-    $url = get('design_repo');
-    $data = parse_url($url);
-    $path = $data['path'] ?? null;
-
-    if ($path === null) {
-        throw new \RuntimeException('"path" key does not exists.');
-    }
-    [$dist,] = explode('.', $path);
-
-    return basename($dist);
 }
 
 // Tasks
@@ -135,11 +121,6 @@ task('gitlab:deploy', function () {
     set('source_path', YII_PROJECT_ROOT);
     set('dist_path', '/var/www/html');
 
-    // If are You using external a repository for frontend components, you must uncomment this code
-    // set('design_directory', designDirectory());
-    // set('design_path', YII_PROJECT_ROOT . '/design/' . get('design_directory'));
-    // invoke('design:prepare');
-
     writeln('Move files');
 
     invoke('gitlab:symlink');
@@ -184,41 +165,11 @@ task('deploy:fixtures', function () {
     run('{{bin/php}} {{deploy_path}}/yii fixture/load "*" --interactive=0');
 })->desc('Fill DB with fixtures');
 
-task('deploy:design_clone', function () {
-    run('rm -rf {{design_path}}');
-    cd(\dirname(get('design_path')));
-    run('git clone {{design_repo}}');
-})->desc('Clone design project');
-
-task('deploy:npm_install', function () {
-    if (\file_exists(get('design_path'))) {
-        cd('{{design_path}}');
-        run('npm install');
-    } else {
-        writeln('No design dir found');
-    }
-})->desc('Install node modules');
-
-task('deploy:npm_build', function () {
-    if (\file_exists(get('design_path'))) {
-        writeln('Npm build project');
-        cd('{{design_path}}');
-        run('npm run build:prod');
-    }
-})->desc('Build frontend');
-
-task('design:prepare', function () {
-    invoke('deploy:design_clone');
-    invoke('deploy:npm_install');
-    invoke('deploy:npm_build');
-})->desc('Prepare design');
-
 $testPaths = [
     YII_PROJECT_ROOT . '/common',
     YII_PROJECT_ROOT . '/console',
     YII_PROJECT_ROOT . '/rest',
     YII_PROJECT_ROOT . '/backend',
-    YII_PROJECT_ROOT . '/frontend'
 ];
 
 task('tests:php_md', function () use ($testPaths) {
@@ -226,7 +177,7 @@ task('tests:php_md', function () use ($testPaths) {
         implode(',', $testPaths),
         'xml '. YII_PROJECT_ROOT .'/dev/etc/phpmd/rules/rules.xml',
         '--suffixes php',
-        '--exclude backend/web,frontend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,frontend/tests,backend/tests,rest/tests',
+        '--exclude backend/web,rest/web,/views/,/gii/generators/,/migrations/,common/tests,backend/tests,rest/tests',
     ];
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpmd ' . implode(' ', $params));
 })->desc('PHP MD static tests');
@@ -272,7 +223,6 @@ task('tests:php_sa', function ()  use ($testPaths) {
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
 })->desc('PHP CS security audit tests');
 
-
 task('tests:codeception', function () {
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/codecept run');
 })->desc('Codeception tests');
@@ -303,22 +253,3 @@ task('deploy', function () {
 });
 
 after('deploy', 'common:unlink');
-
-$gitlabOptions = [
-    'db_ip' => 'IP of mysql',
-    'token' => 'Gitlab private token',
-    'var_name' => 'Variable Name',
-    'project' => 'Gitlab project ID'
-];
-
-foreach ($gitlabOptions as $optionKey => $option) {
-    option($optionKey, null, InputOption::VALUE_REQUIRED, $option);
-}
-
-task('external_config', function () use ($gitlabOptions) {
-    foreach ($gitlabOptions as $key => $gitlabOption) {
-        ${$key} = input()->getOption($key);
-    }
-    //TODO create a console command within a project
-    run('curl --request PUT --header "PRIVATE-TOKEN: '. $token .'" "https://gitlab.gbksoft.net/api/v4/projects/'. $project .'/variables/'. $var_name .'" --form "value='. $db_ip .'"');
-});

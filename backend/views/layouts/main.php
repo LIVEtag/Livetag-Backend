@@ -1,8 +1,12 @@
 <?php
 
+use backend\assets\AppAsset;
+use dmstr\helpers\AdminLteHelper;
+use dmstr\web\AdminLteAsset;
 use yii\helpers\Html;
+use yii\web\View;
 
-/* @var $this \yii\web\View */
+/* @var $this View */
 /* @var $content string */
 
 
@@ -16,22 +20,22 @@ if (Yii::$app->controller->action->id === 'login') {
         ['content' => $content]
     );
 } else {
-    \backend\assets\AppAsset::register($this);
-    \dmstr\web\AdminLteAsset::register($this);
+    AppAsset::register($this);
+    AdminLteAsset::register($this);
 
-    $directoryAsset = \Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
+    $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
     ?>
     <?php $this->beginPage() ?>
     <!DOCTYPE html>
-    <html lang="<?= \Yii::$app->language ?>">
+    <html lang="<?= Yii::$app->language ?>">
     <head>
-        <meta charset="<?= \Yii::$app->charset ?>"/>
+        <meta charset="<?= Yii::$app->charset ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
-    <body class="hold-transition skin-blue sidebar-mini">
+    <body class="hold-transition <?= AdminLteHelper::skinClass() ?> sidebar-mini">
     <?php $this->beginBody() ?>
     <div class="wrapper">
 

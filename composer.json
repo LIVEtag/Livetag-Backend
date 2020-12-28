@@ -12,11 +12,12 @@
     ],
     "require": {
         "php": "~7.3.0",
-        "yiisoft/yii2": "2.0.38",
+        "yiisoft/yii2": "2.0.40",
         "yiisoft/yii2-bootstrap": "2.0.10",
         "yiisoft/yii2-swiftmailer": "2.0.7",
         "yiisoft/yii2-authclient": "2.1.8",
         "gbksoft/shell-command-builder": "1.0.1",
+        "kartik-v/yii2-grid": "^3.3",
         "kartik-v/yii2-widget-select2": "2.1.0",
         "kosinix/grafika": "2.0.8",
         "frostealth/yii2-aws-s3": "2.1.0",

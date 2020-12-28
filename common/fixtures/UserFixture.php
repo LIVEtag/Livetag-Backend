@@ -17,7 +17,7 @@ class UserFixture extends ActiveFixture
     public const USER = 1;
     public const DELETED = 2;
 
-    public const DEFAULT_PASSWORD = 'password_0';
+    public const DEFAULT_PASSWORD = 'Password_0';
 
     public $modelClass = User::class;
     /**

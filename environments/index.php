@@ -41,12 +41,9 @@ return [
             'rest/web/assets',
             'backend/runtime',
             'backend/web/assets',
-            'frontend/runtime',
-            'frontend/web/assets',
         ],
         'createSessionDirectory' => [
             'backend/runtime/session',
-            'frontend/runtime/session',
         ],
         'setExecutable' => [
             'yii',
@@ -55,12 +52,10 @@ return [
         ],
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
-            'frontend/config/main-local.php',
             'rest/config/main-local.php',
         ],
         'setRequestBaseUrl' => [
             'backend/config/main-local.php',
-            'frontend/config/main-local.php',
             'rest/config/main-local.php',
         ],
     ],
@@ -71,12 +66,9 @@ return [
             'rest/web/assets',
             'backend/runtime',
             'backend/web/assets',
-            'frontend/runtime',
-            'frontend/web/assets',
         ],
         'createSessionDirectory' => [
             'backend/runtime/session',
-            'frontend/runtime/session',
         ],
         'setExecutable' => [
             'yii',
@@ -85,12 +77,10 @@ return [
         ],
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
-            'frontend/config/main-local.php',
             'rest/config/main-local.php',
         ],
         'setRequestBaseUrl' => [
             'backend/config/main-local.php',
-            'frontend/config/main-local.php',
             'rest/config/main-local.php',
         ],
     ],
@@ -101,24 +91,19 @@ return [
             'rest/web/assets',
             'backend/runtime',
             'backend/web/assets',
-            'frontend/runtime',
-            'frontend/web/assets',
         ],
         'createSessionDirectory' => [
             'backend/runtime/session',
-            'frontend/runtime/session',
         ],
         'setExecutable' => [
             'yii',
         ],
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
-            'frontend/config/main-local.php',
             'rest/config/main-local.php',
         ],
         'setRequestBaseUrl' => [
             'backend/config/main-local.php',
-            'frontend/config/main-local.php',
             'rest/config/main-local.php',
         ],
     ],

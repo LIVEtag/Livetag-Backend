@@ -31,15 +31,12 @@ build_vendor:
     untracked: true
     paths:
       - vendor/
-#      - /design/node_modules/
-#      - design/dist/
     when: on_success
     expire_in: 2 days
   cache:
     key: vendors-lib
     paths:
       - vendor/
-#        - /design/node_modules/
   script:
     - echo "===== Install dependencies ====="
     - chmod +x ./composer-install.sh && ./composer-install.sh
@@ -112,10 +109,11 @@ codecept:
     - name: mysql:5.7
       alias: mysql
       command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    - name: centrifugo/centrifugo:v2.5.1
+      alias: centrifugo
   artifacts:
     untracked: true
     paths:
-      - frontend/tests/
       - backend/tests/
       - common/tests/
       - rest/tests/
@@ -131,8 +129,15 @@ codecept:
     YII_BACKEND_DOMAIN: codecept-${MAIN_DOMAIN}
     BUILD_URL: https://codecept-$MAIN_DOMAIN
     YII_BUILD_ENV: Dev
+    CENTRIFUGO_HOST: http://centrifugo:8000/api
+    CENTRIFUGO_WEB_SOCKET: ws://127.0.0.1:8000/connection/websocket
+    CENTRIFUGO_TOKEN_HMAC_SECRET_KEY: ${CENTRIFUGO_TOKEN_HMAC_SECRET_KEY}
+    CENTRIFUGO_V3_USE_OFFSET: ${CENTRIFUGO_V3_USE_OFFSET}
+    CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY}
   script:
     - echo "===== All services ====="
+    - echo ${CENTRIFUGO_HOST}
+    - echo ${CENTRIFUGO_API_KEY}
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
     - ./vendor/bin/dep gitlab:deploy
     - ./vendor/bin/codecept run
@@ -167,6 +172,8 @@ dev:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - echo ${CENTRIFUGO_HOST}
+    - echo ${CENTRIFUGO_WEB_SOCKET}
     - echo "===== Run SSH ====="
     - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
     - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
@@ -176,6 +183,7 @@ dev:review:
     - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
 
     - ./vendor/bin/dep gitlab:deploy
+    - ./vendor/bin/dep deploy:fixtures
     - apache2-foreground
   except:
     - master
@@ -187,6 +195,23 @@ dev:review:
   tags:
     - shared-web
 
+dev:centrifugo:
+  stage: dev
+  when: manual
+  tags:
+    - shared-tests
+  image:
+    name: centrifugo/centrifugo:v2.5.1
+    entrypoint: ['']
+  timeout: 28d
+  variables:
+    PROXY_build_DOMAIN: dev-centrifugo-${MAIN_DOMAIN}
+    PROXY_build_HTTPS: "443:8000"
+  script:
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "SSH Host ${HOSTIP}"
+    - centrifugo --port=8000 --admin
+
 dev:swagger:
   stage: dev
   when: manual
@@ -197,6 +222,7 @@ dev:swagger:
     PROXY_build_DOMAIN: dev-swagger-ui-${MAIN_DOMAIN}
     BUILD_URL: https://dev-swagger-ui-${MAIN_DOMAIN}
     API_URL: "https://dev-$MAIN_DOMAIN/rest/swagger/main/json"
+    DOC_EXPANSION: "none"
   script:
     - echo "===== Run Swagger UI ====="
     - echo "Swagger UI URL ${BUILD_URL}"
@@ -230,7 +256,8 @@ test:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
-    - export DB_IP=`cat /etc/hosts | grep "${DB_HOST}" | awk '{print$1;}'`
+    - echo ${CENTRIFUGO_HOST}
+    - echo ${CENTRIFUGO_WEB_SOCKET}
     - echo "===== Run SSH ====="
     - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
     - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
@@ -239,8 +266,8 @@ test:review:
     - echo "${GITLAB_USER_LOGIN}:${CI_COMMIT_SHA}" | chpasswd
     - mkdir /var/run/sshd && /usr/sbin/sshd -f /etc/ssh/sshd_config
 
-    - ./vendor/bin/dep external_config --db_ip=${DB_IP} --var_name=DB_IP --token=${GITLAB_TOKEN} --project=$CI_PROJECT_ID
     - ./vendor/bin/dep gitlab:deploy
+    - ./vendor/bin/dep deploy:fixtures
     - apache2-foreground
   except:
     - master
@@ -251,6 +278,23 @@ test:review:
     - build_vendor
   tags:
     - shared-web
+
+test:centrifugo:
+  stage: test
+  when: manual
+  tags:
+    - shared-tests
+  image:
+    name: centrifugo/centrifugo:v2.5.1
+    entrypoint: ['']
+  timeout: 28d
+  variables:
+    PROXY_build_DOMAIN: test-centrifugo-${MAIN_DOMAIN}
+    PROXY_build_HTTPS: "443:8000"
+  script:
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "SSH Host ${HOSTIP}"
+    - centrifugo --port=8000 --admin
 
 test:swagger:
   stage: test
@@ -295,6 +339,8 @@ live:review:
   script:
     - echo "===== All services ====="
     - cat /etc/hosts | grep '10.1.' | awk '{print $1" "$2;}'
+    - echo ${CENTRIFUGO_HOST}
+    - echo ${CENTRIFUGO_WEB_SOCKET}
     - echo "===== Run SSH ====="
     - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
     - echo "ssh ${GITLAB_USER_LOGIN}@${HOSTIP}"
@@ -305,11 +351,32 @@ live:review:
 
     - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
+    - ./vendor/bin/dep deploy:fixtures
     - apache2-foreground
   only:
     - master
+    - tags
   environment:
     name: live-review/$CI_PROJECT_PATH_SLUG
     url: $BUILD_URL
   tags:
     - shared-web
+
+live:centrifugo:
+  stage: live
+  when: manual
+  tags:
+    - shared-tests
+  image:
+    name: centrifugo/centrifugo:v2.5.1
+    entrypoint: ['']
+  variables:
+    PROXY_build_DOMAIN: live-centrifugo-${MAIN_DOMAIN}
+    PROXY_build_HTTPS: "443:8000"
+  script:
+    - HOSTIP=`ip addr | grep "global eth0" | awk '{print $2;}' | cut -f 1 -d "/"`
+    - echo "SSH Host ${HOSTIP}"
+    - centrifugo --port=8000 --admin
+  only:
+    - master
+    - tags

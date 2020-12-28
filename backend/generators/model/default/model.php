@@ -41,6 +41,7 @@ declare(strict_types = 1);
 
 namespace <?= $generator->ns ?>;
 
+use Yii;
 use yii\db\ActiveQuery;
 use <?= ltrim($generator->baseClass, '\\'); ?>;
 <?php if ($queryClassName) : ?>
@@ -56,7 +57,7 @@ use <?= ltrim($queryClassFullName, '\\'); ?>;
 <?php if (!empty($relations)) : ?>
  *
 <?php foreach ($relations as $name => $relation) : ?>
- * @property <?= $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
+ * @property-read <?= $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
 <?php endforeach; ?>
 <?php endif; ?>
  */
@@ -67,7 +68,7 @@ class <?= $className ?> extends <?= getShortArName('\\' . ltrim($generator->base
      */
     public static function tableName(): string
     {
-        return '<?= $generator->generateTableName($tableName) ?>';
+        return '{{%<?= $generator->generateTableName($tableName) ?>}}';
     }
 <?php if ($generator->db !== 'db') : ?>
 
@@ -77,6 +78,21 @@ class <?= $className ?> extends <?= getShortArName('\\' . ltrim($generator->base
     public static function getDb()
     {
         return \Yii::$app->get('<?= $generator->db ?>');
+    }
+<?php endif; ?>
+
+<?php if ($queryClassName) : ?>
+<?php
+
+    echo "\n";
+?>
+    /**
+     * @inheritdoc
+     * @return <?= $queryClassName ?> the active query used by this AR class.
+     */
+    public static function find(): <?= $queryClassName."\n" ?>
+    {
+        return new <?= $queryClassName ?>(get_called_class());
     }
 <?php endif; ?>
 
@@ -95,7 +111,7 @@ class <?= $className ?> extends <?= getShortArName('\\' . ltrim($generator->base
     {
         return [
 <?php foreach ($labels as $name => $label) : ?>
-            <?= "'$name' => " . "\\" . $generator->generateString($label) . ",\n" ?>
+            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
 <?php endforeach; ?>
         ];
     }
@@ -109,18 +125,4 @@ class <?= $className ?> extends <?= getShortArName('\\' . ltrim($generator->base
         <?= $relation[0] . "\n" ?>
     }
 <?php endforeach; ?>
-<?php if ($queryClassName) : ?>
-<?php
-
-    echo "\n";
-?>
-    /**
-     * @inheritdoc
-     * @return <?= $queryClassName ?> the active query used by this AR class.
-     */
-    public static function find(): <?= $queryClassName."\n" ?>
-    {
-        return new <?= $queryClassName ?>(get_called_class());
-    }
-<?php endif; ?>
 }
