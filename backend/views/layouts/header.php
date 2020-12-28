@@ -20,7 +20,7 @@ $user = Yii::$app->user->identity;
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
                 <!-- User Account: style can be found in dropdown.less -->
-                <?php if ($user): ?>
+                <?php if ($user) : ?>
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
@@ -29,32 +29,31 @@ $user = Yii::$app->user->identity;
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                            <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
+                                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
 
                                 <p>
                                     <?= $user->email ?>
                                     <small>Member since <?= Yii::$app->formatter->asDate($user->createdAt) ?></small>
                                 </p>
                             </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                </div>
+                                <div class="pull-right">
+                                    <?=
+                                    Html::a(
+                                        'Sign out',
+                                        ['/site/logout'],
+                                        ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
+                                    )
+                                    ?>
+                                </div>
+                            </li>
+                        </ul>
                     </li>
-                    <!-- Menu Footer-->
-                    <li class="user-footer">
-                        <div class="pull-left">
-                            <a href="#" class="btn btn-default btn-flat">Profile</a>
-                        </div>
-                        <div class="pull-right">
-                            <?=
-                            Html::a(
-                                'Sign out',
-                                ['/site/logout'],
-                                ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
-                            )
-                            ?>
-                        </div>
-                    </li>
-                </ul>
-                </li>
-            <?php endif; ?>
+                <?php endif; ?>
             </ul>
         </div>
     </nav>

@@ -43,6 +43,9 @@
     </rule>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.SQLFunctions"/>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.SystemExecFunctions"/>
+    <rule ref="PHPCS_SecurityAudit.BadFunctions.EasyRFI">
+        <exclude-pattern>/common/config/test-local.php</exclude-pattern>
+    </rule>
 
     <!-- CVE -->
     <!-- Entries from CVE database from vendor PHP and bugs.php.net -->
