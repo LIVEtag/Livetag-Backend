@@ -38,7 +38,7 @@ use <?= ltrim($class, '\\') ?>;
             <div class="box box-default">
                 <?= "<?php " ?>$form = ActiveForm::begin(); ?>
                 <div class="box-header">
-                    <?= "<?= " ?>Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn btn-primary']) ?>
+                    <?= "<?= " ?>Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">

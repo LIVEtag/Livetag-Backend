@@ -3,20 +3,23 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 namespace console\migrations;
 
 use common\components\db\Migration;
+use console\migrations\M130524201442SetupUser as User;
 
 /**
  * Class M160226133453SetupAccessToken
  */
 class M160226133453SetupAccessToken extends Migration
 {
+    const TABLE_NAME = '{{%access_token}}';
 
     public function up()
     {
         $this->createTable(
-            '{{%access_token}}',
+            self::TABLE_NAME,
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'userId' => $this->integer()->unsigned()->notNull(),
@@ -25,28 +28,21 @@ class M160226133453SetupAccessToken extends Migration
                 'userIp' => $this->string(46)->notNull()->defaultValue(''),
                 // @link http://stackoverflow.com/a/20746656
                 'userAgent' => $this->text(),
-                'createdAt' => $this->integer()->unsigned()->notNull(),
-                'expiredAt' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->unixTimestamp(),
+                'expiredAt' => $this->unixTimestamp(),
             ]
         );
 
-        $this->addForeignKey(
-            'fk_access_token_to_user',
-            '{{%access_token}}',
-            'userId',
-            '{{%user}}',
-            'id',
-            'CASCADE'
-        );
-        $this->createIndex('idx_user_token', '{{%access_token}}', 'token');
-        $this->createIndex('idx_user_token_expired', '{{%access_token}}', ['token', 'expiredAt']);
+        $this->addFK(self::TABLE_NAME, 'userId', User::TABLE_NAME, 'id', 'CASCADE');
+        $this->createIndex('idx_user_token', self::TABLE_NAME, 'token');
+        $this->createIndex('idx_user_token_expired', self::TABLE_NAME, ['token', 'expiredAt']);
     }
 
     public function down()
     {
-        $this->dropIndex('idx_user_token', '{{%access_token}}');
-        $this->dropIndex('idx_user_token_expired', '{{%access_token}}');
-        $this->dropForeignKey('fk_access_token_to_user', '{{%access_token}}');
-        $this->dropTable('{{%access_token}}');
+        $this->dropIndex('idx_user_token', self::TABLE_NAME);
+        $this->dropIndex('idx_user_token_expired', self::TABLE_NAME);
+        $this->dropFK(self::TABLE_NAME, User::TABLE_NAME);
+        $this->dropTable(self::TABLE_NAME);
     }
 }

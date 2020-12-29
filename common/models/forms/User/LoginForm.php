@@ -3,11 +3,9 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace common\models;
+namespace common\models\forms\User;
 
 use common\components\user\SearchService;
-use common\components\validation\ErrorList;
-use common\components\validation\ErrorListInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;

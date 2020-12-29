@@ -13,7 +13,7 @@ use rest\tests\ApiTester;
  * @var ApiTester $I
  */
 /** @var User $user */
-$user = $I->grabFixture('users', UserFixture::SELLER);
+$user = $I->grabFixture('users', UserFixture::SELLER_1);
 $email = $I->generator->unique()->email;
 $password = $I->generator->password(8, 15);
 

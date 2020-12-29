@@ -12,10 +12,12 @@ use common\components\db\Migration;
  */
 class M130524201442SetupUser extends Migration
 {
+    const TABLE_NAME = '{{%user}}';
+
     public function up()
     {
         $this->createTable(
-            '{{%user}}',
+            self::TABLE_NAME,
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'role' => $this->enum(['admin', 'seller'])->notNull(),
@@ -24,14 +26,14 @@ class M130524201442SetupUser extends Migration
                 'passwordHash' => $this->string()->notNull(),
                 'passwordResetToken' => $this->string()->unique(),
                 'status' => $this->smallInteger()->notNull()->defaultValue(10),
-                'createdAt' => $this->integer()->unsigned()->notNull(),
-                'updatedAt' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->unixTimestamp(),
+                'updatedAt' => $this->unixTimestamp(),
             ]
         );
     }
 
     public function down()
     {
-        $this->dropTable('{{%user}}');
+        $this->dropTable(self::TABLE_NAME);
     }
 }

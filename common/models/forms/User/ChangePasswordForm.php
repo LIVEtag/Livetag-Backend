@@ -4,7 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
-namespace common\models\views\User;
+namespace common\models\forms\User;
 
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
@@ -14,7 +14,7 @@ use yii\base\Model;
 use yii\db\Exception;
 
 /**
- * Class ChangePassword
+ * Class ChangePassword (used for both api and backend)
  *
  * @property object $user
  * @property string $password

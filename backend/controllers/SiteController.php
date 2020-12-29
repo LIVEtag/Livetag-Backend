@@ -2,7 +2,7 @@
 namespace backend\controllers;
 
 use backend\components\Controller;
-use common\models\LoginForm;
+use common\models\forms\User\LoginForm;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;

@@ -45,6 +45,7 @@ return [
             //    (new \m141106_185632_log_init)->up();
             'class' => MigrateController::class,
             'migrationPath' => null,
+            'templateFile' => '@app/views/migration.php',
             'migrationNamespaces' => [
                 'console\migrations', //base migrations
             ],

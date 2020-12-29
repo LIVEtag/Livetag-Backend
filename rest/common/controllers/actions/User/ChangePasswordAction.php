@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\User;
 
-use common\models\views\User\ChangePasswordForm;
+use common\models\forms\User\ChangePasswordForm;
 use rest\components\api\actions\Action;
 
 /**
