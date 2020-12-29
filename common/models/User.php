@@ -3,12 +3,12 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace common\models;
 
 use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
+use common\components\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -25,6 +25,8 @@ use yii\web\IdentityInterface;
  * @property integer $createdAt
  * @property integer $updatedAt
  * @property string $password write-only password
+ * @property-read boolean $isAdmin
+ * @property-read boolean $isSeller
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -39,6 +41,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
     /**
+     * TO REMOVE
      * Example role for guest user
      */
     const ROLE_GUEST = 'guest';
@@ -46,12 +49,27 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Example role for default user
      */
-    const ROLE_BASIC = 'basic';
+    const ROLE_SELLER = 'seller';
 
     /**
      * Example role for advanced user
      */
-    const ROLE_ADVANCED = 'advanced';
+    const ROLE_ADMIN = 'admin';
+
+    /**
+     * Role Names
+     */
+    const ROLES = [
+        self::ROLE_ADMIN => 'Admin',
+        self::ROLE_SELLER => 'Seller',
+    ];
+    /**
+     * Status Names
+     */
+    const STATUSES = [
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_DELETED => 'Deleted',
+    ];
 
     /**
      * @inheritdoc
@@ -62,16 +80,12 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function behaviors(): array
     {
         return [
-            [
-                'class' => TimestampBehavior::class,
-                'createdAtAttribute' => 'createdAt',
-                'updatedAtAttribute' => 'updatedAt',
-            ],
+            TimestampBehavior::class,
         ];
     }
 
@@ -83,6 +97,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'id',
             'email',
+            'role'
         ];
     }
 
@@ -92,11 +107,29 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules(): array
     {
         return [
-            ['role', 'default', 'value' => self::ROLE_BASIC],
-            ['role', 'in', 'range' => [self::ROLE_BASIC, self::ROLE_ADVANCED]],
+            ['role', 'default', 'value' => self::ROLE_SELLER],
+            ['role', 'in', 'range' => array_keys(self::ROLES)],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
+    }
+
+    /**
+     * Check current user is Admin
+     * @return bool
+     */
+    public function getIsAdmin(): bool
+    {
+        return $this->role == self::ROLE_ADMIN;
+    }
+
+    /**
+     * Check current user is Seller
+     * @return bool
+     */
+    public function getIsSeller(): bool
+    {
+        return $this->role == self::ROLE_SELLER;
     }
 
     /**
@@ -158,7 +191,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
         $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -230,5 +263,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->passwordResetToken = null;
+    }
+
+    /**
+     * Fake delete
+     * @todo: add delete logic
+     */
+    public function delete()
+    {
+        $this->status = self::STATUS_DELETED;
+        return $this->save(true, ['status']);
     }
 }

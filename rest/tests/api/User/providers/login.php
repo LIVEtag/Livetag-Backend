@@ -9,7 +9,7 @@ use common\fixtures\UserFixture;
 use common\models\User;
 
 /** @var User $user */
-$user = $I->grabFixture('users', UserFixture::USER);
+$user = $I->grabFixture('users', UserFixture::SELLER);
 
 return [
     'login' => [

@@ -27,13 +27,13 @@
         <exclude-pattern>/rest/modules/swagger/controllers/actions/*</exclude-pattern>
         <exclude-pattern>/rest/modules/chat/controllers/DemoController.php</exclude-pattern>
         <exclude-pattern>/rest/generators/*</exclude-pattern>
-        <exclude-pattern>/common/components/rbac/data/AccessService.php</exclude-pattern>
     </rule>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.FringeFunctions"/>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.FunctionHandlingFunctions">
         <exclude-pattern>/rest/modules/swagger/controllers/actions/*</exclude-pattern>
         <exclude-pattern>/rest/modules/chat/controllers/actions/*</exclude-pattern>
         <exclude-pattern>/rest/components/api/AccessRule.php</exclude-pattern>
+        <exclude-pattern>/backend/components/AccessRule.php</exclude-pattern>
     </rule>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.Mysqli"/>
     <rule ref="PHPCS_SecurityAudit.BadFunctions.NoEvals"/>
@@ -55,7 +55,6 @@
     <!-- Misc -->
     <rule ref="PHPCS_SecurityAudit.Misc.BadCorsHeader"/>
     <rule ref="PHPCS_SecurityAudit.Misc.IncludeMismatch">
-        <exclude-pattern>/common/components/rbac/data/AccessService.php</exclude-pattern>
         <exclude-pattern>/rest/common/controllers/actions/Config/IndexAction.php</exclude-pattern>
     </rule>
 </ruleset>

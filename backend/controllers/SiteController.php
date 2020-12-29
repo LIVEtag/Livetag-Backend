@@ -1,15 +1,48 @@
 <?php
 namespace backend\controllers;
 
-use Yii;
 use backend\components\Controller;
 use common\models\LoginForm;
+use Yii;
+use yii\helpers\ArrayHelper;
+use yii\web\Response;
 
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+                'access' => [
+                    'rules' => [
+                        [
+                            'actions' => ['login', 'error'],
+                            'allow' => true,
+                        ],
+                        [
+                            'actions' => ['logout', 'index'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ],
+                    ],
+                ],
+                'verbs' => [
+                    'actions' => [
+                        'logout' => ['post'],
+                    ],
+                ],
+            ]
+        );
+    }
+
+
     /**
      * @return string
      */
@@ -19,7 +52,7 @@ class SiteController extends Controller
     }
 
     /**
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionLogin()
     {
@@ -38,7 +71,7 @@ class SiteController extends Controller
     }
 
     /**
-     * @return \yii\web\Response
+     * @return Response
      */
     public function actionLogout()
     {

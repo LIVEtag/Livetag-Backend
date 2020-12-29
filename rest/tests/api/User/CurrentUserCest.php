@@ -35,9 +35,9 @@ class CurrentUserCest extends ActionCest
     public function update(ApiTester $I)
     {
         /** @var User $user */
-        $user = $I->grabFixture('users', UserFixture::USER);
+        $user = $I->grabFixture('users', UserFixture::SELLER);
 
-        $I->amLoggedInApiAs(UserFixture::USER);
+        $I->amLoggedInApiAs(UserFixture::SELLER);
         $I->wantToTest('view current user');
 
             $I->send($this->getMethod(), $this->getUrl($I));

@@ -1,6 +1,6 @@
 <?php
 
-use common\models\User;
+use backend\models\User\User;
 use dmstr\web\AdminLteAsset;
 use kartik\grid\Module;
 
@@ -28,11 +28,6 @@ return [
                 'name' => '_backendUser',
             ]
         ],
-        // Для проверки данных, детали смотреть в классе AccessService
-//        'dataAccessManager' => [
-//            'class' => \common\components\rbac\data\AccessService::class,
-//            'itemFile' => '@common/components/rbac/data/items.php',
-//        ],
         'session' => [
             'name' => '_backendSessionId',
             'savePath' => dirname(__DIR__) . '/runtime/session',
