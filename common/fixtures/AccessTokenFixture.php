@@ -14,8 +14,8 @@ use common\models\AccessToken;
  */
 class AccessTokenFixture extends ActiveFixture
 {
-    public const USER = 1;
-    public const DELETED = 2;
+    const USER = 1;
+    const DELETED = 2;
 
     public $modelClass = AccessToken::class;
     public $depends = [UserFixture::class];
@@ -26,7 +26,7 @@ class AccessTokenFixture extends ActiveFixture
     /**
      * 30 days
      */
-    public const REMEMBER_ME_TIME = 2592000;
+    const REMEMBER_ME_TIME = 2592000;
 
     /** @inheritdoc */
     protected function getTemplate(): array

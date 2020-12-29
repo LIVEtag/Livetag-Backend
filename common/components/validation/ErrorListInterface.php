@@ -16,7 +16,7 @@ interface ErrorListInterface extends JsonSerializable
     /**
      * Error code attaching to basic errors in string format
      */
-    public const ERR_BASIC = 1000;
+    const ERR_BASIC = 1000;
 
     /**
      * Factory method for creating message via error code

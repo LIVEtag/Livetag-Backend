@@ -16,7 +16,7 @@ class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
 
-    public const TO_BIG = 9999999999;
+    const TO_BIG = 9999999999;
 
     /** @var Generator */
     public $generator;

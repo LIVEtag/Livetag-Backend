@@ -60,44 +60,6 @@ return [
                 '10.1.0.1',
             ],
         ],
-        'authClientCollection' => [
-            'class' => Collection::class,
-            'clients' => [
-                'google' => [
-                    'class' => Google::class,
-                    'validateAuthState' => false,
-                    'scope' => 'email',
-                    'clientId' => getenv('GOOGLE_CLIENT_ID'),
-                    'clientSecret' => getenv('GOOGLE_CLIENT_SECRET'),
-                ],
-                'facebook' => [
-                    'class' => Facebook::class,
-                    'validateAuthState' => false,
-                    'attributeNames' => [
-                        'email'
-                    ],
-                    'clientId' => getenv('FACEBOOK_CLIENT_ID'),
-                    'clientSecret' => getenv('FACEBOOK_CLIENT_SECRET'),
-                ],
-                'twitter' => [
-                    'class' => Twitter::class,
-                    'attributeParams' => [
-                        'include_email' => 'true',
-                    ],
-                    'consumerKey' => getenv('TWITTER_CONSUMER_KEY'),
-                    'consumerSecret' => getenv('TWITTER_CONSUMER_SECRET'),
-                ],
-                'linkedin' => [
-                    'class' => LinkedIn::class,
-                    'validateAuthState' => false,
-                    'attributeNames' => [
-                        'email-address',
-                    ],
-                    'clientId' => getenv('LINKEDIN_CLIENT_ID'),
-                    'clientSecret' => getenv('LINKEDIN_CLIENT_SECRET'),
-                ]
-            ],
-        ],
         'urlManager' => [
             'rules' => [
                 [

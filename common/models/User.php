@@ -31,27 +31,27 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Disabled user (marked as deleted)
      */
-    public const STATUS_DELETED = 0;
+    const STATUS_DELETED = 0;
 
     /**
      * Default active user
      */
-    public const STATUS_ACTIVE = 10;
+    const STATUS_ACTIVE = 10;
 
     /**
      * Example role for guest user
      */
-    public const ROLE_GUEST = 'guest';
+    const ROLE_GUEST = 'guest';
 
     /**
      * Example role for default user
      */
-    public const ROLE_BASIC = 'basic';
+    const ROLE_BASIC = 'basic';
 
     /**
      * Example role for advanced user
      */
-    public const ROLE_ADVANCED = 'advanced';
+    const ROLE_ADVANCED = 'advanced';
 
     /**
      * @inheritdoc

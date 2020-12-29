@@ -19,7 +19,7 @@ class Migration extends BaseMigration
     /**
      * @see https://dev.mysql.com/doc/refman/5.5/en/charset-unicode-utf8mb4.html
      */
-    public const TABLE_OPTIONS = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB';
+    const TABLE_OPTIONS = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB';
 
     protected const DRIVERS_MYSQL = [
         'mysql', 'mysqli'
