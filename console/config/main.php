@@ -27,14 +27,6 @@ return [
                 ],
             ],
         ],
-        'authManager' => [
-            'class' => PhpManager::class,
-            'defaultRoles' => [
-                User::ROLE_GUEST
-            ],
-            'itemFile' => '@common/components/rbac/items.php',
-            'ruleFile' => '@common/components/rbac/rules.php',
-        ],
     ],
     'controllerMap' => [
         'rbac' => [

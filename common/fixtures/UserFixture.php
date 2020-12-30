@@ -14,8 +14,9 @@ use common\models\User;
  */
 class UserFixture extends ActiveFixture
 {
-    const USER = 1;
-    const DELETED = 2;
+    const ADMIN = 1;
+    const SELLER = 2;
+    const DELETED = 3;
 
     const DEFAULT_PASSWORD = 'Password_0';
 
@@ -29,7 +30,7 @@ class UserFixture extends ActiveFixture
             'authKey' => $this->security->generateRandomString(),
             'passwordHash' => $this->security->generatePasswordHash(self::DEFAULT_PASSWORD),
             'passwordResetToken' => null,
-            'role' => User::ROLE_BASIC,
+            'role' => User::ROLE_SELLER,
             'status' => User::STATUS_ACTIVE,
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,

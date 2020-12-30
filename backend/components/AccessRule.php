@@ -3,7 +3,8 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace rest\components\api;
+
+namespace backend\components;
 
 use Closure;
 use yii\base\InvalidConfigException;
@@ -11,6 +12,7 @@ use yii\filters\AccessRule as BaseAccessRule;
 
 class AccessRule extends BaseAccessRule
 {
+
     /**
      * @inheritdoc
      *
@@ -27,36 +29,39 @@ class AccessRule extends BaseAccessRule
      *    ]
      * ]
      * ```
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function matchRole($user)
     {
-        if (empty($this->roles)) {
+        $items = empty($this->roles) ? [] : $this->roles;
+
+        if (!empty($this->permissions)) {
+            $items = array_merge($items, $this->permissions);
+        }
+
+        if (empty($items)) {
             return true;
         }
+
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
 
         if (!$user->getIsGuest() &&
             isset($user->identity->role) &&
-            in_array($user->identity->role, $this->roles)) {
+            in_array($user->identity->role, $items)) {
             return true;
         }
 
-        foreach ($this->roles as $role) {
-            if ($role === '?' && $user->getIsGuest()) {
+        foreach ($items as $item) {
+            if ($item === '?' && $user->getIsGuest()) {
                 return true;
-            } elseif ($role === '@' && !$user->getIsGuest()) {
+            } elseif ($item === '@' && !$user->getIsGuest()) {
                 return true;
-            } else {
-                if (!isset($roleParams)) {
-                    $roleParams = $this->roleParams instanceof Closure
-                        ? call_user_func($this->roleParams, $this)
-                        : $this->roleParams;
-                }
-                if ($user->can($role, $roleParams)) {
-                    return true;
-                }
+            }
+            $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+            if ($user->can($item, $roleParams)) {
+                return true;
             }
         }
 

@@ -5,12 +5,9 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use common\models\User;
-use rest\common\models\views\User\ChangePassword;
-use rest\common\models\views\User\RecoveryPassword;
 use rest\common\models\views\User\SendRecoveryEmailForm;
 use rest\components\api\actions\Action;
-use yii\web\NotFoundHttpException;
+use Yii;
 
 /**
  * Class RecoveryAction
@@ -27,6 +24,6 @@ class RecoveryAction extends Action
 
         $model->generateAndSendEmail();
 
-        \Yii::$app->getResponse()->setStatusCode(204);
+        Yii::$app->getResponse()->setStatusCode(204);
     }
 }

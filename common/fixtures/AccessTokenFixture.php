@@ -14,8 +14,9 @@ use common\models\AccessToken;
  */
 class AccessTokenFixture extends ActiveFixture
 {
-    const USER = 1;
-    const DELETED = 2;
+    const ADMIN = 1;
+    const SELLER = 2;
+    const DELETED = 3;
 
     public $modelClass = AccessToken::class;
     public $depends = [UserFixture::class];

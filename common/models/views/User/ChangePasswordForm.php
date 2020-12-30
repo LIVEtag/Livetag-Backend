@@ -4,12 +4,12 @@
  * See LICENSE.txt for license details.
  */
 
-namespace rest\common\models\views\User;
+namespace common\models\views\User;
 
-use common\models\User;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
-use common\components\validation\ErrorMessage;
+use common\models\User;
+use Yii;
 use yii\base\Model;
 use yii\db\Exception;
 
@@ -21,9 +21,8 @@ use yii\db\Exception;
  * @property string $newPassword
  * @property string $confirmPassword
  */
-class ChangePassword extends Model
+class ChangePasswordForm extends Model
 {
-
     public $password;
     public $newPassword;
     public $confirmPassword;
@@ -34,7 +33,7 @@ class ChangePassword extends Model
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-        $this->errorList = \Yii::createObject(ErrorListInterface::class);
+        $this->errorList = Yii::createObject(ErrorListInterface::class);
     }
 
     public function rules()
