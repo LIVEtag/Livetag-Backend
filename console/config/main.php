@@ -1,8 +1,5 @@
 <?php
 
-use common\components\rbac\controllers\RbacController;
-use common\components\rbac\PhpManager;
-use common\models\User;
 use yii\console\controllers\MigrateController;
 use yii\log\FileTarget;
 
@@ -29,9 +26,6 @@ return [
         ],
     ],
     'controllerMap' => [
-        'rbac' => [
-            'class' => RbacController::class,
-        ],
         'migrate' => [
             // https://yiiframework.com.ua/ru/doc/guide/2/db-migrations/#namespaced-migrations
             // ------------
