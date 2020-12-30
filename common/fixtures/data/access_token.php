@@ -14,9 +14,13 @@ return [
         'userId' => UserFixture::ADMIN,
         'token' => 'admin',
     ],
-    AccessTokenFixture::SELLER => [
-        'userId' => UserFixture::SELLER,
-        'token' => 'seller',
+    AccessTokenFixture::SELLER_1 => [
+        'userId' => UserFixture::SELLER_1,
+        'token' => 'seller1',
+    ],
+    AccessTokenFixture::SELLER_2 => [
+        'userId' => UserFixture::SELLER_2,
+        'token' => 'seller2',
     ],
     AccessTokenFixture::DELETED => [
         'userId' => UserFixture::DELETED,

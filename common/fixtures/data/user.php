@@ -1,5 +1,4 @@
 <?php
-
 use common\fixtures\UserFixture;
 use common\models\User;
 
@@ -10,14 +9,20 @@ return [
         'email' => 'admin@nosend.net',
         'role' => User::ROLE_ADMIN,
     ],
-    UserFixture::SELLER => [
-        'id' => UserFixture::SELLER,
-        'email' => 'seller@nosend.net',
+    UserFixture::SELLER_1 => [
+        'id' => UserFixture::SELLER_1,
+        'email' => 'seller1@nosend.net',
+        'role' => User::ROLE_SELLER,
+    ],
+    UserFixture::SELLER_2 => [
+        'id' => UserFixture::SELLER_2,
+        'email' => 'seller2@nosend.net',
         'role' => User::ROLE_SELLER,
     ],
     UserFixture::DELETED => [
         'id' => UserFixture::DELETED,
-        'status' => User::STATUS_DELETED,
         'email' => 'deleted@nosend.net',
+        'role' => User::ROLE_SELLER,
+        'status' => User::STATUS_DELETED,
     ]
 ];

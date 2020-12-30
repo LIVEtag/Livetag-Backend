@@ -38,7 +38,7 @@ class NewPasswordCest extends ActionCest
      */
     private function createUserWithValidResetToken(ApiTester $I)
     {
-        $userFixture = $I->grabFixture('users', UserFixture::SELLER);
+        $userFixture = $I->grabFixture('users', UserFixture::SELLER_1);
 
         // create valid reset token
         $user = User::findOne(['id' => $userFixture->id]);
@@ -140,7 +140,7 @@ class NewPasswordCest extends ActionCest
      */
     public function saveNewPasswordWorks(ApiTester $I)
     {
-        $user = $I->grabFixture('users', UserFixture::SELLER);
+        $user = $I->grabFixture('users', UserFixture::SELLER_1);
         $password = $I->generator->password(8, 15);
         $I->wantToTest('create new password');
 

@@ -32,7 +32,7 @@ class LogoutCest extends ActionCest
      */
     public function update(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::SELLER);
+        $I->amLoggedInApiAs(UserFixture::SELLER_1);
         $I->wantToTest('logout');
 
         $I->send($this->getMethod(), $this->getUrl($I));

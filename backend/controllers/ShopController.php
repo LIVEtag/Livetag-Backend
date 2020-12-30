@@ -8,18 +8,18 @@ declare(strict_types=1);
 namespace backend\controllers;
 
 use backend\components\Controller;
+use backend\models\Shop\Shop;
+use backend\models\Shop\ShopSearch;
 use backend\models\User\User;
-use backend\models\User\UserSearch;
-use common\models\forms\User\ChangePasswordForm;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
- * UserController implements the CRUD actions for User model.
+ * ShopController implements the CRUD actions for Shop model.
  */
-class UserController extends Controller
+class ShopController extends Controller
 {
 
     /**
@@ -33,14 +33,8 @@ class UserController extends Controller
                 'access' => [
                     'rules' => [
                         [
-                            'actions' => ['index', 'create', 'delete'],
                             'allow' => true,
                             'roles' => [User::ROLE_ADMIN],
-                        ],
-                        [
-                            'actions' => ['change-password', 'view'],
-                            'allow' => true,
-                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
                         ],
                     ],
                 ],
@@ -55,12 +49,12 @@ class UserController extends Controller
     }
 
     /**
-     * Lists all User models.
+     * Lists all Shop models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UserSearch();
+        $searchModel = new ShopSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -70,29 +64,26 @@ class UserController extends Controller
     }
 
     /**
-     * Displays a single User model.
-     * Allow all for admin and current for other
+     * Displays a single Shop model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView(int $id)
     {
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || !($user->isAdmin || $user->id == $id)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
-        return $this->render('view', ['model' => $this->findModel($id)]);
+        return $this->render('view', [
+                'model' => $this->findModel($id),
+        ]);
     }
 
     /**
-     * Creates a new User model.
+     * Creates a new Shop model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new Shop();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -104,28 +95,27 @@ class UserController extends Controller
     }
 
     /**
-     * Updates an existing User model (current profile)
-     * For now only password change allowed
+     * Updates an existing Shop model.
      * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionChangePassword()
+    public function actionUpdate(int $id)
     {
-        $model = new ChangePasswordForm();
-        $user = \Yii::$app->user->identity;
+        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->changePassword($user)) {
-            return $this->redirect(['view', 'id' => $user->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('change-password', [
+        return $this->render('update', [
                 'model' => $model,
         ]);
     }
 
     /**
-     * Deletes an existing User model.
+     * Deletes an existing Shop model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -134,19 +124,20 @@ class UserController extends Controller
     public function actionDelete(int $id)
     {
         $this->findModel($id)->delete();
+
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the User model based on its primary key value.
+     * Finds the Shop model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return User the loaded model
+     * @return Shop the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel(int $id)
     {
-        $model = User::findOne($id);
+        $model = Shop::findOne($id);
         if ($model !== null) {
             return $model;
         }

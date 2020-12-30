@@ -7,8 +7,9 @@ declare(strict_types=1);
 
 namespace rest\tests;
 
-use common\fixtures\UserFixture;
 use common\fixtures\AccessTokenFixture;
+use common\fixtures\ShopFixture;
+use common\fixtures\UserFixture;
 
 trait BaseFixtureTrait
 {
@@ -22,6 +23,7 @@ trait BaseFixtureTrait
         return [
             'users' => UserFixture::class,
             'accessTokens' => AccessTokenFixture::class,
+            'shops' => ShopFixture::class,
         ];
     }
 }

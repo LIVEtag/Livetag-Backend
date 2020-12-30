@@ -63,6 +63,7 @@ class User extends ActiveRecord implements IdentityInterface
         self::ROLE_ADMIN => 'Admin',
         self::ROLE_SELLER => 'Seller',
     ];
+
     /**
      * Status Names
      */

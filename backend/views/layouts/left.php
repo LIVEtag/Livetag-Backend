@@ -35,13 +35,14 @@ $user = Yii::$app->user->identity ?? null;
                 [
                     'label' => 'Shops',
                     'icon' => 'shopping-bag',
-                    'url' => ['#'],
+                    'url' => ['/shop/index'],
+                    'active' => Yii::$app->controller->id == 'shop',
                     'visible' => $user && $user->isAdmin
                 ],
                 [
                     'label' => 'Sellers management',
                     'icon' => 'users',
-                    'url' => ['user/index'],
+                    'url' => ['/user/index'],
                     'active' => Yii::$app->controller->id == 'user',
                     'visible' => $user && $user->isAdmin
                 ],
@@ -50,13 +51,13 @@ $user = Yii::$app->user->identity ?? null;
                 ],
                 [
                     'label' => 'Login',
-                    'url' => ['site/login'],
+                    'url' => ['/site/login'],
                     'visible' => Yii::$app->user->isGuest
                 ],
                 [
                     'label' => 'Logout',
                     'icon' => 'sign-out',
-                    'url' => ['site/logout'],
+                    'url' => ['/site/logout'],
                     'template' => '<a href="{url}" data-method="post">{icon} {label}</a>',
                     'visible' => !Yii::$app->user->isGuest
                 ],
