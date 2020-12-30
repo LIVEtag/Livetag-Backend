@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace backend\controllers;
 
 use backend\components\Controller;
+use backend\models\User\CreateUserForm;
 use backend\models\User\User;
 use backend\models\User\UserSearch;
 use common\models\forms\User\ChangePasswordForm;
@@ -92,9 +93,10 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new CreateUserForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'The seller has been successfully created.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

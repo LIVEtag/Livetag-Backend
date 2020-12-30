@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace backend\models\User;
 
+use backend\models\Shop\Shop;
 use backend\models\User\User;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -17,6 +18,8 @@ use yii\helpers\ArrayHelper;
  */
 class UserSearch extends User
 {
+    /** @var string */
+    public $shopName;
 
     /**
      * @inheritdoc
@@ -25,7 +28,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'status'], 'integer'],
-            [['role', 'email'], 'safe'],
+            [['role', 'email', 'shopName'], 'safe'],
         ];
     }
 
@@ -47,7 +50,9 @@ class UserSearch extends User
      */
     public function search($params): ActiveDataProvider
     {
-        $query = User::find();
+        $query = User::find()
+            ->andWhere(['role' => self::ROLE_SELLER])
+            ->joinWith('shop');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,12 +62,16 @@ class UserSearch extends User
         ]);
 
         $this->load($params);
-
         if (!$this->validate()) {
             //do not return any records when validation fails
             $query->where('0=1');
             return $dataProvider;
         }
+
+        $dataProvider->sort->attributes['shopName'] = [
+            'asc' => [Shop::tableName() . '.name' => SORT_ASC],
+            'desc' => [Shop::tableName() . '.name' => SORT_DESC],
+        ];
 
         // grid filtering conditions
         $query->andFilterWhere([
@@ -72,6 +81,7 @@ class UserSearch extends User
         ]);
 
         $query->andFilterWhere(['like', self::tableName() . '.email', $this->email]);
+        $query->andFilterWhere(['like', Shop::tableName() . '.name', $this->shopName]);
 
         return $dataProvider;
     }

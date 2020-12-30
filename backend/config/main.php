@@ -42,14 +42,7 @@ return [
                 ],
             ],
         ],
-        'urlManager' => [
-            'rules' => [
-                '' => '',
-                '<controller:[\w\-]+>/<action:[\w\-]+>' => '<controller>/<action>/',
-                '<module:\w+>/<controller:[\w\-]+>' => '<module>/<controller>/',
-                '<module:\w+>/<controller:[\w\-]+>/<action:[\w\-]+>' => '<module>/<controller>/<action>/',
-            ],
-        ],
+        'urlManager' => require __DIR__ . '/urlManager.php',
         'request' => [
             'trustedHosts' => [
                 '10.1.0.1',

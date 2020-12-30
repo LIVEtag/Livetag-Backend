@@ -7,8 +7,11 @@ declare(strict_types=1);
 
 namespace common\models;
 
-use yii\base\NotSupportedException;
 use common\components\behaviors\TimestampBehavior;
+use common\models\queries\Shop\ShopQuery;
+use common\models\Shop\Shop;
+use Yii;
+use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -27,10 +30,12 @@ use yii\web\IdentityInterface;
  * @property string $password write-only password
  * @property-read boolean $isAdmin
  * @property-read boolean $isSeller
+ * @property-read Shop[] $shop
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     /**
+     * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
      */
     const STATUS_DELETED = 0;
@@ -39,12 +44,6 @@ class User extends ActiveRecord implements IdentityInterface
      * Default active user
      */
     const STATUS_ACTIVE = 10;
-
-    /**
-     * TO REMOVE
-     * Example role for guest user
-     */
-    const ROLE_GUEST = 'guest';
 
     /**
      * Example role for default user
@@ -134,6 +133,14 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return ShopQuery
+     */
+    public function getShop(): ShopQuery
+    {
+        return $this->hasOne(Shop::class, ['id' => 'shopId'])->viaTable('user_shop', ['userId' => 'id']);
+    }
+
+    /**
      * @inheritdoc
      */
     public static function findIdentity($id)
@@ -193,7 +200,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
 
@@ -229,7 +236,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password, $this->passwordHash);
+        return Yii::$app->security->validatePassword($password, $this->passwordHash);
     }
 
     /**
@@ -239,7 +246,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->passwordHash = \Yii::$app->security->generatePasswordHash($password);
+        $this->passwordHash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
@@ -247,7 +254,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->authKey = \Yii::$app->security->generateRandomString();
+        $this->authKey = Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -255,7 +262,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->passwordResetToken = \Yii::$app->security->generateRandomString() . '_' . time();
+        $this->passwordResetToken = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
@@ -264,15 +271,5 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->passwordResetToken = null;
-    }
-
-    /**
-     * Fake delete
-     * @todo: add delete logic
-     */
-    public function delete()
-    {
-        $this->status = self::STATUS_DELETED;
-        return $this->save(true, ['status']);
     }
 }

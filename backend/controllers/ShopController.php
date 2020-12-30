@@ -15,6 +15,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * ShopController implements the CRUD actions for Shop model.
@@ -28,23 +29,23 @@ class ShopController extends Controller
     public function behaviors()
     {
         return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                'access' => [
-                    'rules' => [
-                        [
-                            'allow' => true,
-                            'roles' => [User::ROLE_ADMIN],
+                parent::behaviors(),
+                [
+                    'access' => [
+                        'rules' => [
+                            [
+                                'allow' => true,
+                                'roles' => [User::ROLE_ADMIN],
+                            ],
                         ],
                     ],
-                ],
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+                    'verbs' => [
+                        'class' => VerbFilter::class,
+                        'actions' => [
+                            'delete' => ['POST'],
+                        ],
+                    ]
                 ]
-            ]
         );
     }
 
@@ -142,5 +143,23 @@ class ShopController extends Controller
             return $model;
         }
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Get shops by Ajax for select2 filter
+     * @param type $q
+     * @return array
+     */
+    public function actionSearch($q = null): array
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $out = ['results' => ['id' => '', 'text' => '']];
+        $query = Shop::getSearchQuery();
+        if ($q) {
+            $query->andFilterWhere(['LIKE', Shop::tableName() . '.name', $q]);
+        }
+        $data = $query->limit(10)->asArray()->all();
+        $out['results'] = array_values($data);
+        return $out;
     }
 }
