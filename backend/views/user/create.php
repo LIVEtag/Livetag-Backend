@@ -3,13 +3,17 @@
  * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-use backend\models\User\User;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\User\User */
-/* @var $form yii\widgets\ActiveForm */
+use backend\models\Shop\Shop;
+use backend\models\User\User;
+use kartik\widgets\Select2;
+use yii\helpers\Html;
+use yii\web\View;
+use yii\widgets\ActiveForm;
+
+/* @var $this View */
+/* @var $model User */
+/* @var $form ActiveForm */
 
 $this->title = Yii::t('app', 'Create User');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
@@ -26,8 +30,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
-                        <?= $form->field($model, 'role')->dropDownList(User::ROLES, ['prompt' => '']) ?>
+
                         <?= $form->field($model, 'email')->textInput() ?>
+
+                        <?= $form->field($model, 'shopId')->widget(Select2::class, [
+                            'data' => Shop::getIndexedArray(),
+                            'options' => [
+                                'placeholder' => 'Select shop ...'
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ]); ?>
+
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">

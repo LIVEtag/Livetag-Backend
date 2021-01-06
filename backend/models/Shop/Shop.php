@@ -23,4 +23,13 @@ class Shop extends BaseModel
     {
         return ArrayHelper::getValue(self::STATUSES, $this->status);
     }
+
+    /**
+     * Get all entities as indexed array
+     * @return array [id=>key] array of entities
+     */
+    public static function getIndexedArray(): array
+    {
+        return self::find()->select(['name', 'id'])->indexBy('id')->column();
+    }
 }

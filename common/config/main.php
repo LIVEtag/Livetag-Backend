@@ -46,6 +46,8 @@ return [
                 'port' => getenv('MAIL_PORT'),
                 'encryption' => getenv('MAIL_ENCRYPTION'),
             ],
+            'useFileTransport' => filter_var(getenv('MAIL_USEFILETRANSPORT'), FILTER_VALIDATE_BOOLEAN),
+            'fileTransportPath' => '@common/runtime/mail',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -82,6 +84,7 @@ return [
             'apiKey' => getenv('VONAGE_API_KEY'),
             'apiSecret' => getenv('VONAGE_API_SECRET'),
         ],
+        'urlManagerBackend' => require __DIR__ . '/../../backend/config/urlManager.php',
     ],
     'container' => [
         'singletons' => [

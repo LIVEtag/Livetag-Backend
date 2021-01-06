@@ -8,10 +8,10 @@ declare(strict_types=1);
 namespace common\models;
 
 use common\components\behaviors\TimestampBehavior;
+use common\models\queries\Shop\ShopQuery;
 use common\models\Shop\Shop;
 use Yii;
 use yii\base\NotSupportedException;
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -36,6 +36,7 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     /**
+     * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
      */
     const STATUS_DELETED = 0;
@@ -44,12 +45,6 @@ class User extends ActiveRecord implements IdentityInterface
      * Default active user
      */
     const STATUS_ACTIVE = 10;
-
-    /**
-     * TO REMOVE
-     * Example role for guest user
-     */
-    const ROLE_GUEST = 'guest';
 
     /**
      * Example role for default user
@@ -121,14 +116,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery
-     */
-    public function getShop(): ActiveQuery
-    {
-        return $this->hasOne(Shop::class, ['id' => 'shopId'])->viaTable('user_shop', ['userId' => 'id']);
-    }
-
-    /**
      * Check current user is Admin
      * @return bool
      */
@@ -144,6 +131,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getIsSeller(): bool
     {
         return $this->role == self::ROLE_SELLER;
+    }
+
+    /**
+     * @return ShopQuery
+     */
+    public function getShop(): ShopQuery
+    {
+        return $this->hasOne(Shop::class, ['id' => 'shopId'])->viaTable('user_shop', ['userId' => 'id']);
     }
 
     /**
@@ -277,15 +272,5 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->passwordResetToken = null;
-    }
-
-    /**
-     * Fake delete
-     * @todo: add delete logic
-     */
-    public function delete()
-    {
-        $this->status = self::STATUS_DELETED;
-        return $this->save(true, ['status']);
     }
 }

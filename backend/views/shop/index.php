@@ -50,7 +50,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return $model->getStatusName();
                                 }
                             ],
-                            'createdAt:datetime',
+                            [
+                                'attribute' => 'createdAt',
+                                'format' => 'datetime',
+                                'mergeHeader' => true,
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'hAlign' => GridView::ALIGN_CENTER,
+                                'headerOptions' => ['width' => '200'],
+                                'filter' => false
+                            ],
                             [
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,

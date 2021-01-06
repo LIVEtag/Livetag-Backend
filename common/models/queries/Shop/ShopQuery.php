@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace common\models\queries\Shop;
 
-use common\models\Shop\Shop;
 use common\components\db\ActiveQuery;
+use common\models\Shop\Shop;
 
 /**
  * This is the ActiveQuery class for [[\common\models\Shop\Shop]].
@@ -25,5 +25,14 @@ class ShopQuery extends ActiveQuery
     public function active()
     {
         return $this->andWhere([$this->getFieldName('status') => Shop::STATUS_ACTIVE]);
+    }
+
+    /**
+     * @param int|array $id
+     * @return $this
+     */
+    public function byId($id): self
+    {
+        return $this->andWhere([$this->getFieldName('id') => $id]);
     }
 }
