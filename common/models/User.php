@@ -7,8 +7,11 @@ declare(strict_types=1);
 
 namespace common\models;
 
-use yii\base\NotSupportedException;
 use common\components\behaviors\TimestampBehavior;
+use common\models\Shop\Shop;
+use Yii;
+use yii\base\NotSupportedException;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -27,6 +30,8 @@ use yii\web\IdentityInterface;
  * @property string $password write-only password
  * @property-read boolean $isAdmin
  * @property-read boolean $isSeller
+ *
+ * @property-read Shop $shop
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -116,6 +121,14 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return ActiveQuery
+     */
+    public function getShop(): ActiveQuery
+    {
+        return $this->hasOne(Shop::class, ['id' => 'shopId'])->viaTable('user_shop', ['userId' => 'id']);
+    }
+
+    /**
      * Check current user is Admin
      * @return bool
      */
@@ -193,7 +206,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
 
@@ -229,7 +242,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password, $this->passwordHash);
+        return Yii::$app->security->validatePassword($password, $this->passwordHash);
     }
 
     /**
@@ -239,7 +252,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->passwordHash = \Yii::$app->security->generatePasswordHash($password);
+        $this->passwordHash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
@@ -247,7 +260,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->authKey = \Yii::$app->security->generateRandomString();
+        $this->authKey = Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -255,7 +268,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->passwordResetToken = \Yii::$app->security->generateRandomString() . '_' . time();
+        $this->passwordResetToken = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**

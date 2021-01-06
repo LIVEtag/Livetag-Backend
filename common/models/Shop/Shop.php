@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace common\models\Shop;
 
 use common\components\behaviors\TimestampBehavior;
+use common\models\queries\Shop\ShopQuery;
+use common\models\User;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -49,6 +51,15 @@ class Shop extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%shop}}';
+    }
+
+    /**
+     * @inheritdoc
+     * @return ShopQuery the active query used by this AR class.
+     */
+    public static function find(): ShopQuery
+    {
+        return new ShopQuery(get_called_class());
     }
 
     /**
