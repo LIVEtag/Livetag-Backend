@@ -91,9 +91,9 @@ class UserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($shopId = null)
     {
-        $model = new CreateUserForm();
+        $model = new CreateUserForm(['shopId' => $shopId]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'The seller has been successfully created.');

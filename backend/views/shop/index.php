@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Create Shop'), ['create'], ['class' => 'btn bg-black']) ?>
+                    <?= Html::a(Yii::t('app', 'Create a shop'), ['create'], ['class' => 'btn bg-black']) ?>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
@@ -42,13 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'headerOptions' => ['width' => '80'],
                             ],
                             'name',
-                            'website:url',
                             [
-                                'attribute' => 'status',
-                                'filter' => Html::activeDropDownList($searchModel, 'status', Shop::STATUSES, ['class' => 'form-control', 'prompt' => '']),
-                                'value' => function (Shop $model) {
-                                    return $model->getStatusName();
-                                }
+                                'attribute' => 'website',
+                                'format' => ['url', ['target' => '_blank']]
                             ],
                             [
                                 'attribute' => 'createdAt',

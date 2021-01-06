@@ -11,11 +11,12 @@ use backend\components\Controller;
 use backend\models\Shop\Shop;
 use backend\models\Shop\ShopSearch;
 use backend\models\User\User;
+use backend\models\User\UserSearch;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 /**
  * ShopController implements the CRUD actions for Shop model.
@@ -72,8 +73,22 @@ class ShopController extends Controller
      */
     public function actionView(int $id)
     {
+        $model = $this->findModel($id);
+        $userSearchModel = new UserSearch();
+
+        //modify params for search models and pagination
+        $params = ArrayHelper::merge(
+            Yii::$app->request->queryParams,
+            [
+                StringHelper::basename(get_class($userSearchModel)) => ['shopId' => $model->id],
+                'pageSize' => 10
+            ]
+        );
+        $userDataProvider = $userSearchModel->search($params);
         return $this->render('view', [
-                'model' => $this->findModel($id),
+                'model' => $model,
+                'userSearchModel' => $userSearchModel,
+                'userDataProvider' => $userDataProvider,
         ]);
     }
 
@@ -87,6 +102,7 @@ class ShopController extends Controller
         $model = new Shop();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'The shop has been successfully created.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

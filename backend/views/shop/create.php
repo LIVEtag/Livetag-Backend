@@ -7,7 +7,7 @@
 /* @var $this yii\web\View */
 /* @var $model backend\models\Shop\Shop */
 
-$this->title = Yii::t('app', 'Create Shop');
+$this->title = Yii::t('app', 'Create a shop');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Shops'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

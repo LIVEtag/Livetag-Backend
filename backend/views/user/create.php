@@ -47,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
+                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'btn bg-black']) ?>
                             <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
                         </div>
                     </div>

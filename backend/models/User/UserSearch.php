@@ -21,13 +21,16 @@ class UserSearch extends User
     /** @var string */
     public $shopName;
 
+    /** @var int */
+    public $shopId;
+
     /**
      * @inheritdoc
      */
     public function rules(): array
     {
         return [
-            [['id', 'status'], 'integer'],
+            [['id', 'status', 'shopId'], 'integer'],
             [['role', 'email', 'shopName'], 'safe'],
         ];
     }
@@ -81,6 +84,7 @@ class UserSearch extends User
             self::tableName() . '.id' => $this->id,
             self::tableName() . '.status' => $this->status,
             self::tableName() . '.role' => $this->role,
+            Shop::tableName() . '.id' => $this->shopId,
         ]);
 
         $query->andFilterWhere(['like', self::tableName() . '.email', $this->email]);
