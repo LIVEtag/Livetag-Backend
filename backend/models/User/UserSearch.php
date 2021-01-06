@@ -58,7 +58,10 @@ class UserSearch extends User
             'query' => $query,
             'pagination' => [
                 'pageSize' => ArrayHelper::getValue($params, 'pageSize', 20)
-            ]
+            ],
+            'sort' => [
+                'defaultOrder' => ['createdAt' => SORT_DESC]
+            ],
         ]);
 
         $this->load($params);

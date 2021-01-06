@@ -139,6 +139,5 @@ class CreateUserForm extends Model
             ->setTo($user->email)
             ->setSubject('Welcome to the LiveTag!')
             ->send();
-        throw new Exception('TEST');
     }
 }

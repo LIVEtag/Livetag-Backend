@@ -29,29 +29,29 @@ class UserController extends Controller
     public function behaviors()
     {
         return ArrayHelper::merge(
-            parent::behaviors(),
-            [
-                'access' => [
-                    'rules' => [
-                        [
-                            'actions' => ['index', 'create', 'delete'],
-                            'allow' => true,
-                            'roles' => [User::ROLE_ADMIN],
-                        ],
-                        [
-                            'actions' => ['change-password', 'view'],
-                            'allow' => true,
-                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
+                parent::behaviors(),
+                [
+                    'access' => [
+                        'rules' => [
+                            [
+                                'actions' => ['index', 'create', 'delete'],
+                                'allow' => true,
+                                'roles' => [User::ROLE_ADMIN],
+                            ],
+                            [
+                                'actions' => ['change-password', 'view'],
+                                'allow' => true,
+                                'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
+                            ],
                         ],
                     ],
-                ],
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+                    'verbs' => [
+                        'class' => VerbFilter::class,
+                        'actions' => [
+                            'delete' => ['POST'],
+                        ],
+                    ]
                 ]
-            ]
         );
     }
 
@@ -97,7 +97,7 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', 'The seller has been successfully created.');
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -135,7 +135,10 @@ class UserController extends Controller
      */
     public function actionDelete(int $id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('success', 'The seller {email} was deleted.', ['email' => $model->email]);
+        }
         return $this->redirect(['index']);
     }
 

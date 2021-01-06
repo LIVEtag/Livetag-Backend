@@ -144,22 +144,4 @@ class ShopController extends Controller
         }
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
-
-    /**
-     * Get shops by Ajax for select2 filter
-     * @param type $q
-     * @return array
-     */
-    public function actionSearch($q = null): array
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $out = ['results' => ['id' => '', 'text' => '']];
-        $query = Shop::getSearchQuery();
-        if ($q) {
-            $query->andFilterWhere(['LIKE', Shop::tableName() . '.name', $q]);
-        }
-        $data = $query->limit(10)->asArray()->all();
-        $out['results'] = array_values($data);
-        return $out;
-    }
 }

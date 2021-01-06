@@ -8,8 +8,6 @@ use backend\models\Shop\Shop;
 use backend\models\User\User;
 use kartik\widgets\Select2;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\web\JsExpression;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
@@ -35,25 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <?= $form->field($model, 'email')->textInput() ?>
 
-                        <?=
-                        $form->field($model, 'shopId')->widget(Select2::class, [
-                            'data' => $model->shopId ? Shop::getIndexedArray($model->shopId) : ['' => ''],
+                        <?= $form->field($model, 'shopId')->widget(Select2::class, [
+                            'data' => Shop::getIndexedArray(),
                             'options' => [
-                                'placeholder' => 'Select shop',
-                                'class' => 'form-control',
+                                'placeholder' => 'Select shop ...'
                             ],
                             'pluginOptions' => [
                                 'allowClear' => true,
-                                'minimumInputLength' => 0,
-                                'language' => [
-                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                ],
-                                'ajax' => [
-                                    'url' => Url::to(['shop/search']),
-                                    'dataType' => 'json',
-                                    'delay' => 250,
-                                    'cache' => true,
-                                ],
                             ],
                         ]); ?>
 
