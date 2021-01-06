@@ -3,13 +3,14 @@
  * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 use backend\models\Shop\Shop;
+use yii\helpers\Html;
+use yii\web\View;
+use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\Shop\Shop */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $this View */
+/* @var $model Shop */
+/* @var $form ActiveForm */
 ?>
 
 <div class="shop-form">
@@ -18,7 +19,6 @@ use backend\models\Shop\Shop;
             <div class="box box-default">
                 <?php $form = ActiveForm::begin(); ?>
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
@@ -28,6 +28,7 @@ use backend\models\Shop\Shop;
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <div class="form-group">
+                        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'btn bg-black']) ?>
                         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>

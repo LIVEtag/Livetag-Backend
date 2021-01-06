@@ -45,7 +45,7 @@ class ShopSearch extends Shop
      */
     public function search($params): ActiveDataProvider
     {
-        $query = Shop::find();
+        $query = Shop::find()->active();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
