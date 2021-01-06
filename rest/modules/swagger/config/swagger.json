@@ -3,7 +3,7 @@
     "info": {
         "description": "API for mobile && js applications.",
         "version": "1.0.0",
-        "title": "GBKSOFT Test API"
+        "title": "Livetag API"
     },
     "security": [
         {

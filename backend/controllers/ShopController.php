@@ -29,23 +29,23 @@ class ShopController extends Controller
     public function behaviors()
     {
         return ArrayHelper::merge(
-                parent::behaviors(),
-                [
-                    'access' => [
-                        'rules' => [
-                            [
-                                'allow' => true,
-                                'roles' => [User::ROLE_ADMIN],
-                            ],
+            parent::behaviors(),
+            [
+                'access' => [
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => [User::ROLE_ADMIN],
                         ],
                     ],
-                    'verbs' => [
-                        'class' => VerbFilter::class,
-                        'actions' => [
-                            'delete' => ['POST'],
-                        ],
-                    ]
+                ],
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
                 ]
+            ]
         );
     }
 

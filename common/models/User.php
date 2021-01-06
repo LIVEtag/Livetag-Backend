@@ -30,7 +30,8 @@ use yii\web\IdentityInterface;
  * @property string $password write-only password
  * @property-read boolean $isAdmin
  * @property-read boolean $isSeller
- * @property-read Shop[] $shop
+ *
+ * @property-read Shop $shop
  */
 class User extends ActiveRecord implements IdentityInterface
 {

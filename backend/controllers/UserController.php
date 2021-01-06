@@ -29,29 +29,29 @@ class UserController extends Controller
     public function behaviors()
     {
         return ArrayHelper::merge(
-                parent::behaviors(),
-                [
-                    'access' => [
-                        'rules' => [
-                            [
-                                'actions' => ['index', 'create', 'delete'],
-                                'allow' => true,
-                                'roles' => [User::ROLE_ADMIN],
-                            ],
-                            [
-                                'actions' => ['change-password', 'view'],
-                                'allow' => true,
-                                'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
-                            ],
+            parent::behaviors(),
+            [
+                'access' => [
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'create', 'delete'],
+                            'allow' => true,
+                            'roles' => [User::ROLE_ADMIN],
+                        ],
+                        [
+                            'actions' => ['change-password', 'view'],
+                            'allow' => true,
+                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
                         ],
                     ],
-                    'verbs' => [
-                        'class' => VerbFilter::class,
-                        'actions' => [
-                            'delete' => ['POST'],
-                        ],
-                    ]
+                ],
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
                 ]
+            ]
         );
     }
 

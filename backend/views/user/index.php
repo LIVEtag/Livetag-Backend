@@ -27,8 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
-                    <?=
-                    GridView::widget([
+                    <?= GridView::widget([
                         'dataProvider' => $dataProvider,
                         'hover' => true, //the grid table will highlight row on hover
                         'persistResize' => true, //to store resized column state using local storage persistence
@@ -45,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'attribute' => 'shopName',
                                 'format' => 'raw',
-                                'value' => function(User $model) {
+                                'value' => function (User $model) {
                                     return $model->shop ? Html::a($model->shop->name, ['/shop/view', 'id' => $model->shop->id], ['data-pjax' => '0']) : null;
                                 }
                             ],
@@ -67,8 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ],
                         ],
-                    ]);
-                    ?>
+                    ]); ?>
                 </div>
                 <!-- /.box-body -->
             </div>

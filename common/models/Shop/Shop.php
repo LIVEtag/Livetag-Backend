@@ -8,9 +8,10 @@ declare(strict_types=1);
 namespace common\models\Shop;
 
 use common\components\behaviors\TimestampBehavior;
+use common\models\queries\Shop\ShopQuery;
+use common\models\User;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use common\models\queries\Shop\ShopQuery;
 
 /**
  * This is the model class for table "shop".

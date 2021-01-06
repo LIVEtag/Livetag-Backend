@@ -3,6 +3,8 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use common\components\streaming\Vonage;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
 use common\components\validation\validators as RestValidators;
@@ -76,6 +78,11 @@ return [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
+        ],
+        'vonage' => [
+            'class' => Vonage::class,
+            'apiKey' => getenv('VONAGE_API_KEY'),
+            'apiSecret' => getenv('VONAGE_API_SECRET'),
         ],
         'urlManagerBackend' => require __DIR__ . '/../../backend/config/urlManager.php',
     ],
