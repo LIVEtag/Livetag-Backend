@@ -4,6 +4,7 @@ namespace backend\controllers;
 use backend\components\Controller;
 use common\models\forms\User\LoginForm;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
 
@@ -50,9 +51,10 @@ class SiteController extends Controller
     {
         return $this->render('index');
     }
-
+    
     /**
      * @return string|Response
+     * @throws InvalidConfigException
      */
     public function actionLogin()
     {
@@ -76,7 +78,6 @@ class SiteController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
 }

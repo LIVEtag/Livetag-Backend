@@ -30,7 +30,7 @@ class LoginForm extends Model
     /**
      * @var bool
      */
-    public $rememberMe = true;
+    public $rememberMe = false;
 
     /**
      * @var User
