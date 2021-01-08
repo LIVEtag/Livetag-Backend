@@ -41,7 +41,6 @@ return [
                     'agent' => Yii::$app->request->getUserAgent(),
                     'ip' => Yii::$app->request->getUserIP(),
                 ];
-              
             },
             'cookieParams' => ['httponly' => true, 'lifetime' => 60 * 15],
             'timeout' => 60 * 15, //session expire
