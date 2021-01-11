@@ -11,6 +11,8 @@ use rest\common\models\views\User\SignupUser;
 use rest\components\api\actions\Action;
 
 /**
+ * @deprecated
+ * @todo remove
  * Class SignupAction
  */
 class SignupAction extends Action

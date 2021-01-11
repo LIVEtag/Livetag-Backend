@@ -9,7 +9,9 @@ namespace rest\tests;
 
 use common\fixtures\AccessTokenFixture;
 use common\fixtures\ShopFixture;
+use common\fixtures\StreamSessionFixture;
 use common\fixtures\UserFixture;
+use common\fixtures\UserShopFixture;
 
 trait BaseFixtureTrait
 {
@@ -24,6 +26,8 @@ trait BaseFixtureTrait
             'users' => UserFixture::class,
             'accessTokens' => AccessTokenFixture::class,
             'shops' => ShopFixture::class,
+            'userShops' => UserShopFixture::class,
+            'streamSessions' => StreamSessionFixture::class,
         ];
     }
 }

@@ -17,30 +17,35 @@ interface StreamSessionInterface
     /**
      * @return int|null
      */
-    public function id(): ?int;
+    public function getId(): ?int;
 
     /**
      * @return int|null
      */
-    public function shopId(): ?int;
+    public function getShopId(): ?int;
 
     /**
      * @return int|null
      */
-    public function status(): ?int;
+    public function getStatus(): ?int;
 
     /**
      * @return string|null
      */
-    public function sessionId(): ?string;
+    public function getSessionId(): ?string;
 
     /**
      * @return string|null
      */
-    public function publisherToken(): ?string;
+    public function getPublisherToken(): ?string;
 
     /**
      * @return int|null
      */
-    public function expiredAt(): ?int;
+    public function getCreatedAt(): ?int;
+
+    /**
+     * @return int|null
+     */
+    public function getExpiredAt(): ?int;
 }

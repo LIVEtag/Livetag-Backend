@@ -1,6 +1,8 @@
 <?php
 namespace common\components\validation;
 
+use yii\helpers\ArrayHelper;
+
 /**
  * Class ErrorList
  * @package common\components\validation
@@ -77,6 +79,9 @@ class ErrorList implements ErrorListInterface
     const CURRENT_PASSWORD_IS_WRONG = 1220;
     const SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD = 1230;
     const USER_NOT_FOUND = 1231;
+
+    //Stream
+    const STREAM_IN_PROGRESS = 1263;
 
     const THIRD_PARTY_NOT_DOCUMENTED_ERROR = 3000;
 
@@ -178,6 +183,8 @@ class ErrorList implements ErrorListInterface
 
         self::TWITTER_INVALID_OAUTH_TOKEN => 'Invalid OAuth access token.',
         self::USER_NOT_FOUND => 'User not found.',
+
+        self::STREAM_IN_PROGRESS => 'Please end your existing livestrean to start a new livestream.',
     ];
 
     /**
@@ -204,5 +211,14 @@ class ErrorList implements ErrorListInterface
     public function jsonSerialize()
     {
         return static::ERRORS;
+    }
+
+    /**
+     * @param int $code
+     * @return string
+     */
+    public static function errorTextByCode(int $code): string
+    {
+        return ArrayHelper::getValue(static::ERRORS, $code, '');
     }
 }

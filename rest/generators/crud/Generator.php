@@ -296,7 +296,7 @@ class Generator extends \yii\gii\Generator
                                                     [
                                                         0 =>
                                                             [
-                                                                '$ref' => '#/components/schemas/status200',
+                                                                '$ref' => '#/components/responses/status200',
                                                             ],
                                                         1 =>
                                                             [
@@ -323,7 +323,7 @@ class Generator extends \yii\gii\Generator
                                     [
                                         'schema' =>
                                             [
-                                                '$ref' => '#/components/schemas/status401',
+                                                '$ref' => '#/components/responses/status401',
                                             ],
                                     ],
                             ],
@@ -355,7 +355,7 @@ class Generator extends \yii\gii\Generator
                                                         [
                                                             0 =>
                                                                 [
-                                                                    '$ref' => '#/components/schemas/status200',
+                                                                    '$ref' => '#/components/responses/status200',
                                                                 ],
                                                             1 =>
                                                                 [
@@ -382,7 +382,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status401',
+                                                    '$ref' => '#/components/responses/status401',
                                                 ],
                                         ],
                                 ],
@@ -396,7 +396,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status403',
+                                                    '$ref' => '#/components/responses/status403',
                                                 ],
                                         ],
                                 ],
@@ -410,7 +410,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status422',
+                                                    '$ref' => '#/components/responses/status422',
                                                 ],
                                         ],
                                 ],
@@ -470,7 +470,7 @@ class Generator extends \yii\gii\Generator
                                                         [
                                                             0 =>
                                                                 [
-                                                                    '$ref' => '#/components/schemas/status204',
+                                                                    '$ref' => '#/components/responses/status204',
                                                                 ],
                                                         ],
                                                 ],
@@ -486,7 +486,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status401',
+                                                    '$ref' => '#/components/responses/status401',
                                                 ],
                                         ],
                                 ],
@@ -500,7 +500,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status403',
+                                                    '$ref' => '#/components/responses/status403',
                                                 ],
                                         ],
                                 ],
@@ -545,7 +545,7 @@ class Generator extends \yii\gii\Generator
                                                     [
                                                         0 =>
                                                             [
-                                                                '$ref' => '#/components/schemas/status200',
+                                                                '$ref' => '#/components/responses/status200',
                                                             ],
                                                         1 =>
                                                             [
@@ -572,7 +572,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status401',
+                                                    '$ref' => '#/components/responses/status401',
                                                 ],
                                         ],
                                 ],
@@ -618,7 +618,7 @@ class Generator extends \yii\gii\Generator
                                                     [
                                                         0 =>
                                                             [
-                                                                '$ref' => '#/components/schemas/status200',
+                                                                '$ref' => '#/components/responses/status200',
                                                             ],
                                                         1 =>
                                                             [
@@ -645,7 +645,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status401',
+                                                    '$ref' => '#/components/responses/status401',
                                                 ],
                                         ],
                                 ],
@@ -659,7 +659,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status403',
+                                                    '$ref' => '#/components/responses/status403',
                                                 ],
                                         ],
                                 ],
@@ -673,7 +673,7 @@ class Generator extends \yii\gii\Generator
                                         [
                                             'schema' =>
                                                 [
-                                                    '$ref' => '#/components/schemas/status422',
+                                                    '$ref' => '#/components/responses/status422',
                                                 ],
                                         ],
                                 ],
@@ -706,7 +706,7 @@ class Generator extends \yii\gii\Generator
         $restConfig = file_get_contents($restConfigPath);
         $pattern = '|\'urlManager\' => \[\n\s+\'rules\' => \[|is';
         if (preg_match($pattern, $restConfig) !== 1) {
-            throw new ErrorException(sprintf('Change the configuration file for the pattern " %s " OR 
+            throw new ErrorException(sprintf('Change the configuration file for the pattern " %s " OR
             disabled setting "%s"', $pattern, $this->getAttributeLabel('changeUrlManager')));
         }
 

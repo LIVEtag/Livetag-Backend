@@ -12,7 +12,7 @@ use OpenTok\OpenTok;
 use yii\base\Component;
 
 /**
- *
+ * Vonage Component
  */
 class Vonage extends Component
 {

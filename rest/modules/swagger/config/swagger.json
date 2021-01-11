@@ -10,13 +10,33 @@
             "Bearer": []
         }
     ],
+    "servers": [
+        {
+            "url": "/rest"
+        }
+    ],
+    "tags": [
+        {
+            "name": "AnyBody",
+            "description": "Actions available without authentication"
+        },
+        {
+            "name": "User",
+            "description": "User authentication, manage and details"
+        },
+        {
+            "name": "Vonage",
+            "description": "Vonage sessions manage"
+        }
+    ],
     "paths": {
         "/v1/user/login": {
             "post": {
                 "security": [],
                 "summary": "Create access token for APP",
                 "tags": [
-                    "AnyBody"
+                    "AnyBody",
+                    "User"
                 ],
                 "operationId": "userCreateAccessToken",
                 "responses": {
@@ -65,76 +85,6 @@
                                     "password": {
                                         "type": "string",
                                         "description": "Minimum 2, maximum 255 characters"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/user/register": {
-            "post": {
-                "security": [],
-                "summary": "Create user for APP",
-                "tags": [
-                    "AnyBody"
-                ],
-                "operationId": "userCreate",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/responses/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/token"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    },
-                                    "isRememberMe": {
-                                        "enum": [
-                                            "no",
-                                            "yes"
-                                        ],
-                                        "default": "no",
-                                        "description": "are you need remember this token?"
                                     }
                                 }
                             }
@@ -308,7 +258,8 @@
                 "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
-                    "User"
+                    "User",
+                    "AnyBody"
                 ],
                 "operationId": "userRecoveryPasswordByEmail",
                 "responses": {
@@ -353,7 +304,8 @@
                 "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
-                    "User"
+                    "User",
+                    "AnyBody"
                 ],
                 "operationId": "userRecoveryPasswordChange",
                 "responses": {
@@ -392,13 +344,179 @@
                     }
                 }
             }
+        },
+
+        "/v1/stream-session": {
+            "post": {
+                "tags": [
+                    "Vonage"
+                ],
+                "summary": "Create new Session for stream",
+                "operationId": "streamSessionCreate",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/responses/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status403"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status422"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Vonage"
+                ],
+                "summary": "Stop Session",
+                "operationId": "stopStreamSession",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "streamSession id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/responses/status204"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status403"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/stream-session/{shopId}": {
+            "get": {
+                "tags": [
+                    "Vonage"
+                ],
+                "summary": "View streamSession",
+                "operationId": "streamSessionView",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopId",
+                        "description": "Shop Id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/responses/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status401"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
-    "servers": [
-        {
-            "url": "/rest"
-        }
-    ],
+
     "components": {
         "securitySchemes": {
             "Bearer": {
@@ -743,11 +861,11 @@
                     },
                     "parameters": {
                         "type": "object",
-                        "properties": {}
+                        "properties": []
                     },
                     "errors": {
                         "type": "object",
-                        "properties": {}
+                        "properties": []
                     }
                 }
             },
@@ -788,6 +906,48 @@
                     "confirmPassword": {
                         "type": "string",
                         "description": "Minimum 2, maximum 255 characters"
+                    }
+                }
+            },
+            "streamSession": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "shopId",
+                    "sessionId",
+                    "isActive",
+                    "token",
+                    "createdAt",
+                    "expiredAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "shopId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sessionId": {
+                        "type": "string",
+                        "example": "1_MX40NTc0ODE1Mn5-MTQ4NjEzNjg3NTg4OX5BVVBhZmZCK3E5ZTdzdmlZbVpvR041V32-QX4"
+                    },
+                    "isActive": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "token": {
+                        "type": "string",
+                        "example": "T1==cGFydG5lcl9pZD00NTc0ODE1MiZzaWc9NDI2NTY1NmNiZmM4MjBmMTY2ZDQ0OWY4MDcwOTQwYTcwN2Q1MmJiMjpzZXNzaW9uX2lkPTFfTVg0ME5UYzBPREUxTW41LU1UUTROakV6TmpnM05UZzRPWDVCVlZCaFptWkNLM0U1WlRkemRtbFpiVnB2UjA0MVYzWi1RWDQmY3JlYXRlX3RpbWU9MTQ4NjEzNjg2NSZyb2xlPXB1Ymxpc2hlciZub25jZT0xNDg2MTM2ODY1LjE5ODI2MDkxMTcyNDUmZXhwaXJlX3RpbWU9MTQ4NjIyMzI2NQ=="
+                    },
+                    "createdAt": {
+                        "type": "integer",
+                        "example": 1619816400
+                    },
+                    "expiredAt": {
+                        "type": "integer",
+                        "example": 1619827200
                     }
                 }
             }

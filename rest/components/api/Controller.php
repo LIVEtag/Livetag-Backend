@@ -6,20 +6,26 @@
 
 namespace rest\components\api;
 
+use rest\components\filters\RateLimiter;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
-use rest\components\filters\RateLimiter;
-use yii\rest\Controller as BaseController;
-use yii\web\Response;
 use yii\filters\VerbFilter;
+use yii\rest\Controller as BaseController;
+use yii\rest\OptionsAction;
+use yii\web\Response;
 
 /**
  * Class Controller
  */
 class Controller extends BaseController
 {
+    /**
+     * Default Options action
+     */
+    const ACTION_OPTIONS = 'options';
+
     /**
      * @inheritdoc
      */
@@ -69,6 +75,16 @@ class Controller extends BaseController
                 'class' => VerbFilter::class,
                 'actions' => $this->verbs(),
             ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            self::ACTION_OPTIONS => OptionsAction::class
         ];
     }
 }
