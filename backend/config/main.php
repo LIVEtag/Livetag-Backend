@@ -32,7 +32,6 @@ return [
         'session' => [
             'class' => DbSession::class,
             'name' => '_backendSessionId',
-            'timeout' => 900, //session expire
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
