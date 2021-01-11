@@ -3,17 +3,12 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
+use rest\modules\v1\controllers\StreamSessionController;
 use rest\modules\v1\Module as V1Module;
-use yii\authclient\clients\Facebook;
-use yii\authclient\clients\Google;
-use yii\authclient\clients\LinkedIn;
-use yii\authclient\clients\Twitter;
-use yii\authclient\Collection;
 use yii\data\Pagination;
 use yii\web\JsonParser;
 use yii\web\Response;
@@ -127,6 +122,15 @@ return [
                     'class' => UrlRule::class,
                     'controller' => [
                         'v1/config' => 'v1/config'
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => ['v1/stream-session'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST' => StreamSessionController::ACTION_CREATE,
+                        'OPTIONS' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
             ],

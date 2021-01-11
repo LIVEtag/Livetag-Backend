@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace common\models\Stream;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\validation\ErrorList;
 use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Shop\Shop;
 use common\models\User;
@@ -16,7 +17,7 @@ use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\web\ForbiddenHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * This is the model class for table "stream_session".
@@ -132,10 +133,10 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     {
         return [
             'id' => function () {
-                return $this->id();
+                return $this->getId();
             },
             'shopId' => function () {
-                return $this->shopId();
+                return $this->getShopId();
             },
             'sessionId',
             'isActive' => function () {
@@ -144,8 +145,12 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'token' => function () {
                 return $this->getToken(Yii::$app->user->identity ?? null);
             },
-            'createdAt',
-            'expiredAt',
+            'createdAt' => function () {
+                return $this->getCreatedAt();
+            },
+            'expiredAt' => function () {
+                return $this->getExpiredAt();
+            },
         ];
     }
 
@@ -160,7 +165,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function id(): ?int
+    public function getId(): ?int
     {
         return $this->id ? (int) $this->id : null;
     }
@@ -168,7 +173,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function shopId(): ?int
+    public function getShopId(): ?int
     {
         return $this->shopId ? (int) $this->shopId : null;
     }
@@ -176,7 +181,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function status(): ?int
+    public function getStatus(): ?int
     {
         return $this->status ? (int) $this->status : null;
     }
@@ -184,7 +189,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function sessionId(): string
+    public function getSessionId(): string
     {
         return $this->sessionId;
     }
@@ -192,7 +197,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function publisherToken(): string
+    public function getPublisherToken(): string
     {
         return $this->publisherToken;
     }
@@ -200,7 +205,15 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function expiredAt(): int
+    public function getCreatedAt(): int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExpiredAt(): int
     {
         return $this->expiredAt ? (int) $this->expiredAt : null;
     }
@@ -211,7 +224,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function isActive(): bool
     {
-        return $this->status() === self::STATUS_ACTIVE;
+        return $this->getStatus() === self::STATUS_ACTIVE && $this->getExpiredAt() > time();
     }
 
     /**
@@ -226,7 +239,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         if ($user && $this->getIsOwner($user)) {
             return $this->getPublisherToken();
         }
-        return $this->getSubscriberToken();
+        return $this->createSubscriberToken();
     }
 
     /**
@@ -243,13 +256,29 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
-     * Get token for stream subscriber
+     * Create token for stream subscriber
      * @return string
      */
-    public function getSubscriberToken(): string
+    public function createSubscriberToken(): string
     {
-        $options = ['role' => Role::SUBSCRIBER, 'expireTime' => $this->expiredAt()];
-        return Yii::$app->vonage->getToken($this->sessionId(), $options);
+        $options = [
+            'role' => Role::SUBSCRIBER,
+            'expireTime' => $this->getExpiredAt()
+        ];
+        return Yii::$app->vonage->getToken($this->getSessionId(), $options);
+    }
+
+    /**
+     * Create token for stream publisher
+     * @return string
+     */
+    public function createPublisherToken(): string
+    {
+        $options = [
+            'role' => Role::MODERATOR,
+            'expireTime' => $this->getExpiredAt()
+        ];
+        return Yii::$app->vonage->getToken($this->getSessionId(), $options);
     }
 
     /**
@@ -265,16 +294,18 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
 
     /**
      * Start translation for selected shop
+     * Do not allow create new session if active exist
      * @param Shop $shop
      * @return self
+     * @throws UnprocessableEntityHttpException
      */
     public static function startTranslation(Shop $shop): self
     {
         $session = self::getCurrent($shop->id);
-        if (!$session) {
-            return self::create($shop->id);
+        if ($session) {
+            throw new UnprocessableEntityHttpException(ErrorList::errorTextByCode(ErrorList::STREAM_IN_PROGRESS));
         }
-        return $session;
+        return self::create($shop->id);
     }
 
     /**
@@ -299,7 +330,6 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      *
      * @param int $shopId
      * @return self (return created model or model with errors)
-     * @throws ForbiddenHttpException
      */
     public static function create(int $shopId): self
     {
@@ -322,12 +352,11 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             return $session; //return model with errors
         }
 
-        // 3. Get token
-        $options = ['role' => Role::MODERATOR, 'expireTime' => $session->expiredAt()];
+        // 3. Create token
         try {
-            $session->publisherToken = Yii::$app->vonage->getToken($session->sessionId(), $options);
+            $session->publisherToken = $session->createPublisherToken();
         } catch (Throwable $ex) {
-            $this->addError(self::ATTR_PUBLISHER_TOKEN, $ex->getMessage());
+            $session->addError('publisherToken', $ex->getMessage());
             return $session; //return model with errors
         }
 

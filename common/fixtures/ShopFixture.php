@@ -8,7 +8,6 @@ namespace common\fixtures;
 
 use common\components\test\ActiveFixture;
 use common\models\Shop\Shop;
-use common\models\User;
 
 /**
  * Class ShopFixture
@@ -28,7 +27,7 @@ class ShopFixture extends ActiveFixture
         return [
             'name' => $this->generator->company,
             'website' => $this->generator->url,
-            'status' => User::STATUS_ACTIVE,
+            'status' => Shop::STATUS_ACTIVE,
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
         ];

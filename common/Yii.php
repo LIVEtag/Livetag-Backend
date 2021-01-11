@@ -23,6 +23,7 @@ Yii::$container = new yii\di\Container;
  * Class BaseApplication
  *
  * @inheritdoc
+ * @property-read \common\components\streaming\Vonage $vonage
  */
 abstract class BaseApplication extends yii\base\Application
 {
