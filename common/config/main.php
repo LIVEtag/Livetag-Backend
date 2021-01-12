@@ -28,6 +28,12 @@ return [
     'timeZone' => 'UTC',
     'bootstrap' => ['log'],
     'components' => [
+        'formatter' => [
+            'dateFormat' => 'dd/MM//yyyy',
+            'timeFormat' => 'HH:mm:ss',
+            'datetimeFormat' => 'dd/MM/yyyy, HH:mm:ss',
+            'timeZone' => 'Singapore',
+        ],
         'db' => [
             'class' => Connection::class,
             'dsn' => 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';port=' . getenv('DB_PORT') . '',

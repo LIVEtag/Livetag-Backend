@@ -25,16 +25,20 @@ $user = Yii::$app->user->identity;
             <ul class="nav navbar-nav">
                 <!-- User Account: style can be found in dropdown.less -->
                 <?php if ($user) : ?>
+                <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <?= Yii::$app->formatter->asDatetime(time()); ?>
+                            <?= Yii::$app->formatter->timeZone; ?>
+                        </a>
+                    </li>
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
                             <span class="hidden-xs"><?= $user->email ?></span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
                                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-
                                 <p>
                                     <?= $user->email ?>
                                     <small>Member since <?= Yii::$app->formatter->asDate($user->createdAt) ?></small>

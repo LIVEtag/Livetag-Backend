@@ -3,15 +3,17 @@
  * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+use backend\models\User\User;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\User\User */
+/* @var $this View */
+/* @var $model User */
 
 $this->title = 'User #' . $model->id;
 if ($model->isAdmin) {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sellers management'), 'url' => ['index']];
 }
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -20,11 +22,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?php if ($model->isAdmin) : ?>
+                    <?php if (Yii::$app->user->identity->isAdmin && $model->isSeller) : ?>
                         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                             'class' => 'btn btn-danger',
                             'data' => [
-                                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                                'confirm' => Yii::t('app', 'Are you sure that you want to delete this seller?'),
                                 'method' => 'post',
                             ],
                         ]); ?>
@@ -38,7 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id',
                             'role',
                             'email:email',
-                            'status',
+                            [
+                                'attribute' => 'shopName',
+                                'format' => 'raw',
+                                'value' => function (User $model) {
+                                    return $model->shop ? Html::a($model->shop->name, ['/shop/view', 'id' => $model->shop->id], ['data-pjax' => '0']) : null;
+                                }
+                            ],
                             'createdAt:datetime',
                             'updatedAt:datetime',
                         ],
