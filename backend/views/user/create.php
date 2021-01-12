@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 /* @var $form ActiveForm */
 
 $this->title = Yii::t('app', 'Create User');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sellers management'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <section class="user-create">

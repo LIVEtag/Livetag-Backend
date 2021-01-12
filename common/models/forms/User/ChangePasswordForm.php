@@ -8,6 +8,7 @@ namespace common\models\forms\User;
 
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
+use common\components\validation\validators\PasswordValidator;
 use common\models\User;
 use Yii;
 use yii\base\Model;
@@ -40,7 +41,8 @@ class ChangePasswordForm extends Model
     {
         return [
             [['password', 'newPassword', 'confirmPassword'], 'required'],
-            ['newPassword', 'compare', 'compareAttribute' => 'confirmPassword'],
+            ['newPassword', PasswordValidator::class],
+            ['confirmPassword', 'compare', 'compareAttribute' => 'newPassword'],
             ['newPassword', 'validateSame'],
         ];
     }

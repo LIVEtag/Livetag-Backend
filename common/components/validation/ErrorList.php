@@ -79,6 +79,7 @@ class ErrorList implements ErrorListInterface
     const CURRENT_PASSWORD_IS_WRONG = 1220;
     const SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD = 1230;
     const USER_NOT_FOUND = 1231;
+    const PASSWORD_FORMAT = 1240;
 
     //Stream
     const STREAM_IN_PROGRESS = 1263;
@@ -169,6 +170,7 @@ class ErrorList implements ErrorListInterface
         self::ENTITY_BLOCKED => '{entity} is blocked',
         self::CURRENT_PASSWORD_IS_WRONG => 'Current password is wrong.',
         self::SAME_CURRENT_PASSWORD_AND_NEW_PASSWORD => 'New password can not be the same as old password',
+        self::PASSWORD_FORMAT => 'The password should contain at least 8 symbols, one upper case, one lower case, and one number.',
 
         self::THIRD_PARTY_NOT_DOCUMENTED_ERROR => 'Not documented error.',
 
