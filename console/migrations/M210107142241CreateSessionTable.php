@@ -10,7 +10,6 @@ use common\components\db\Migration;
 class M210107142241CreateSessionTable extends Migration
 {
     const TABLE_NAME = '{{%session}}';
-    const PK_SESSION = 'session_pk';
     
     public function up()
     {
@@ -22,7 +21,7 @@ class M210107142241CreateSessionTable extends Migration
                 'data' => $this->binary(),
             ]
         );
-        $this->addPrimaryKey(self::PK_SESSION, 'session', 'id');
+        $this->addPrimaryKey('session_pk', 'session', 'id');
     }
 
     public function down()
