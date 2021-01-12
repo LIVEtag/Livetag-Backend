@@ -5,7 +5,7 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use rest\common\models\views\User\SendRecoveryEmailForm;
+use common\models\forms\User\SendRecoveryEmailForm;
 use rest\components\api\actions\Action;
 use Yii;
 

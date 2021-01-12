@@ -7,10 +7,10 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\User;
 
+use common\models\forms\User\RecoveryPassword;
 use Yii;
 use yii\web\NotFoundHttpException;
 use common\models\User;
-use rest\common\models\views\User\RecoveryPassword;
 use rest\components\api\actions\Action;
 
 /**

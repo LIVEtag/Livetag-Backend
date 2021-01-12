@@ -22,7 +22,6 @@ use yii\web\NotFoundHttpException;
  */
 class UserController extends Controller
 {
-
     /**
      * @inheritdoc
      */
@@ -54,7 +53,7 @@ class UserController extends Controller
             ]
         );
     }
-
+    
     /**
      * Lists all User models.
      * @return mixed
@@ -63,13 +62,12 @@ class UserController extends Controller
     {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
-
+    
     /**
      * Displays a single User model.
      * Allow all for admin and current for other
@@ -104,7 +102,7 @@ class UserController extends Controller
                 'model' => $model,
         ]);
     }
-
+    
     /**
      * Updates an existing User model (current profile)
      * For now only password change allowed
@@ -125,7 +123,7 @@ class UserController extends Controller
                 'model' => $model,
         ]);
     }
-
+    
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -141,7 +139,7 @@ class UserController extends Controller
         }
         return $this->redirect(['index']);
     }
-
+    
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

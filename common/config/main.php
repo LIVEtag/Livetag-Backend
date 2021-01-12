@@ -13,6 +13,21 @@ use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\log\FileTarget;
 use yii\swiftmailer\Mailer;
+use yii\validators\BooleanValidator;
+use yii\validators\CompareValidator;
+use yii\validators\DateValidator;
+use yii\validators\EmailValidator;
+use yii\validators\ExistValidator;
+use yii\validators\FileValidator;
+use yii\validators\ImageValidator;
+use yii\validators\IpValidator;
+use yii\validators\NumberValidator;
+use yii\validators\RangeValidator;
+use yii\validators\RegularExpressionValidator;
+use yii\validators\RequiredValidator;
+use yii\validators\StringValidator;
+use yii\validators\UniqueValidator;
+use yii\validators\UrlValidator;
 
 Yii::setAlias('@base.domain', getenv('YII_MAIN_DOMAIN'));
 Yii::setAlias('@rest.domain', getenv('YII_REST_DOMAIN'));
@@ -24,7 +39,7 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
-    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+    'vendorPath' => dirname(__DIR__, 2). '/vendor',
     'timeZone' => 'UTC',
     'bootstrap' => ['log'],
     'components' => [
@@ -97,21 +112,21 @@ return [
             ErrorListInterface::class => ErrorList::class,
         ],
         'definitions' => [
-            \yii\validators\StringValidator::class => RestValidators\StringValidator::class,
-            \yii\validators\EmailValidator::class => RestValidators\EmailValidator::class,
-            \yii\validators\FileValidator::class => RestValidators\FileValidator::class,
-            \yii\validators\ImageValidator::class => RestValidators\ImageValidator::class,
-            \yii\validators\BooleanValidator::class => RestValidators\BooleanValidator::class,
-            \yii\validators\NumberValidator::class => RestValidators\NumberValidator::class,
-            \yii\validators\DateValidator::class => RestValidators\DateValidator::class,
-            \yii\validators\RangeValidator::class => RestValidators\RangeValidator::class,
-            \yii\validators\RequiredValidator::class => RestValidators\RequiredValidator::class,
-            \yii\validators\RegularExpressionValidator::class => RestValidators\RegularExpressionValidator::class,
-            \yii\validators\UrlValidator::class => RestValidators\UrlValidator::class,
-            \yii\validators\CompareValidator::class => RestValidators\CompareValidator::class,
-            \yii\validators\IpValidator::class => RestValidators\IpValidator::class,
-            \yii\validators\UniqueValidator::class => RestValidators\UniqueValidator::class,
-            \yii\validators\ExistValidator::class => RestValidators\ExistValidator::class,
+            StringValidator::class => RestValidators\StringValidator::class,
+            EmailValidator::class => RestValidators\EmailValidator::class,
+            FileValidator::class => RestValidators\FileValidator::class,
+            ImageValidator::class => RestValidators\ImageValidator::class,
+            BooleanValidator::class => RestValidators\BooleanValidator::class,
+            NumberValidator::class => RestValidators\NumberValidator::class,
+            DateValidator::class => RestValidators\DateValidator::class,
+            RangeValidator::class => RestValidators\RangeValidator::class,
+            RequiredValidator::class => RestValidators\RequiredValidator::class,
+            RegularExpressionValidator::class => RestValidators\RegularExpressionValidator::class,
+            UrlValidator::class => RestValidators\UrlValidator::class,
+            CompareValidator::class => RestValidators\CompareValidator::class,
+            IpValidator::class => RestValidators\IpValidator::class,
+            UniqueValidator::class => RestValidators\UniqueValidator::class,
+            ExistValidator::class => RestValidators\ExistValidator::class,
         ],
     ],
 ];

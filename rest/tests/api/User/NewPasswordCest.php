@@ -12,7 +12,7 @@ use yii\base\Exception;
 class NewPasswordCest extends ActionCest
 {
     use ProviderDataTrait;
-
+    
     /**
      * @return string
      */
@@ -20,7 +20,7 @@ class NewPasswordCest extends ActionCest
     {
         return self::METHOD_POST;
     }
-
+    
     /**
      * @param ApiTester $I
      * @return string
@@ -29,7 +29,7 @@ class NewPasswordCest extends ActionCest
     {
         return '/user/new-password';
     }
-
+    
     /**
      * @param ApiTester $I
      * Common method
@@ -39,15 +39,15 @@ class NewPasswordCest extends ActionCest
     private function createUserWithValidResetToken(ApiTester $I)
     {
         $userFixture = $I->grabFixture('users', UserFixture::SELLER_1);
-
+        
         // create valid reset token
         $user = User::findOne(['id' => $userFixture->id]);
         $user->passwordResetToken = \Yii::$app->security->generateRandomString() . '_' . time();
         $user->save();
-
+        
         return $user;
     }
-
+    
     /**
      * @param ApiTester $I
      * @throws \ReflectionException
@@ -60,7 +60,7 @@ class NewPasswordCest extends ActionCest
             $I->seeResponseResultIsNotFound();
         }
     }
-
+    
     /**
      * @param ApiTester $I
      * @throws \Exception
@@ -69,7 +69,7 @@ class NewPasswordCest extends ActionCest
     {
         $user = $this->createUserWithValidResetToken($I);
         $I->amGoingTo('password cannot be blank');
-
+        
         $I->send(
             $this->getMethod(),
             $this->getUrl($I),
@@ -79,7 +79,7 @@ class NewPasswordCest extends ActionCest
                 'confirmPassword' => ''
             ]
         );
-
+        
         $I->seeResponseResultIsUnprocessableEntity();
         $I->seeResponseMatchesJsonType(
             [
@@ -93,12 +93,12 @@ class NewPasswordCest extends ActionCest
                     'message' => 'string:=Confirm Password cannot be blank.',
                     'code' => 'integer:=' . ErrorList::REQUIRED_INVALID
                 ]
-
+            
             ],
             '$.result'
         );
     }
-
+    
     /**
      * @param ApiTester $I
      * @throws \Exception
@@ -106,10 +106,10 @@ class NewPasswordCest extends ActionCest
     public function validatePasswordsDontMatch(ApiTester $I)
     {
         $user = $this->createUserWithValidResetToken($I);
-
+        
         $password = $I->generator->password(8, 15);
         $I->amGoingTo('password do not match');
-
+        
         $I->send(
             $this->getMethod(),
             $this->getUrl($I),
@@ -119,7 +119,7 @@ class NewPasswordCest extends ActionCest
                 'confirmPassword' => $password . $password
             ]
         );
-
+        
         $I->seeResponseResultIsUnprocessableEntity();
         $I->seeResponseMatchesJsonType(
             [
@@ -128,12 +128,12 @@ class NewPasswordCest extends ActionCest
                     'message' => 'string:=Password must be equal to "Confirm Password".',
                     'code' => 'integer:=' . ErrorList::COMPARE_EQUAL
                 ]
-
+            
             ],
             '$.result'
         );
     }
-
+    
     /**
      * @param ApiTester $I
      * @throws \Exception
@@ -143,7 +143,7 @@ class NewPasswordCest extends ActionCest
         $user = $I->grabFixture('users', UserFixture::SELLER_1);
         $password = $I->generator->password(8, 15);
         $I->wantToTest('create new password');
-
+        
         $I->send(
             $this->getMethod(),
             '/user/recovery-password',
@@ -164,7 +164,7 @@ class NewPasswordCest extends ActionCest
         );
         $I->seeResponseResultIsNoContent();
         $I->seeRecord(User::class, ['id' => $user->id, 'passwordResetToken' => null]);
-
+        
         $I->amGoingTo("Check than I can login with new password");
         $I->send(
             $this->getMethod(),

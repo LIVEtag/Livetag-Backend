@@ -3,7 +3,7 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace rest\common\models\views\User;
+namespace common\models\forms\User;
 
 use common\models\User;
 use yii\base\Model;
@@ -22,12 +22,12 @@ class RecoveryPassword extends Model
      * @var string
      */
     public $password;
-
+    
     /**
      * @var string
      */
     public $confirmPassword;
-
+    
     /**
      * @return array
      */

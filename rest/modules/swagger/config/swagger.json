@@ -199,6 +199,52 @@
                 }
             }
         },
+        "/v1/user/validate-password-token/{token}": {
+            "get": {
+                "security": [],
+                "summary": "Validate Password Token",
+                "tags": [
+                    "User"
+                ],
+                "operationId": "userValidatePasswordToken",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/responses/status204"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status404"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/user/change-password": {
             "patch": {
                 "summary": "Change User Password",
@@ -881,6 +927,7 @@
                     "confirmPassword": {
                         "type": "string"
                     }
+
                 }
             },
             "recoveryPasswordRequest": {
@@ -907,6 +954,7 @@
                         "type": "string",
                         "description": "Minimum 2, maximum 255 characters"
                     }
+
                 }
             },
             "streamSession": {
