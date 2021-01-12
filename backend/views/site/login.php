@@ -23,7 +23,6 @@ $fieldOptions2 = [
     <div class="login-logo">
         <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', ['alt' => Yii::$app->name]) ?>
     </div>
-    <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
 
@@ -43,14 +42,14 @@ $fieldOptions2 = [
             <div class="col-xs-8">
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
             </div>
-            <!-- /.col -->
+            <div class="col-xs-8">
+                <?= Html::a('Forgot password?', 'forgot-password') ?>
+            </div>
             <div class="col-xs-4">
                 <?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block bg-black', 'name' => 'login-button']) ?>
             </div>
-            <!-- /.col -->
         </div>
 
         <?php ActiveForm::end(); ?>
     </div>
-    <!-- /.login-box-body -->
-</div><!-- /.login-box -->
+</div>

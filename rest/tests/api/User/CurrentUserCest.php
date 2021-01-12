@@ -40,14 +40,14 @@ class CurrentUserCest extends ActionCest
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
         $I->wantToTest('view current user');
 
-            $I->send($this->getMethod(), $this->getUrl($I));
-            $I->seeResponseResultIsOk();
-            $I->seeResponseMatchesJsonType(
-                [
+        $I->send($this->getMethod(), $this->getUrl($I));
+        $I->seeResponseResultIsOk();
+        $I->seeResponseMatchesJsonType(
+            [
                     'id' => "integer:={$user->id}",
                     'email' => "string:={$user->email}"
                 ],
-                '$.result'
-            );
+            '$.result'
+        );
     }
 }

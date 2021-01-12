@@ -107,6 +107,8 @@ return [
                         'OPTIONS new-password' => 'options',
                         'POST logout' => 'logout',
                         'OPTIONS logout' => 'options',
+                        'GET validate-password-token/<token:>' => 'validate-password-token',
+                        'OPTIONS validate-password-token/{token}' => 'options',
                     ],
                 ],
                 [

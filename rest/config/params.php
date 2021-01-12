@@ -4,6 +4,4 @@
  * See LICENSE.txt for license details.
  */
 
-return [
-    'projectDomain' => 'example.com/'
-];
+return [];

@@ -52,6 +52,7 @@ class ChangePasswordCest extends ActionCest
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
         foreach ($this->getProviderData($I, 'validation') as $data) {
             $this->dataComment($I, $data);
+            
             $I->send($this->getMethod(), $this->getUrl($I), $data['request']);
             $I->seeResponseResultIsUnprocessableEntity();
             $I->seeResponseContainsJson($data['response']);

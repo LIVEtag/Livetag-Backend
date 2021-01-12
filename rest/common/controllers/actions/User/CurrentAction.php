@@ -16,7 +16,7 @@ use rest\components\api\actions\Action;
 class CurrentAction extends Action
 {
     /**
-     * @return null|User
+     * @return User
      */
     public function run(): User
     {

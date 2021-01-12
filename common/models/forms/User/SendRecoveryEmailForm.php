@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace rest\common\models\views\User;
+namespace common\models\forms\User;
 
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
@@ -19,7 +19,7 @@ class SendRecoveryEmailForm extends Model
 
     /** @var User */
     private $user;
-
+    
     public function rules()
     {
         return [
@@ -42,7 +42,7 @@ class SendRecoveryEmailForm extends Model
         }
     }
 
-    public function generateAndSendEmail()
+    public function generateAndSendEmail(): string
     {
         $user = $this->user;
         $user->generatePasswordResetToken();
@@ -52,9 +52,9 @@ class SendRecoveryEmailForm extends Model
                 ->compose('recovery-password', ['user' => $user])
                 ->setFrom(\Yii::$app->params['adminEmail'])
                 ->setTo($user->email)
+                ->setSubject('LiveTag - Reset Your Password')
                 ->send();
         }
-
         return $user->passwordResetToken;
     }
 }
