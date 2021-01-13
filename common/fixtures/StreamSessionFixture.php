@@ -16,6 +16,7 @@ class StreamSessionFixture extends ActiveFixture
 {
     const STREAM_EXPIRED_1 = 1;
     const STREAM_EXPIRED_2 = 2;
+    const STREAM_ACTIVE_3 = 3;
 
     public $modelClass = StreamSession::class;
 

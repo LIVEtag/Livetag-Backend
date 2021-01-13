@@ -7,24 +7,22 @@ declare(strict_types=1);
 
 namespace rest\tests\api\Stream;
 
-use common\fixtures\UserFixture;
-use rest\tests\AccessTestTrait;
+use common\fixtures\ShopFixture;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
 
 /**
  * @group Stream
  */
-class CreateStreamSessionCest extends ActionCest
+class ViewStreamSessionCest extends ActionCest
 {
-    use AccessTestTrait;
 
     /**
      * @return string
      */
     protected function getMethod(): string
     {
-        return self::METHOD_POST;
+        return self::METHOD_GET;
     }
 
     /**
@@ -33,16 +31,18 @@ class CreateStreamSessionCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session';
+        return '/stream-session/' . $this->shopId;
     }
+    /** @var integer */
+    protected $shopId;
 
     /**
      * @param ApiTester $I
      */
-    public function create(ApiTester $I)
+    public function view(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::SELLER_1);
-        $I->wantToTest('Create Stream Session');
+        $I->wantToTest('View Stream Session of Shop (for guest)');
+        $this->shopId = ShopFixture::STORE_2;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');

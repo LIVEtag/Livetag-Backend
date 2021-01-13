@@ -7,6 +7,8 @@
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\Stream\CreateAction;
+use rest\common\controllers\actions\Stream\StopAction;
+use rest\common\controllers\actions\Stream\ViewAction;
 use rest\common\models\User;
 use rest\components\api\Controller;
 use yii\helpers\ArrayHelper;
@@ -22,6 +24,16 @@ class StreamSessionController extends Controller
     const ACTION_CREATE = 'create';
 
     /**
+     * Stop Current active Vonage Session
+     */
+    const ACTION_STOP = 'stop';
+
+    /**
+     * Get Current Active Vonage Session for shop
+     */
+    const ACTION_VIEW = 'view';
+
+    /**
      * @inheritdoc
      */
     public function behaviors(): array
@@ -29,12 +41,21 @@ class StreamSessionController extends Controller
         $behaviors = ArrayHelper::merge(
             parent::behaviors(),
             [
+                'authenticator' => [
+                    'optional' => [
+                        self::ACTION_VIEW,
+                    ],
+                ],
                 'access' => [
+                    'except' => [
+                        self::ACTION_VIEW,
+                    ],
                     'rules' => [
                         [
                             'allow' => true,
                             'actions' => [
-                                self::ACTION_CREATE
+                                self::ACTION_CREATE,
+                                self::ACTION_STOP,
                             ],
                             'roles' => [User::ROLE_SELLER]
                         ],
@@ -54,6 +75,8 @@ class StreamSessionController extends Controller
             parent::actions(),
             [
                 self::ACTION_CREATE => CreateAction::class,
+                self::ACTION_STOP => StopAction::class,
+                self::ACTION_VIEW => ViewAction::class,
             ]
         );
     }

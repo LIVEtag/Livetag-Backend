@@ -177,6 +177,23 @@ class ApiTester extends \Codeception\Actor
         $this->dontSeeHttpHeader('x-pagination-per-page');
         $this->dontSeeHttpHeader('x-pagination-total-count');
     }
+    //Some Basic Responses
+
+    /**
+     * @return array
+     */
+    public function getStreamSessionResponse(): array
+    {
+        return [
+            'id' => 'integer',
+            'shopId' => 'integer',
+            'sessionId' => 'string',
+            'isActive' => 'boolean',
+            'token' => 'string',
+            'createdAt' => 'integer',
+            'expiredAt' => 'integer',
+        ];
+    }
 
     /**
      * @param array $array
