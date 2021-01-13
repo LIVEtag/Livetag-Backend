@@ -22,9 +22,9 @@ class M210105142620StreamSession extends Migration
                 'status' => $this->smallInteger()->notNull()->defaultValue(10),
                 'sessionId' => $this->string(255)->notNull(), //A session ID string can be up to 255 characters long.
                 'publisherToken' => $this->string(512)->notNull(),
-                'expiredAt' => $this->unixTimestamp()->comment('Publisher token expiration time'),
                 'createdAt' => $this->unixTimestamp(),
                 'updatedAt' => $this->unixTimestamp(),
+                'expiredAt' => $this->unixTimestamp()->comment('Publisher token expiration time'),
             ]
         );
 

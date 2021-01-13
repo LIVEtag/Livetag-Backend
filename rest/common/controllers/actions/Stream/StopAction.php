@@ -11,9 +11,10 @@ use common\models\Stream\StreamSession;
 use rest\common\models\User;
 use rest\components\api\actions\Action;
 use Yii;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 
-class CreateAction extends Action
+class StopAction extends Action
 {
 
     public function run()
@@ -24,6 +25,9 @@ class CreateAction extends Action
         if (!$shop) {
             throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to access this action'));
         }
-        return StreamSession::startTranslation($shop);
+        if (!StreamSession::stopTranslation($shop)) {
+            throw new BadRequestHttpException(Yii::t('app', 'Failed to Stop session for unknown reason'));
+        }
+        $this->response->setStatusCode(204);
     }
 }

@@ -132,7 +132,10 @@ return [
                     'pluralize' => false,
                     'patterns' => [
                         'POST' => StreamSessionController::ACTION_CREATE,
+                        'DELETE' => StreamSessionController::ACTION_STOP,
                         'OPTIONS' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}' => StreamSessionController::ACTION_VIEW,
+                        'OPTIONS {id}' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
             ],

@@ -309,10 +309,27 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * Stop active translation for selected shop
+     * We will assume that it is considered a success to bring the store to the "no active broadcasts" state.
+     * If they are not already there - success
+     * @param Shop $shop
+     * @return self
+     * @throws UnprocessableEntityHttpException
+     */
+    public static function stopTranslation(Shop $shop): bool
+    {
+        $session = self::getCurrent($shop->id);
+        if (!$session) {
+            return true;
+        }
+        return $session->stop();
+    }
+
+    /**
      * Stop session
      * @todo: add stop logic
      */
-    public function stopTranslation()
+    public function stop()
     {
         $this->status = self::STATUS_STOPPED;
         return $this->save(true, ['status']);

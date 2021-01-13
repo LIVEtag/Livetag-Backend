@@ -50,7 +50,7 @@ class Controller extends BaseController
             ],
             'authenticator' => [
                 'class' => HttpBearerAuth::class,
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,
@@ -62,14 +62,14 @@ class Controller extends BaseController
             ],
             'rateLimiter' => [
                 'class' => RateLimiter::class,
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
                 //'isActive' => YII_ENV_PROD,
             ],
             'access' => [
                 'class' => AccessControl::class,
                 'forbiddenMessage' => Yii::t('yii', 'You are not allowed to perform this action.'),
                 'ruleConfig' => ['class' => AccessRule::class],
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'verbFilter' => [
                 'class' => VerbFilter::class,

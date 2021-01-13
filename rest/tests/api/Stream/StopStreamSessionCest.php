@@ -15,7 +15,7 @@ use rest\tests\ApiTester;
 /**
  * @group Stream
  */
-class CreateStreamSessionCest extends ActionCest
+class StopStreamSessionCest extends ActionCest
 {
     use AccessTestTrait;
 
@@ -24,7 +24,7 @@ class CreateStreamSessionCest extends ActionCest
      */
     protected function getMethod(): string
     {
-        return self::METHOD_POST;
+        return self::METHOD_DELETE;
     }
 
     /**
@@ -39,12 +39,11 @@ class CreateStreamSessionCest extends ActionCest
     /**
      * @param ApiTester $I
      */
-    public function create(ApiTester $I)
+    public function stop(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::SELLER_1);
-        $I->wantToTest('Create Stream Session');
+        $I->amLoggedInApiAs(UserFixture::SELLER_2);
+        $I->wantToTest('Stop Stream Session');
         $I->send($this->getMethod(), $this->getUrl($I));
-        $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');
+        $I->seeResponseResultIsNoContent();
     }
 }

@@ -397,7 +397,7 @@
                 "tags": [
                     "Vonage"
                 ],
-                "summary": "Create new Session for stream",
+                "summary": "Create new Session for Stream",
                 "operationId": "streamSessionCreate",
                 "responses": {
                     "200": {
@@ -457,19 +457,9 @@
                 "tags": [
                     "Vonage"
                 ],
-                "summary": "Stop Session",
+                "summary": "Stop Stream Session",
                 "operationId": "stopStreamSession",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "streamSession id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "204": {
                         "description": "No Response",
@@ -513,7 +503,7 @@
                 "tags": [
                     "Vonage"
                 ],
-                "summary": "View streamSession",
+                "summary": "View Active Stream Session for selected shop",
                 "operationId": "streamSessionView",
                 "parameters": [
                     {
@@ -927,7 +917,6 @@
                     "confirmPassword": {
                         "type": "string"
                     }
-
                 }
             },
             "recoveryPasswordRequest": {
@@ -954,7 +943,6 @@
                         "type": "string",
                         "description": "Minimum 2, maximum 255 characters"
                     }
-
                 }
             },
             "streamSession": {
