@@ -123,7 +123,7 @@ class Product extends ActiveRecord
      * validate if field has type json
      * @param $attribute
      */
-    private function validOption($attribute): void
+    protected function validOption($attribute): void
     {
         $options = Json::decode($this->options);
         if (!\is_array($options)) {
