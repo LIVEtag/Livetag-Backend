@@ -21,7 +21,7 @@ class M210107142241CreateSessionTable extends Migration
                 'data' => $this->binary(),
             ]
         );
-        $this->addPrimaryKey('session_pk', 'session', 'id');
+        $this->addPrimaryKey('session_pk', self::TABLE_NAME, 'id');
     }
 
     public function down()
