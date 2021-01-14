@@ -18,13 +18,13 @@ class M210111122050CreateProductTable extends Migration
             self::TABLE_NAME,
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'externalId' => $this->string(255)->unsigned()->unique()->notNull(),
+                'externalId' => $this->string(255)->unsigned(),
                 'shopId' => $this->integer()->unsigned(),
                 'title' => $this->string(255)->notNull(),
-                'options' => $this->json()->null(),
                 'photo'  => $this->string(255),
                 'link' => $this->string(255),
                 'status' => $this->tinyInteger(),
+                'options' => $this->json()->notNull(),
                 'createdAt' => $this->unixTimestamp(),
                 'updatedAt' => $this->unixTimestamp(),
             ]

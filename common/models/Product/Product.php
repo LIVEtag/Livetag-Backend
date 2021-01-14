@@ -12,6 +12,7 @@ use common\models\queries\Shop\ShopQuery;
 use common\models\Shop\Shop;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "shop".
@@ -22,30 +23,27 @@ use yii\db\ActiveRecord;
  * @property string $options    [json]
  * @property string $photo      [varchar(255)]
  * @property string $link       [varchar(255)]
- * @property bool $status     [tinyint(3)]
+ * @property int $status     [tinyint(3)]
  * @property int $createdAt  [int(11) unsigned]
  * @property int $updatedAt  [int(11) unsigned]
  */
 class Product extends ActiveRecord
 {
-    public const STATUS_HIDDEN = 0;
-
-    public const STATUS_DISPLAYED = 10;
-    
-    public const STATUS_PRESENTED = 20;
-    
-    public const STATUS_DELETED = 30;
-    
-    public $options;
-    
-    public $price;
+    public const STATUS_HIDDEN = 1;
+    public const STATUS_DISPLAYED = 2;
+    public const STATUS_PRESENTED = 3;
+    public const STATUS_DELETED = 4;
     
     public const PRICE = 'price';
+    public const COLOR = 'color';
+    public const SIZE = 'size';
+    
+    public $options;
     
     /**
      * Status Names
      */
-    const STATUSES = [
+    public const STATUSES = [
         self::STATUS_HIDDEN => 'Hidden',
         self::STATUS_DISPLAYED => 'Displayed in the widget',
         self::STATUS_PRESENTED => 'Presented now',
@@ -53,10 +51,29 @@ class Product extends ActiveRecord
     ];
     
     /**
-     * existing fields in option field
+     * Status codes
      */
-    const OPTION_EXISTS = [
-        self::PRICE => self::PRICE,
+    public const STATUSES_CODES = [
+        self::STATUS_HIDDEN,
+        self::STATUS_DISPLAYED,
+        self::STATUS_PRESENTED,
+        self::STATUS_DELETED,
+    ];
+    
+    /**
+     * fields in option field
+     */
+    public const OPTION = [
+        self::PRICE,
+        self::COLOR,
+        self::SIZE
+    ];
+    
+    /**
+     * required fields in option field
+     */
+    public const OPTION_REQUIRED = [
+        self::PRICE,
     ];
     
     /**
@@ -96,7 +113,8 @@ class Product extends ActiveRecord
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
             [['externalId', 'title', 'link', 'photo'], 'string', 'max' => 255],
-            [['options'], 'validJson'],
+            [['options'], 'array'],
+            [['options'], 'validOption'],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
     }
@@ -105,29 +123,36 @@ class Product extends ActiveRecord
      * validate if field has type json
      * @param $attribute
      */
-    public function validJson($attribute)
+    private function validOption($attribute): void
     {
-        if (!\is_array($this)) {
+        $options = Json::decode($this->options);
+        if (!\is_array($options)) {
             $this->addError(
                 $attribute,
-                'options has wrong type'
+                'options property has wrong data'
             );
         }
-        $options = json_decode($this->options, true);
+        
         foreach ($options as $product) {
-            $this->checkArrayFieldInJson($product, $attribute);
+            if (\is_array($product)) {
+                $this->isJsonContainsValues($product, $attribute);
+                $this->isValidJsonValues($product, $attribute);
+            } else {
+                $this->addError(
+                    $attribute,
+                    'options has wrong data structure'
+                );
+            }
         }
     }
-    
     
     /**
      * @param array $field
      * @param $attribute
      */
-    private function checkArrayFieldInJson(array $field, $attribute)
+    private function isJsonContainsValues(array $field, $attribute): void
     {
-        $optionFields = self::OPTION_EXISTS;
-        $result = array_diff(self::OPTION_EXISTS, array_flip($field));
+        $result = array_diff(self::OPTION_REQUIRED, array_flip($field));
         if (!empty($result)) {
             $notExists = implode(', ', $result);
             $this->addError(
@@ -135,13 +160,32 @@ class Product extends ActiveRecord
                 "options must have {$notExists} values"
             );
         }
-        
-        foreach ($optionFields as $optionValue) {
-            if ((isset($field[$optionValue]) && \strlen((string)$field[$optionValue]) > 255)) {
-                $this->addError(
-                    $attribute,
-                    "{$optionValue} must be lower than 255"
-                );
+    }
+    
+    /**
+     * @param array $field
+     * @param $attribute
+     */
+    private function isValidJsonValues(array $field, $attribute): void
+    {
+        foreach (self::OPTION as $optionValue) {
+            if (isset($field[$optionValue])) {
+                if (is_numeric($field[$optionValue]) && self::PRICE === $optionValue) {
+                    $this->addError(
+                        $attribute,
+                        "{$optionValue} must be number type"
+                    );
+                } elseif (\is_string($field[$optionValue]) && \strlen($field[$optionValue]) > 255) {
+                    $this->addError(
+                        $attribute,
+                        "{$optionValue} must be lower than 255"
+                    );
+                } else {
+                    $this->addError(
+                        $attribute,
+                        "{$optionValue} not valid value"
+                    );
+                }
             }
         }
     }

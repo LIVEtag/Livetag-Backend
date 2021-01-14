@@ -17,14 +17,13 @@ use common\models\Product\Product;
  */
 class ProductQuery extends ActiveQuery
 {
-
     /**
-     * Return session with active status, and not expired token
+     * @param int $status
      * @return $this
      */
-    public function hidden()
+    public function byStatus(int $status): self
     {
-        return $this->andWhere([$this->getFieldName('status') => Product::STATUS_HIDDEN]);
+        return $this->andWhere([$this->getFieldName('status') => $status]);
     }
 
     /**
