@@ -3,6 +3,7 @@
 use backend\models\User\User;
 use dmstr\web\AdminLteAsset;
 use kartik\grid\Module;
+use yii\web\DbSession;
 
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
@@ -29,8 +30,8 @@ return [
             ]
         ],
         'session' => [
+            'class' => DbSession::class,
             'name' => '_backendSessionId',
-            'savePath' => dirname(__DIR__) . '/runtime/session',
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
