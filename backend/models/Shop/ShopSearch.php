@@ -3,7 +3,7 @@
  * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace backend\models\Shop;
 
@@ -16,13 +16,14 @@ use backend\models\Shop\Shop;
  */
 class ShopSearch extends Shop
 {
+
     /**
      * @inheritdoc
      */
     public function rules(): array
     {
         return [
-            [['id', 'status'], 'integer'],
+            [['id'], 'integer'],
             [['name', 'website'], 'safe'],
         ];
     }
@@ -45,7 +46,7 @@ class ShopSearch extends Shop
      */
     public function search($params): ActiveDataProvider
     {
-        $query = Shop::find()->active();
+        $query = Shop::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -60,10 +61,7 @@ class ShopSearch extends Shop
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            self::tableName() . '.id' => $this->id,
-            self::tableName() . '.status' => $this->status,
-        ]);
+        $query->andFilterWhere([self::tableName() . '.id' => $this->id]);
 
         $query->andFilterWhere(['like', self::tableName() . '.name', $this->name])
             ->andFilterWhere(['like', self::tableName() . '.website', $this->website]);

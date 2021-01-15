@@ -53,7 +53,7 @@ class UserController extends Controller
             ]
         );
     }
-    
+
     /**
      * Lists all User models.
      * @return mixed
@@ -67,7 +67,7 @@ class UserController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
     /**
      * Displays a single User model.
      * Allow all for admin and current for other
@@ -102,7 +102,7 @@ class UserController extends Controller
                 'model' => $model,
         ]);
     }
-    
+
     /**
      * Updates an existing User model (current profile)
      * For now only password change allowed
@@ -123,7 +123,7 @@ class UserController extends Controller
                 'model' => $model,
         ]);
     }
-    
+
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -135,11 +135,11 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
         if ($model->delete()) {
-            Yii::$app->session->setFlash('success', 'The seller {email} was deleted.', ['email' => $model->email]);
+            Yii::$app->session->setFlash('success', Yii::t('app', 'The seller {email} was deleted.', ['email' => $model->email]));
         }
         return $this->redirect(['index']);
     }
-    
+
     /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

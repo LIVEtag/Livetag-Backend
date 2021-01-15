@@ -1,11 +1,11 @@
 <?php
-
 /**
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 
 use common\components\centrifugo\Centrifugo;
+use common\components\EventDispatcher;
 use common\components\streaming\Vonage;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
@@ -41,9 +41,12 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
-    'vendorPath' => dirname(__DIR__, 2). '/vendor',
+    'vendorPath' => dirname(__DIR__, 2) . '/vendor',
     'timeZone' => 'UTC',
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        EventDispatcher::class,
+    ],
     'components' => [
         'formatter' => [
             'dateFormat' => 'dd/MM//yyyy',

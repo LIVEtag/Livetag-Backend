@@ -53,6 +53,7 @@ use <?= ltrim($class, '\\') ?>;
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <div class="form-group">
+                        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'btn bg-black']) ?>
                         <?= "<?= " ?>Html::submitButton(<?= $generator->generateString('Save') ?>, ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>

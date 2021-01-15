@@ -95,15 +95,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             [['shopId', 'status', 'expiredAt'], 'integer'],
             ['sessionId', 'string', 'max' => 255],
             ['publisherToken', 'string', 'max' => 512],
-            [
-                'shopId',
-                'exist',
-                'skipOnError' => true,
-                'targetRelation' => 'shop',
-                'filter' => function ($query) {
-                    $query->active(); //only active shop can start sessions
-                },
-            ],
+            ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];

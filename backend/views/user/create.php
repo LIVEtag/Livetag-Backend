@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
 /* @var $model User */
 /* @var $form ActiveForm */
 
-$this->title = Yii::t('app', 'Create Seller');
+$this->title = Yii::t('app', 'Add a seller');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sellers management'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -25,9 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-12">
                 <div class="box box-default">
                     <?php $form = ActiveForm::begin(); ?>
-                    <div class="box-header">
-                        <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
-                    </div>
+                    <div class="box-header"></div>
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
 
