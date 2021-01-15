@@ -12,7 +12,7 @@ use Dotenv\Dotenv;
 require 'recipe/common.php';
 
 // Global
-set('application', 'Base project');
+set('application', 'Livetag');
 set('default_timeout', 0.0);
 
 // Environments variables
