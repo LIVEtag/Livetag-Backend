@@ -42,14 +42,13 @@ $fieldOptions2 = [
             <div class="col-xs-8">
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
             </div>
-            <div class="col-xs-8">
-                <?= Html::a('Forgot password?', 'forgot-password') ?>
-            </div>
             <div class="col-xs-4">
                 <?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block bg-black', 'name' => 'login-button']) ?>
             </div>
         </div>
-
+        <div>
+            <?= Html::a('Forgot password?', 'forgot-password', ['class' => 'text-center center-block']) ?>
+        </div>
         <?php ActiveForm::end(); ?>
     </div>
 </div>

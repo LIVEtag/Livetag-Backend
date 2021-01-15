@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f32958392d0501b56a26448280f4d71",
+    "content-hash": "a3255d691ba5db5ab534e9a66042c40d",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -54,7 +54,7 @@
             "version": "v3.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
+                "url": "git@github.com:twbs/bootstrap.git",
                 "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
             },
             "dist": {
@@ -75,7 +75,7 @@
             "version": "3.3.11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobinHerbots/Inputmask.git",
+                "url": "git@github.com:RobinHerbots/Inputmask.git",
                 "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
@@ -114,7 +114,7 @@
             "version": "v1.3.2",
             "source": {
                 "type": "git",
-                "url": "git@github.com:bestiejs/punycode.js.git",
+                "url": "https://github.com/bestiejs/punycode.js.git",
                 "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
             },
             "dist": {
@@ -247,6 +247,48 @@
                 "yii"
             ],
             "time": "2013-12-10T17:49:58+00:00"
+        },
+        {
+            "name": "centrifugal/phpcent",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/centrifugal/phpcent.git",
+                "reference": "3590d26ed2f59f5238f5f9e1842228d3d2aed5af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/centrifugal/phpcent/zipball/3590d26ed2f59f5238f5f9e1842228d3d2aed5af",
+                "reference": "3590d26ed2f59f5238f5f9e1842228d3d2aed5af",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "phpcent\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP library to communicate with Centrifugo HTTP API",
+            "homepage": "https://github.com/centrifugal/phpcent",
+            "keywords": [
+                "centrifugo",
+                "messaging",
+                "realtime",
+                "websocket"
+            ],
+            "time": "2020-08-07T18:26:02+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -730,41 +772,6 @@
                 "icon"
             ],
             "time": "2016-10-24T15:52:54+00:00"
-        },
-        {
-            "name": "gbksoft/phpcent",
-            "version": "1.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gbksoft/phpcent.git",
-                "reference": "b79c82b592f20e6ba83df763a51a73e8b765ad17"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gbksoft/phpcent/zipball/b79c82b592f20e6ba83df763a51a73e8b765ad17",
-                "reference": "b79c82b592f20e6ba83df763a51a73e8b765ad17",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "phpcent": ".."
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Php library to communicate with Centrifugo/Centrifuge)",
-            "homepage": "https://github.com/centrifugal/phpcent",
-            "keywords": [
-                "centrifugo"
-            ],
-            "time": "2017-10-25T13:51:57+00:00"
         },
         {
             "name": "gbksoft/shell-command-builder",

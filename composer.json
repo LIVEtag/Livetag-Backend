@@ -21,7 +21,7 @@
         "kartik-v/yii2-widget-select2": "2.1.0",
         "kosinix/grafika": "2.0.8",
         "kartik-v/yii2-widgets": "3.4.0",
-        "gbksoft/phpcent": "~1.0.5",
+        "centrifugal/phpcent": "^3.1",
         "deployer/deployer": "6.1",
         "dmstr/yii2-adminlte-asset": "2.5",
         "omnilight/yii2-scheduling": "^1.1",

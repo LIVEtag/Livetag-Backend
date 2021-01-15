@@ -31,7 +31,7 @@ class ViewStreamSessionCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session/' . $this->shopId;
+        return "/{$this->shopId}/stream-session";
     }
     /** @var integer */
     protected $shopId;
@@ -43,7 +43,8 @@ class ViewStreamSessionCest extends ActionCest
     {
         $I->wantToTest('View Stream Session of Shop (for guest)');
         $this->shopId = ShopFixture::STORE_2;
-        $I->send($this->getMethod(), $this->getUrl($I));
+        $expand = 'token';
+        $I->send($this->getMethod(), $this->getUrl($I) . "?expand=$expand");
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');
     }

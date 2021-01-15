@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace rest\common\models\queries\User;
 
 use rest\common\models\AccessToken;
-use yii\db\ActiveQuery;
+use common\components\db\ActiveQuery;
 
 /**
  * Class AccessTokenQuery
@@ -30,7 +30,16 @@ class AccessTokenQuery extends ActiveQuery
      */
     public function byToken(string $apiKey)
     {
-        return $this->andWhere([AccessToken::tableName() . '.token' => $apiKey]);
+        return $this->andWhere([$this->getFieldName('token') => $apiKey]);
+    }
+
+    /**
+     * @param int $userId
+     * @return AccessTokenQuery
+     */
+    public function byUserId(int $userId): self
+    {
+        return $this->andWhere([$this->getFieldName('userId') => $userId]);
     }
 
     /**
@@ -39,6 +48,6 @@ class AccessTokenQuery extends ActiveQuery
      */
     public function valid()
     {
-        return $this->andWhere(['>', AccessToken::tableName() . '.expiredAt', time()]);
+        return $this->andWhere(['>', $this->getFieldName('expiredAt'), time()]);
     }
 }
