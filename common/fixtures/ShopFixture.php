@@ -27,7 +27,6 @@ class ShopFixture extends ActiveFixture
         return [
             'name' => $this->generator->company,
             'website' => $this->generator->url,
-            'status' => Shop::STATUS_ACTIVE,
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
         ];

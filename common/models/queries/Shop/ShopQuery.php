@@ -17,16 +17,6 @@ use common\models\Shop\Shop;
  */
 class ShopQuery extends ActiveQuery
 {
-
-    /**
-     * Return session with active status, and not expired token
-     * @return $this
-     */
-    public function active()
-    {
-        return $this->andWhere([$this->getFieldName('status') => Shop::STATUS_ACTIVE]);
-    }
-
     /**
      * @param int|array $id
      * @return $this

@@ -8,7 +8,9 @@ declare(strict_types=1);
 namespace common\models\Shop;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\EventDispatcher;
 use common\models\queries\Shop\ShopQuery;
+use common\models\Stream\StreamSession;
 use common\models\User;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -19,31 +21,18 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property string $name
  * @property string $website
- * @property integer $status
  * @property integer $createdAt
  * @property integer $updatedAt
  *
- * @property-read UserShop[] $userShops
+ * @property-read StreamSession[] $streamSessions
+ * @property-read User[] $users
+ *
+ * EVENTS:
+ * - EVENT_AFTER_DELETE
+ * @see EventDispatcher
  */
 class Shop extends ActiveRecord
 {
-    /**
-     * Disabled shop (marked as deleted)
-     */
-    const STATUS_DELETED = 0;
-
-    /**
-     * Default active shop
-     */
-    const STATUS_ACTIVE = 10;
-
-    /**
-     * Status Names
-     */
-    const STATUSES = [
-        self::STATUS_ACTIVE => 'Active',
-        self::STATUS_DELETED => 'Deleted',
-    ];
 
     /**
      * @inheritdoc
@@ -79,10 +68,9 @@ class Shop extends ActiveRecord
     {
         return [
             [['name', 'website'], 'required'],
-            [['name', 'website'], 'string', 'max' => 255],
-            ['website', 'url', 'defaultScheme' => 'https'],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => array_keys(self::STATUSES)],
+            ['name', 'string', 'max' => 50],
+            ['website', 'string', 'max' => 255],
+            ['website', 'url', 'defaultScheme' => 'https']
         ];
     }
 
@@ -95,7 +83,6 @@ class Shop extends ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'website' => 'Website',
-            'status' => 'Status',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
         ];
@@ -110,12 +97,10 @@ class Shop extends ActiveRecord
     }
 
     /**
-     * Fake delete
-     * @todo: add delete logic
+     * @return ActiveQuery
      */
-    public function delete()
+    public function getStreamSessions(): ActiveQuery
     {
-        $this->status = self::STATUS_DELETED;
-        return $this->save(true, ['status']);
+        return $this->hasMany(StreamSession::class, ['shopId' => 'id']);
     }
 }

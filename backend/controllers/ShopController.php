@@ -16,6 +16,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -140,9 +141,14 @@ class ShopController extends Controller
      */
     public function actionDelete(int $id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('success', Yii::t('app', 'The shop `{name}` was deleted.', ['name' => $model->name]));
+        }
 
-        return $this->redirect(['index']);
+        $referrer = Yii::$app->request->referrer;
+        $viewUrl = Url::to(['view', 'id' => $id]);
+        return $this->redirect($referrer && !strstr($referrer, $viewUrl) ? $referrer : ['index']);
     }
 
     /**

@@ -11,4 +11,8 @@ return [
         'userId' => UserFixture::SELLER_2,
         'shopId' => ShopFixture::STORE_2,
     ],
+    [
+        'userId' => UserFixture::DELETED,
+        'shopId' => ShopFixture::STORE_2,
+    ],
 ];

@@ -21,7 +21,7 @@ return [
     ],
     UserFixture::DELETED => [
         'id' => UserFixture::DELETED,
-        'email' => 'deleted@nosend.net',
+        'email' => 'blocked@nosend.net',
         'role' => User::ROLE_SELLER,
         'status' => User::STATUS_DELETED,
     ]
