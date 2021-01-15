@@ -24,6 +24,7 @@ Yii::$container = new yii\di\Container;
  *
  * @inheritdoc
  * @property-read \common\components\streaming\Vonage $vonage
+ * @property-read \common\components\centrifugo\Centrifugo $centrifugo
  */
 abstract class BaseApplication extends yii\base\Application
 {

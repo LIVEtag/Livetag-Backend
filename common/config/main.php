@@ -1,9 +1,11 @@
 <?php
+
 /**
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 
+use common\components\centrifugo\Centrifugo;
 use common\components\streaming\Vonage;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
@@ -89,6 +91,13 @@ return [
                     'context' => true,
                 ],
             ],
+        ],
+        'centrifugo' => [
+            'class' => Centrifugo::class,
+            'host' => getenv('CENTRIFUGO_HOST'),
+            'ws' => getenv('CENTRIFUGO_WEB_SOCKET'),
+            'secret' => getenv('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY'),
+            'apiKey' => getenv('CENTRIFUGO_API_KEY'),
         ],
         // If the project uses a load balancer, the file cache must be replaced (redis, memcached etc.)
         'cache' => [
