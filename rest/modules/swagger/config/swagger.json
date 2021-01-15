@@ -27,6 +27,10 @@
         {
             "name": "Vonage",
             "description": "Vonage sessions manage"
+        },
+        {
+            "name": "Centrifugo",
+            "description": "Centrifugo related methods"
         }
     ],
     "paths": {
@@ -399,6 +403,14 @@
                 ],
                 "summary": "Create new Session for Stream",
                 "operationId": "streamSessionCreate",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -498,7 +510,7 @@
                 }
             }
         },
-        "/v1/stream-session/{shopId}": {
+        "/v1/{shopId}/stream-session": {
             "get": {
                 "tags": [
                     "Vonage"
@@ -514,6 +526,12 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
                     }
                 ],
                 "responses": {
@@ -550,9 +568,57 @@
                     }
                 }
             }
+        },
+
+        "/v1/centrifugo/sign": {
+            "post": {
+                "summary": "Sign in centrifugo",
+                "description": "This method required by centrifugo for connection check",
+                "tags": [
+                    "Centrifugo"
+                ],
+                "operationId": "centrifugoSign",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/responses/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "token": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/responses/status401"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
-
     "components": {
         "securitySchemes": {
             "Bearer": {
@@ -897,11 +963,11 @@
                     },
                     "parameters": {
                         "type": "object",
-                        "properties": []
+                        "properties": {}
                     },
                     "errors": {
                         "type": "object",
-                        "properties": []
+                        "properties": {}
                     }
                 }
             },
@@ -975,6 +1041,7 @@
                     },
                     "token": {
                         "type": "string",
+                        "description": "EXPAND",
                         "example": "T1==cGFydG5lcl9pZD00NTc0ODE1MiZzaWc9NDI2NTY1NmNiZmM4MjBmMTY2ZDQ0OWY4MDcwOTQwYTcwN2Q1MmJiMjpzZXNzaW9uX2lkPTFfTVg0ME5UYzBPREUxTW41LU1UUTROakV6TmpnM05UZzRPWDVCVlZCaFptWkNLM0U1WlRkemRtbFpiVnB2UjA0MVYzWi1RWDQmY3JlYXRlX3RpbWU9MTQ4NjEzNjg2NSZyb2xlPXB1Ymxpc2hlciZub25jZT0xNDg2MTM2ODY1LjE5ODI2MDkxMTcyNDUmZXhwaXJlX3RpbWU9MTQ4NjIyMzI2NQ=="
                     },
                     "createdAt": {
@@ -985,6 +1052,50 @@
                         "type": "integer",
                         "example": 1619827200
                     }
+                }
+            }
+        },
+        "parameters": {
+            "page": {
+                "in": "query",
+                "name": "page",
+                "description": "The number of page.",
+                "required": false,
+                "example": 1,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "perPage": {
+                "in": "query",
+                "name": "perPage",
+                "description": "The number of items returned per page",
+                "required": false,
+                "example": 20,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 20
+                }
+            },
+            "fields": {
+                "in": "query",
+                "name": "fields",
+                "description": "Fields (coma separated)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-streamSession": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```token```",
+                "required": false,
+                "schema": {
+                    "type": "string"
                 }
             }
         }

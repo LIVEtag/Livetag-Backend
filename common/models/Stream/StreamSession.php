@@ -142,14 +142,23 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'isActive' => function () {
                 return $this->isActive();
             },
-            'token' => function () {
-                return $this->getToken(Yii::$app->user->identity ?? null);
-            },
             'createdAt' => function () {
                 return $this->getCreatedAt();
             },
             'expiredAt' => function () {
                 return $this->getExpiredAt();
+            },
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields()
+    {
+        return [
+            'token' => function () {
+                return $this->getToken(Yii::$app->user->identity ?? null);
             },
         ];
     }

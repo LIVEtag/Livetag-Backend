@@ -3,10 +3,12 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
+use rest\modules\v1\controllers\CentrifugoController;
 use rest\modules\v1\controllers\StreamSessionController;
 use rest\modules\v1\Module as V1Module;
 use yii\data\Pagination;
@@ -134,8 +136,27 @@ return [
                         'POST' => StreamSessionController::ACTION_CREATE,
                         'DELETE' => StreamSessionController::ACTION_STOP,
                         'OPTIONS' => StreamSessionController::ACTION_OPTIONS,
-                        'GET {id}' => StreamSessionController::ACTION_VIEW,
-                        'OPTIONS {id}' => StreamSessionController::ACTION_OPTIONS,
+                    ],
+                ],
+                //shop id before controller
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1' => 'v1/stream-session'
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET {id}/stream-session' => StreamSessionController::ACTION_VIEW,
+                        'OPTIONS {id}/stream-session' => StreamSessionController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => ['v1/centrifugo'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST sign' => CentrifugoController::ACTION_SIGN,
+                        'OPTIONS sign' => CentrifugoController::ACTION_OPTIONS,
                     ],
                 ],
             ],
