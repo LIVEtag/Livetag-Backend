@@ -18,10 +18,10 @@ use common\models\Product\Product;
 class ProductQuery extends ActiveQuery
 {
     /**
-     * @param int $status
+     * @param int|array $status
      * @return $this
      */
-    public function byStatus(int $status): self
+    public function byStatus($status): self
     {
         return $this->andWhere([$this->getFieldName('status') => $status]);
     }

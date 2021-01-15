@@ -15,8 +15,18 @@ use yii\helpers\Json;
  */
 class ProductFixture extends ActiveFixture
 {
-    const PRODUCT_1 = 1;
-    const PRODUCT_2 = 2;
+    const PRODUCT_HIDDEN_1 = 1;
+    const PRODUCT_HIDDEN_2 = 2;
+    const PRODUCT_HIDDEN_3 = 3;
+    const PRODUCT_HIDDEN_4 = 4;
+    const PRODUCT_PRESENTED_1 = 5;
+    const PRODUCT_PRESENTED_2 = 6;
+    const PRODUCT_PRESENTED_3 = 7;
+    const PRODUCT_PRESENTED_4 = 8;
+    const PRODUCT_DISPLAYED_1 = 9;
+    const PRODUCT_DISPLAYED_2 = 10;
+    const PRODUCT_DISPLAYED_3 = 11;
+    const PRODUCT_DISPLAYED_4 = 12;
     
     public $modelClass = Product::class;
     public $depends = [ShopFixture::class];
@@ -28,17 +38,11 @@ class ProductFixture extends ActiveFixture
     {
         
         return [
-            'externalId' => $this->generator->incrementalTime,
-            'shopId' => self::PRODUCT_1,
+            'externalId' => $this->generator->uuid,
+            'shopId' => $this->generator->randomElements([ShopFixture::STORE_1, ShopFixture::STORE_2], 1)[0],
             'title' => $this->generator->text(20),
-            'options' => Json::encode([
-                'price'=> $this->generator->numberBetween(1, 1000),
-                'color'=> $this->generator->colorName,
-                'size'=> $this->generator->randomElements(['XL', 'XXL', 'L', 'S', 'M', 'XS'], 1)[0]
-            ]),
             'photo' => $this->generator->imageUrl(),
             'link' => $this->generator->url,
-            'status' => $this->generator->randomElements(Product::STATUSES_CODES, 1)[0],
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
         ];
