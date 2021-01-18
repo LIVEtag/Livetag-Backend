@@ -89,6 +89,18 @@ class Shop extends ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function fields(): array
+    {
+        return [
+            'id',
+            'name',
+            'website'
+        ];
+    }
+
+    /**
      * @return ActiveQuery
      */
     public function getUsers(): ActiveQuery

@@ -26,9 +26,9 @@ use yii\db\ActiveRecord;
 class AccessToken extends ActiveRecord
 {
     /**
-     * One week
+     * The acess token expires in 720 hours (30 days)
      */
-    const REMEMBER_ME_TIME = 604800;
+    const REMEMBER_ME_TIME = 2592000;
 
     /**
      * One hour

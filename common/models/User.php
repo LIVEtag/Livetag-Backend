@@ -105,6 +105,16 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
+    public function extraFields(): array
+    {
+        return [
+            'shop'
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules(): array
     {
         return [
