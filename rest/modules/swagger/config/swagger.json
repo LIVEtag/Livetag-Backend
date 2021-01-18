@@ -1071,9 +1071,9 @@
                         "type": "integer",
                         "example": 1
                     },
-                    "shopId": {
-                        "type": "integer",
-                        "example": 1
+                    "shopUri": {
+                        "type": "string",
+                        "example": "shop1"
                     },
                     "sessionId": {
                         "type": "string",

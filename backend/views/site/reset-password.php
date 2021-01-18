@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <h2 class="text-center">Reset your password</h2>
             <p>Please set the new password for your account using the form below</p>
             <div class="panel-body">
-    
+
                 <?php $form = ActiveForm::begin(); ?>
                 <div class="form-group">
                     <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'New Password','class' => 'form-control'])->label(false) ?>
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::submitButton(Yii::t('app', 'Set New Password'), ['class' => 'btn btn-lg btn-primary btn-block']) ?>
                 </div>
                 <div class="form-group">
-                    <?= Html::a(Yii::t('app', 'Login'), ['index'], ['class' => 'btn btn-md btn-primary btn-block']) ?>
+                    <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'btn btn-md btn-primary btn-block bg-black']) ?>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>

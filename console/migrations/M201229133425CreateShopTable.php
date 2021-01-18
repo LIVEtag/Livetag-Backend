@@ -18,6 +18,7 @@ class M201229133425CreateShopTable extends Migration
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'name' => $this->string(50)->notNull(),
+                'uri' => $this->string(50)->unique()->notNull(),
                 'website' => $this->string()->notNull(),
                 'createdAt' => $this->unixTimestamp(),
                 'updatedAt' => $this->unixTimestamp(),

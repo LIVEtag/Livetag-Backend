@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\Stream;
 
+use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
 use rest\components\api\actions\Action;
 use yii\web\NotFoundHttpException;
@@ -15,11 +16,15 @@ class ViewAction extends Action
 {
 
     /**
-     * @param int $id Shop id
+     * @param int $slug Shop Uri
      */
-    public function run(int $id)
+    public function run($slug)
     {
-        $streamSession = StreamSession::getCurrent($id);
+        $shop = Shop::find()->byUri($slug)->one();
+        if (!$shop) {
+            throw new NotFoundHttpException('Shop Not Found');
+        }
+        $streamSession = StreamSession::getCurrent($shop->id);
         if (!$streamSession) {
             throw new NotFoundHttpException('No Active Stream Session');
         }

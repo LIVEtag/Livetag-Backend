@@ -23,6 +23,7 @@ use yii\widgets\ActiveForm;
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'uri')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'website')->textInput(['maxlength' => true]) ?>
                 </div>
                 <!-- /.box-body -->

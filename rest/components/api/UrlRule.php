@@ -12,5 +12,16 @@ use yii\rest\UrlRule as BaseUrlRule;
  */
 class UrlRule extends BaseUrlRule
 {
-    //
+    /**
+     * UrlRule constructor.
+     * @param array $config
+     */
+    public function __construct($config = [])
+    {
+        $this->tokens = [
+            '{id}' => '<id:\\d[\\d,]*>',
+            '{slug}' => '<slug:[0-9a-zA-Z\-]+>',
+        ];
+        parent::__construct($config);
+    }
 }
