@@ -8,7 +8,6 @@ namespace common\fixtures;
 
 use common\components\test\ActiveFixture;
 use common\models\Product\Product;
-use yii\helpers\Json;
 
 /**
  * Class ProductFixture
@@ -39,10 +38,14 @@ class ProductFixture extends ActiveFixture
         
         return [
             'externalId' => $this->generator->uuid,
-            'shopId' => $this->generator->randomElements([ShopFixture::STORE_1, ShopFixture::STORE_2], 1)[0],
             'title' => $this->generator->text(20),
             'photo' => $this->generator->imageUrl(),
             'link' => $this->generator->url,
+            'options' => [
+                'price'=> $this->generator->randomFloat(2, 1, 10000),
+                'color'=> $this->generator->colorName,
+                'size'=> $this->generator->randomElements(['XL', 'XXL', 'L', 'S', 'M', 'XS'], 1)[0]
+            ],
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
         ];

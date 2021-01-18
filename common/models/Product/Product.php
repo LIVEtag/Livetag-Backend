@@ -8,12 +8,12 @@ declare(strict_types=1);
 namespace common\models\Product;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\validation\validators\OptionValidator;
 use common\models\queries\Shop\ShopQuery;
 use common\models\Shop\Shop;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\helpers\Json;
 
 /**
  * This is the model class for table "shop".
@@ -21,7 +21,7 @@ use yii\helpers\Json;
  * @property string $externalId [varchar(255)]
  * @property int $shopId     [int(11) unsigned]
  * @property string $title      [varchar(255)]
- * @property string $options    [json]
+ * @property array $options    [json]
  * @property string $photo      [varchar(255)]
  * @property string $link       [varchar(255)]
  * @property int $status     [tinyint(3)]
@@ -45,16 +45,6 @@ class Product extends ActiveRecord
         self::STATUS_DISPLAYED => 'Displayed in the widget',
         self::STATUS_PRESENTED => 'Presented now',
         self::STATUS_DELETED => 'Deleted',
-    ];
-    
-    /**
-     * Status codes
-     */
-    const STATUSES_CODES = [
-        self::STATUS_HIDDEN,
-        self::STATUS_DISPLAYED,
-        self::STATUS_PRESENTED,
-        self::STATUS_DELETED,
     ];
     
     /**
@@ -102,85 +92,9 @@ class Product extends ActiveRecord
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
             [['externalId', 'title', 'link', 'photo'], 'string', 'max' => 255],
             [['externalId', 'shopId'], 'unique', 'targetAttribute' => ['externalId', 'shopId']],
-            ['options', 'each','rule' => ['string']],
-            [['options'], 'isValidJsonOption'],
-            [['options'], 'isJsonContainsValues'],
-            [['options'], 'isValidOptionValues'],
+            ['options', 'each', 'rule' => [OptionValidator::class]],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
-    }
-    
-    /**
-     * validate if field has type json
-     * @param $attribute
-     */
-    protected function isValidJsonOption($attribute): void
-    {
-        $options = Json::decode($this->options);
-        if (!\is_array($options)) {
-            $this->addError(
-                $attribute,
-                'options property has wrong data'
-            );
-        }
-        foreach ($options as $optionItems) {
-            if (!\is_array($optionItems)) {
-                $this->addError(
-                    $attribute,
-                    'options property has invalid option item'
-                );
-            }
-        }
-    }
-    
-    /**
-     * @param $attribute
-     */
-    protected function isJsonContainsValues($attribute): void
-    {
-        $options = Json::decode($this->options);
-        foreach ($options as $optionItems) {
-            foreach ($optionItems as $optionValue) {
-                $result = array_diff(self::OPTION_REQUIRED, array_flip($optionValue));
-                if (!empty($result)) {
-                    $notExists = implode(', ', $result);
-                    $this->addError(
-                        $attribute,
-                        "options must have {$notExists} values"
-                    );
-                }
-            }
-        }
-    }
-    
-    /**
-     * @param array $field
-     * @param $attribute
-     */
-    protected function isValidOptionValues(array $field, $attribute): void
-    {
-        $options = Json::decode($this->options);
-        
-        foreach ($options as $items) {
-            foreach ($items as $optionValue) {
-                if (is_numeric($field[$optionValue]) && self::PRICE === $optionValue) {
-                    $this->addError(
-                        $attribute,
-                        "{$optionValue} must be number type"
-                    );
-                } elseif (!\is_string($optionValue)) {
-                    $this->addError(
-                        $attribute,
-                        "{$optionValue} must be string type"
-                    );
-                } elseif (\is_string($field[$optionValue]) && \strlen($field[$optionValue]) > 255) {
-                    $this->addError(
-                        $attribute,
-                        "{$optionValue} must be lower than 255"
-                    );
-                }
-            }
-        }
     }
     
     /**
@@ -189,15 +103,15 @@ class Product extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('backend', 'ID'),
-            'title' => Yii::t('backend', 'Title'),
-            'price' => Yii::t('backend', 'Price'),
-            'externalId' => Yii::t('backend', 'External Id'),
-            'shopId' => Yii::t('backend', 'Shop Id'),
-            'photo' => Yii::t('backend', 'Photo'),
-            'status' => Yii::t('backend', 'Status'),
-            'createdAt' => Yii::t('backend', 'Created At'),
-            'updatedAt' => Yii::t('backend', 'Updated At'),
+            'id' => Yii::t('app', 'ID'),
+            'title' => Yii::t('app', 'Title'),
+            'price' => Yii::t('app', 'Price'),
+            'externalId' => Yii::t('app', 'External Id'),
+            'shopId' => Yii::t('app', 'Shop Id'),
+            'photo' => Yii::t('app', 'Photo'),
+            'status' => Yii::t('app', 'Status'),
+            'createdAt' => Yii::t('app', 'Created At'),
+            'updatedAt' => Yii::t('app', 'Updated At'),
         ];
     }
     
