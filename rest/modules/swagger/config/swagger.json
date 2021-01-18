@@ -43,6 +43,32 @@
                     "User"
                 ],
                 "operationId": "userCreateAccessToken",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "seller1@nosend.net",
+                                        "description": "E-mail Minimum 2, maximum 255 characters"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Password_0",
+                                        "description": "Minimum 2, maximum 255 characters"
+                                    },
+                                    "rememberMe": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "Remember for 30 days (default true)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "OK",
@@ -75,25 +101,6 @@
                             }
                         }
                     }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "description": "E-mail Minimum 2, maximum 255 characters"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         },
@@ -104,6 +111,14 @@
                     "User"
                 ],
                 "operationId": "userCurrent",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-user"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -917,11 +932,20 @@
             "user": {
                 "type": "object",
                 "required": [
-                    "email"
+                    "email",
+                    "id"
                 ],
                 "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
                     "email": {
                         "type": "string"
+                    },
+                    "shop": {
+                        "type": "object",
+                        "description": "EXPAND",
+                        "$ref": "#/components/schemas/shop"
                     }
                 }
             },
@@ -1011,6 +1035,26 @@
                     }
                 }
             },
+            "shop": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "website"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "website": {
+                        "type": "string"
+                    }
+                }
+            },
             "streamSession": {
                 "type": "object",
                 "required": [
@@ -1093,6 +1137,15 @@
                 "in": "query",
                 "name": "expand",
                 "description": "Extra Fields (coma separated). Available values: ```token```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-user": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```shop```",
                 "required": false,
                 "schema": {
                     "type": "string"

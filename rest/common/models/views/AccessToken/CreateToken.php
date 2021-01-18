@@ -18,10 +18,6 @@ use common\components\user\SearchService;
  */
 class CreateToken extends Model
 {
-    const YES_VALUE = 'yes';
-
-    const NO_VALUE = 'no';
-
     /**
      * @var string
      */
@@ -35,7 +31,7 @@ class CreateToken extends Model
     /**
      * @var string
      */
-    public $isRememberMe = self::NO_VALUE;
+    public $rememberMe;
 
     /**
      * @var string
@@ -77,7 +73,18 @@ class CreateToken extends Model
         return [
             [['email', 'password'], 'required'],
             ['password', 'validatePassword'],
-            [['isRememberMe'], 'in', 'range' => [self::YES_VALUE, self::NO_VALUE]],
+            [
+                'rememberMe',
+                'filter',
+                'filter' => function ($value) {
+                    if (is_null($value)) {
+                        return null; //otherwise, the filter will always be false.
+                    }
+                    return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                }
+            ],
+            ['rememberMe', 'default', 'value' => true],
+            ['rememberMe', 'boolean'],
             [['userIp', 'userAgent'], 'string'],
             [['userIp', 'userAgent'], 'filter', 'filter' => 'trim'],
         ];
@@ -124,10 +131,7 @@ class CreateToken extends Model
         $accessToken = new AccessToken();
         $accessToken->userId = $this->user->id;
 
-        $expireTime = AccessToken::NOT_REMEMBER_ME_TIME;
-        if ($this->isRememberMe === self::YES_VALUE) {
-            $expireTime = AccessToken::REMEMBER_ME_TIME;
-        }
+        $expireTime = $this->rememberMe ? AccessToken::REMEMBER_ME_TIME : AccessToken::NOT_REMEMBER_ME_TIME;
 
         $accessToken->generateToken($expireTime);
 
