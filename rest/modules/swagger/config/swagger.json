@@ -525,7 +525,7 @@
                 }
             }
         },
-        "/v1/{shopId}/stream-session": {
+        "/v1/{shopUri}/stream-session": {
             "get": {
                 "tags": [
                     "Vonage"
@@ -535,7 +535,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "shopId",
+                        "name": "shopUri",
                         "description": "Shop Id",
                         "required": true,
                         "schema": {
@@ -1059,7 +1059,7 @@
                 "type": "object",
                 "required": [
                     "id",
-                    "shopId",
+                    "shopUri",
                     "sessionId",
                     "isActive",
                     "token",
