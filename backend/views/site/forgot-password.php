@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= Html::submitButton(Yii::t('app', 'Reset Password'), ['class' => 'btn btn-lg btn-primary btn-block']) ?>
                     </div>
                     <div class="box-header">
-                        <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'btn btn-md btn-primary btn-block']) ?>
+                        <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'btn btn-md btn-primary btn-block bg-black']) ?>
                     </div>
                 </div>
                 <?php ActiveForm::end(); ?>

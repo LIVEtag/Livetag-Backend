@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attributes' => [
                             'id',
                             'name',
+                            'uri',
                             [
                                 'attribute' => 'website',
                                 'format' => ['url', ['target' => '_blank']]

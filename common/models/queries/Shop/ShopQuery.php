@@ -25,4 +25,13 @@ class ShopQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('id') => $id]);
     }
+
+    /**
+     * @param string $uri
+     * @return $this
+     */
+    public function byUri(string $uri): self
+    {
+        return $this->andWhere([$this->getFieldName('uri') => $uri]);
+    }
 }

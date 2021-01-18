@@ -127,8 +127,8 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'id' => function () {
                 return $this->getId();
             },
-            'shopId' => function () {
-                return $this->getShopId();
+            'shopUri' => function () {
+                return $this->shop->uri;
             },
             'sessionId',
             'isActive' => function () {

@@ -138,7 +138,7 @@ return [
                         'OPTIONS' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
-                //shop id before controller
+                //shop uri before controller
                 [
                     'class' => UrlRule::class,
                     'controller' => [
@@ -146,8 +146,8 @@ return [
                     ],
                     'pluralize' => false,
                     'patterns' => [
-                        'GET {id}/stream-session' => StreamSessionController::ACTION_VIEW,
-                        'OPTIONS {id}/stream-session' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {slug}/stream-session' => StreamSessionController::ACTION_VIEW,
+                        'OPTIONS {slug}/stream-session' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
                 [

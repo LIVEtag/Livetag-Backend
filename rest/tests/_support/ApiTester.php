@@ -186,7 +186,7 @@ class ApiTester extends \Codeception\Actor
     {
         return [
             'id' => 'integer',
-            'shopId' => 'integer',
+            'shopUri' => 'string',
             'sessionId' => 'string',
             'isActive' => 'boolean',
             'token' => 'string',

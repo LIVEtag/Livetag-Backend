@@ -132,7 +132,7 @@ class CreateUserForm extends Model
     {
         \Yii::$app->mailer
             ->compose('seller-created', [
-                'link' =>  Yii::$app->urlManagerBackend->createAbsoluteUrl(['site/login']),
+                'link' => Yii::$app->urlManagerBackend->createAbsoluteUrl(['site/login']),
                 'password' => $this->getPassword()
             ])
             ->setFrom(\Yii::$app->params['supportEmail'])

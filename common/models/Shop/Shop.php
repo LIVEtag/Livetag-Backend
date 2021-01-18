@@ -12,14 +12,18 @@ use common\components\EventDispatcher;
 use common\models\queries\Shop\ShopQuery;
 use common\models\Stream\StreamSession;
 use common\models\User;
+use Yii;
+use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "shop".
  *
  * @property integer $id
  * @property string $name
+ * @property string $uri
  * @property string $website
  * @property integer $createdAt
  * @property integer $updatedAt
@@ -58,6 +62,13 @@ class Shop extends ActiveRecord
     {
         return [
             TimestampBehavior::class,
+            [
+                'class' => SluggableBehavior::class,
+                'attribute' => 'name',
+                'slugAttribute' => 'uri',
+                'ensureUnique' => true,
+                'immutable' => true
+            ],
         ];
     }
 
@@ -68,7 +79,15 @@ class Shop extends ActiveRecord
     {
         return [
             [['name', 'website'], 'required'],
-            ['name', 'string', 'max' => 50],
+            [['name', 'uri'], 'string', 'max' => 50],
+            [
+                'uri',
+                'filter',
+                'filter' => function ($value) {
+                    return Inflector::slug($value, '-', true);
+                },
+            ],
+            ['uri', 'unique'],
             ['website', 'string', 'max' => 255],
             ['website', 'url', 'defaultScheme' => 'https']
         ];
@@ -80,11 +99,12 @@ class Shop extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'website' => 'Website',
-            'createdAt' => 'Created At',
-            'updatedAt' => 'Updated At',
+            'id' => Yii::t('app', 'ID'),
+            'name' => Yii::t('app', 'Name'),
+            'uri' => Yii::t('app', 'Livestream URI'),
+            'website' => Yii::t('app', 'Website'),
+            'createdAt' => Yii::t('app', 'Created At'),
+            'updatedAt' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -94,7 +114,7 @@ class Shop extends ActiveRecord
     public function fields(): array
     {
         return [
-            'id',
+            'uri',
             'name',
             'website'
         ];
