@@ -43,6 +43,9 @@ class Centrifugo extends Component
      */
     private $phpcentClient;
 
+    /**
+     * Category for logs
+     */
     const LOG_CATEGORY = 'centrifugo';
 
     /**

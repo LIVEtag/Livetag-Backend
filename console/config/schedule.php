@@ -1,7 +1,9 @@
 <?php
-/**
- * @var \omnilight\scheduling\Schedule $schedule
- */
+use omnilight\scheduling\Schedule;
 
-//$schedule->command('access-token/clear-expired')->daily();
+/**
+ * @var Schedule $schedule
+ */
+$schedule->command('access-token/clear-expired')->daily();
+$schedule->command('stream-session/check-active-streams')->everyMinute();
 //$schedule->call(function (\yii\console\Application $app) {})->everyFiveMinutes();

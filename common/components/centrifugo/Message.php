@@ -17,59 +17,50 @@ use yii\base\BaseObject;
  */
 class Message extends BaseObject implements MessageInterface
 {
-    const TYPE_STREAM_SESSION = 'streamSession';
-    const TYPE_PRODUCT = 'product';
-    const TYPE_MESSAGE = 'message';
+    //StreamSession
+    const ACTION_STREAM_SESSION_CREATE = 'streamSessionCreate';
+    const ACTION_STREAM_SESSION_UPDATE = 'streamSessionUpdate';
+    const ACTION_STREAM_SESSION_END_SOON = 'streamSessionEndSoon';
+    //Product
+    const ACTION_PRODUCT_UPDATE = 'productUpdate';
+    //Messages
+    const ACTION_MESSAGE_CREATE = 'messageCreate';
+    const ACTION_MESSAGE_UPDATE = 'messageUpdate';
+    const ACTION_MESSAGE_DELETE = 'messageDelete';
 
     /**
-     * All allowed entities types
+     * Allowed actions by type
      */
-    const ALLOWED_TYPES = [
-        self::TYPE_STREAM_SESSION,
-        self::TYPE_PRODUCT,
-        self::TYPE_MESSAGE,
+    const ALLOWED_ACTIONS = [
+        self::ACTION_STREAM_SESSION_CREATE,
+        self::ACTION_STREAM_SESSION_UPDATE,
+        self::ACTION_STREAM_SESSION_END_SOON,
+        self::ACTION_PRODUCT_UPDATE,
+        self::ACTION_MESSAGE_CREATE,
+        self::ACTION_MESSAGE_UPDATE,
+        self::ACTION_MESSAGE_DELETE,
     ];
 
     /** @var string */
     protected $action;
 
-    /** @var string */
-    protected $type;
-
     /** @var array */
     protected $data;
 
     /**
-     * Data (model) setter
-     * @param array $data
-     */
-    public function setData(array $data)
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * Type setter
-     * @param string $type
-     * @throws LogicException
-     */
-    public function setType(string $type)
-    {
-        if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new LogicException('Not allowed type.');
-        }
-
-        $this->type = $type;
-    }
-
-    /**
-     * Action setter
      * @param string $action
+     * @param array $data
+     * @param array $config
      * @throws LogicException
      */
-    public function setAction(string $action)
+    public function __construct($action, array $data, $config = [])
     {
+        if (!in_array($action, self::ALLOWED_ACTIONS)) {
+            throw new LogicException('Not allowed action.');
+        }
         $this->action = $action;
+        $this->data = $data;
+        parent::__construct($config);
     }
 
     /**
@@ -79,7 +70,6 @@ class Message extends BaseObject implements MessageInterface
     {
         return [
             'action' => $this->action,
-            'type' => $this->type,
             'data' => $this->data,
         ];
     }

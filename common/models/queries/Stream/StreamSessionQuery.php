@@ -34,7 +34,16 @@ class StreamSessionQuery extends ActiveQuery
     public function active()
     {
         return $this->andWhere(['>', $this->getFieldName('expiredAt'), time()])
-                ->andWhere([$this->getFieldName('status') => StreamSession::STATUS_ACTIVE]);
+                ->byStatus(StreamSession::STATUS_ACTIVE);
+    }
+
+    /**
+     * @param int $status
+     * @return $this
+     */
+    public function byStatus(int $status): self
+    {
+        return $this->andWhere([$this->getFieldName('status') => $status]);
     }
 
     /**

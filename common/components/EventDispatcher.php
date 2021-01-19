@@ -7,9 +7,12 @@ declare(strict_types=1);
 
 namespace common\components;
 
-use common\models\Chat\PostMessageAttachment;
 use common\models\Shop\Shop;
+use common\models\Stream\StreamSession;
 use common\observers\Shop\DeleteShopObserver;
+use common\observers\StreamSession\CreateStreamSessionObserver;
+use common\observers\StreamSession\EndSoonStreamSessionObserver;
+use common\observers\StreamSession\UpdateStreamSessionObserver;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
@@ -28,10 +31,12 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        # PostMessageAttachment events
-        Event::on(PostMessageAttachment::class, Shop::EVENT_AFTER_DELETE, [
-            Yii::createObject(DeleteShopObserver::class),
-            'execute'
-        ]);
+        # Shop events
+        Event::on(Shop::class, Shop::EVENT_AFTER_DELETE, [Yii::createObject(DeleteShopObserver::class), 'execute']);
+
+        # Stream Session Events
+        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
+        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
+        Event::on(StreamSession::class, StreamSession::EVENT_END_SOON, [Yii::createObject(EndSoonStreamSessionObserver::class), 'execute']);
     }
 }

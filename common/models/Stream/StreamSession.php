@@ -8,7 +8,11 @@ declare(strict_types=1);
 namespace common\models\Stream;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\centrifugo\channels\ShopChannel;
+use common\components\centrifugo\Message;
+use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
+use common\helpers\LogHelper;
 use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Shop\Shop;
 use common\models\User;
@@ -17,6 +21,7 @@ use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
@@ -32,9 +37,20 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $updatedAt
  *
  * @property-read Shop $shop
+ *
+ * EVENTS:
+ * - EVENT_AFTER_INSERT
+ * - EVENT_AFTER_UPDATE
+ * - EVENT_END_SOON
+ * @see EventDispatcher
  */
 class StreamSession extends ActiveRecord implements StreamSessionInterface
 {
+    /**
+     * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
+     */
+    const EVENT_END_SOON = 'endSoon';
+
     /**
      * Default Session lifetime (3 hours)
      */
@@ -49,6 +65,11 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      * Default active shop
      */
     const STATUS_ACTIVE = 10;
+
+    /**
+     * Category for logs
+     */
+    const LOG_CATEGORY = 'streamSession';
 
     /**
      * Status Names
@@ -381,5 +402,23 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         // 4. Store session into DB
         $session->save();
         return $session; //return model or model with erros
+    }
+
+    /**
+     * Send notification about session to centrifugo
+     * @param string $actionType
+     */
+    public function notify(string $actionType)
+    {
+        $channel = new ShopChannel($this->shop);
+        $message = new Message($actionType, $this->toArray());
+        if (!Yii::$app->centrifugo->publish($channel, $message)) {
+            LogHelper::error('Event Failed', self::LOG_CATEGORY, [
+                'channel' => $channel->getName(),
+                'message' => $message->getBody(),
+                'actionType' => $actionType,
+                'streamSession' => Json::encode($this->toArray(), JSON_PRETTY_PRINT),
+            ]);
+        }
     }
 }
