@@ -5,6 +5,7 @@
  */
 namespace console\controllers;
 
+use common\models\AccessToken;
 use yii\console\Controller;
 
 /**
@@ -17,6 +18,9 @@ class AccessTokenController extends Controller
      */
     public function actionClearExpired()
     {
-        //
+        //delete user tokens if expired
+        AccessToken::deleteAll('expiredAt < :expiredAt', [
+            ':expiredAt' => time(),
+        ]);
     }
 }
