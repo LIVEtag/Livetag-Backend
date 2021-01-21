@@ -41,15 +41,7 @@ class StreamSessionController extends Controller
         $behaviors = ArrayHelper::merge(
             parent::behaviors(),
             [
-                'authenticator' => [
-                    'optional' => [
-                        self::ACTION_VIEW,
-                    ],
-                ],
                 'access' => [
-                    'except' => [
-                        self::ACTION_VIEW,
-                    ],
                     'rules' => [
                         [
                             'allow' => true,
@@ -58,6 +50,13 @@ class StreamSessionController extends Controller
                                 self::ACTION_STOP,
                             ],
                             'roles' => [User::ROLE_SELLER]
+                        ],
+                        [
+                            'allow' => true,
+                            'actions' => [
+                                self::ACTION_VIEW,
+                            ],
+                            'roles' => [User::ROLE_SELLER, User::ROLE_BUYER]
                         ],
                     ],
                 ]

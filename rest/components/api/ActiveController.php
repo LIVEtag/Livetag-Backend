@@ -8,12 +8,14 @@ namespace rest\components\api;
 
 use rest\components\filters\RateLimiter;
 use Yii;
-use yii\filters\Cors;
-use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\rest\ActiveController as BaseActiveController;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
+use yii\filters\Cors;
+use yii\filters\VerbFilter;
+use yii\rest\ActiveController as BaseActiveController;
+use yii\web\Response;
 
 class ActiveController extends BaseActiveController
 {
@@ -74,8 +76,12 @@ class ActiveController extends BaseActiveController
                 ],
             ],
             'authenticator' => [
-                'class' => HttpBearerAuth::class,
-                'except' => ['options'],
+                'class' => CompositeAuth::class,
+                'authMethods' => [
+                    HttpBasicAuth::class,
+                    HttpBearerAuth::class,
+                ],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,
@@ -93,7 +99,7 @@ class ActiveController extends BaseActiveController
                 'class' => AccessControl::class,
                 'forbiddenMessage' => Yii::t('yii', 'You are not allowed to perform this action.'),
                 'ruleConfig' => ['class' => AccessRule::class],
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'verbFilter' => [
                 'class' => VerbFilter::class,

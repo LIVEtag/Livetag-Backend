@@ -97,7 +97,6 @@ return [
                         'v1/user' => 'v1/user'
                     ],
                     'extraPatterns' => [
-                        'POST register' => 'create',
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',

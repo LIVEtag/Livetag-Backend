@@ -30,23 +30,42 @@ class CurrentUserCest extends ActionCest
 
     /**
      * @param ApiTester $I
-     * @throws \ReflectionException
      */
-    public function update(ApiTester $I)
+    public function currentSeller(ApiTester $I)
     {
         /** @var User $user */
         $user = $I->grabFixture('users', UserFixture::SELLER_1);
-
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
-        $I->wantToTest('view current user');
+        $I->wantToTest('View current Seller');
 
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType(
             [
-                    'id' => "integer:={$user->id}",
-                    'email' => "string:={$user->email}"
-                ],
+                'role' => "string:={$user->role}",
+                'name' => "string:={$user->shop->name}"
+            ],
+            '$.result'
+        );
+    }
+
+    /**
+     * @param ApiTester $I
+     */
+    public function currentBuyer(ApiTester $I)
+    {
+        /** @var User $user */
+        $user = $I->grabFixture('users', UserFixture::BUYER_1);
+        $I->amLoggedInApiAs(UserFixture::BUYER_1);
+        $I->wantToTest('View current Buyer');
+
+        $I->send($this->getMethod(), $this->getUrl($I));
+        $I->seeResponseResultIsOk();
+        $I->seeResponseMatchesJsonType(
+            [
+                'role' => "string:={$user->role}",
+                'name' => "string:={$user->name}"
+            ],
             '$.result'
         );
     }

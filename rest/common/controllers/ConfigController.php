@@ -9,7 +9,6 @@ namespace rest\common\controllers;
 use rest\common\controllers\actions\Config\IndexAction;
 use rest\components\api\Controller;
 use yii\helpers\ArrayHelper;
-use yii\rest\OptionsAction;
 
 /**
  * Class ConfigController

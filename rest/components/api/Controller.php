@@ -8,6 +8,8 @@ namespace rest\components\api;
 
 use rest\components\filters\RateLimiter;
 use Yii;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
@@ -49,7 +51,11 @@ class Controller extends BaseController
                 ],
             ],
             'authenticator' => [
-                'class' => HttpBearerAuth::class,
+                'class' => CompositeAuth::class,
+                'authMethods' => [
+                    HttpBasicAuth::class,
+                    HttpBearerAuth::class,
+                ],
                 'except' => [self::ACTION_OPTIONS],
             ],
             'contentNegotiator' => [
@@ -63,7 +69,7 @@ class Controller extends BaseController
             'rateLimiter' => [
                 'class' => RateLimiter::class,
                 'except' => [self::ACTION_OPTIONS],
-                //'isActive' => YII_ENV_PROD,
+            //'isActive' => YII_ENV_PROD,
             ],
             'access' => [
                 'class' => AccessControl::class,
