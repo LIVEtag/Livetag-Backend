@@ -7,6 +7,9 @@
     },
     "security": [
         {
+            "Basic": []
+        },
+        {
             "Bearer": []
         }
     ],
@@ -21,8 +24,16 @@
             "description": "Actions available without authentication"
         },
         {
-            "name": "User",
-            "description": "User authentication, manage and details"
+            "name": "Seller",
+            "description": "Actions Available for `Seller` Role"
+        },
+        {
+            "name": "Buyer",
+            "description": "Actions Available for `Buyer` Role"
+        },
+        {
+            "name": "Account",
+            "description": "User authentication, manage and details, email confirmation and authentication"
         },
         {
             "name": "Vonage",
@@ -40,7 +51,7 @@
                 "summary": "Create access token for APP",
                 "tags": [
                     "AnyBody",
-                    "User"
+                    "Account"
                 ],
                 "operationId": "userCreateAccessToken",
                 "requestBody": {
@@ -77,7 +88,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status201"
+                                            "$ref": "#/components/schemas/status201"
                                         },
                                         {
                                             "properties": {
@@ -92,14 +103,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
@@ -108,7 +112,9 @@
             "get": {
                 "summary": "Current user for APP",
                 "tags": [
-                    "User"
+                    "Account",
+                    "Seller",
+                    "Buyer"
                 ],
                 "operationId": "userCurrent",
                 "parameters": [
@@ -127,7 +133,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -142,23 +148,22 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
         },
         "/v1/user/logout": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "summary": "Logout current user",
                 "tags": [
-                    "User"
+                    "Account",
+                    "Seller"
                 ],
                 "operationId": "userLogout",
                 "responses": {
@@ -167,20 +172,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/responses/status204"
+                                    "$ref": "#/components/schemas/status204"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
@@ -201,7 +199,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -223,7 +221,7 @@
                 "security": [],
                 "summary": "Validate Password Token",
                 "tags": [
-                    "User"
+                    "Account"
                 ],
                 "operationId": "userValidatePasswordToken",
                 "parameters": [
@@ -244,7 +242,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -252,23 +250,22 @@
                         }
                     },
                     "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status404"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/404"
                     }
                 }
             }
         },
         "/v1/user/change-password": {
             "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "summary": "Change User Password",
                 "tags": [
-                    "User"
+                    "Account",
+                    "Seller"
                 ],
                 "operationId": "userChangePassword",
                 "responses": {
@@ -279,7 +276,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -287,24 +284,10 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 },
                 "requestBody": {
@@ -323,7 +306,7 @@
                 "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
-                    "User",
+                    "Account",
                     "AnyBody"
                 ],
                 "operationId": "userRecoveryPasswordByEmail",
@@ -335,7 +318,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -343,14 +326,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 },
                 "requestBody": {
@@ -369,7 +345,7 @@
                 "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
-                    "User",
+                    "Account",
                     "AnyBody"
                 ],
                 "operationId": "userRecoveryPasswordChange",
@@ -381,7 +357,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -389,14 +365,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 },
                 "requestBody": {
@@ -413,8 +382,14 @@
 
         "/v1/stream-session": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "tags": [
-                    "Vonage"
+                    "Vonage",
+                    "Seller"
                 ],
                 "summary": "Create new Session for Stream",
                 "operationId": "streamSessionCreate",
@@ -434,7 +409,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -449,40 +424,25 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     },
                     "403": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status403"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/403"
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "tags": [
-                    "Vonage"
+                    "Vonage",
+                    "Seller"
                 ],
                 "summary": "Stop Stream Session",
                 "operationId": "stopStreamSession",
@@ -495,7 +455,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -503,24 +463,10 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     },
                     "403": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status403"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/403"
                     }
                 }
             }
@@ -528,7 +474,9 @@
         "/v1/{shopUri}/stream-session": {
             "get": {
                 "tags": [
-                    "Vonage"
+                    "Vonage",
+                    "Seller",
+                    "Buyer"
                 ],
                 "summary": "View Active Stream Session for selected shop",
                 "operationId": "streamSessionView",
@@ -557,7 +505,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -572,14 +520,10 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
                     }
                 }
             }
@@ -590,7 +534,9 @@
                 "summary": "Sign in centrifugo",
                 "description": "This method required by centrifugo for connection check",
                 "tags": [
-                    "Centrifugo"
+                    "Centrifugo",
+                    "Seller",
+                    "Buyer"
                 ],
                 "operationId": "centrifugoSign",
                 "responses": {
@@ -601,7 +547,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -621,14 +567,7 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
@@ -636,14 +575,91 @@
     },
     "components": {
         "securitySchemes": {
+            "Basic": {
+                "description": "Use uuid as username and ANY password(empty is ok, but swagger does not support empty passwords) for Buyer role",
+                "type": "http",
+                "scheme": "basic"
+            },
             "Bearer": {
-                "description": "",
+                "description": "Access token for Seller and Admin roles",
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": ""
             }
         },
         "responses": {
+            "400": {
+                "description": "Bad Request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status400"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Unauthorized",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status401"
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "Forbidden",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status403"
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "Not Found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status404"
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Unprocessable Entity",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status422"
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Internal Server Error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status500"
+                        }
+                    }
+                }
+            },
+            "503": {
+                "description": "Service Unavailable",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status503"
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
             "responseModel": {
                 "type": "object",
                 "required": [
@@ -682,7 +698,7 @@
             "status200": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "200 OK",
@@ -700,7 +716,7 @@
             "status200DataProvider": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/status200"
+                        "$ref": "#/components/schemas/status200"
                     },
                     {
                         "type": "object",
@@ -738,7 +754,7 @@
             "status201": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "201 Created",
@@ -759,7 +775,7 @@
             "status204": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "204 No Content",
@@ -777,7 +793,7 @@
             "status400": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "400 Bad Request",
@@ -798,7 +814,7 @@
             "status401": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "401 Unauthorized",
@@ -819,7 +835,7 @@
             "status403": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "403 Forbidden",
@@ -840,7 +856,7 @@
             "status404": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "401 Not Found",
@@ -861,7 +877,7 @@
             "status422": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "422 Unprocessable Entity",
@@ -878,7 +894,7 @@
                             "result": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/responses/validateError"
+                                    "$ref": "#/components/schemas/validateError"
                                 }
                             }
                         }
@@ -888,7 +904,7 @@
             "status500": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "500 Internal Server Error",
@@ -909,7 +925,7 @@
             "status503": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "503 Service Unavailable",
@@ -926,21 +942,26 @@
                         }
                     }
                 ]
-            }
-        },
-        "schemas": {
+            },
+
             "user": {
                 "type": "object",
                 "required": [
-                    "email",
-                    "id"
+                    "role",
+                    "name"
                 ],
                 "properties": {
-                    "id": {
-                        "type": "integer"
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "admin",
+                            "seller",
+                            "buyer"
+                        ],
+                        "example": "seller"
                     },
-                    "email": {
-                        "type": "string"
+                    "name": {
+                        "type": "Jon Snow"
                     },
                     "shop": {
                         "type": "object",

@@ -17,18 +17,22 @@ class UserFixture extends ActiveFixture
     const ADMIN = 1;
     const SELLER_1 = 2;
     const SELLER_2 = 3;
-    //todo change to blocked
-    const DELETED = 4;
+    const DELETED = 4; //todo change to blocked
+    const BUYER_1 = 5;
+    const BUYER_2 = 6;
 
     const DEFAULT_PASSWORD = 'Password_0';
 
     public $modelClass = User::class;
+
     /**
      * @inheritdoc
      */
     protected function getTemplate(): array
     {
         return [
+            'email' => $this->generator->unique()->email,
+            'uuid' => null,
             'authKey' => $this->security->generateRandomString(),
             'passwordHash' => $this->security->generatePasswordHash(self::DEFAULT_PASSWORD),
             'passwordResetToken' => null,
@@ -36,7 +40,6 @@ class UserFixture extends ActiveFixture
             'status' => User::STATUS_ACTIVE,
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
-            'email' => $this->generator->unique()->email,
         ];
     }
 }

@@ -9,6 +9,7 @@ namespace common\models;
 
 use common\components\behaviors\TimestampBehavior;
 use common\models\queries\Shop\ShopQuery;
+use common\models\queries\User\UserQuery;
 use common\models\Shop\Shop;
 use Yii;
 use yii\base\NotSupportedException;
@@ -23,6 +24,8 @@ use yii\web\IdentityInterface;
  * @property string $passwordHash
  * @property string $passwordResetToken
  * @property string $email
+ * @property string $uuid
+ * @property string $name
  * @property string $authKey
  * @property integer $status
  * @property integer $createdAt
@@ -38,6 +41,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
+     * @todo change to blocked
      */
     const STATUS_DELETED = 0;
 
@@ -47,14 +51,19 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
     /**
-     * Example role for default user
+     * Admin of the widget integrated to the website, admin of the livestream.
      */
     const ROLE_SELLER = 'seller';
 
     /**
-     * Example role for advanced user
+     * Admin of the SaaS platform.
      */
     const ROLE_ADMIN = 'admin';
+
+    /**
+     * The viewer of the livestream. Pseudo-user of the widget.
+     */
+    const ROLE_BUYER = 'buyer';
 
     /**
      * Role Names
@@ -62,6 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
     const ROLES = [
         self::ROLE_ADMIN => 'Admin',
         self::ROLE_SELLER => 'Seller',
+        self::ROLE_BUYER => 'Buyer',
     ];
 
     /**
@@ -69,7 +79,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     const STATUSES = [
         self::STATUS_ACTIVE => 'Active',
-        self::STATUS_DELETED => 'Deleted',
+        self::STATUS_DELETED => 'Blocked',
     ];
 
     /**
@@ -91,14 +101,52 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return UserQuery
+     */
+    public static function find()
+    {
+        return new UserQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        return [
+            ['role', 'default', 'value' => self::ROLE_SELLER],
+            ['role', 'in', 'range' => array_keys(self::ROLES)],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => array_keys(self::STATUSES)],
+            [
+                'email',
+                'required',
+                'when' => function ($model) {
+                    return !$model->getIsBuyer();
+                }
+            ],
+            [
+                'uuid',
+                'required',
+                'when' => function ($model) {
+                    return $model->getIsBuyer();
+                }
+            ],
+            ['uuid', 'match', 'pattern' => '/^[0-9A-F]{8}-[0-9A-F]{4}-[1345][0-9A-F]{3}-[0-9A-F]{4}-[0-9A-F]{12}$/i'],
+            ['email', 'email'],
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function fields(): array
     {
         return [
-            'id',
-            'email',
-            'role'
+            'role',
+            'name' => function () {
+                return $this->getName();
+            },
         ];
     }
 
@@ -113,16 +161,12 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * Return na,e of current user
+     * @return string|null
      */
-    public function rules(): array
+    public function getName(): ?string
     {
-        return [
-            ['role', 'default', 'value' => self::ROLE_SELLER],
-            ['role', 'in', 'range' => array_keys(self::ROLES)],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => array_keys(self::STATUSES)],
-        ];
+        return $this->name;
     }
 
     /**
@@ -141,6 +185,15 @@ class User extends ActiveRecord implements IdentityInterface
     public function getIsSeller(): bool
     {
         return $this->role == self::ROLE_SELLER;
+    }
+
+    /**
+     * Check current user is Buyer
+     * @return bool
+     */
+    public function getIsBuyer(): bool
+    {
+        return $this->role == self::ROLE_BUYER;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace rest\tests;
 use Codeception\Scenario;
 use Codeception\Util\HttpCode;
 use common\models\AccessToken;
+use common\models\User;
 use Faker\Generator;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
@@ -34,13 +35,28 @@ class ApiTester extends \Codeception\Actor
      */
     public function amLoggedInApiAs(int $userId)
     {
-        /** @var AccessToken $accessToken */
-        $accessToken = $this->grabFixture('accessTokens', $userId);
-        if (!isset($accessToken)) {
-            throw new \RuntimeException('User has no asses token');
+        /** var User $user */
+        $user = $this->grabFixture('users', $userId);
+        if (!$user) {
+            throw new \RuntimeException('User has not exist');
         }
-        $this->amBearerAuthenticated($accessToken->token);
-        $this->haveHttpHeader('User-Agent', $accessToken->userAgent);
+
+        switch ($user->role) {
+            case User::ROLE_ADMIN:
+            case User::ROLE_SELLER:
+                //NOTE: this is bug and works only if userid==accessTokenId
+                /** @var AccessToken $accessToken */
+                $accessToken = $this->grabFixture('accessTokens', $userId);
+                if (!isset($accessToken)) {
+                    throw new \RuntimeException('User has no asses token');
+                }
+                $this->amBearerAuthenticated($accessToken->token);
+                $this->haveHttpHeader('User-Agent', $accessToken->userAgent);
+                break;
+            case User::ROLE_BUYER:
+                $this->amHttpAuthenticated($user->uuid, '');
+                break;
+        }
     }
 
     /**
