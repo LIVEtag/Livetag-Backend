@@ -13,6 +13,9 @@ use yii\web\View;
 
 $this->title = Yii::t('app', 'Change Password');
 $this->params['breadcrumbs'][] = $this->title;
+/** @var User $user */
+$user = Yii::$app->user->identity ?? null;
+$defaultCancelUrl = $user && $user->isAdmin ? ['user/index'] : ['site/index'];
 ?>
 <section class="user-update">
     <div class="user-form">
@@ -20,18 +23,17 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-12">
                 <div class="box box-default">
                     <?php $form = ActiveForm::begin(); ?>
-                    <div class="box-header">
-                        <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
-                    </div>
+                    <div class="box-header"></div>
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
-                        <?= $form->field($model, 'password')->passwordInput(['autofocus' => true]) ?>
-                        <?= $form->field($model, 'newPassword')->passwordInput(['autofocus' => true]) ?>
-                        <?= $form->field($model, 'confirmPassword')->passwordInput(['autofocus' => true]) ?>
+                        <?= $form->field($model, 'password')->passwordInput() ?>
+                        <?= $form->field($model, 'newPassword')->passwordInput() ?>
+                        <?= $form->field($model, 'confirmPassword')->passwordInput() ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
+                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: $defaultCancelUrl, ['class' => 'btn bg-black']) ?>
                             <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
                         </div>
                     </div>

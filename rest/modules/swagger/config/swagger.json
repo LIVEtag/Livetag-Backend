@@ -1059,14 +1059,13 @@
             "shop": {
                 "type": "object",
                 "required": [
-                    "id",
+                    "uri",
                     "name",
                     "website"
                 ],
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
+                    "uri": {
+                        "type": "string"
                     },
                     "name": {
                         "type": "string"
