@@ -107,7 +107,7 @@ class NewPasswordCest extends ActionCest
     {
         $user = $this->createUserWithValidResetToken($I);
 
-        $password = $I->generator->password(8, 15);
+        $password = $I->generator->password(8, 15) . 'Pp1';
         $I->amGoingTo('password do not match');
 
         $I->send(
@@ -141,7 +141,7 @@ class NewPasswordCest extends ActionCest
     public function saveNewPasswordWorks(ApiTester $I)
     {
         $user = $I->grabFixture('users', UserFixture::SELLER_1);
-        $password = 'Password_99';
+        $password = $I->generator->password(8, 15) . 'Pp1';
         $I->wantToTest('create new password');
 
         $I->send(
