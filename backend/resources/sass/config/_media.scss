@@ -1,0 +1,17 @@
+// Breakpoints
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$xxl: 1600px;
+
+$laptop: 1366px;
+
+$breakpoints: (
+  "phone": $sm,
+  "tablet-small": $md,
+  "tablet": $lg,
+  "laptop": $xl,
+  "laptop-large": $laptop,
+  "desktop": $xxl
+);
