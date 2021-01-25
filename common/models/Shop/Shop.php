@@ -32,7 +32,7 @@ use yii\helpers\Inflector;
  * @property-read User[] $users
  *
  * EVENTS:
- * - EVENT_AFTER_DELETE
+ * - EVENT_BEFORE_DELETE
  * @see EventDispatcher
  */
 class Shop extends ActiveRecord
@@ -53,6 +53,16 @@ class Shop extends ActiveRecord
     public static function find(): ShopQuery
     {
         return new ShopQuery(get_called_class());
+    }
+
+    /**
+     * @inherritdoc
+     */
+    public function transactions(): array
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_DELETE
+        ];
     }
 
     /**
