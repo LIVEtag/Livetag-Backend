@@ -5,6 +5,7 @@
  */
 namespace common\models\forms\User;
 
+use common\components\validation\validators\PasswordValidator;
 use common\models\User;
 use yii\base\Model;
 
@@ -22,12 +23,12 @@ class RecoveryPassword extends Model
      * @var string
      */
     public $password;
-    
+
     /**
      * @var string
      */
     public $confirmPassword;
-    
+
     /**
      * @return array
      */
@@ -35,6 +36,7 @@ class RecoveryPassword extends Model
     {
         return [
             [['resetToken', 'password', 'confirmPassword'], 'required'],
+            ['password', PasswordValidator::class],
             ['password', 'compare', 'compareAttribute' => 'confirmPassword']
         ];
     }
