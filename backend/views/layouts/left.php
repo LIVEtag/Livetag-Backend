@@ -23,7 +23,8 @@ $user = Yii::$app->user->identity ?? null;
                 [
                     'label' => 'Livestreams',
                     'icon' => 'video-camera',
-                    'url' => ['#'],
+                    'url' => ['/stream-session/index'],
+                    'active' => Yii::$app->controller->id == 'stream-session',
                     'visible' => $user && $user->isSeller
                 ],
                 [

@@ -1,20 +1,21 @@
 <?php
 /**
- * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 declare(strict_types=1);
 
-namespace backend\models\Shop;
+namespace backend\models\Stream;
 
+use backend\models\Stream\StreamSession;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Shop\Shop;
+use yii\helpers\ArrayHelper;
 
 /**
- * ShopSearch represents the model behind the search form of `backend\models\Shop\Shop`.
+ * StreamSessionSearch represents the model behind the search form of `backend\models\Stream\StreamSession`.
  */
-class ShopSearch extends Shop
+class StreamSessionSearch extends StreamSession
 {
 
     /**
@@ -23,8 +24,8 @@ class ShopSearch extends Shop
     public function rules(): array
     {
         return [
-            [['id'], 'integer'],
-            [['name', 'website'], 'safe'],
+            [['id', 'shopId', 'status'], 'integer'],
+            [['sessionId'], 'safe'],
         ];
     }
 
@@ -46,7 +47,7 @@ class ShopSearch extends Shop
      */
     public function search($params): ActiveDataProvider
     {
-        $query = Shop::find();
+        $query = StreamSession::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -67,10 +68,13 @@ class ShopSearch extends Shop
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([self::tableName() . '.id' => $this->id]);
+        $query->andFilterWhere([
+            self::tableName() . '.id' => $this->id,
+            self::tableName() . '.shopId' => $this->shopId,
+            self::tableName() . '.status' => $this->status,
+        ]);
 
-        $query->andFilterWhere(['like', self::tableName() . '.name', $this->name])
-            ->andFilterWhere(['like', self::tableName() . '.website', $this->website]);
+        $query->andFilterWhere(['like', self::tableName() . '.sessionId', $this->sessionId]);
 
         return $dataProvider;
     }

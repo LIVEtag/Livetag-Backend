@@ -235,6 +235,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
+    public function getUpdatedAt(): int
+    {
+        return $this->updatedAt ? (int) $this->updatedAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getExpiredAt(): int
     {
         return $this->expiredAt ? (int) $this->expiredAt : null;
