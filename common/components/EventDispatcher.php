@@ -32,7 +32,7 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
     public function bootstrap($app)
     {
         # Shop events
-        Event::on(Shop::class, Shop::EVENT_AFTER_DELETE, [Yii::createObject(DeleteShopObserver::class), 'execute']);
+        Event::on(Shop::class, Shop::EVENT_BEFORE_DELETE, [Yii::createObject(DeleteShopObserver::class), 'execute']);
 
         # Stream Session Events
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
