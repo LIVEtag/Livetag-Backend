@@ -47,5 +47,10 @@ interface StreamSessionInterface
     /**
      * @return int|null
      */
+    public function getUpdatedAt(): ?int;
+
+    /**
+     * @return int|null
+     */
     public function getExpiredAt(): ?int;
 }
