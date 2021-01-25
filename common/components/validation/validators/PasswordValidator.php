@@ -21,7 +21,7 @@ class PasswordValidator extends RegularExpressionValidator
     /**
      * @var string the regular expression to be matched with
      */
-    public $pattern = '/^(?=.*[A-Z])(?=.*[0-9]).{8,}$/';
+    public $pattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/';
 
     /**
      * {@inheritdoc}
