@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace rest\tests;
 
 use common\fixtures\AccessTokenFixture;
+use common\fixtures\ProductFixture;
 use common\fixtures\ShopFixture;
 use common\fixtures\StreamSessionFixture;
 use common\fixtures\UserFixture;
@@ -28,6 +29,7 @@ trait BaseFixtureTrait
             'shops' => ShopFixture::class,
             'userShops' => UserShopFixture::class,
             'streamSessions' => StreamSessionFixture::class,
+            'products' => ProductFixture::class,
         ];
     }
 }

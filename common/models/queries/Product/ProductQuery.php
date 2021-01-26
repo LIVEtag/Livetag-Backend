@@ -34,4 +34,14 @@ class ProductQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('id') => $id]);
     }
+    
+    /**
+     * get products by shop uri
+     * @param int $shopId
+     * @return $this
+     */
+    public function byShop(int $shopId): ProductQuery
+    {
+        return $this->andWhere(['shopId' => $shopId]);
+    }
 }

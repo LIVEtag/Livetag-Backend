@@ -9,7 +9,7 @@ namespace common\models\Product;
 
 use common\components\behaviors\TimestampBehavior;
 use common\components\validation\validators\OptionValidator;
-use common\models\queries\Shop\ShopQuery;
+use common\models\queries\Product\ProductQuery;
 use common\models\Shop\Shop;
 use Yii;
 use yii\db\ActiveQuery;
@@ -64,11 +64,11 @@ class Product extends ActiveRecord
     
     /**
      * @inheritdoc
-     * @return ShopQuery the active query used by this AR class.
+     * @return ProductQuery the active query used by this AR class.
      */
-    public static function find(): ShopQuery
+    public static function find(): ProductQuery
     {
-        return new ShopQuery(get_called_class());
+        return new ProductQuery(get_called_class());
     }
     
     /**
@@ -112,6 +112,22 @@ class Product extends ActiveRecord
             'status' => Yii::t('app', 'Status'),
             'createdAt' => Yii::t('app', 'Created At'),
             'updatedAt' => Yii::t('app', 'Updated At'),
+        ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function fields(): array
+    {
+        return [
+            'id',
+            'externalId',
+            'title',
+            'photo',
+            'link',
+            'status',
+            'options'
         ];
     }
     

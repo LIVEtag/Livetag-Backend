@@ -8,6 +8,7 @@ use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
+use rest\modules\v1\controllers\ProductController;
 use rest\modules\v1\controllers\CentrifugoController;
 use rest\modules\v1\controllers\StreamSessionController;
 use rest\modules\v1\Module as V1Module;
@@ -156,6 +157,17 @@ return [
                     'patterns' => [
                         'POST sign' => CentrifugoController::ACTION_SIGN,
                         'OPTIONS sign' => CentrifugoController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1' => 'v1/product'
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET {slug}/product' => ProductController::ACTION_INDEX,
+                        'OPTIONS {slug}/product' => ProductController::ACTION_OPTIONS,
                     ],
                 ],
             ],
