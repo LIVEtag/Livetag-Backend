@@ -37,7 +37,7 @@ class RecoveryPassword extends Model
         return [
             [['resetToken', 'password', 'confirmPassword'], 'required'],
             ['password', PasswordValidator::class],
-            ['password', 'compare', 'compareAttribute' => 'confirmPassword']
+            ['confirmPassword', 'compare', 'compareAttribute' => 'password', 'message' => 'Password must be equal to "New Password"']
         ];
     }
 

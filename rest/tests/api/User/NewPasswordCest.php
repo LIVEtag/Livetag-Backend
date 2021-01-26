@@ -124,9 +124,9 @@ class NewPasswordCest extends ActionCest
         $I->seeResponseMatchesJsonType(
             [
                 [
-                    'field' => 'string:=password',
-                    'message' => 'string:=Password must be equal to "Confirm Password".',
-                    'code' => 'integer:=' . ErrorList::COMPARE_EQUAL
+                    'field' => 'string:=confirmPassword',
+                    'message' => 'string:=Password must be equal to "New Password"',
+                    'code' => 'integer:=' . 1000
                 ]
 
             ],
