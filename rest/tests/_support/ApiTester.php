@@ -193,8 +193,8 @@ class ApiTester extends \Codeception\Actor
         $this->dontSeeHttpHeader('x-pagination-per-page');
         $this->dontSeeHttpHeader('x-pagination-total-count');
     }
+    
     //Some Basic Responses
-
     /**
      * @return array
      */
@@ -208,6 +208,24 @@ class ApiTester extends \Codeception\Actor
             'token' => 'string',
             'createdAt' => 'integer',
             'expiredAt' => 'integer',
+        ];
+    }
+    
+    /**
+     * @return array
+     */
+    public function getProductByShopResponse(): array
+    {
+        return [
+            [
+                'id' => 'integer',
+                'externalId' => 'string',
+                'title' => 'string',
+                'photo' => 'string',
+                'link' => 'string',
+                'status' => 'integer',
+                'options' => 'array'
+            ]
         ];
     }
 

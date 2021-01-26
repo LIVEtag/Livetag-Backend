@@ -42,6 +42,10 @@
         {
             "name": "Centrifugo",
             "description": "Centrifugo related methods"
+        },
+        {
+            "name": "Product",
+            "description": "Product related methods"
         }
     ],
     "paths": {
@@ -568,6 +572,63 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    }
+                }
+            }
+        },
+        "/v1/{shopUri}/product": {
+            "get": {
+                "summary": "Get products by shop uri",
+                "tags": [
+                    "Product"
+                ],
+                "operationId": "getProductsByShop",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "shop Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/product"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/status401"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1115,6 +1176,53 @@
                     "expiredAt": {
                         "type": "integer",
                         "example": 1619827200
+                    }
+                }
+            },
+            "product": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "externalId",
+                    "title",
+                    "photo",
+                    "link",
+                    "status",
+                    "options"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "externalId" : {
+                        "type": "string",
+                        "example": "fb7e2008-50e4-3735-a320-ccc3399d7da5"
+                    },
+                    "title" : {
+                        "type": "string",
+                        "example": "In quas molestiae."
+                    },
+                    "photo" : {
+                        "type": "string",
+                        "example": "https://lorempixel.com/640/480/?71071"
+                    },
+                    "link" : {
+                        "type": "string",
+                        "example": "http://bernier.org/"
+                    },
+                    "status" : {
+                        "type": "integer",
+                        "enum": [ 1, 2, 3],
+                        "example": 2
+                    },
+                    "options" : {
+                        "type": "array",
+                        "example": {
+                            "size": "M",
+                            "color": "MediumOrchid",
+                            "price": 178.13
+                        }
                     }
                 }
             }
