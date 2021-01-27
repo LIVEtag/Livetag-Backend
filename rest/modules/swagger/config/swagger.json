@@ -1183,7 +1183,7 @@
                 "type": "object",
                 "required": [
                     "id",
-                    "externalId",
+                    "sku",
                     "title",
                     "photo",
                     "link",
@@ -1195,7 +1195,7 @@
                         "type": "integer",
                         "example": 1
                     },
-                    "externalId" : {
+                    "sku" : {
                         "type": "string",
                         "example": "fb7e2008-50e4-3735-a320-ccc3399d7da5"
                     },

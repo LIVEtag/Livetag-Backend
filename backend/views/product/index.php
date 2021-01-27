@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'title',
                             ],
                             [
-                                'attribute' => 'externalId',
+                                'attribute' => 'sku',
                             ],
                             [
                                 'attribute' => 'link',

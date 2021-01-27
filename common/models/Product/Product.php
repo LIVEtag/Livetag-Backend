@@ -17,9 +17,9 @@ use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "shop".
+ * This is the model class for table "product".
  * @property int $id         [int(10) unsigned]
- * @property string $externalId [varchar(255)]
+ * @property string $sku     [varchar(255)]
  * @property int $shopId     [int(11) unsigned]
  * @property string $title      [varchar(255)]
  * @property array $options    [json]
@@ -91,11 +91,11 @@ class Product extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['externalId', 'shopId', 'title'], 'required'],
+            [['sku', 'shopId', 'title'], 'required'],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
-            [['externalId', 'title', 'link', 'photo'], 'string', 'max' => 255],
-            [['externalId', 'shopId'], 'unique', 'targetAttribute' => ['externalId', 'shopId']],
+            [['sku', 'title', 'link', 'photo'], 'string', 'max' => 255],
+            [['sku', 'shopId'], 'unique', 'targetAttribute' => ['sku', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
@@ -110,7 +110,7 @@ class Product extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'title' => Yii::t('app', 'Title'),
             'price' => Yii::t('app', 'Price'),
-            'externalId' => Yii::t('app', 'External Id'),
+            'sku' => Yii::t('app', 'Sku'),
             'shopId' => Yii::t('app', 'Shop Id'),
             'photo' => Yii::t('app', 'Photo'),
             'status' => Yii::t('app', 'Status'),
@@ -126,7 +126,7 @@ class Product extends ActiveRecord
     {
         return [
             'id',
-            'externalId',
+            'sku',
             'title',
             'photo',
             'link',
