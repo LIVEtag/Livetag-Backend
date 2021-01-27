@@ -17,7 +17,7 @@ $user = Yii::$app->user->identity ?? null;
                 [
                     'label' => 'Products',
                     'icon' => 'cubes',
-                    'url' => ['#'],
+                    'url' => ['/product/index'],
                     'visible' => $user && $user->isSeller
                 ],
                 [
