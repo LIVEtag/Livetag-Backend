@@ -19,7 +19,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'shopId', 'status'], 'integer'],
-            [['externalId', 'title', 'link'], 'safe'],
+            [['sku', 'title', 'link'], 'safe'],
         ];
     }
     
@@ -57,7 +57,7 @@ class ProductSearch extends Product
             self::tableName() . '.shopId' => $this->shopId,
         ]);
 
-        $query->andFilterWhere(['like', 'externalId', $this->externalId])
+        $query->andFilterWhere(['like', 'sku', $this->sku])
             ->andFilterWhere(['like', 'title', $this->title]);
         return $dataProvider;
     }

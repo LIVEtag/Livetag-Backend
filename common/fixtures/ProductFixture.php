@@ -36,7 +36,7 @@ class ProductFixture extends ActiveFixture
     protected function getTemplate(): array
     {
         return [
-            'externalId' => $this->generator->uuid,
+            'sku' => $this->generator->uuid,
             'title' => $this->generator->text(20),
             'photo' => 'https://picsum.photos/seed/'.$this->generator->randomElement(range(1, 100)).'/200',
             'link' => $this->generator->url,

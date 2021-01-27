@@ -11,14 +11,14 @@ use console\migrations\M201229133425CreateShopTable as Shop;
 class M210111122050CreateProductTable extends Migration
 {
     const TABLE_NAME = '{{%product}}';
-    const EXTERNAL_ID_SHOP_ID_INDEX = 'idx_unique_externalId_shopId';
+    const SKU_SHOP_ID_INDEX = 'idx_unique_sku_shopId';
     public function up()
     {
         $this->createTable(
             self::TABLE_NAME,
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'externalId' => $this->string(255)->notNull(),
+                'sku' => $this->string(255)->notNull(),
                 'shopId' => $this->integer()->unsigned(),
                 'title' => $this->string(255)->notNull(),
                 'photo'  => $this->string(255),
@@ -31,13 +31,13 @@ class M210111122050CreateProductTable extends Migration
         );
         
         $this->addFK(self::TABLE_NAME, 'shopId', Shop::TABLE_NAME, 'id', 'CASCADE');
-        $this->createIndex(self::EXTERNAL_ID_SHOP_ID_INDEX, self::TABLE_NAME, ['externalId', 'shopId'], true);
+        $this->createIndex(self::SKU_SHOP_ID_INDEX, self::TABLE_NAME, ['sku', 'shopId'], true);
     }
 
     public function down()
     {
         $this->dropFK(self::TABLE_NAME, Shop::TABLE_NAME);
-        $this->dropIndex(self::EXTERNAL_ID_SHOP_ID_INDEX, self::TABLE_NAME);
+        $this->dropIndex(self::SKU_SHOP_ID_INDEX, self::TABLE_NAME);
         $this->dropTable(self::TABLE_NAME);
     }
 }
