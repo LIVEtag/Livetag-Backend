@@ -14,6 +14,7 @@ use common\models\Shop\Shop;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "shop".
@@ -35,8 +36,6 @@ class Product extends ActiveRecord
     const STATUS_PRESENTED = 3;
     const STATUS_DELETED = 4;
     
-    const PRICE = 'price';
-    
     /**
      * Status Names
      */
@@ -48,7 +47,12 @@ class Product extends ActiveRecord
     ];
     
     /**
-     * required fields in option field
+     * required field price in option
+     */
+    const PRICE = 'price';
+    
+    /**
+     * required fields in option
      */
     const OPTION_REQUIRED = [
         self::PRICE,
@@ -147,5 +151,13 @@ class Product extends ActiveRecord
     {
         $this->status = self::STATUS_DELETED;
         return $this->save(true, ['status']);
+    }
+    
+    /**
+     * @return string|null
+     */
+    public function getStatusName(): ?string
+    {
+        return ArrayHelper::getValue(self::STATUSES, $this->status);
     }
 }
