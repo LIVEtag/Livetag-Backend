@@ -110,7 +110,7 @@ class Product extends ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'title' => Yii::t('app', 'Title'),
             'price' => Yii::t('app', 'Price'),
-            'sku' => Yii::t('app', 'Sku'),
+            'sku' => Yii::t('app', 'SKU'),
             'shopId' => Yii::t('app', 'Shop Id'),
             'photo' => Yii::t('app', 'Photo'),
             'status' => Yii::t('app', 'Status'),
