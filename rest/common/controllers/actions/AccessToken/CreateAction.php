@@ -7,7 +7,8 @@ namespace rest\common\controllers\actions\AccessToken;
 
 use common\components\user\SearchService;
 use rest\common\models\views\AccessToken\CreateToken;
-use rest\components\api\actions\Action;
+use Yii;
+use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\rest\Controller;
 use yii\web\ServerErrorHttpException;
@@ -49,12 +50,12 @@ class CreateAction extends Action
     public function run()
     {
         /** @var CreateToken $accessTokenCreate */
-        $accessTokenCreate = \Yii::createObject(CreateToken::class);
+        $accessTokenCreate = Yii::createObject(CreateToken::class);
 
-        $accessTokenCreate->setAttributes($this->request->getBodyParams());
+        $accessTokenCreate->setAttributes(Yii::$app->request->getBodyParams());
 
-        $accessTokenCreate->userAgent = $this->request->getUserAgent();
-        $accessTokenCreate->userIp = $this->request->getUserIP();
+        $accessTokenCreate->userAgent = Yii::$app->request->getUserAgent();
+        $accessTokenCreate->userIp = Yii::$app->request->getUserIP();
 
         $accessToken = $accessTokenCreate->create();
 
@@ -66,7 +67,7 @@ class CreateAction extends Action
             return $accessTokenCreate;
         }
 
-        $this->response->setStatusCode(201);
+        Yii::$app->response->setStatusCode(201);
 
         return $accessToken;
     }

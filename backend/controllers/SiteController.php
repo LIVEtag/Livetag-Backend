@@ -162,22 +162,22 @@ class SiteController extends Controller
         $model = new DynamicModel([
             'userId',
             'accessToken',
-            'shopId',
+            'shopUri',
             'centrifugoToken',
             'centrifugoUrl',
             'signEndpoint'
         ]);
-        $model->addRule(['shopId', 'centrifugoUrl', 'signEndpoint'], 'required');
+        $model->addRule(['shopUri', 'centrifugoUrl', 'signEndpoint'], 'required');
         $model->addRule(['centrifugoToken', 'centrifugoUrl'], 'string');
         $model->addRule(['signEndpoint'], 'url');
-        $model->addRule('shopId', 'integer');
-        $model->addRule('shopId', 'exist', ['targetClass' => Shop::class, 'targetAttribute' => 'id']);
+        $model->addRule('shopUri', 'string');
+        $model->addRule('shopUri', 'exist', ['targetClass' => Shop::class, 'targetAttribute' => 'uri']);
 
         if (!$model->load(Yii::$app->request->post())) {
             //some example default values
-            $model->shopId = 1;
+            $model->shopUri = 'shop1';
             $model->centrifugoUrl = getenv('CENTRIFUGO_WEB_SOCKET');
-            $model->signEndpoint = "https://" . Yii::$app->params['restDomain'] . "/rest/v1/centrifugo/sign";
+            $model->signEndpoint = Yii::$app->urlManagerRest->createAbsoluteUrl('v1/centrifugo/sign');
         }
         $model->validate();
         //get access token only if form validated

@@ -54,7 +54,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'visible' => $user && $user->isAdmin,
                             ],
                             [
-                                'attribute' => 'createdAt',
+                                'attribute' => 'startedAt',
                                 'label' => 'Date and time',
                                 'format' => 'datetime',
                                 'mergeHeader' => true,

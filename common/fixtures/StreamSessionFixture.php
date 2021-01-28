@@ -16,7 +16,8 @@ class StreamSessionFixture extends ActiveFixture
 {
     const STREAM_EXPIRED_1 = 1;
     const STREAM_EXPIRED_2 = 2;
-    const STREAM_ACTIVE_3 = 3;
+    const STREAM_NEW = 3;
+    const STREAM_ACTIVE = 4;
 
     public $modelClass = StreamSession::class;
 
@@ -27,10 +28,11 @@ class StreamSessionFixture extends ActiveFixture
     {
         $expiredTime = $this->generator->incrementalTime - 21 * 60 * 60;
         return [
+            'sessionId' => '1_MX4' . $this->generator->password(64, 64) . '-QX4',
             'status' => StreamSession::STATUS_STOPPED,
-            'createdAt' => $expiredTime - 3 * 60 * 60,
-            'updatedAt' => $expiredTime,
-            'expiredAt' => $expiredTime,
+            'createdAt' => $expiredTime - 4 * 60 * 60,
+            'startedAt' => $expiredTime - 3 * 60 * 60,
+            'stoppedAt' => $expiredTime,
         ];
     }
 }

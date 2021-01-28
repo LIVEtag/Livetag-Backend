@@ -193,7 +193,7 @@ class ApiTester extends \Codeception\Actor
         $this->dontSeeHttpHeader('x-pagination-per-page');
         $this->dontSeeHttpHeader('x-pagination-total-count');
     }
-    
+
     //Some Basic Responses
     /**
      * @return array
@@ -204,13 +204,25 @@ class ApiTester extends \Codeception\Actor
             'id' => 'integer',
             'shopUri' => 'string',
             'sessionId' => 'string',
-            'isActive' => 'boolean',
-            'token' => 'string',
+            'status' => 'integer',
             'createdAt' => 'integer',
+            'startedAt' => 'integer|null',
+            'stoppedAt' => 'integer|null',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getStreamSessionTokenResponse(): array
+    {
+        return [
+            'streamSessionId' => 'integer',
+            'token' => 'string',
             'expiredAt' => 'integer',
         ];
     }
-    
+
     /**
      * @return array
      */

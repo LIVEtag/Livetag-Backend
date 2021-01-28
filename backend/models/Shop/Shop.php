@@ -32,4 +32,13 @@ class Shop extends BaseModel
     {
         return self::find()->select(['name', 'id'])->indexBy('id')->column();
     }
+
+    /**
+     * Get all entities as indexed array
+     * @return array [id=>key] array of entities
+     */
+    public static function getIndexedUriArray(): array
+    {
+        return self::find()->select(['name', 'uri'])->indexBy('uri')->column();
+    }
 }

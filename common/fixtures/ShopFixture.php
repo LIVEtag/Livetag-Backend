@@ -14,8 +14,20 @@ use common\models\Shop\Shop;
  */
 class ShopFixture extends ActiveFixture
 {
+    /**
+     * new session exist
+     */
     const STORE_1 = 1;
+
+    /**
+     * active session exist
+     */
     const STORE_2 = 2;
+
+    /**
+     * no active sessions
+     */
+    const STORE_3 = 3;
 
     public $modelClass = Shop::class;
 

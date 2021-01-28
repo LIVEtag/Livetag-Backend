@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>Admin</b>LTE</a>
+        <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', ['alt' => Yii::$app->name]) ?>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">

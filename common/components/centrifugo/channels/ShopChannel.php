@@ -42,6 +42,6 @@ class ShopChannel extends BaseObject implements ChannelInterface
      */
     public function getName(): string
     {
-        return self::PREFIX . '_' . $this->shop->id;
+        return self::PREFIX . '_' . $this->shop->uri;
     }
 }

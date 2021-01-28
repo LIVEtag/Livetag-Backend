@@ -30,6 +30,7 @@ use yii\validators\RequiredValidator;
 use yii\validators\StringValidator;
 use yii\validators\UniqueValidator;
 use yii\validators\UrlValidator;
+use yii\web\UrlManager;
 
 Yii::setAlias('@base.domain', getenv('YII_MAIN_DOMAIN'));
 Yii::setAlias('@rest.domain', getenv('YII_REST_DOMAIN'));
@@ -110,6 +111,12 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
+            'showScriptName' => false,
+        ],
+        'urlManagerRest' => [
+            'class' => UrlManager::class,
+            'baseUrl' => 'https://' . Yii::getAlias('@rest.domain') . '/rest',
+            'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
         'vonage' => [

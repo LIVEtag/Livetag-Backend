@@ -22,11 +22,11 @@ class StreamSession extends BaseModel
      */
     public function getDuration(): ?string
     {
-        if (!$this->getCreatedAt() || !$this->getUpdatedAt()) {
+        if (!$this->getStartedAt()) {
             return null;
         }
-        $endTimestamp = $this->isActive() ? time() : $this->getUpdatedAt();
-        $duration = $endTimestamp - $this->getCreatedAt();
+        $endTimestamp = $this->getStoppedAt() ?: time();
+        $duration = $endTimestamp - $this->getStartedAt();
         return gmdate("H:i:s", $duration);
     }
 

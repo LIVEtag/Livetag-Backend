@@ -41,10 +41,10 @@ class CreateStreamSessionCest extends ActionCest
      */
     public function create(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::SELLER_1);
+        $I->amLoggedInApiAs(UserFixture::SELLER_3);
         $I->wantToTest('Create Stream Session');
-        $expand = 'token';
-        $I->send($this->getMethod(), $this->getUrl($I). "?expand=$expand");
+
+        $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');
     }

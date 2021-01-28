@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\Product;
 
 use rest\common\models\Product\ProductSearch;
-use rest\components\api\actions\Action;
+use yii\base\Action;
 use Yii;
 
 /**
