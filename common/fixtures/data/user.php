@@ -19,6 +19,11 @@ return [
         'email' => 'seller2@nosend.net',
         'role' => User::ROLE_SELLER,
     ],
+    UserFixture::SELLER_3 => [
+        'id' => UserFixture::SELLER_3,
+        'email' => 'seller3@nosend.net',
+        'role' => User::ROLE_SELLER,
+    ],
     UserFixture::BUYER_1 => [
         'id' => UserFixture::BUYER_1,
         'email' => null,

@@ -7,9 +7,10 @@ declare(strict_types=1);
 
 namespace backend\models\Shop;
 
+use backend\models\Shop\Shop;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Shop\Shop;
+use yii\helpers\ArrayHelper;
 
 /**
  * ShopSearch represents the model behind the search form of `backend\models\Shop\Shop`.

@@ -22,6 +22,7 @@ use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
+use yii\web\BadRequestHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
@@ -31,12 +32,12 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $shopId
  * @property integer $status
  * @property string $sessionId
- * @property string $publisherToken
- * @property integer $expiredAt
  * @property integer $createdAt
- * @property integer $updatedAt
+ * @property integer $startedAt
+ * @property integer $stoppedAt
  *
  * @property-read Shop $shop
+ * @property-read StreamSessionToken $streamSessionToken
  *
  * EVENTS:
  * - EVENT_AFTER_INSERT
@@ -57,14 +58,19 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     const DEFAULT_DURATION = 10800;
 
     /**
-     * Disabled shop (marked as deleted)
+     * Default status afrer creation
      */
-    const STATUS_STOPPED = 0;
+    const STATUS_NEW = 1;
 
     /**
-     * Default active shop
+     * Session in progress
      */
-    const STATUS_ACTIVE = 10;
+    const STATUS_ACTIVE = 2;
+
+    /**
+     * Translation finished (stop method used) or stopped by cron
+     */
+    const STATUS_STOPPED = 3;
 
     /**
      * Category for logs
@@ -75,6 +81,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      * Status Names
      */
     const STATUSES = [
+        self::STATUS_NEW => 'New',
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_STOPPED => 'Stopped',
     ];
@@ -93,7 +100,10 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::class,
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'updatedAtAttribute' => false,
+            ],
         ];
     }
 
@@ -112,13 +122,26 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function rules(): array
     {
         return [
-            [['shopId', 'sessionId', 'publisherToken', 'expiredAt'], 'required'],
-            [['shopId', 'status', 'expiredAt'], 'integer'],
+            [['shopId', 'sessionId'], 'required'],
+            [['shopId', 'status', 'startedAt', 'stoppedAt'], 'integer'],
             ['sessionId', 'string', 'max' => 255],
-            ['publisherToken', 'string', 'max' => 512],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
+            [
+                'startedAt',
+                'required',
+                'when' => function (self $model) {
+                    return $model->isActive();
+                }
+            ],
+            [
+                'stoppedAt',
+                'required',
+                'when' => function (self $model) {
+                    return $model->isStopped();
+                }
+            ]
         ];
     }
 
@@ -132,7 +155,6 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'shopId' => Yii::t('app', 'Shop ID'),
             'status' => Yii::t('app', 'Status'),
             'sessionId' => Yii::t('app', 'Session ID'),
-            'publisherToken' => Yii::t('app', 'Publisher Token'),
             'expiredAt' => Yii::t('app', 'Expired At'),
             'createdAt' => Yii::t('app', 'Created At'),
             'updatedAt' => Yii::t('app', 'Updated At'),
@@ -152,26 +174,17 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
                 return $this->shop->uri;
             },
             'sessionId',
-            'isActive' => function () {
-                return $this->isActive();
+            'status' => function () {
+                return $this->getStatus();
             },
             'createdAt' => function () {
                 return $this->getCreatedAt();
             },
-            'expiredAt' => function () {
-                return $this->getExpiredAt();
+            'startedAt' => function () {
+                return $this->getStartedAt();
             },
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function extraFields()
-    {
-        return [
-            'token' => function () {
-                return $this->getToken(Yii::$app->user->identity ?? null);
+            'stoppedAt' => function () {
+                return $this->getStoppedAt();
             },
         ];
     }
@@ -182,6 +195,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function getShop(): ActiveQuery
     {
         return $this->hasOne(Shop::class, ['id' => 'shopId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getStreamSessionToken(): ActiveQuery
+    {
+        return $this->hasOne(StreamSessionToken::class, ['streamSessionId' => 'id']);
     }
 
     /**
@@ -219,9 +240,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function getPublisherToken(): string
+    public function getPublisherToken(): ?StreamSessionToken
     {
-        return $this->publisherToken;
+        return $this->streamSessionToken;
     }
 
     /**
@@ -235,17 +256,34 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function getUpdatedAt(): int
+    public function getStartedAt(): ?int
     {
-        return $this->updatedAt ? (int) $this->updatedAt : null;
+        return $this->startedAt ? (int) $this->startedAt : null;
     }
 
     /**
      * @inheritdoc
      */
-    public function getExpiredAt(): int
+    public function getStoppedAt(): ?int
     {
-        return $this->expiredAt ? (int) $this->expiredAt : null;
+        return $this->stoppedAt ? (int) $this->stoppedAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExpiredAt(): ?int
+    {
+        return $this->getStartedAt() ? $this->getStartedAt() + self::DEFAULT_DURATION : null;
+    }
+
+    /**
+     * Check current session is new (announcement)
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->getStatus() === self::STATUS_NEW;
     }
 
     /**
@@ -254,18 +292,31 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function isActive(): bool
     {
-        return $this->getStatus() === self::STATUS_ACTIVE && $this->getExpiredAt() > time();
+        return $this->getStatus() === self::STATUS_ACTIVE; // && $this->getExpiredAt() && $this->getExpiredAt() > time();
     }
 
     /**
-     * Get token for selected user:
+     * Check current session is stopped
+     * @return bool
+     */
+    public function isStopped(): bool
+    {
+        return $this->getStatus() === self::STATUS_STOPPED;
+    }
+
+    /**
+     * Get token for selected user (only for active sessions):
      *  - get publisher token for owner
      *  - generate token for other users or guests
      * @param User|null $user
-     * @return string
+     * @return StreamSessionToken|null
      */
-    public function getToken(?User $user = null): string
+    public function getToken(?User $user = null): ?StreamSessionToken
     {
+        if (!$this->isActive()) {
+            throw new BadRequestHttpException('You can only get a token for active translation');
+        }
+
         if ($user && $this->getIsOwner($user)) {
             return $this->getPublisherToken();
         }
@@ -287,32 +338,48 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
 
     /**
      * Create token for stream subscriber
-     * @return string
+     * @return StreamSessionToken
      */
-    public function createSubscriberToken(): string
+    public function createSubscriberToken(): StreamSessionToken
     {
-        $options = [
-            'role' => Role::SUBSCRIBER,
-            'expireTime' => $this->getExpiredAt()
-        ];
-        return Yii::$app->vonage->getToken($this->getSessionId(), $options);
+        return $this->createToken(Role::SUBSCRIBER);
     }
 
     /**
      * Create token for stream publisher
-     * @return string
+     * @return StreamSessionToken
      */
-    public function createPublisherToken(): string
+    public function createPublisherToken(): StreamSessionToken
     {
-        $options = [
-            'role' => Role::MODERATOR,
-            'expireTime' => $this->getExpiredAt()
-        ];
-        return Yii::$app->vonage->getToken($this->getSessionId(), $options);
+        return $this->createToken(Role::MODERATOR);
     }
 
     /**
-     * Get current active session for selected shop(by id)
+     *
+     * @param string $role
+     * @return StreamSessionToken
+     * @throws UnprocessableEntityHttpException
+     */
+    public function createToken($role): StreamSessionToken
+    {
+        if (!$this->getExpiredAt() || !$this->getSessionId()) {
+            throw new UnprocessableEntityHttpException('Failed to create token');
+        }
+
+        $token = Yii::$app->vonage->getToken($this->getSessionId(), [
+            'role' => $role,
+            'expireTime' => $this->getExpiredAt()
+        ]);
+
+        return new StreamSessionToken([
+            'streamSessionId' => $this->id,
+            'token' => $token,
+            'expiredAt' => $this->getExpiredAt(),
+        ]);
+    }
+
+    /**
+     * Get current Active session for selected shop(by id)
      *
      * @param int $shopId
      * @return self|null
@@ -323,51 +390,10 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
-     * Start translation for selected shop
+     * Create translation for selected shop
      * Do not allow create new session if active exist
-     * @param Shop $shop
-     * @return self
-     * @throws UnprocessableEntityHttpException
-     */
-    public static function startTranslation(Shop $shop): self
-    {
-        $session = self::getCurrent($shop->id);
-        if ($session) {
-            throw new UnprocessableEntityHttpException(ErrorList::errorTextByCode(ErrorList::STREAM_IN_PROGRESS));
-        }
-        return self::create($shop->id);
-    }
-
-    /**
-     * Stop active translation for selected shop
-     * We will assume that it is considered a success to bring the store to the "no active broadcasts" state.
-     * If they are not already there - success
-     * @param Shop $shop
-     * @return self
-     * @throws UnprocessableEntityHttpException
-     */
-    public static function stopTranslation(Shop $shop): bool
-    {
-        $session = self::getCurrent($shop->id);
-        if (!$session) {
-            return true;
-        }
-        return $session->stop();
-    }
-
-    /**
-     * Stop session
-     * @todo: add stop logic
-     */
-    public function stop()
-    {
-        $this->status = self::STATUS_STOPPED;
-        return $this->save(true, ['status']);
-    }
-
-    /**
-     * Create session for specified user.
      *
+     * Create session for specified user.
      * At the moment, a user can only belong to one shop.
      * Accordingly, we can say that if a user tries to start a stream, he starts only within his store.
      * If there is no store, the user will not be able to start the stream
@@ -375,23 +401,28 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      * OpenTok sessions do not expire. However, authentication tokens do expire (see the generateToken() method).
      * Also note that sessions cannot explicitly be destroyed.
      *
-     * @param int $shopId
+     * @param Shop $shop
      * @return self (return created model or model with errors)
+     * @throws UnprocessableEntityHttpException
      */
-    public static function create(int $shopId): self
+    public static function create(Shop $shop): self
     {
-        //set shop id and expired date (of publisher token)
+        $currentSession = self::getCurrent($shop->id);
+        if ($currentSession) {
+            throw new UnprocessableEntityHttpException(ErrorList::errorTextByCode(ErrorList::STREAM_IN_PROGRESS));
+        }
+
         $session = new self([
-            'shopId' => $shopId,
-            'expiredAt' => time() + self::DEFAULT_DURATION,
+            'shopId' => $shop->id,
+            'status' => self::STATUS_NEW
         ]);
 
         //1. Validate shop for broadcast start (check is active)
-        if (!$session->validate(['shopId'])) {
+        if (!$session->validate(['shopId', 'status'])) {
             return $session; //return model errors
         }
 
-        // 2. Create session with tokbox and get token
+        // 2. Create session with tokbox
         try {
             $session->sessionId = Yii::$app->vonage->createSession();
         } catch (Throwable $ex) {
@@ -399,17 +430,61 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             return $session; //return model with errors
         }
 
-        // 3. Create token
-        try {
-            $session->publisherToken = $session->createPublisherToken();
-        } catch (Throwable $ex) {
-            $session->addError('publisherToken', $ex->getMessage());
-            return $session; //return model with errors
-        }
-
         // 4. Store session into DB
         $session->save();
         return $session; //return model or model with erros
+    }
+
+    /**
+     * Start translation and return token
+     * @return StreamSessionToken
+     * @throws BadRequestHttpException
+     */
+    public function start(): StreamSessionToken
+    {
+        if (!$this->isNew()) {
+            throw new BadRequestHttpException('This translation already started');
+        }
+        // 1. Touch startedAt to generate expired time for token
+        $this->touch('startedAt');
+
+        // 2. Create publisher token
+        $token = $this->createPublisherToken();
+
+        //Save token and update session status
+        $transaction = Yii::$app->db->beginTransaction();
+
+        // 3. Save token
+        if (!$token->save()) {
+            $transaction->rollBack();
+            LogHelper::error('Session start failed. Session Token not saved', self::LOG_CATEGORY, LogHelper::extraForModelError($token));
+            throw new BadRequestHttpException(Yii::t('app', 'Failed to start session for unknown reason'));
+        }
+
+        // 4. Update status and save session
+        $this->status = self::STATUS_ACTIVE;
+        if (!$this->save(true, ['status', 'startedAt'])) {
+            $transaction->rollBack();
+            LogHelper::error('Session start failed. Session not saved', self::LOG_CATEGORY, LogHelper::extraForModelError($this));
+            throw new BadRequestHttpException(Yii::t('app', 'Failed to start session for unknown reason'));
+        }
+        $transaction->commit();
+        return $token;
+    }
+
+    /**
+     * Stop translation
+     * @return bool
+     * @throws BadRequestHttpException
+     */
+    public function stop(): bool
+    {
+        if (!$this->isActive()) {
+            throw new BadRequestHttpException('You can only stop active translations');
+        }
+        $this->status = self::STATUS_STOPPED;
+        $this->touch('stoppedAt');
+        return $this->save(true, ['status', 'stoppedAt']);
     }
 
     /**

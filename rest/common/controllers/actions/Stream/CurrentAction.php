@@ -9,10 +9,10 @@ namespace rest\common\controllers\actions\Stream;
 
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
-use rest\components\api\actions\Action;
+use yii\base\Action;
 use yii\web\NotFoundHttpException;
 
-class ViewAction extends Action
+class CurrentAction extends Action
 {
 
     /**

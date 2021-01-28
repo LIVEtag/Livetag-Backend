@@ -7,13 +7,10 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\Stream;
 
-use common\helpers\LogHelper;
 use common\models\Stream\StreamSession;
-use Yii;
 use yii\rest\Action;
-use yii\web\BadRequestHttpException;
 
-class StopAction extends Action
+class StartAction extends Action
 {
 
     /**
@@ -28,12 +25,6 @@ class StopAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
-
-        if (!$streamSession->stop()) {
-            LogHelper::error('Failed to Stop session', StreamSession::LOG_CATEGORY, LogHelper::extraForModelError($streamSession));
-            throw new BadRequestHttpException(Yii::t('app', 'Failed to Stop session for unknown reason'));
-        }
-
-        Yii::$app->response->setStatusCode(204);
+        return $streamSession->start();
     }
 }

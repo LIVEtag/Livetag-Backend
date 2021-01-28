@@ -29,19 +29,26 @@ class StreamSessionQuery extends ActiveQuery
 
     /**
      * Return session with active status, and not expired token
+     * For first release current is session with statuses ACTIVE and NEW (as we have only one active session)
+     *
      * @return $this
      */
     public function active()
     {
-        return $this->andWhere(['>', $this->getFieldName('expiredAt'), time()])
-                ->byStatus(StreamSession::STATUS_ACTIVE);
+        return $this->andWhere(['OR',
+                ['AND',
+                    [$this->getFieldName('status') => StreamSession::STATUS_ACTIVE],
+                    ['>', $this->getFieldName('startedAt'), time() - StreamSession::DEFAULT_DURATION],
+                ],
+                [$this->getFieldName('status') => StreamSession::STATUS_NEW]
+        ]);
     }
 
     /**
-     * @param int $status
+     * @param int|array $status
      * @return $this
      */
-    public function byStatus(int $status): self
+    public function byStatus($status): self
     {
         return $this->andWhere([$this->getFieldName('status') => $status]);
     }

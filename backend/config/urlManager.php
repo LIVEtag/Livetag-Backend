@@ -4,7 +4,7 @@
  */
 return [
     'class' => yii\web\UrlManager::class,
-    'baseUrl' => '/backend',
+    'baseUrl' => 'https://' . Yii::getAlias('@backend.domain')  . '/backend',
     'enablePrettyUrl' => true,
     'showScriptName' => false,
     'rules' => [

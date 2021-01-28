@@ -18,8 +18,8 @@ $this->title = 'Centrifugo debug page';
                 <div class="box-header"></div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
-                    <?= $form->field($model, 'shopId')->widget(Select2::class, [
-                        'data' => Shop::getIndexedArray(),
+                    <?= $form->field($model, 'shopUri')->widget(Select2::class, [
+                        'data' => Shop::getIndexedUriArray(),
                         'options' => ['placeholder' => 'Select shop ...'],
                         'pluginOptions' => ['allowClear' => false],
                     ])->label('Shop'); ?>
@@ -51,7 +51,7 @@ $this->title = 'Centrifugo debug page';
     </div>
 
     <script type="text/javascript">
-        const shopChannel = "shop_<?= $model->shopId; ?>";
+        const shopChannel = "shop_<?= $model->shopUri; ?>";
 
         //formats: https://github.com/centrifugal/centrifuge-js#subscription-event-context-formats
         var callbacks = {
@@ -62,7 +62,6 @@ $this->title = 'Centrifugo debug page';
             console.log('join:', message);
           },
           "leave": function (message) {
-
             console.log('leave:', message);
           },
           "subscribe": function (context) {

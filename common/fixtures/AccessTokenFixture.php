@@ -17,7 +17,8 @@ class AccessTokenFixture extends ActiveFixture
     const ADMIN = 1;
     const SELLER_1 = 2;
     const SELLER_2 = 3;
-    const DELETED = 4;
+    const SELLER_3 = 4;
+    const DELETED = 5;
 
     public $modelClass = AccessToken::class;
     public $depends = [UserFixture::class];

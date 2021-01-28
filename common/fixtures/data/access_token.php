@@ -22,6 +22,10 @@ return [
         'userId' => UserFixture::SELLER_2,
         'token' => 'seller2',
     ],
+    AccessTokenFixture::SELLER_3 => [
+        'userId' => UserFixture::SELLER_3,
+        'token' => 'seller3',
+    ],
     AccessTokenFixture::DELETED => [
         'userId' => UserFixture::DELETED,
         'token' => 'deleted',

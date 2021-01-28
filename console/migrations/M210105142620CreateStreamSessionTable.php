@@ -6,9 +6,9 @@ use common\components\db\Migration;
 use console\migrations\M201229133425CreateShopTable as Shop;
 
 /**
- * Class M210105142620StreamSession
+ * Class M210105142620CreateStreamSessionTable
  */
-class M210105142620StreamSession extends Migration
+class M210105142620CreateStreamSessionTable extends Migration
 {
     const TABLE_NAME = '{{%stream_session}}';
 
@@ -19,15 +19,13 @@ class M210105142620StreamSession extends Migration
             [
                 'id' => $this->primaryKey()->unsigned(),
                 'shopId' => $this->integer()->unsigned()->notNull(),
-                'status' => $this->smallInteger()->notNull()->defaultValue(10),
+                'status' => $this->smallInteger()->notNull()->defaultValue(1),
                 'sessionId' => $this->string(255)->notNull(), //A session ID string can be up to 255 characters long.
-                'publisherToken' => $this->string(512)->notNull(),
                 'createdAt' => $this->unixTimestamp(),
-                'updatedAt' => $this->unixTimestamp(),
-                'expiredAt' => $this->unixTimestamp()->comment('Publisher token expiration time'),
+                'startedAt' => $this->integer()->unsigned()->null()->comment('The actual start time (when the seller clicks start and receives a token)'),
+                'stoppedAt' => $this->integer()->unsigned()->null()->comment('The actual end time (when the seller stops broadcasting)'),
             ]
         );
-
         $this->addFK(self::TABLE_NAME, 'shopId', Shop::TABLE_NAME, 'id', 'CASCADE');
     }
 

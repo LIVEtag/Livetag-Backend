@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace rest\tests\api\Stream;
 
-use common\fixtures\StreamSessionFixture;
+use common\fixtures\ShopFixture;
 use common\fixtures\UserFixture;
 use rest\tests\AccessTestTrait;
 use rest\tests\ActionCest;
@@ -16,11 +16,9 @@ use rest\tests\ApiTester;
 /**
  * @group Stream
  */
-class ViewStreamSessionCest extends ActionCest
+class CurrentStreamSessionCest extends ActionCest
 {
     use AccessTestTrait;
-    /** @var int */
-    protected $streamSessionId = StreamSessionFixture::STREAM_ACTIVE;
 
     /**
      * @return string
@@ -36,8 +34,10 @@ class ViewStreamSessionCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session/' . $this->streamSessionId;
+        return "/shop/{$this->shopUri}/stream-session/current";
     }
+    /** @var integer */
+    protected $shopUri;
 
     /**
      * @param ApiTester $I
@@ -45,7 +45,9 @@ class ViewStreamSessionCest extends ActionCest
     public function viewAsBuyer(ApiTester $I)
     {
         $I->wantToTest('View Stream Session of Shop (as Buyer)');
+        $shop = $I->grabFixture('shops', ShopFixture::STORE_2);
         $I->amLoggedInApiAs(UserFixture::BUYER_1);
+        $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');
@@ -57,7 +59,9 @@ class ViewStreamSessionCest extends ActionCest
     public function viewAsSeller(ApiTester $I)
     {
         $I->wantToTest('View Stream Session of Shop (as Seller)');
+        $shop = $I->grabFixture('shops', ShopFixture::STORE_2);
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
+        $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');

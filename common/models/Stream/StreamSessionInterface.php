@@ -35,9 +35,9 @@ interface StreamSessionInterface
     public function getSessionId(): ?string;
 
     /**
-     * @return string|null
+     * @return StreamSessionToken|null
      */
-    public function getPublisherToken(): ?string;
+    public function getPublisherToken(): ?StreamSessionToken;
 
     /**
      * @return int|null
@@ -47,7 +47,12 @@ interface StreamSessionInterface
     /**
      * @return int|null
      */
-    public function getUpdatedAt(): ?int;
+    public function getStartedAt(): ?int;
+
+    /**
+     * @return int|null
+     */
+    public function getStoppedAt(): ?int;
 
     /**
      * @return int|null

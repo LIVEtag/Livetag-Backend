@@ -6,7 +6,7 @@
 
 namespace rest\common\controllers\actions\Config;
 
-use rest\components\api\actions\Action;
+use yii\base\Action;
 use yii\web\ServerErrorHttpException;
 
 /**

@@ -8,7 +8,8 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\User;
 
 use common\models\User;
-use rest\components\api\actions\Action;
+use Yii;
+use yii\base\Action;
 
 /**
  * Class CurrentAction
@@ -20,6 +21,6 @@ class CurrentAction extends Action
      */
     public function run(): User
     {
-        return \Yii::$app->user->identity;
+        return Yii::$app->user->identity;
     }
 }

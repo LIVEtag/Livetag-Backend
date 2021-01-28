@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace rest\tests\api\Stream;
 
+use common\fixtures\StreamSessionFixture;
 use common\fixtures\UserFixture;
 use rest\tests\AccessTestTrait;
 use rest\tests\ActionCest;
@@ -18,6 +19,8 @@ use rest\tests\ApiTester;
 class StopStreamSessionCest extends ActionCest
 {
     use AccessTestTrait;
+    /** @var int */
+    protected $streamSessionId = StreamSessionFixture::STREAM_ACTIVE;
 
     /**
      * @return string
@@ -33,7 +36,7 @@ class StopStreamSessionCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session';
+        return '/stream-session/' . $this->streamSessionId;
     }
 
     /**

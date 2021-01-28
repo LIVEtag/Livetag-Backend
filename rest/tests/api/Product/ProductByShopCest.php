@@ -19,7 +19,7 @@ class ProductByShopCest extends ActionCest
 {
     /** @var integer */
     protected $shopId;
-    
+
     /**
      * @return string
      */
@@ -27,16 +27,16 @@ class ProductByShopCest extends ActionCest
     {
         return self::METHOD_GET;
     }
-    
+
     /**
      * @param ApiTester $I
      * @return string
      */
     protected function getUrl(ApiTester $I): string
     {
-        return "/{$this->shopUri}/product";
+        return "/shop/{$this->shopUri}/product";
     }
-    
+
     /**
      * @param ApiTester $I
      */

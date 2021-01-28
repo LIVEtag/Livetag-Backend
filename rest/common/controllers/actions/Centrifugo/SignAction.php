@@ -1,7 +1,8 @@
 <?php
 namespace rest\common\controllers\actions\Centrifugo;
 
-use rest\components\api\actions\Action;
+use Yii;
+use yii\base\Action;
 
 /**
  * Class SignAction
@@ -13,7 +14,7 @@ class SignAction extends Action
      */
     public function run()
     {
-        $token = \Yii::$app->centrifugo->client->generateConnectionToken(\Yii::$app->user->id);
+        $token = Yii::$app->centrifugo->client->generateConnectionToken(Yii::$app->user->id);
         return ['token' => $token];
     }
 }

@@ -16,7 +16,7 @@ use rest\tests\ApiTester;
 /**
  * @group Stream
  */
-class ViewStreamSessionCest extends ActionCest
+class GetStreamSessionTokenCest extends ActionCest
 {
     use AccessTestTrait;
     /** @var int */
@@ -36,30 +36,18 @@ class ViewStreamSessionCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session/' . $this->streamSessionId;
+        return '/stream-session/' . $this->streamSessionId . '/token';
     }
 
     /**
      * @param ApiTester $I
      */
-    public function viewAsBuyer(ApiTester $I)
+    public function token(ApiTester $I)
     {
-        $I->wantToTest('View Stream Session of Shop (as Buyer)');
-        $I->amLoggedInApiAs(UserFixture::BUYER_1);
+        $I->amLoggedInApiAs(UserFixture::SELLER_2);
+        $I->wantToTest('Get token for Stream Session');
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');
-    }
-
-    /**
-     * @param ApiTester $I
-     */
-    public function viewAsSeller(ApiTester $I)
-    {
-        $I->wantToTest('View Stream Session of Shop (as Seller)');
-        $I->amLoggedInApiAs(UserFixture::SELLER_1);
-        $I->send($this->getMethod(), $this->getUrl($I));
-        $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getStreamSessionResponse(), '$.result');
+        $I->seeResponseMatchesJsonType($I->getStreamSessionTokenResponse(), '$.result');
     }
 }

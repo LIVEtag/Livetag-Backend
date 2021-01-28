@@ -48,8 +48,8 @@ $user = Yii::$app->user->identity ?? null;
                             ],
                             'sessionId',
                             'createdAt:datetime',
-                            'updatedAt:datetime',
-                            'expiredAt:datetime',
+                            'startedAt:datetime',
+                            'stoppedAt:datetime',
                             [
                                 'label' => 'Duration',
                                 'value' => function (StreamSession $model) {

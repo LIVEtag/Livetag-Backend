@@ -17,9 +17,10 @@ class UserFixture extends ActiveFixture
     const ADMIN = 1;
     const SELLER_1 = 2;
     const SELLER_2 = 3;
-    const DELETED = 4; //todo change to blocked
-    const BUYER_1 = 5;
-    const BUYER_2 = 6;
+    const SELLER_3 = 4;
+    const DELETED = 5; //todo change to blocked
+    const BUYER_1 = 6;
+    const BUYER_2 = 7;
 
     const DEFAULT_PASSWORD = 'Password_0';
 

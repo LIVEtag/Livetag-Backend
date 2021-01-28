@@ -3,7 +3,6 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
@@ -134,20 +133,26 @@ return [
                     'pluralize' => false,
                     'patterns' => [
                         'POST' => StreamSessionController::ACTION_CREATE,
-                        'DELETE' => StreamSessionController::ACTION_STOP,
                         'OPTIONS' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}' => StreamSessionController::ACTION_VIEW,
+                        'POST {id}' => StreamSessionController::ACTION_START,
+                        'DELETE {id}' => StreamSessionController::ACTION_STOP,
+                        'OPTIONS {id}' => StreamSessionController::ACTION_OPTIONS,
                     ],
+                    'extraPatterns' => [
+                        'GET {id}/token' => StreamSessionController::ACTION_TOKEN,
+                        'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
+                    ]
                 ],
-                //shop uri before controller
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1' => 'v1/stream-session'
+                        'v1/shop' => 'v1/stream-session'
                     ],
                     'pluralize' => false,
                     'patterns' => [
-                        'GET {slug}/stream-session' => StreamSessionController::ACTION_VIEW,
-                        'OPTIONS {slug}/stream-session' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {slug}/stream-session/current' => StreamSessionController::ACTION_CURRENT,
+                        'OPTIONS {slug}/stream-session/current' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
                 [
@@ -162,7 +167,7 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1' => 'v1/product'
+                        'v1/shop' => 'v1/product'
                     ],
                     'pluralize' => false,
                     'patterns' => [

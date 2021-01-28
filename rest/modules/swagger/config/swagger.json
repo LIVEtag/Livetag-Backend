@@ -384,7 +384,64 @@
             }
         },
 
-        "/v1/stream-session": {
+        "/v1/shop/{shopUri}/stream-session/current": {
+            "get": {
+                "tags": [
+                    "Vonage",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "View Active Stream Session for selected shop",
+                "operationId": "currentStreamSessionToken",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "Shop Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/v1/stream-session/": {
             "post": {
                 "security": [
                     {
@@ -437,6 +494,126 @@
                         "$ref": "#/components/responses/422"
                     }
                 }
+            }
+        },
+
+        "/v1/stream-session/{id}": {
+            "get": {
+                "tags": [
+                    "Vonage",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "View Stream Session by id",
+                "operationId": "streamSessionView",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Vonage",
+                    "Seller"
+                ],
+                "summary": "Start selected Stream Session (Create Token)",
+                "operationId": "streamSessionStart",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSessionToken"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
             },
             "delete": {
                 "security": [
@@ -448,9 +625,19 @@
                     "Vonage",
                     "Seller"
                 ],
-                "summary": "Stop Stream Session",
-                "operationId": "stopStreamSession",
-                "parameters": [],
+                "summary": "Stop selected Stream Session",
+                "operationId": "streamSessionStop",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Response",
@@ -475,30 +662,27 @@
                 }
             }
         },
-        "/v1/{shopUri}/stream-session": {
+        "/v1/stream-session/{id}/token": {
             "get": {
                 "tags": [
                     "Vonage",
                     "Seller",
                     "Buyer"
                 ],
-                "summary": "View Active Stream Session for selected shop",
-                "operationId": "streamSessionView",
+                "summary": "Get token for selected Stream Session",
+                "operationId": "streamSessionToken",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "shopUri",
-                        "description": "Shop Id",
+                        "name": "id",
+                        "description": "Stream Session Id",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     },
                     {
                         "$ref": "#/components/parameters/fields"
-                    },
-                    {
-                        "$ref": "#/components/parameters/expand-streamSession"
                     }
                 ],
                 "responses": {
@@ -514,7 +698,7 @@
                                         {
                                             "properties": {
                                                 "result": {
-                                                    "$ref": "#/components/schemas/streamSession"
+                                                    "$ref": "#/components/schemas/streamSessionToken"
                                                 }
                                             }
                                         }
@@ -576,7 +760,7 @@
                 }
             }
         },
-        "/v1/{shopUri}/product": {
+        "/v1/shop/{shopUri}/product": {
             "get": {
                 "summary": "Get products by shop uri",
                 "tags": [
@@ -621,14 +805,7 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
@@ -1022,7 +1199,8 @@
                         "example": "seller"
                     },
                     "name": {
-                        "type": "Jon Snow"
+                        "type": "string",
+                        "example": "Jon Snow"
                     },
                     "shop": {
                         "type": "object",
@@ -1117,6 +1295,7 @@
                     }
                 }
             },
+
             "shop": {
                 "type": "object",
                 "required": [
@@ -1136,16 +1315,16 @@
                     }
                 }
             },
+
             "streamSession": {
                 "type": "object",
                 "required": [
                     "id",
                     "shopUri",
                     "sessionId",
-                    "isActive",
-                    "token",
+                    "status",
                     "createdAt",
-                    "expiredAt"
+                    "stoppedAt"
                 ],
                 "properties": {
                     "id": {
@@ -1160,9 +1339,10 @@
                         "type": "string",
                         "example": "1_MX40NTc0ODE1Mn5-MTQ4NjEzNjg3NTg4OX5BVVBhZmZCK3E5ZTdzdmlZbVpvR041V32-QX4"
                     },
-                    "isActive": {
-                        "type": "boolean",
-                        "example": true
+                    "status": {
+                        "type": "integer",
+                        "enum": [1, 2, 3],
+                        "example": 1
                     },
                     "token": {
                         "type": "string",
@@ -1179,6 +1359,30 @@
                     }
                 }
             },
+            "streamSessionToken": {
+                "type": "object",
+                "required": [
+                    "streamSessionId",
+                    "token",
+                    "expiredAt"
+                ],
+                "properties": {
+                    "streamSessionId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "EXPAND",
+                        "example": "T1==cGFydG5lcl9pZD00NTc0ODE1MiZzaWc9NDI2NTY1NmNiZmM4MjBmMTY2ZDQ0OWY4MDcwOTQwYTcwN2Q1MmJiMjpzZXNzaW9uX2lkPTFfTVg0ME5UYzBPREUxTW41LU1UUTROakV6TmpnM05UZzRPWDVCVlZCaFptWkNLM0U1WlRkemRtbFpiVnB2UjA0MVYzWi1RWDQmY3JlYXRlX3RpbWU9MTQ4NjEzNjg2NSZyb2xlPXB1Ymxpc2hlciZub25jZT0xNDg2MTM2ODY1LjE5ODI2MDkxMTcyNDUmZXhwaXJlX3RpbWU9MTQ4NjIyMzI2NQ=="
+                    },
+                    "expiredAt": {
+                        "type": "integer",
+                        "example": 1619827200
+                    }
+                }
+            },
+
             "product": {
                 "type": "object",
                 "required": [
@@ -1195,34 +1399,53 @@
                         "type": "integer",
                         "example": 1
                     },
-                    "sku" : {
+                    "sku": {
                         "type": "string",
                         "example": "fb7e2008-50e4-3735-a320-ccc3399d7da5"
                     },
-                    "title" : {
+                    "title": {
                         "type": "string",
                         "example": "In quas molestiae."
                     },
-                    "photo" : {
+                    "photo": {
                         "type": "string",
                         "example": "https://lorempixel.com/640/480/?71071"
                     },
-                    "link" : {
+                    "link": {
                         "type": "string",
                         "example": "http://bernier.org/"
                     },
-                    "status" : {
+                    "status": {
                         "type": "integer",
-                        "enum": [ 1, 2, 3],
+                        "enum": [1, 2, 3],
                         "example": 2
                     },
-                    "options" : {
+                    "options": {
                         "type": "array",
-                        "example": {
-                            "size": "M",
-                            "color": "MediumOrchid",
-                            "price": 178.13
+                        "items": {
+                            "$ref": "#/components/schemas/productOption"
                         }
+                    }
+                }
+            },
+            "productOption": {
+                "type": "object",
+                "description": "Only price is required field. Other fields are dynamic",
+                "required": [
+                    "price"
+                ],
+                "properties": {
+                    "price": {
+                        "type": "number",
+                        "example": 178.13
+                    },
+                    "size": {
+                        "type": "string",
+                        "example": "M"
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "MediumOrchid"
                     }
                 }
             }
@@ -1264,7 +1487,7 @@
             "expand-streamSession": {
                 "in": "query",
                 "name": "expand",
-                "description": "Extra Fields (coma separated). Available values: ```token```",
+                "description": "Extra Fields (coma separated). Available values: ```-``` (for future use)",
                 "required": false,
                 "schema": {
                     "type": "string"

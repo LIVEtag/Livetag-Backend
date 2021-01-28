@@ -8,7 +8,8 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\User;
 
 use common\models\forms\User\ChangePasswordForm;
-use rest\components\api\actions\Action;
+use Yii;
+use yii\base\Action;
 
 /**
  * Class ChangePasswordAction
@@ -22,11 +23,11 @@ class ChangePasswordAction extends Action
     public function run()
     {
         $model = new ChangePasswordForm();
-        $user = \Yii::$app->user->identity;
-        $model->setAttributes($this->request->post());
+        $user = Yii::$app->user->identity;
+        $model->setAttributes(Yii::$app->request->post());
         if (!$model->changePassword($user)) {
             return $model;
         }
-        $this->response->setStatusCode(204);
+        Yii::$app->response->setStatusCode(204);
     }
 }

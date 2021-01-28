@@ -9,7 +9,7 @@ namespace rest\common\controllers\actions\Stream;
 
 use common\models\Stream\StreamSession;
 use rest\common\models\User;
-use rest\components\api\actions\Action;
+use yii\base\Action;
 use Yii;
 use yii\web\ForbiddenHttpException;
 
@@ -24,6 +24,6 @@ class CreateAction extends Action
         if (!$shop) {
             throw new ForbiddenHttpException(Yii::t('app', 'You are not allowed to access this action'));
         }
-        return StreamSession::startTranslation($shop);
+        return StreamSession::create($shop);
     }
 }

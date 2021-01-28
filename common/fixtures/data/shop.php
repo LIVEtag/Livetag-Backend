@@ -10,4 +10,8 @@ return [
         'id' => ShopFixture::STORE_2,
         'uri' => 'shop2',
     ],
+    ShopFixture::STORE_3 => [
+        'id' => ShopFixture::STORE_3,
+        'uri' => 'shop3',
+    ],
 ];

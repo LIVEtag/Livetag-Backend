@@ -11,6 +11,7 @@ use common\fixtures\AccessTokenFixture;
 use common\fixtures\ProductFixture;
 use common\fixtures\ShopFixture;
 use common\fixtures\StreamSessionFixture;
+use common\fixtures\StreamSessionTokenFixture;
 use common\fixtures\UserFixture;
 use common\fixtures\UserShopFixture;
 
@@ -29,6 +30,7 @@ trait BaseFixtureTrait
             'shops' => ShopFixture::class,
             'userShops' => UserShopFixture::class,
             'streamSessions' => StreamSessionFixture::class,
+            'streamSessionTokens' => StreamSessionTokenFixture::class,
             'products' => ProductFixture::class,
         ];
     }
