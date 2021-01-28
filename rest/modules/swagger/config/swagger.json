@@ -1318,13 +1318,13 @@
 
             "streamSession": {
                 "type": "object",
+                "description": "Available statuses: 1-`NEW`;2-`ACTIVE`;3-`STOPPED`",
                 "required": [
                     "id",
                     "shopUri",
                     "sessionId",
                     "status",
-                    "createdAt",
-                    "stoppedAt"
+                    "createdAt"
                 ],
                 "properties": {
                     "id": {
@@ -1351,11 +1351,15 @@
                     },
                     "createdAt": {
                         "type": "integer",
-                        "example": 1619816400
+                        "example": 1611738385
                     },
-                    "expiredAt": {
+                    "startedAt": {
                         "type": "integer",
-                        "example": 1619827200
+                        "example": 1611741985
+                    },
+                    "stoppedAt": {
+                        "type": "integer",
+                        "example": 1611752785
                     }
                 }
             },
