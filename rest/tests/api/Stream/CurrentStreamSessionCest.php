@@ -45,7 +45,7 @@ class CurrentStreamSessionCest extends ActionCest
     public function viewAsBuyer(ApiTester $I)
     {
         $I->wantToTest('View Stream Session of Shop (as Buyer)');
-        $shop = $I->grabFixture('shops', ShopFixture::STORE_2);
+        $shop = $I->grabFixture('shops', ShopFixture::SHOP_2);
         $I->amLoggedInApiAs(UserFixture::BUYER_1);
         $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
@@ -59,7 +59,7 @@ class CurrentStreamSessionCest extends ActionCest
     public function viewAsSeller(ApiTester $I)
     {
         $I->wantToTest('View Stream Session of Shop (as Seller)');
-        $shop = $I->grabFixture('shops', ShopFixture::STORE_2);
+        $shop = $I->grabFixture('shops', ShopFixture::SHOP_2);
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
         $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));

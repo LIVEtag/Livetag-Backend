@@ -8,15 +8,16 @@ declare(strict_types = 1);
 
 namespace backend\controllers;
 
+use backend\components\Controller;
 use backend\models\Product\Product;
+use backend\models\Product\ProductSearch;
 use backend\models\User\User;
 use kartik\grid\EditableColumnAction;
 use Yii;
-use backend\models\Product\ProductSearch;
-use yii\helpers\ArrayHelper;
-use backend\components\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
+use yii\web\NotFoundHttpException;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -27,7 +28,7 @@ class ProductController extends Controller
      * Editable Post Action
      */
     const ACTION_EDITABLE_STATUS = 'editable-status';
-    
+
     /**
      * @inheritdoc
      */
@@ -53,7 +54,7 @@ class ProductController extends Controller
             ]
         );
     }
-    
+
     public function actions()
     {
         return [
@@ -63,32 +64,31 @@ class ProductController extends Controller
             ],
         ];
     }
-    
+
     /**
      * Lists all Product models.
      * @return mixed
      */
     public function actionIndex()
     {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
         $searchModel = new ProductSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $statuses = Product::STATUSES;
-        $statusesAvailable = [];
-        array_filter($statuses, static function ($value) use ($statuses, &$statusesAvailable) {
-            if (\is_array($statuses) && !empty($statuses)) {
-                $key = array_flip($statuses)[$value];
-                if (Product::STATUS_DELETED !== $key) {
-                    $statusesAvailable[$key] = $value;
-                }
-            }
-        });
+        $params = Yii::$app->request->queryParams;
+        if ($user->isSeller) {
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
+        }
+        $dataProvider = $searchModel->search($params);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'statusesAvailable' => $statusesAvailable
         ]);
     }
-    
+
     /**
      * Deletes an existing Product model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

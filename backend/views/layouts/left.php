@@ -28,12 +28,6 @@ $user = Yii::$app->user->identity ?? null;
                     'visible' => $user && $user->isSeller
                 ],
                 [
-                    'label' => 'Analytics',
-                    'icon' => 'bar-chart',
-                    'url' => ['#'],
-                    'visible' => $user
-                ],
-                [
                     'label' => 'Shops',
                     'icon' => 'shopping-bag',
                     'url' => ['/shop/index'],

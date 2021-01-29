@@ -22,7 +22,7 @@ class ProductSearch extends Product
             [['sku', 'title', 'link'], 'safe'],
         ];
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +40,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find()->byStatus([Product::STATUS_HIDDEN, Product::STATUS_DISPLAYED, Product::STATUS_PRESENTED]);
+        $query = Product::find()->active();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

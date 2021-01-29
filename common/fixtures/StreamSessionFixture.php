@@ -14,10 +14,10 @@ use common\models\Stream\StreamSession;
  */
 class StreamSessionFixture extends ActiveFixture
 {
-    const STREAM_EXPIRED_1 = 1;
-    const STREAM_EXPIRED_2 = 2;
-    const STREAM_NEW = 3;
-    const STREAM_ACTIVE = 4;
+    const STREAM_SESSION_1_SHOP_1_EXPIRED = 1;
+    const STREAM_SESSION_2_SHOP_2_EXPIRED = 2;
+    const STREAM_SESSION_3_SHOP_1_NEW = 3;
+    const STREAM_SESSION_4_SHOP_2_ACTIVE = 4;
 
     public $modelClass = StreamSession::class;
 

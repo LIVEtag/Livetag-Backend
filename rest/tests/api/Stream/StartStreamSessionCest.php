@@ -20,7 +20,7 @@ class StartStreamSessionCest extends ActionCest
 {
     use AccessTestTrait;
     /** @var int */
-    protected $streamSessionId = StreamSessionFixture::STREAM_NEW;
+    protected $streamSessionId = StreamSessionFixture::STREAM_SESSION_3_SHOP_1_NEW;
 
     /**
      * @return string

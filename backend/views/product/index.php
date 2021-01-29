@@ -1,24 +1,20 @@
 <?php
-
 /**
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 
-use backend\controllers\ProductController;
 use backend\models\Product\Product;
-use kartik\editable\Editable;
+use backend\models\Product\ProductSearch;
 use kartik\grid\ActionColumn;
-use kartik\grid\EditableColumn;
 use kartik\grid\GridView;
-use kartik\popover\PopoverX;
-use yii\helpers\ArrayHelper;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\web\View;
 
-/* @var $this yii\web\View */
-/* @var $searchModel backend\models\Product\ProductSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $statusesAvailable array */
+/* @var $this View */
+/* @var $searchModel ProductSearch */
+/* @var $dataProvider ActiveDataProvider */
 
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
@@ -45,43 +41,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         'columns' => [
                             [
                                 'attribute' => 'id',
-                            ],
-                            [
-                                'attribute' => 'title',
+                                'hAlign' => GridView::ALIGN_CENTER,
+                                'headerOptions' => ['width' => '60'],
                             ],
                             [
                                 'attribute' => 'sku',
+                                'hAlign' => GridView::ALIGN_CENTER,
+                                'headerOptions' => ['width' => '100'],
                             ],
                             [
-                                'attribute' => 'link',
-                                'format' => ['url', ['target' => '_blank']]
+                                'attribute' => 'title',
+                                'hAlign' => GridView::ALIGN_CENTER,
                             ],
                             [
-                                'attribute' => 'status',
-                                'class' => EditableColumn::class,
-                                'filter' => $statusesAvailable,
-                                'value' => function (Product $model) {
-                                    return  $model->getStatusName();
-                                },
-                                'refreshGrid' => true,
-                                'editableOptions' => function (Product $model) use ($statusesAvailable) {
-                                    return [
-                                        'name' => 'status',
-                                        'value' => $model->getStatusName(),
-                                        'format' => Editable::FORMAT_LINK,
-                                        'inputType' => Editable::INPUT_SELECT2,
-                                        'placement' => PopoverX::ALIGN_LEFT,
-                                        'options' => [
-                                            'class' => 'form-control',
-                                            'data' => $statusesAvailable,
-                                        ],
-                                        'formOptions' => ['action' => [ProductController::ACTION_EDITABLE_STATUS]]
-                                    ];
-                                },
-                                'headerOptions' => ['width' => '75'],
-                            ],
-                            [
-                                'label' => 'Option',
+                                'label' => 'Price and Options',
                                 'attribute' => 'options',
                                 'format' => 'raw',
                                 'mergeHeader' => true,
@@ -89,22 +62,24 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return $model->getProductOptionsInHTML($model->options) ?? '';
                                 },
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
                             ],
                             [
                                 'attribute' => 'photo',
-                                'format' => ['image',
-                                    [
-                                        'width' => '75'
-                                    ]
-                                ],
+                                'format' => ['image', ['width' => '75']],
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_CENTER,
                                 'headerOptions' => ['width' => '100'],
                                 'mergeHeader' => true,
                             ],
-                            ['class' => ActionColumn::class,
-                             'template' => '{delete}'
+                            [
+                                'attribute' => 'link',
+                                'headerOptions' => ['width' => '120'],
+                                'format' => ['url', ['target' => '_blank']]
+                            ],
+                            [
+                                'class' => ActionColumn::class,
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'template' => '{delete}'
                             ],
                         ],
                     ]); ?>
