@@ -85,12 +85,12 @@ class NewPasswordCest extends ActionCest
             [
                 [
                     'field' => 'string:=password',
-                    'message' => 'string:=Password cannot be blank.',
+                    'message' => 'string:=New Password cannot be blank.',
                     'code' => 'integer:=' . ErrorList::REQUIRED_INVALID
                 ],
                 [
                     'field' => 'string:=confirmPassword',
-                    'message' => 'string:=Confirm Password cannot be blank.',
+                    'message' => 'string:=Password cannot be blank.',
                     'code' => 'integer:=' . ErrorList::REQUIRED_INVALID
                 ]
 
@@ -125,10 +125,10 @@ class NewPasswordCest extends ActionCest
             [
                 [
                     'field' => 'string:=confirmPassword',
-                    'message' => 'string:=Password must be equal to "New Password"',
-                    'code' => 'integer:=' . 1000
+                    'message' => 'string:=Password must be equal to "New Password".',
+                    'code' => 'integer:=' . ErrorList::COMPARE_EQUAL
                 ]
-
+        
             ],
             '$.result'
         );
