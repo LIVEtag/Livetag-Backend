@@ -5,17 +5,16 @@
  */
 declare(strict_types=1);
 
-namespace rest\tests\api\Product;
+namespace rest\tests\api\Shop;
 
-use common\fixtures\ProductFixture;
-use common\fixtures\UserFixture;
+use common\fixtures\ShopFixture;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
 
 /**
- * @group Product
+ * @group Shop
  */
-class ProductByShopCest extends ActionCest
+class ShopViewCest extends ActionCest
 {
     /** @var string */
     protected $shopUri;
@@ -27,26 +26,25 @@ class ProductByShopCest extends ActionCest
     {
         return self::METHOD_GET;
     }
-
+    
     /**
      * @param ApiTester $I
      * @return string
      */
     protected function getUrl(ApiTester $I): string
     {
-        return "/shop/{$this->shopUri}/product";
+        return "/shop/{$this->shopUri}";
     }
-
+    
     /**
      * @param ApiTester $I
      */
-    public function successListOfProductsByShopUri(ApiTester $I)
+    public function successGetShopDetailByUri(ApiTester $I)
     {
-        $product = $I->grabFixture('products', ProductFixture::PRODUCT_DISPLAYED_1);
-        $I->amLoggedInApiAs(UserFixture::SELLER_1);
-        $this->shopUri = $product->shop->uri;
+        $shop = $I->grabFixture('shops', ShopFixture::STORE_1);
+        $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getProductByShopResponse(), '$.result');
+        $I->seeResponseMatchesJsonType($I->getShopDetailResponse(), '$.result');
     }
 }

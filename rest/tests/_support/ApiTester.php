@@ -240,6 +240,18 @@ class ApiTester extends \Codeception\Actor
             ]
         ];
     }
+    
+    /**
+     * @return array
+     */
+    public function getShopDetailResponse(): array
+    {
+        return [
+            'uri' => 'string',
+            'name' => 'string',
+            'website' => 'string',
+        ];
+    }
 
     /**
      * @param array $array
