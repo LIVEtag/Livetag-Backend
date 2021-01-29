@@ -14,22 +14,22 @@ use common\models\Product\Product;
  */
 class ProductFixture extends ActiveFixture
 {
-    const PRODUCT_HIDDEN_1 = 1;
-    const PRODUCT_HIDDEN_2 = 2;
-    const PRODUCT_HIDDEN_3 = 3;
-    const PRODUCT_HIDDEN_4 = 4;
-    const PRODUCT_PRESENTED_1 = 5;
-    const PRODUCT_PRESENTED_2 = 6;
-    const PRODUCT_PRESENTED_3 = 7;
-    const PRODUCT_PRESENTED_4 = 8;
-    const PRODUCT_DISPLAYED_1 = 9;
-    const PRODUCT_DISPLAYED_2 = 10;
-    const PRODUCT_DISPLAYED_3 = 11;
-    const PRODUCT_DISPLAYED_4 = 12;
-    
+    const PRODUCT_1_SHOP_1 = 1;
+    const PRODUCT_2_SHOP_1 = 2;
+    const PRODUCT_3_SHOP_1 = 3;
+    const PRODUCT_4_SHOP_1 = 4;
+    const PRODUCT_5_SHOP_1 = 5;
+    const PRODUCT_6_SHOP_1 = 6;
+    const PRODUCT_7_SHOP_1 = 7;
+    const PRODUCT_8_SHOP_1 = 8;
+    const PRODUCT_9_SHOP_2 = 9;
+    const PRODUCT_10_SHOP_2 = 10;
+    const PRODUCT_11_SHOP_2 = 11;
+    const PRODUCT_12_SHOP_2 = 12;
+
     public $modelClass = Product::class;
     public $depends = [ShopFixture::class];
-    
+
     /**
      * @inheritdoc
      */
@@ -38,13 +38,14 @@ class ProductFixture extends ActiveFixture
         return [
             'sku' => $this->generator->uuid,
             'title' => $this->generator->text(20),
-            'photo' => 'https://picsum.photos/seed/'.$this->generator->randomElement(range(1, 100)).'/200',
+            'photo' => 'https://picsum.photos/seed/' . $this->generator->randomElement(range(1, 100)) . '/200',
             'link' => $this->generator->url,
+            'status' => Product::STATUS_ACTIVE,
             'options' => [
                 [
-                    'price'=> $this->generator->randomFloat(2, 1, 10000),
-                    'color'=> $this->generator->colorName,
-                    'size'=> $this->generator->randomElements(['XL', 'XXL', 'L', 'S', 'M', 'XS'], 1)[0],
+                    'price' => $this->generator->randomFloat(2, 1, 1000),
+                    'color' => $this->generator->colorName,
+                    'size' => $this->generator->randomElements(['XL', 'XXL', 'L', 'S', 'M', 'XS'], 1)[0],
                 ]
             ],
             'createdAt' => $this->generator->incrementalTime,

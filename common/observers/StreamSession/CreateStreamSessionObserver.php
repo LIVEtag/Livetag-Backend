@@ -25,6 +25,9 @@ class CreateStreamSessionObserver
         if (!($streamSession instanceof StreamSession)) {
             throw new RuntimeException('Not StreamSession instance');
         }
+        //Notify about create
         $streamSession->notify(Message::ACTION_STREAM_SESSION_CREATE);
+        //Link all existing products
+        $streamSession->linkProducts();
     }
 }

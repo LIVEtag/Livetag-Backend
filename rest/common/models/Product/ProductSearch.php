@@ -27,7 +27,7 @@ class ProductSearch extends Product
             [['slug'], 'string', 'max' => 50],
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -36,7 +36,7 @@ class ProductSearch extends Product
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
-    
+
     /**
      * Creates data provider instance with search query applied
      * @param array $params
@@ -44,24 +44,24 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find()->byStatus([Product::STATUS_DISPLAYED, Product::STATUS_PRESENTED])->joinWith(['shop']);
-    
+        $query = Product::find()->active()->joinWith(['shop']);
+
         $this->setAttributes($params);
-    
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        
+
         if (!$this->validate()) {
             return $this;
         }
-        
+
         $query->andFilterWhere(
             [
                'shop.uri' => $this->slug,
             ]
         );
-        
+
         $query->andFilterWhere([
             self::tableName() . '.status' => $this->status,
         ]);

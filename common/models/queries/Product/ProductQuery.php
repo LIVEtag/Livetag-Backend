@@ -18,6 +18,14 @@ use common\models\Product\Product;
 class ProductQuery extends ActiveQuery
 {
     /**
+     * @return $this
+     */
+    public function active(): self
+    {
+        return $this->byStatus(Product::STATUS_ACTIVE);
+    }
+
+    /**
      * @param int|array $status
      * @return $this
      */
@@ -34,7 +42,7 @@ class ProductQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('id') => $id]);
     }
-    
+
     /**
      * get products by shop uri
      * @param int $shopId

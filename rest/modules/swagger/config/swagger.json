@@ -1372,7 +1372,6 @@
 
             "streamSession": {
                 "type": "object",
-                "description": "Available statuses: 1-`NEW`;2-`ACTIVE`;3-`STOPPED`",
                 "required": [
                     "id",
                     "shopUri",
@@ -1395,6 +1394,7 @@
                     },
                     "status": {
                         "type": "integer",
+                        "description": "1-NEW; 2-ACTIVE; 3-STOPPED",
                         "enum": [1, 2, 3],
                         "example": 1
                     },

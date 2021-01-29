@@ -13,6 +13,10 @@ use common\components\centrifugo\Message;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\helpers\LogHelper;
+use common\models\Product\Product;
+use common\models\Product\StreamSessionProduct;
+use common\models\queries\Product\ProductQuery;
+use common\models\queries\Product\StreamSessionProductQuery;
 use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Shop\Shop;
 use common\models\User;
@@ -38,6 +42,8 @@ use yii\web\UnprocessableEntityHttpException;
  *
  * @property-read Shop $shop
  * @property-read StreamSessionToken $streamSessionToken
+ * @property-read StreamSessionProduct[] $streamSessionProducts
+ * @property-read Product[] $products
  *
  * EVENTS:
  * - EVENT_AFTER_INSERT
@@ -203,6 +209,22 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function getStreamSessionToken(): ActiveQuery
     {
         return $this->hasOne(StreamSessionToken::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
+     * @return StreamSessionProductQuery
+     */
+    public function getStreamSessionProducts(): StreamSessionProductQuery
+    {
+        return $this->hasMany(StreamSessionProduct::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
+     * @return ProductQuery
+     */
+    public function getProducts(): ProductQuery
+    {
+        return $this->hasMany(Product::class, ['id' => 'productId'])->via('streamSessionProducts');
     }
 
     /**
@@ -502,6 +524,25 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
                 'actionType' => $actionType,
                 'streamSession' => Json::encode($this->toArray(), JSON_PRETTY_PRINT),
             ]);
+        }
+    }
+
+    /**
+     * Link all existing Products to current Stream Session
+     */
+    public function linkProducts()
+    {
+        $productQuery = Product::find()->byShop($this->shopId)->active();
+        foreach ($productQuery->each() as $product) {
+            try {
+                $this->link('products', $product, ['status' => StreamSessionProduct::STATUS_DISPLAYED]);
+            } catch (Throwable $ex) {
+                LogHelper::error(
+                    'Failed to link Product to Stream Session',
+                    self::LOG_CATEGORY,
+                    LogHelper::extraForException($product, $ex)
+                );
+            }
         }
     }
 }

@@ -31,33 +31,36 @@ use yii\helpers\ArrayHelper;
  */
 class Product extends ActiveRecord
 {
-    const STATUS_HIDDEN = 1;
-    const STATUS_DISPLAYED = 2;
-    const STATUS_PRESENTED = 3;
-    const STATUS_DELETED = 4;
-    
+    /**
+     * Removed product. required for analytics
+     */
+    const STATUS_DELETED = 0;
+
+    /**
+     * Default active status
+     */
+    const STATUS_ACTIVE = 10;
+
     /**
      * Status Names
      */
     const STATUSES = [
-        self::STATUS_HIDDEN => 'Hidden',
-        self::STATUS_DISPLAYED => 'Displayed in the widget',
-        self::STATUS_PRESENTED => 'Presented now',
+        self::STATUS_ACTIVE => 'Active',
         self::STATUS_DELETED => 'Deleted',
     ];
-    
+
     /**
      * required field price in option
      */
     const PRICE = 'price';
-    
+
     /**
      * required fields in option
      */
     const OPTION_REQUIRED = [
         self::PRICE,
     ];
-    
+
     /**
      * @inheritdoc
      */
@@ -65,7 +68,7 @@ class Product extends ActiveRecord
     {
         return '{{%product}}';
     }
-    
+
     /**
      * @inheritdoc
      * @return ProductQuery the active query used by this AR class.
@@ -74,7 +77,7 @@ class Product extends ActiveRecord
     {
         return new ProductQuery(get_called_class());
     }
-    
+
     /**
      * @return array
      */
@@ -84,7 +87,7 @@ class Product extends ActiveRecord
             TimestampBehavior::class,
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -97,10 +100,11 @@ class Product extends ActiveRecord
             [['sku', 'title', 'link', 'photo'], 'string', 'max' => 255],
             [['sku', 'shopId'], 'unique', 'targetAttribute' => ['sku', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -118,7 +122,7 @@ class Product extends ActiveRecord
             'updatedAt' => Yii::t('app', 'Updated At'),
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -130,11 +134,10 @@ class Product extends ActiveRecord
             'title',
             'photo',
             'link',
-            'status',
             'options'
         ];
     }
-    
+
     /**
      * @return ActiveQuery
      */
@@ -142,7 +145,7 @@ class Product extends ActiveRecord
     {
         return $this->hasOne(Shop::class, ['id' => 'shopId']);
     }
-    
+
     /**
      * Fake delete
      * @todo: add delete logic
@@ -151,13 +154,5 @@ class Product extends ActiveRecord
     {
         $this->status = self::STATUS_DELETED;
         return $this->save(true, ['status']);
-    }
-    
-    /**
-     * @return string|null
-     */
-    public function getStatusName(): ?string
-    {
-        return ArrayHelper::getValue(self::STATUSES, $this->status);
     }
 }

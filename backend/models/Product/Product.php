@@ -31,12 +31,12 @@ class Product extends BaseModel
         $headers = array_keys($lastItem);
         $options[] = $lastItem;
         $html = '';
-        $html .= '<table>';
+        $html .= '<table class="table table-condensed">';
         $html .= '<thead>';
         $html .= '<tr>';
-        
+
         foreach ($headers as $headValue) {
-            $html .= "<th class='text-center col-xs-4 col-md-4 col-lg-4' >{$headValue}</th>";
+            $html .= '<th style="text-transform:capitalize">'.$headValue.'</th>';
         }
         $html .= '</tr>';
         $html .= '</thead>';
@@ -55,5 +55,13 @@ class Product extends BaseModel
         $html .= '</table>';
 
         return $html;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatusName(): ?string
+    {
+        return ArrayHelper::getValue(self::STATUSES, $this->status);
     }
 }

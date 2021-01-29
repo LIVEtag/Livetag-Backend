@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace rest\tests\api\Product;
 
-use common\fixtures\ProductFixture;
+use common\fixtures\ShopFixture;
 use common\fixtures\UserFixture;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
@@ -42,9 +42,9 @@ class ProductByShopCest extends ActionCest
      */
     public function successListOfProductsByShopUri(ApiTester $I)
     {
-        $product = $I->grabFixture('products', ProductFixture::PRODUCT_DISPLAYED_1);
+        $shop = $I->grabFixture('shops', ShopFixture::SHOP_1);
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
-        $this->shopUri = $product->shop->uri;
+        $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
         $I->seeResponseMatchesJsonType($I->getProductByShopResponse(), '$.result');
