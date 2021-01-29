@@ -49,7 +49,7 @@ class RecoveryPassword extends Model
     {
         return [
             'password' => Yii::t('app', 'New Password'),
-            'confirmPassword' => Yii::t('app', 'Password'),
+            'confirmPassword' => Yii::t('app', 'Confirm New Password'),
         ];
     }
     
