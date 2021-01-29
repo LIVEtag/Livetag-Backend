@@ -7,6 +7,7 @@ namespace common\models\forms\User;
 
 use common\components\validation\validators\PasswordValidator;
 use common\models\User;
+use Yii;
 use yii\base\Model;
 
 /**
@@ -37,10 +38,21 @@ class RecoveryPassword extends Model
         return [
             [['resetToken', 'password', 'confirmPassword'], 'required'],
             ['password', PasswordValidator::class],
-            ['password', 'compare', 'compareAttribute' => 'confirmPassword']
+            ['confirmPassword', 'compare', 'compareAttribute' => 'password']
         ];
     }
-
+    
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'password' => Yii::t('app', 'New Password'),
+            'confirmPassword' => Yii::t('app', 'Confirm New Password'),
+        ];
+    }
+    
     /**
      * Set new users's password
      *
