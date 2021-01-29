@@ -3,6 +3,8 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use rest\common\controllers\ShopController;
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
@@ -173,6 +175,17 @@ return [
                     'patterns' => [
                         'GET {slug}/product' => ProductController::ACTION_INDEX,
                         'OPTIONS {slug}/product' => ProductController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/shop',
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET <id:\w+>' => ShopController::ACTION_VIEW,
+                        'OPTIONS <id:\w+>' => ShopController::ACTION_OPTIONS,
                     ],
                 ],
             ],

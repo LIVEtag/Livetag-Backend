@@ -46,6 +46,10 @@
         {
             "name": "Product",
             "description": "Product related methods"
+        },
+        {
+            "name": "Shop",
+            "description": "Shop related methods"
         }
     ],
     "paths": {
@@ -809,6 +813,56 @@
                     }
                 }
             }
+        },
+        "/v1/shop/{shopUri}": {
+            "get": {
+                "summary": "Get shop detail by shop uri",
+                "tags": [
+                    "Shop"
+                ],
+                "operationId": "getShopByUri",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "get shop by Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/shop"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1097,7 +1151,7 @@
                         "$ref": "#/components/schemas/responseModel"
                     },
                     {
-                        "title": "401 Not Found",
+                        "title": "404 Not Found",
                         "properties": {
                             "code": {
                                 "example": "404"
