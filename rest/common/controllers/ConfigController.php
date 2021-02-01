@@ -8,6 +8,7 @@ namespace rest\common\controllers;
 
 use rest\common\controllers\actions\Config\IndexAction;
 use rest\components\api\Controller;
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -15,6 +16,8 @@ use yii\helpers\ArrayHelper;
  */
 class ConfigController extends Controller
 {
+    const ACTION_INDEX = 'index';
+
     /**
      * @inheritdoc
      */
@@ -24,13 +27,13 @@ class ConfigController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['index'],
+                    'except' => [self::ACTION_INDEX],
                 ],
                 'access' => [
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['index'],
+                            'actions' => [self::ACTION_INDEX],
                             'roles' => ['?'],
                         ],
                     ],
@@ -44,20 +47,14 @@ class ConfigController extends Controller
      */
     public function actions()
     {
-        return [
-            'index' => [
-                'class' => IndexAction::class,
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function verbs()
-    {
-        return [
-            'index' => ['GET'],
-        ];
+        return ArrayHelper::merge(
+            parent::actions(),
+            [
+                self::ACTION_INDEX => [
+                    'class' => IndexAction::class,
+                    'configPath' => Yii::getAlias('@v1/config/') . 'config.php',
+                ],
+            ]
+        );
     }
 }

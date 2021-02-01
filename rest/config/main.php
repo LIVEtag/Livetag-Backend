@@ -9,8 +9,9 @@ use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
-use rest\modules\v1\controllers\ProductController;
 use rest\modules\v1\controllers\CentrifugoController;
+use rest\modules\v1\controllers\ConfigController;
+use rest\modules\v1\controllers\ProductController;
 use rest\modules\v1\controllers\StreamSessionController;
 use rest\modules\v1\Module as V1Module;
 use yii\data\Pagination;
@@ -125,9 +126,12 @@ return [
                 ],
                 [
                     'class' => UrlRule::class,
-                    'controller' => [
-                        'v1/config' => 'v1/config'
-                    ],
+                    'controller' => ['v1/config'],
+                    'pluralize' => false,
+                    'only' => [
+                        ConfigController::ACTION_INDEX,
+                        ConfigController::ACTION_OPTIONS
+                    ]
                 ],
                 [
                     'class' => UrlRule::class,
