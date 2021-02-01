@@ -41,6 +41,11 @@ class StreamSessionProduct extends ActiveRecord
     ];
 
     /**
+     * Product relation key
+     */
+    const REL_PRODUCT = 'product';
+
+    /**
      * @inheritdoc
      */
     public static function tableName(): string
@@ -95,6 +100,27 @@ class StreamSessionProduct extends ActiveRecord
             'status' => Yii::t('app', 'Status'),
             'createdAt' => Yii::t('app', 'Created At'),
             'updatedAt' => Yii::t('app', 'Updated At'),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields(): array
+    {
+        return [
+            'productId',
+            'status',
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
+    {
+        return [
+            self::REL_PRODUCT,
         ];
     }
 

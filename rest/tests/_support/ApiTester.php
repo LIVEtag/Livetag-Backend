@@ -226,20 +226,32 @@ class ApiTester extends \Codeception\Actor
     /**
      * @return array
      */
-    public function getProductByShopResponse(): array
+    public function getStreamSessionProductsResponse(): array
     {
         return [
             [
-                'id' => 'integer',
-                'sku' => 'string',
-                'title' => 'string',
-                'photo' => 'string',
-                'link' => 'string',
-                'options' => 'array'
+                'productId' => 'integer',
+                'status' => 'integer',
+                'product' => $this->getProductResponse(),
             ]
         ];
     }
-    
+
+    /**
+     * @return array
+     */
+    public function getProductResponse(): array
+    {
+        return [
+            'id' => 'integer',
+            'sku' => 'string',
+            'title' => 'string',
+            'photo' => 'string',
+            'link' => 'string',
+            'options' => 'array'
+        ];
+    }
+
     /**
      * @return array
      */

@@ -9,6 +9,7 @@ namespace rest\common\controllers;
 use common\models\Stream\StreamSession;
 use rest\common\controllers\actions\Stream\CreateAction;
 use rest\common\controllers\actions\Stream\CurrentAction;
+use rest\common\controllers\actions\Stream\ProductsAction;
 use rest\common\controllers\actions\Stream\StartAction;
 use rest\common\controllers\actions\Stream\StopAction;
 use rest\common\controllers\actions\Stream\TokenAction;
@@ -60,6 +61,11 @@ class StreamSessionController extends ActiveController
     const ACTION_TOKEN = 'token';
 
     /**
+     * Get products of selected session
+     */
+    const ACTION_PRODUCTS = 'produtcs';
+
+    /**
      * @inheritdoc
      */
     public function behaviors(): array
@@ -84,6 +90,7 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_VIEW,
                                 self::ACTION_CURRENT,
                                 self::ACTION_TOKEN,
+                                self::ACTION_PRODUCTS,
                             ],
                             'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER, User::ROLE_BUYER]
                         ],
@@ -117,6 +124,11 @@ class StreamSessionController extends ActiveController
                 ],
                 self::ACTION_TOKEN => [
                     'class' => TokenAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess']
+                ],
+                self::ACTION_PRODUCTS => [
+                    'class' => ProductsAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess']
                 ],

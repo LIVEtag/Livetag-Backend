@@ -36,16 +36,12 @@
             "description": "User authentication, manage and details, email confirmation and authentication"
         },
         {
-            "name": "Vonage",
-            "description": "Vonage sessions manage"
+            "name": "Stream Session",
+            "description": "Stream sessions manage"
         },
         {
             "name": "Centrifugo",
             "description": "Centrifugo related methods"
-        },
-        {
-            "name": "Product",
-            "description": "Product related methods"
         },
         {
             "name": "Shop",
@@ -391,7 +387,7 @@
         "/v1/shop/{shopUri}/stream-session/current": {
             "get": {
                 "tags": [
-                    "Vonage",
+                    "Stream Session",
                     "Seller",
                     "Buyer"
                 ],
@@ -453,7 +449,7 @@
                     }
                 ],
                 "tags": [
-                    "Vonage",
+                    "Stream Session",
                     "Seller"
                 ],
                 "summary": "Create new Session for Stream",
@@ -504,7 +500,7 @@
         "/v1/stream-session/{id}": {
             "get": {
                 "tags": [
-                    "Vonage",
+                    "Stream Session",
                     "Seller",
                     "Buyer"
                 ],
@@ -564,7 +560,7 @@
                     }
                 ],
                 "tags": [
-                    "Vonage",
+                    "Stream Session",
                     "Seller"
                 ],
                 "summary": "Start selected Stream Session (Create Token)",
@@ -626,7 +622,7 @@
                     }
                 ],
                 "tags": [
-                    "Vonage",
+                    "Stream Session",
                     "Seller"
                 ],
                 "summary": "Stop selected Stream Session",
@@ -669,7 +665,7 @@
         "/v1/stream-session/{id}/token": {
             "get": {
                 "tags": [
-                    "Vonage",
+                    "Stream Session",
                     "Seller",
                     "Buyer"
                 ],
@@ -703,6 +699,104 @@
                                             "properties": {
                                                 "result": {
                                                     "$ref": "#/components/schemas/streamSessionToken"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/v1/stream-session/{id}/product": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get products of selected Stream Session",
+                "operationId": "streamSessionProducts",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "required": false,
+                        "description": "Filter by Stream Session Product status \n* `2` - Displayed in the widget.\n* `3` -  Presented now.",
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                2,
+                                3
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "productId",
+                        "description": "Filter by Product Ids. Supported formats: \n* array \n* comma-separated string",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                                        {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Sort ordering: use order=[-]sortOrder",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "productId",
+                                "-productId",
+                                "productTitle",
+                                "-productTitle"
+                            ]
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSessionProduct"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSessionProduct"
                                                 }
                                             }
                                         }
@@ -764,56 +858,7 @@
                 }
             }
         },
-        "/v1/shop/{shopUri}/product": {
-            "get": {
-                "summary": "Get products by shop uri",
-                "tags": [
-                    "Product"
-                ],
-                "operationId": "getProductsByShop",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "shopUri",
-                        "description": "shop Uri",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
 
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/product"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401"
-                    }
-                }
-            }
-        },
         "/v1/shop/{shopUri}": {
             "get": {
                 "summary": "Get shop detail by shop uri",
@@ -860,6 +905,56 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/v1/shop/{shopUri}/product": {
+            "get": {
+                "summary": "Get products by shop uri",
+                "tags": [
+                    "Shop"
+                ],
+                "operationId": "getProductsByShop",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "shop Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/product"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
@@ -1398,11 +1493,6 @@
                         "enum": [1, 2, 3],
                         "example": 1
                     },
-                    "token": {
-                        "type": "string",
-                        "description": "EXPAND",
-                        "example": "T1==cGFydG5lcl9pZD00NTc0ODE1MiZzaWc9NDI2NTY1NmNiZmM4MjBmMTY2ZDQ0OWY4MDcwOTQwYTcwN2Q1MmJiMjpzZXNzaW9uX2lkPTFfTVg0ME5UYzBPREUxTW41LU1UUTROakV6TmpnM05UZzRPWDVCVlZCaFptWkNLM0U1WlRkemRtbFpiVnB2UjA0MVYzWi1RWDQmY3JlYXRlX3RpbWU9MTQ4NjEzNjg2NSZyb2xlPXB1Ymxpc2hlciZub25jZT0xNDg2MTM2ODY1LjE5ODI2MDkxMTcyNDUmZXhwaXJlX3RpbWU9MTQ4NjIyMzI2NQ=="
-                    },
                     "createdAt": {
                         "type": "integer",
                         "example": 1611738385
@@ -1440,6 +1530,29 @@
                     }
                 }
             },
+            "streamSessionProduct": {
+                "type": "object",
+                "required": [
+                    "productId",
+                    "status"
+                ],
+                "properties": {
+                    "productId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "2-`Displayed in the widget`; 3-`Presented now`",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "product": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/product"
+                    }
+                }
+            },
 
             "product": {
                 "type": "object",
@@ -1449,7 +1562,6 @@
                     "title",
                     "photo",
                     "link",
-                    "status",
                     "options"
                 ],
                 "properties": {
@@ -1467,16 +1579,11 @@
                     },
                     "photo": {
                         "type": "string",
-                        "example": "https://lorempixel.com/640/480/?71071"
+                        "example": "https://picsum.photos/200"
                     },
                     "link": {
                         "type": "string",
                         "example": "http://bernier.org/"
-                    },
-                    "status": {
-                        "type": "integer",
-                        "enum": [1, 2, 3],
-                        "example": 2
                     },
                     "options": {
                         "type": "array",
@@ -1546,6 +1653,15 @@
                 "in": "query",
                 "name": "expand",
                 "description": "Extra Fields (coma separated). Available values: ```-``` (for future use)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-streamSessionProduct": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```product```",
                 "required": false,
                 "schema": {
                     "type": "string"
