@@ -19,7 +19,7 @@ class ProductByShopCest extends ActionCest
 {
     /** @var string */
     protected $shopUri;
-    
+
     /**
      * @return string
      */
@@ -47,6 +47,6 @@ class ProductByShopCest extends ActionCest
         $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getProductByShopResponse(), '$.result');
+        $I->seeResponseMatchesJsonType([$I->getProductResponse()], '$.result');
     }
 }

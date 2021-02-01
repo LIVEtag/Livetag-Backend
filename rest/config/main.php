@@ -144,6 +144,8 @@ return [
                     'extraPatterns' => [
                         'GET {id}/token' => StreamSessionController::ACTION_TOKEN,
                         'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}/product' => StreamSessionController::ACTION_PRODUCTS,
+                        'OPTIONS {id}/product' => StreamSessionController::ACTION_OPTIONS,
                     ]
                 ],
                 [

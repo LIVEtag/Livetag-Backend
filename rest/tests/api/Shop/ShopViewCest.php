@@ -18,7 +18,7 @@ class ShopViewCest extends ActionCest
 {
     /** @var string */
     protected $shopUri;
-    
+
     /**
      * @return string
      */
@@ -26,7 +26,7 @@ class ShopViewCest extends ActionCest
     {
         return self::METHOD_GET;
     }
-    
+
     /**
      * @param ApiTester $I
      * @return string
@@ -35,13 +35,13 @@ class ShopViewCest extends ActionCest
     {
         return "/shop/{$this->shopUri}";
     }
-    
+
     /**
      * @param ApiTester $I
      */
     public function successGetShopDetailByUri(ApiTester $I)
     {
-        $shop = $I->grabFixture('shops', ShopFixture::STORE_1);
+        $shop = $I->grabFixture('shops', ShopFixture::SHOP_1);
         $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
