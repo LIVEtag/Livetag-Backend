@@ -441,7 +441,7 @@
                 }
             }
         },
-        "/v1/stream-session/": {
+        "/v1/stream-session": {
             "post": {
                 "security": [
                     {

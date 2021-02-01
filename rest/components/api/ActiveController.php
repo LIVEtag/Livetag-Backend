@@ -93,7 +93,7 @@ class ActiveController extends BaseActiveController
             ],
             'rateLimiter' => [
                 'class' => RateLimiter::class,
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'access' => [
                 'class' => AccessControl::class,
