@@ -7,6 +7,8 @@
 namespace rest\common\controllers;
 
 use common\models\Stream\StreamSession;
+use rest\common\controllers\actions\Stream\CommentCreateAction;
+use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
 use rest\common\controllers\actions\Stream\CurrentAction;
 use rest\common\controllers\actions\Stream\ProductsAction;
@@ -66,6 +68,16 @@ class StreamSessionController extends ActiveController
     const ACTION_PRODUCTS = 'produtcs';
 
     /**
+     * Get comments list of session
+     */
+    const ACTION_COMMENT_INDEX = 'comment-index';
+
+    /**
+     * Get comments list of session
+     */
+    const ACTION_COMMENT_CREATE = 'comment-create';
+
+    /**
      * @inheritdoc
      */
     public function behaviors(): array
@@ -91,8 +103,10 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_CURRENT,
                                 self::ACTION_TOKEN,
                                 self::ACTION_PRODUCTS,
+                                self::ACTION_COMMENT_INDEX,
+                                self::ACTION_COMMENT_CREATE,
                             ],
-                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER, User::ROLE_BUYER]
+                            'roles' => [User::ROLE_SELLER, User::ROLE_BUYER]
                         ],
                     ],
                 ]
@@ -129,6 +143,16 @@ class StreamSessionController extends ActiveController
                 ],
                 self::ACTION_PRODUCTS => [
                     'class' => ProductsAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess']
+                ],
+                self::ACTION_COMMENT_INDEX => [
+                    'class' => CommentIndexAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess']
+                ],
+                self::ACTION_COMMENT_CREATE => [
+                    'class' => CommentCreateAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess']
                 ],

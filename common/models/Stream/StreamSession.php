@@ -13,8 +13,10 @@ use common\components\centrifugo\Message;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\helpers\LogHelper;
+use common\models\Comment\Comment;
 use common\models\Product\Product;
 use common\models\Product\StreamSessionProduct;
+use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Product\ProductQuery;
 use common\models\queries\Product\StreamSessionProductQuery;
 use common\models\queries\Stream\StreamSessionQuery;
@@ -40,6 +42,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $startedAt
  * @property integer $stoppedAt
  *
+ * @property-read Comment[] $comments
  * @property-read Shop $shop
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
@@ -193,6 +196,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
                 return $this->getStoppedAt();
             },
         ];
+    }
+
+    /**
+     * @return CommentQuery
+     */
+    public function getComments(): CommentQuery
+    {
+        return $this->hasMany(Comment::class, ['streamSessionId' => 'id']);
     }
 
     /**

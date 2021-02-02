@@ -296,7 +296,7 @@ class Generator extends \yii\gii\Generator
                                                     [
                                                         0 =>
                                                             [
-                                                                '$ref' => '#/components/responses/status200',
+                                                                '$ref' => '#/components/schemas/status200',
                                                             ],
                                                         1 =>
                                                             [
@@ -316,17 +316,7 @@ class Generator extends \yii\gii\Generator
                     ],
                 401 =>
                     [
-                        'description' => 'Error',
-                        'content' =>
-                            [
-                                'application/json' =>
-                                    [
-                                        'schema' =>
-                                            [
-                                                '$ref' => '#/components/responses/status401',
-                                            ],
-                                    ],
-                            ],
+                        '$ref' => '#/components/responses/401',
                     ],
             ]
         ];
@@ -355,7 +345,7 @@ class Generator extends \yii\gii\Generator
                                                         [
                                                             0 =>
                                                                 [
-                                                                    '$ref' => '#/components/responses/status200',
+                                                                    '$ref' => '#/components/schemas/status200',
                                                                 ],
                                                             1 =>
                                                                 [
@@ -375,45 +365,15 @@ class Generator extends \yii\gii\Generator
                         ],
                     401 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status401',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/401',
                         ],
                     403 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status403',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/403',
                         ],
                     422 =>
                         [
-                            'description' => 'Validation Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status422',
-                                                ],
-                                        ],
-                                ],
+                           '$ref' => '#/components/responses/422',
                         ],
                 ],
             'requestBody' =>
@@ -479,31 +439,11 @@ class Generator extends \yii\gii\Generator
                         ],
                     401 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status401',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/401',
                         ],
                     403 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status403',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/403',
                         ],
                 ],
         ];
@@ -545,7 +485,7 @@ class Generator extends \yii\gii\Generator
                                                     [
                                                         0 =>
                                                             [
-                                                                '$ref' => '#/components/responses/status200',
+                                                                '$ref' => '#/components/schemas/status200',
                                                             ],
                                                         1 =>
                                                             [
@@ -565,17 +505,7 @@ class Generator extends \yii\gii\Generator
                     ],
                     401 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status401',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/401',
                         ],
                 ],
 
@@ -618,7 +548,7 @@ class Generator extends \yii\gii\Generator
                                                     [
                                                         0 =>
                                                             [
-                                                                '$ref' => '#/components/responses/status200',
+                                                                '$ref' => '#/components/schemas/status200',
                                                             ],
                                                         1 =>
                                                             [
@@ -638,45 +568,15 @@ class Generator extends \yii\gii\Generator
                     ],
                     401 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status401',
-                                                ],
-                                        ],
-                                ],
+                           '$ref' => '#/components/responses/401',
                         ],
                     403 =>
                         [
-                            'description' => 'Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status403',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/403',
                         ],
                     422 =>
                         [
-                            'description' => 'Validation Error',
-                            'content' =>
-                                [
-                                    'application/json' =>
-                                        [
-                                            'schema' =>
-                                                [
-                                                    '$ref' => '#/components/responses/status422',
-                                                ],
-                                        ],
-                                ],
+                            '$ref' => '#/components/responses/422',
                         ],
                 ],
             'requestBody' =>

@@ -76,17 +76,6 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/user' => 'v1/auth',
-                    ],
-                    'extraPatterns' => [
-                        'POST login/<type:\w+>' => 'auth',
-                        'OPTIONS login/<type:\w+>' => 'options',
-                    ],
-                    'pluralize' => false,
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
                         'v1/user' => 'v1/access-token'
                     ],
                     'extraPatterns' => [
@@ -150,6 +139,9 @@ return [
                         'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/product' => StreamSessionController::ACTION_PRODUCTS,
                         'OPTIONS {id}/product' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}/comment' => StreamSessionController::ACTION_COMMENT_INDEX,
+                        'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
+                        'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,
                     ]
                 ],
                 [
