@@ -45,6 +45,6 @@ class ShopViewCest extends ActionCest
         $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getShopDetailResponse(), '$.result');
+        $I->seeResponseMatchesJsonType($I->getShopResponse(), '$.result');
     }
 }

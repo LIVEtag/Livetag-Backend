@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace rest\tests\api\Stream;
+namespace rest\tests\api\Comment;
 
 use common\fixtures\StreamSessionFixture;
 use common\fixtures\UserFixture;
@@ -15,8 +15,9 @@ use rest\tests\ApiTester;
 
 /**
  * @group Stream
+ * @group Comment
  */
-class GetStreamSessionProductsCest extends ActionCest
+class GetStreamSessionCommentsCest extends ActionCest
 {
     use AccessTestTrait;
     /** @var int */
@@ -36,7 +37,7 @@ class GetStreamSessionProductsCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session/' . $this->streamSessionId . '/product';
+        return '/stream-session/' . $this->streamSessionId . '/comment';
     }
 
     /**
@@ -45,10 +46,10 @@ class GetStreamSessionProductsCest extends ActionCest
     public function products(ApiTester $I)
     {
         $I->amLoggedInApiAs(UserFixture::SELLER_2);
-        $I->wantToTest('Get products of Stream Session');
-        $expand = 'product';
+        $I->wantToTest('Get comments of Stream Session');
+        $expand = 'user';
         $I->send($this->getMethod(), $this->getUrl($I) . "?expand=$expand");
         $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getStreamSessionProductsResponse(), '$.result');
+        $I->seeResponseMatchesJsonType([$I->getStreamSessionCommentResponse()], '$.result');
     }
 }

@@ -226,14 +226,24 @@ class ApiTester extends \Codeception\Actor
     /**
      * @return array
      */
-    public function getStreamSessionProductsResponse(): array
+    public function getStreamSessionProductResponse(): array
     {
         return [
-            [
-                'productId' => 'integer',
-                'status' => 'integer',
-                'product' => $this->getProductResponse(),
-            ]
+            'productId' => 'integer',
+            'status' => 'integer',
+            'product' => $this->getProductResponse(),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getStreamSessionCommentResponse(): array
+    {
+        return [
+            'userId' => 'integer',
+            'message' => 'string',
+            'user' => $this->getUserResponse(),
         ];
     }
 
@@ -255,12 +265,23 @@ class ApiTester extends \Codeception\Actor
     /**
      * @return array
      */
-    public function getShopDetailResponse(): array
+    public function getShopResponse(): array
     {
         return [
             'uri' => 'string',
             'name' => 'string',
             'website' => 'string',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserResponse(): array
+    {
+        return [
+            'name' => 'string',
+            'role' => 'string',
         ];
     }
 

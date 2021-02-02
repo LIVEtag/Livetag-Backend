@@ -40,6 +40,10 @@
             "description": "Stream sessions manage"
         },
         {
+            "name": "Comments",
+            "description": "Stream Comments"
+        },
+        {
             "name": "Centrifugo",
             "description": "Centrifugo related methods"
         },
@@ -761,7 +765,7 @@
                             }
                         }
                     },
-                                        {
+                    {
                         "in": "query",
                         "name": "sort",
                         "description": "Sort ordering: use order=[-]sortOrder",
@@ -810,6 +814,134 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+
+        "/v1/stream-session/{streamSessionid}/comment": {
+            "get": {
+                "tags": [
+                    "Comments",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "List comment",
+                "operationId": "commentIndex",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    },
+                    {
+                        "in": "query",
+                        "name": "lastId",
+                        "description": "Id of last message (use for alternative pagination). The filter will show all messages with IDs less than this",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-comment"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/comment"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comments",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Create new comment (TBU)",
+                "operationId": "commentCreateNew",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-comment"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/comment"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
@@ -1554,6 +1686,35 @@
                 }
             },
 
+            "comment": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "message",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/user"
+                    }
+                }
+            },
+
             "product": {
                 "type": "object",
                 "required": [
@@ -1662,6 +1823,15 @@
                 "in": "query",
                 "name": "expand",
                 "description": "Extra Fields (coma separated). Available values: ```product```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-comment": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```user```",
                 "required": false,
                 "schema": {
                     "type": "string"
