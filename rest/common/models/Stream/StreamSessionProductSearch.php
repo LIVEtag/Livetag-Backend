@@ -9,6 +9,7 @@ namespace rest\common\models\Stream;
 
 use common\components\validation\validators\ArrayFilter;
 use common\models\Product\StreamSessionProduct;
+use common\models\queries\Product\ProductQuery;
 use common\models\Stream\StreamSession;
 use rest\common\models\Product\Product;
 use yii\base\Model;
@@ -73,6 +74,17 @@ class StreamSessionProductSearch extends StreamSessionProduct
 
         $query = $this->streamSession->getStreamSessionProducts();
 
+        // Join only with active(not deleted) products
+        // Use eager loading only for expand requested
+        $query->innerJoinWith(
+            [
+                self::REL_PRODUCT => function (ProductQuery $query) {
+                    $query->active();
+                },
+            ],
+            ArrayHelper::isIn(self::REL_PRODUCT, $this->getExpand($params))
+        );
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
@@ -85,13 +97,6 @@ class StreamSessionProductSearch extends StreamSessionProduct
             'asc' => [Product::tableName() . '.title' => SORT_ASC],
             'desc' => [Product::tableName() . '.title' => SORT_DESC],
         ];
-
-        //join need only for sort by profile name or when expand required
-        if (array_key_exists('productTitle', $dataProvider->sort->getAttributeOrders()) ||
-            ArrayHelper::isIn(self::REL_PRODUCT, $this->getExpand($params))
-        ) {
-            $query->joinWith(self::REL_PRODUCT);
-        }
 
         // grid filtering conditions
         $query->andFilterWhere([
