@@ -280,7 +280,7 @@ class ApiTester extends \Codeception\Actor
     public function getUserResponse(): array
     {
         return [
-            'name' => 'string',
+            'name' => 'string|null',
             'role' => 'string',
         ];
     }

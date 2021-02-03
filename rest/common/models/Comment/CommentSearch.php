@@ -5,18 +5,19 @@
  */
 declare(strict_types=1);
 
-namespace rest\common\models\Stream;
+namespace rest\common\models\Comment;
 
 use common\models\Comment\Comment;
 use common\models\Stream\StreamSession;
+use rest\components\helpers\ExpandHelper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 
 /**
- * StreamSessionCommentSearch represents the model behind the search form of `backend\models\Post\StreamSessionProduct`.
+ * CommentSearch represents the model behind the search form of `backend\models\Post\StreamSessionProduct`.
  */
-class StreamSessionCommentSearch extends Comment
+class CommentSearch extends Comment
 {
     /**
      * @var StreamSession
@@ -75,7 +76,7 @@ class StreamSessionCommentSearch extends Comment
             ->orderBy(['id' => SORT_DESC]);
 
         //join need only when expand required
-        if (ArrayHelper::isIn(self::REL_USER, $this->getExpand($params))) {
+        if (ArrayHelper::isIn(self::REL_USER, ExpandHelper::getExpand($params))) {
             $query->joinWith(self::REL_USER);
         }
 
@@ -92,16 +93,5 @@ class StreamSessionCommentSearch extends Comment
         }
 
         return $dataProvider;
-    }
-
-    /**
-     * @see yii\rest\Serializer getRequestedFields()
-     * @param array $params
-     * @return array
-     */
-    protected function getExpand(array $params): array
-    {
-        $expand = ArrayHelper::getValue($params, 'expand');
-        return is_string($expand) ? preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY) : [];
     }
 }

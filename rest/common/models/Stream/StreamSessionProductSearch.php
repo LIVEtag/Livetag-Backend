@@ -12,6 +12,7 @@ use common\models\Product\StreamSessionProduct;
 use common\models\queries\Product\ProductQuery;
 use common\models\Stream\StreamSession;
 use rest\common\models\Product\Product;
+use rest\components\helpers\ExpandHelper;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
@@ -82,7 +83,7 @@ class StreamSessionProductSearch extends StreamSessionProduct
                     $query->active();
                 },
             ],
-            ArrayHelper::isIn(self::REL_PRODUCT, $this->getExpand($params))
+            ArrayHelper::isIn(self::REL_PRODUCT, ExpandHelper::getExpand($params))
         );
 
         $dataProvider = new ActiveDataProvider([
@@ -105,16 +106,5 @@ class StreamSessionProductSearch extends StreamSessionProduct
         ]);
 
         return $dataProvider;
-    }
-
-    /**
-     * @see yii\rest\Serializer getRequestedFields()
-     * @param array $params
-     * @return array
-     */
-    protected function getExpand(array $params): array
-    {
-        $expand = ArrayHelper::getValue($params, 'expand');
-        return is_string($expand) ? preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY) : [];
     }
 }

@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\Stream;
 
 use common\models\Stream\StreamSession;
+use rest\common\models\Comment\CreateCommentForm;
+use Yii;
 use yii\rest\Action;
 
 class CommentCreateAction extends Action
@@ -25,6 +27,12 @@ class CommentCreateAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
-        return; //TBU
+        $form = new CreateCommentForm($streamSession, Yii::$app->user->identity);
+        $form->setAttributes(Yii::$app->request->getBodyParams());
+        $comment = $form->create();
+        if (!$comment->hasErrors()) {
+            Yii::$app->response->setStatusCode(201);
+        }
+        return $comment;
     }
 }
