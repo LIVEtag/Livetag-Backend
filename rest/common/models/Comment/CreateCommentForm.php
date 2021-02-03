@@ -51,6 +51,10 @@ class CreateCommentForm extends Model
      */
     public function create()
     {
+        if (!$this->validate()) {
+            return $this;
+        }
+
         /** @var Comment $comment */
         $comment = new Comment();
         $comment->userId = $this->user->getId();
