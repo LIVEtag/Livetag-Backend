@@ -8,11 +8,15 @@ declare(strict_types=1);
 namespace common\models\Product;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\centrifugo\channels\SessionChannel;
+use common\components\centrifugo\Message;
+use common\helpers\LogHelper;
 use common\models\queries\Product\StreamSessionProductQuery;
 use common\models\Stream\StreamSession;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "stream_session_product".
@@ -39,7 +43,12 @@ class StreamSessionProduct extends ActiveRecord
         self::STATUS_DISPLAYED => 'Displayed in the widget',
         self::STATUS_PRESENTED => 'Presented now',
     ];
-
+    
+    /**
+     * Category for logs
+     */
+    const LOG_CATEGORY = 'streamSessionProduct';
+    
     /**
      * Product relation key
      */
@@ -138,5 +147,26 @@ class StreamSessionProduct extends ActiveRecord
     public function getStreamSession(): ActiveQuery
     {
         return $this->hasOne(StreamSession::class, ['id' => 'streamSessionId']);
+    }
+    
+    /**
+     * Send notification about session to centrifugo
+     * @param string $actionType
+     */
+    public function notify(string $actionType)
+    {
+        $streamSession = $this->streamSession;
+        if ($streamSession && $streamSession->isActive()) {
+            $channel = new SessionChannel($streamSession->getAttribute('id'));
+            $message = new Message($actionType, $this->toArray());
+            if (!Yii::$app->centrifugo->publish($channel, $message)) {
+                LogHelper::error('Event Failed', self::LOG_CATEGORY, [
+                    'channel' => $channel->getName(),
+                    'message' => $message->getBody(),
+                    'actionType' => $actionType,
+                    'streamSessionProduct' => Json::encode($this->toArray(), JSON_PRETTY_PRINT),
+                ]);
+            }
+        }
     }
 }
