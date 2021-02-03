@@ -170,6 +170,7 @@ class StreamSessionController extends ActiveController
      */
     public function checkAccess($action, $model = null, $params = [])
     {
+        /** @var $user User */
         $user = Yii::$app->user->identity ?? null;
         switch ($action) {
             case self::ACTION_START:
@@ -179,6 +180,17 @@ class StreamSessionController extends ActiveController
                 }
                 if (!$user->shop || $user->shop->id !== $model->shopId) {
                     throw new ForbiddenHttpException('You are not allowed to access this entity.');
+                }
+                break;
+            case self::ACTION_COMMENT_CREATE:
+                if (!$model || !$user) {
+                    throw new ForbiddenHttpException('You are not allowed to access this entity.'); //just in case
+                }
+                //Do not allow seller from another shop post a comment
+                if ($user->isSeller && (!$user->shop || $user->shop->id !== $model->shopId)) {
+                    throw new ForbiddenHttpException('You can not leave comments in non-your broadcast.');
+                } elseif ($user->isBuyer && !$user->name) {
+                    throw new ForbiddenHttpException('You cannot leave a comment without specifying a name.');
                 }
                 break;
             default:

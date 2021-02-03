@@ -17,7 +17,7 @@ use rest\tests\ApiTester;
  * @group Stream
  * @group Comment
  */
-class GetStreamSessionCommentsCest extends ActionCest
+class GetCommentsCest extends ActionCest
 {
     use AccessTestTrait;
     /** @var int */

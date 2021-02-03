@@ -33,6 +33,7 @@ use yii\web\IdentityInterface;
  * @property string $password write-only password
  * @property-read boolean $isAdmin
  * @property-read boolean $isSeller
+ * @property-read boolean $isBuyer
  *
  * @property-read Shop $shop
  */

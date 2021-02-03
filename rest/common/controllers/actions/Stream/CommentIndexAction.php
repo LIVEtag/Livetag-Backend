@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\Stream;
 
 use common\models\Stream\StreamSession;
-use rest\common\models\Stream\StreamSessionCommentSearch;
+use rest\common\models\Comment\CommentSearch;
 use Yii;
 use yii\rest\Action;
 
@@ -27,7 +27,7 @@ class CommentIndexAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
-        $searchModel = new StreamSessionCommentSearch($streamSession);
+        $searchModel = new CommentSearch($streamSession);
         return $searchModel->search(Yii::$app->request->queryParams);
     }
 }

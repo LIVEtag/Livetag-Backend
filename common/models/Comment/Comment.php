@@ -74,35 +74,13 @@ class Comment extends ActiveRecord
 
     /**
      * @inheritdoc
-     *
-     * Buyer can only post 255 length message without html. (default scanario)
-     * Seller can answer with any size and any html
-     *
-     * @return array
-     */
-    public function scenarios()
-    {
-        $default = ArrayHelper::getValue(parent::scenarios(), self::SCENARIO_DEFAULT);
-        return [
-            self::SCENARIO_DEFAULT => $default,
-            self::SCENARIO_SELLER => $default,
-        ];
-    }
-
-    /**
-     * @inheritdoc
      */
     public function rules(): array
     {
         return [
             [['userId', 'streamSessionId', 'message'], 'required'],
             [['userId', 'streamSessionId'], 'integer'],
-            [['message'], 'string'],
-            //Message for Buyer
-            ['message', 'string', 'max' => 255, 'on' => [self::SCENARIO_DEFAULT]],
-            ['message', PurifyFilter::class, 'on' => [self::SCENARIO_DEFAULT]],
-            //Message for Seller
-            ['message', 'string', 'on' => [self::SCENARIO_SELLER]],
+            ['message', 'string'],
             [['streamSessionId'], 'exist', 'skipOnError' => true, 'targetClass' => StreamSession::class, 'targetRelation' => 'streamSession'],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetRelation' => 'user'],
         ];

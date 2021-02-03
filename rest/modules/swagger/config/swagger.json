@@ -501,7 +501,7 @@
             }
         },
 
-        "/v1/stream-session/{id}": {
+        "/v1/stream-sessionstreamSessionidid}": {
             "get": {
                 "tags": [
                     "Stream Session",
@@ -513,7 +513,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "streamSessionid",
                         "description": "Stream Session Id",
                         "required": true,
                         "schema": {
@@ -572,7 +572,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "streamSessionid",
                         "description": "Stream Session Id",
                         "required": true,
                         "schema": {
@@ -634,7 +634,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "streamSessionid",
                         "description": "Stream Session Id",
                         "required": true,
                         "schema": {
@@ -666,7 +666,7 @@
                 }
             }
         },
-        "/v1/stream-session/{id}/token": {
+        "/v1/stream-session/{streamSessionid}/token": {
             "get": {
                 "tags": [
                     "Stream Session",
@@ -678,7 +678,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "streamSessionid",
                         "description": "Stream Session Id",
                         "required": true,
                         "schema": {
@@ -720,7 +720,7 @@
                 }
             }
         },
-        "/v1/stream-session/{id}/product": {
+        "/v1/stream-session/{streamSessionid}/product": {
             "get": {
                 "tags": [
                     "Stream Session",
@@ -732,7 +732,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "streamSessionid",
                         "description": "Stream Session Id",
                         "required": true,
                         "schema": {
@@ -898,12 +898,13 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "streamSessionid",
                         "description": "Stream Session Id",
                         "required": true,
                         "schema": {
                             "type": "integer"
-                        }
+                        },
+                        "example": 4
                     },
                     {
                         "$ref": "#/components/parameters/fields"
@@ -912,6 +913,24 @@
                         "$ref": "#/components/parameters/expand-comment"
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "message"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Hello!"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "OK",

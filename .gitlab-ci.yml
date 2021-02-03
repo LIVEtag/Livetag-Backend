@@ -351,7 +351,6 @@ live:review:
 
     - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
-    - ./vendor/bin/dep deploy:fixtures
     - apache2-foreground
   only:
     - master

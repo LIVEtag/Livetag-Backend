@@ -8,12 +8,12 @@ declare(strict_types=1);
 namespace common\components\validation\validators;
 
 use yii\helpers\HtmlPurifier;
-use yii\validators\Validator;
+use yii\validators\FilterValidator;
 
 /**
  * Delete html tags
  */
-class PurifyFilter extends Validator
+class PurifyFilter extends FilterValidator
 {
 
     /**

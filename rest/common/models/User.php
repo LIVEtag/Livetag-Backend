@@ -8,8 +8,6 @@ declare(strict_types=1);
 namespace rest\common\models;
 
 use common\models\User as CommonUser;
-use rest\common\models\User\Buyer;
-use rest\common\models\User\Seller;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\IdentityInterface;
@@ -23,21 +21,6 @@ class User extends CommonUser
 {
     /** @var AccessToken */
     protected $accessToken;
-
-    /**
-     * @inheritdoc
-     */
-    public static function instantiate($row)
-    {
-        switch ($row['role']) {
-            case self::ROLE_SELLER:
-                return new Seller();
-            case self::ROLE_BUYER:
-                return new Buyer();
-            default:
-                return new self;
-        }
-    }
 
     /**
      * @return AccessToken
@@ -56,7 +39,7 @@ class User extends CommonUser
     {
         switch ($type) {
             case HttpBasicAuth::class:
-                return Buyer::getOrCreate($token);
+                return self::getOrCreateBuyer($token);
             case HttpBearerAuth::class:
                 /** @var $accessToken AccessToken */
                 $accessToken = AccessToken::find()
@@ -73,5 +56,26 @@ class User extends CommonUser
                 }
         }
         return null;
+    }
+
+    /**
+     * Get existing Buyer record or create new one
+     * @param string $uuid
+     * @return self|null
+     */
+    public static function getOrCreateBuyer($uuid): ?self
+    {
+        $user = self::find()
+            ->byRole(self::ROLE_BUYER)
+            ->byUuid($uuid)
+            ->one();
+        if ($user) {
+            return $user->status == self::STATUS_ACTIVE ? $user : null;
+        }
+        $user = new self([
+            'uuid' => $uuid,
+            'role' => self::ROLE_BUYER
+        ]);
+        return $user->save() ? $user : null;
     }
 }
