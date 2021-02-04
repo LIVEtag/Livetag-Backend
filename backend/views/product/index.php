@@ -6,7 +6,6 @@
 
 use backend\models\Product\Product;
 use backend\models\Product\ProductSearch;
-use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -59,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'format' => 'raw',
                                 'mergeHeader' => true,
                                 'value' => function (Product $model) {
-                                    return $model->getProductOptionsInHTML($model->options) ?? '';
+                                    return $model->getProductOptionsInHTML();
                                 },
                                 'vAlign' => GridView::ALIGN_TOP,
                             ],
@@ -75,12 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'link',
                                 'headerOptions' => ['width' => '120'],
                                 'format' => ['url', ['target' => '_blank']]
-                            ],
-                            [
-                                'class' => ActionColumn::class,
-                                'vAlign' => GridView::ALIGN_TOP,
-                                'template' => '{delete}'
-                            ],
+                            ]
                         ],
                     ]); ?>
                 </div>

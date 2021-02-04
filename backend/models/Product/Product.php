@@ -19,8 +19,9 @@ class Product extends BaseModel
      * @param array $options
      * @return mixed
      */
-    public function getProductOptionsInHTML(array $options)
+    public function getProductOptionsInHTML()
     {
+        $options = $this->options;
         if (empty($options)) {
             return null;
         }
@@ -55,13 +56,5 @@ class Product extends BaseModel
         $html .= '</table>';
 
         return $html;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatusName(): ?string
-    {
-        return ArrayHelper::getValue(self::STATUSES, $this->status);
     }
 }

@@ -57,8 +57,9 @@ class ProductSearch extends Product
             self::tableName() . '.shopId' => $this->shopId,
         ]);
 
-        $query->andFilterWhere(['like', 'sku', $this->sku])
-            ->andFilterWhere(['like', 'title', $this->title]);
+        $query->andFilterWhere(['like', self::tableName() . '.sku', $this->sku])
+            ->andFilterWhere(['like', self::tableName() . '.title', $this->title])
+            ->andFilterWhere(['like', self::tableName() . '.link', $this->link]);
         return $dataProvider;
     }
 }

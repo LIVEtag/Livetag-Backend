@@ -5,6 +5,7 @@
  */
 
 use backend\models\Stream\StreamSession;
+use backend\models\User\User;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\DetailView;
@@ -18,13 +19,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
 /** @var User $user */
 $user = Yii::$app->user->identity ?? null;
-
 ?>
 <section class="stream-session-view">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-default">
-                <div class="box-header"></div>
+                <div class="box-header">
+                    <?php if ($model->isActive()) : ?>
+                        <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
+                            'class' => 'btn btn-danger',
+                            'data' => [
+                                'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
+                                'method' => 'post',
+                            ],
+                        ]); ?>
+                    <?php endif; ?>
+                </div>
                 <!--/.box-header -->
                 <div class="box-body">
                     <?= DetailView::widget([
@@ -68,5 +78,34 @@ $user = Yii::$app->user->identity ?? null;
         <!-- /.col -->
     </div>
     <!-- /.row -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <!-- TODO: set active class to comments -->
+                    <li class=""><a href="#comments" data-toggle="tab" aria-expanded="true">Comments</a></li>
+                    <li class="active"><a href="#products" data-toggle="tab"aria-expanded="false">Products</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane " id="comments">
+                        <b>TBU</b>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane active" id="products">
+                        <?= $this->render('product-index', [
+                            'productSearchModel' => $productSearchModel,
+                            'productDataProvider' => $productDataProvider,
+                            'streamSessionId' => $model->id,
+                        ]); ?>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div>
+            <!-- nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
 </section>
 <!-- /.section -->
