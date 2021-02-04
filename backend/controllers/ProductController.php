@@ -11,6 +11,7 @@ namespace backend\controllers;
 use backend\components\Controller;
 use backend\models\Product\Product;
 use backend\models\Product\ProductSearch;
+use backend\models\StreamSessionProduct\StreamSessionProduct;
 use backend\models\User\User;
 use kartik\grid\EditableColumnAction;
 use Yii;
@@ -24,11 +25,6 @@ use yii\web\NotFoundHttpException;
  */
 class ProductController extends Controller
 {
-    /**
-     * Editable Post Action
-     */
-    const ACTION_EDITABLE_STATUS = 'editable-status';
-
     /**
      * @inheritdoc
      */
@@ -53,16 +49,6 @@ class ProductController extends Controller
                 ]
             ]
         );
-    }
-
-    public function actions()
-    {
-        return [
-            self::ACTION_EDITABLE_STATUS => [
-                'class' => EditableColumnAction::class,
-                'modelClass' => Product::class
-            ],
-        ];
     }
 
     /**
