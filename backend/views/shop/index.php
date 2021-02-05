@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'columns' => [
                             [
                                 'attribute' => 'id',
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '80'],
                             ],
                             'name',
@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'format' => 'datetime',
                                 'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '200'],
                                 'filter' => false
                             ],

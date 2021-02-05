@@ -40,7 +40,7 @@ $user = Yii::$app->user->identity ?? null;
                         'columns' => [
                             [
                                 'attribute' => 'id',
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '80'],
                             ],
                             [
@@ -59,14 +59,14 @@ $user = Yii::$app->user->identity ?? null;
                                 'format' => 'datetime',
                                 'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '180'],
                                 'filter' => false
                             ],
                             [
                                 'label' => 'Duration',
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                                 'mergeHeader' => true,
                                 'filter' => false,
@@ -78,7 +78,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'label' => 'Number of views',
                                 'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'value' => function () {
                                     return null; //TBU
                                 },
@@ -87,7 +87,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'label' => '“Add to cart” clicks',
                                 'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'value' => function () {
                                     return null; //TBU
                                 },
@@ -96,7 +96,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'label' => '“Add to cart” rate',
                                 'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'value' => function () {
                                     return null; //TBU
                                 },
@@ -104,7 +104,7 @@ $user = Yii::$app->user->identity ?? null;
                             [
                                 'attribute' => 'status',
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                                 'filter' => Html::activeDropDownList($searchModel, 'status', StreamSession::STATUSES, ['class' => 'form-control', 'prompt' => '']),
                                 'value' => function (StreamSession $model) {

@@ -30,20 +30,20 @@ GridView::widget([
         [
             'attribute' => 'productId',
             'label' => 'ID',
-            'hAlign' => GridView::ALIGN_CENTER,
+            'hAlign' => GridView::ALIGN_LEFT,
             'headerOptions' => ['width' => '60'],
         ],
         [
             'attribute' => 'sku',
             'value' => 'product.sku',
             'label' => 'SKU',
-            'hAlign' => GridView::ALIGN_CENTER,
+            'hAlign' => GridView::ALIGN_LEFT,
             'headerOptions' => ['width' => '100'],
         ],
         [
             'attribute' => 'title',
             'value' => 'product.title',
-            'hAlign' => GridView::ALIGN_CENTER,
+            'hAlign' => GridView::ALIGN_LEFT,
         ],
         [
             'attribute' => 'link',
@@ -55,11 +55,11 @@ GridView::widget([
             'attribute' => 'options',
             'format' => 'raw',
             'mergeHeader' => true,
+            'vAlign' => GridView::ALIGN_TOP,
+            'hAlign' => GridView::ALIGN_LEFT,
             'value' => function (StreamSessionProduct $model) {
                 return $model->product ? $model->product->getProductOptionsInHTML() : null;
             },
-            'hAlign' => GridView::ALIGN_CENTER,
-            'vAlign' => GridView::ALIGN_TOP,
         ],
         [
             'attribute' => 'status',
@@ -90,7 +90,7 @@ GridView::widget([
             'value' => 'product.photo',
             'format' => ['image', ['width' => '75']],
             'vAlign' => GridView::ALIGN_TOP,
-            'hAlign' => GridView::ALIGN_CENTER,
+            'hAlign' => GridView::ALIGN_LEFT,
             'headerOptions' => ['width' => '100'],
             'mergeHeader' => true,
         ],

@@ -40,17 +40,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         'columns' => [
                             [
                                 'attribute' => 'id',
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '60'],
                             ],
                             [
                                 'attribute' => 'sku',
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                             ],
                             [
                                 'attribute' => 'title',
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                             ],
                             [
                                 'label' => 'Price and Options',
@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'photo',
                                 'format' => ['image', ['width' => '75']],
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'hAlign' => GridView::ALIGN_CENTER,
+                                'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                                 'mergeHeader' => true,
                             ],
