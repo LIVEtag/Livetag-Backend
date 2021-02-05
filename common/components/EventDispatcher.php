@@ -7,9 +7,13 @@ declare(strict_types=1);
 
 namespace common\components;
 
+use common\models\Comment\Comment;
 use common\models\Product\StreamSessionProduct;
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
+use common\observers\Comment\CreateCommentObserver;
+use common\observers\Comment\DeleteCommentObserver;
+use common\observers\Comment\UpdateCommentObserver;
 use common\observers\Shop\DeleteShopObserver;
 use common\observers\StreamSession\CreateStreamSessionObserver;
 use common\observers\StreamSession\EndSoonStreamSessionObserver;
@@ -42,7 +46,7 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_END_SOON, [Yii::createObject(EndSoonStreamSessionObserver::class), 'execute']);
-    
+
         # Stream Session Product events
         Event::on(StreamSessionProduct::class, StreamSessionProduct::EVENT_AFTER_INSERT, [
             Yii::createObject(CreateStreamSessionProductObserver::class),
@@ -56,5 +60,10 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
             Yii::createObject(DeleteStreamSessionProductObserver::class),
             'execute'
         ]);
+
+        # Chat events
+        Event::on(Comment::class, Comment::EVENT_AFTER_INSERT, [Yii::createObject(CreateCommentObserver::class), 'execute']);
+        Event::on(Comment::class, Comment::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateCommentObserver::class), 'execute']);
+        Event::on(Comment::class, Comment::EVENT_AFTER_DELETE, [Yii::createObject(DeleteCommentObserver::class), 'execute']);
     }
 }

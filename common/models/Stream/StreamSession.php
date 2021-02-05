@@ -281,7 +281,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
-    public function getCreatedAt(): int
+    public function getCreatedAt(): ?int
     {
         return $this->createdAt ? (int) $this->createdAt : null;
     }

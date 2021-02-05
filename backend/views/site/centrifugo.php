@@ -1,11 +1,14 @@
 <?php
 use backend\models\Shop\Shop;
+use backend\models\Stream\StreamSession;
 use kartik\widgets\Select2;
+use yii\base\DynamicModel;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /* @var $this View */
+/* @var $moedl DynamicModel */
 
 $this->title = 'Centrifugo debug page';
 ?>
@@ -23,6 +26,11 @@ $this->title = 'Centrifugo debug page';
                         'options' => ['placeholder' => 'Select shop ...'],
                         'pluginOptions' => ['allowClear' => false],
                     ])->label('Shop'); ?>
+                    <?= $form->field($model, 'streamSessionId')->widget(Select2::class, [
+                        'data' => StreamSession::getIndexedArray(),
+                        'options' => ['placeholder' => 'Select shop ...'],
+                        'pluginOptions' => ['allowClear' => false],
+                    ])->label('Stream Session'); ?>
                     <?= $form->field($model, 'centrifugoUrl'); ?>
                     <?= $form->field($model, 'signEndpoint'); ?>
                     <?= $form->field($model, 'centrifugoToken')->textInput(['readonly' => true])->label('Centrifugo Token (/POST ​/v1​/centrifugo​/sign)'); ?>
@@ -44,7 +52,7 @@ $this->title = 'Centrifugo debug page';
 
 <script src="https://cdn.jsdelivr.net/gh/centrifugal/centrifuge-js@2.6.0/dist/centrifuge.min.js"></script>
 
-<?php if ($validated) : ?>
+<?php if (!$model->hasErrors()) : ?>
     <div class="callout callout-success">
         <h4>Validated!</h4>
         <p>Open Console for output</p>
@@ -52,6 +60,7 @@ $this->title = 'Centrifugo debug page';
 
     <script type="text/javascript">
         const shopChannel = "shop_<?= $model->shopUri; ?>";
+        const sessionChannel = "session_<?= $model->streamSessionId; ?>";
 
         //formats: https://github.com/centrifugal/centrifuge-js#subscription-event-context-formats
         var callbacks = {
@@ -80,12 +89,13 @@ $this->title = 'Centrifugo debug page';
         centrifuge.setToken("<?= $model->centrifugoToken; ?>");
 
         centrifuge.on('connect', function (ctx) {
-          console.log("connected", ctx);
+          console.log('connected', ctx);
         });
         centrifuge.on('disconnect', function (ctx) {
-          console.log("disconnected", ctx);
+          console.log('disconnected', ctx);
         });
         centrifuge.subscribe(shopChannel, callbacks);
+        centrifuge.subscribe(sessionChannel, callbacks);
 
         centrifuge.connect();
     </script>

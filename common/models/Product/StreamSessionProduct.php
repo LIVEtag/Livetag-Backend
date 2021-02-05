@@ -30,6 +30,12 @@ use yii\helpers\Json;
  *
  * @property-read Product $product
  * @property-read StreamSession $streamSession
+ *
+ * EVENTS:
+ * - EVENT_AFTER_INSERT
+ * - EVENT_AFTER_UPDATE
+ * - EVENT_AFTER_DELETE
+ * @see EventDispatcher
  */
 class StreamSessionProduct extends ActiveRecord
 {
@@ -43,12 +49,12 @@ class StreamSessionProduct extends ActiveRecord
         self::STATUS_DISPLAYED => 'Displayed in the widget',
         self::STATUS_PRESENTED => 'Presented now',
     ];
-    
+
     /**
      * Category for logs
      */
     const LOG_CATEGORY = 'streamSessionProduct';
-    
+
     /**
      * Product relation key
      */
@@ -148,17 +154,17 @@ class StreamSessionProduct extends ActiveRecord
     {
         return $this->hasOne(StreamSession::class, ['id' => 'streamSessionId']);
     }
-    
+
     /**
-     * Send notification about session to centrifugo
+     * Send notification about product to centrifugo
      * @param string $actionType
      */
     public function notify(string $actionType)
     {
         $streamSession = $this->streamSession;
         if ($streamSession && $streamSession->isActive()) {
-            $channel = new SessionChannel($streamSession->getAttribute('id'));
-            $message = new Message($actionType, $this->toArray());
+            $channel = new SessionChannel($this->streamSessionId);
+            $message = new Message($actionType, $this->toArray([], [self::REL_PRODUCT]));
             if (!Yii::$app->centrifugo->publish($channel, $message)) {
                 LogHelper::error('Event Failed', self::LOG_CATEGORY, [
                     'channel' => $channel->getName(),

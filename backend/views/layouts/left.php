@@ -15,6 +15,9 @@ $user = Yii::$app->user->identity ?? null;
             ],
             'items' => [
                 [
+                    'options' => ['class' => 'header']
+                ],
+                [
                     'label' => 'Products',
                     'icon' => 'cubes',
                     'url' => ['/product/index'],
