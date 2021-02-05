@@ -21,6 +21,7 @@ stages:
   - dev
   - test
   - live
+  - deploy
 
 build_vendor:
   stage: build
@@ -379,3 +380,61 @@ live:centrifugo:
   only:
     - master
     - tags
+
+prod:build:
+  stage: deploy
+  when: manual
+  image: ${CI_REGISTRY}/int/images/docker:latest
+  variables:
+    AWS_ACCESS_KEY_ID: ${AWS_ECS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_ECS_SECRET_ACCESS_KEY}
+  script:
+    - echo "Build the image ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/backend:${CI_COMMIT_SHORT_SHA}"
+    - . ./.gitlab-ci/build_image.sh
+  only:
+    - master
+    - deploy
+  dependencies:
+    - build_vendor
+  tags:
+    - docker
+
+prod:deploy:
+  stage: deploy
+  when: manual
+  image: ${CI_REGISTRY}/int/images/ecs-deploy:latest
+  variables:
+    AWS_ACCESS_KEY_ID: ${AWS_ECS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_ECS_SECRET_ACCESS_KEY}
+  script:
+    - |
+       echo "Check the image ${CI_COMMIT_SHORT_SHA}"
+       aws ecr describe-images \
+           --repository-name backend \
+           --image-id="[{\"imageTag\":\"${CI_COMMIT_SHORT_SHA}\"}]"
+       echo "Deploy backend"
+       ecs deploy livetag backend \
+           --tag ${CI_COMMIT_SHORT_SHA} \
+           --env backend EXPORT_LOGS YES \
+           --diff \
+           --timeout 900 \
+           --deregister
+       echo "Deploy cron"
+       ecs deploy livetag cron \
+           --tag ${CI_COMMIT_SHORT_SHA} \
+           --diff \
+           --timeout 900 \
+           --deregister
+       echo "Migrations"
+       . ./.gitlab-ci/migrations.sh
+       echo "Deploy complete"
+  only:
+    - master
+    - deploy
+  dependencies:
+    - build_vendor
+  tags:
+    - docker
+  environment:
+    name: Production
+    url: ${URL_PROD}
