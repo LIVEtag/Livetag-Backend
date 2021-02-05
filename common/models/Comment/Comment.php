@@ -8,12 +8,16 @@ declare(strict_types=1);
 namespace common\models\Comment;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\centrifugo\channels\SessionChannel;
+use common\components\centrifugo\Message;
+use common\helpers\LogHelper;
 use common\models\queries\Comment\CommentQuery;
 use common\models\Stream\StreamSession;
 use common\models\User;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "comment".
@@ -27,8 +31,14 @@ use yii\db\ActiveRecord;
  *
  * @property-read StreamSession $streamSession
  * @property-read User $user
+ *
+ * EVENTS:
+ * - EVENT_AFTER_INSERT
+ * - EVENT_AFTER_UPDATE
+ * - EVENT_AFTER_DELETE
+ * @see EventDispatcher
  */
-class Comment extends ActiveRecord
+class Comment extends ActiveRecord implements CommentInterface
 {
     /**
      * Seller can answer with any size and any html
@@ -138,5 +148,71 @@ class Comment extends ActiveRecord
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId(): ?int
+    {
+        return $this->id ? (int) $this->id : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUserId(): ?int
+    {
+        return $this->userId ? (int) $this->userId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStreamSessionId(): ?int
+    {
+        return $this->streamSessionId ? (int) $this->streamSessionId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCreatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUpdatedAt(): ?int
+    {
+        return $this->updatedAt ? (int) $this->updatedAt : null;
+    }
+
+    /**
+     * Send notification about comments to centrifugo
+     * @param string $actionType
+     */
+    public function notify(string $actionType)
+    {
+        $channel = new SessionChannel($this->getStreamSessionId());
+        $message = new Message($actionType, $this->toArray([], [self::REL_USER]));
+        if (!Yii::$app->centrifugo->publish($channel, $message)) {
+            LogHelper::error('Event Failed', self::LOG_CATEGORY, [
+                'channel' => $channel->getName(),
+                'message' => $message->getBody(),
+                'actionType' => $actionType,
+                'streamSessionProduct' => Json::encode($this->toArray(), JSON_PRETTY_PRINT),
+            ]);
+        }
     }
 }

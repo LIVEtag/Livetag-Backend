@@ -31,6 +31,15 @@ class StreamSession extends BaseModel
     }
 
     /**
+     * Get all entities as indexed array
+     * @return array [id=>key] array of entities
+     */
+    public static function getIndexedArray(): array
+    {
+        return self::find()->select(["CONCAT(id,' - ', sessionId) AS text", 'id'])->indexBy('id')->column();
+    }
+
+    /**
      * @return string
      */
     public function getStatusName(): ?string

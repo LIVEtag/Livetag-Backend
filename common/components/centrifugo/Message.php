@@ -26,10 +26,10 @@ class Message extends BaseObject implements MessageInterface
     const ACTION_PRODUCT_UPDATE = 'productUpdate';
     const ACTION_PRODUCT_DELETE = 'productDelete';
     //Messages
-    const ACTION_MESSAGE_CREATE = 'messageCreate';
-    const ACTION_MESSAGE_UPDATE = 'messageUpdate';
-    const ACTION_MESSAGE_DELETE = 'messageDelete';
-    
+    const ACTION_COMMENT_CREATE = 'commentCreate';
+    const ACTION_COMMENT_UPDATE = 'commentUpdate';
+    const ACTION_COMMENT_DELETE = 'commentDelete';
+
     /**
      * Allowed actions by type
      */
@@ -40,9 +40,9 @@ class Message extends BaseObject implements MessageInterface
         self::ACTION_PRODUCT_CREATE,
         self::ACTION_PRODUCT_UPDATE,
         self::ACTION_PRODUCT_DELETE,
-        self::ACTION_MESSAGE_CREATE,
-        self::ACTION_MESSAGE_UPDATE,
-        self::ACTION_MESSAGE_DELETE,
+        self::ACTION_COMMENT_CREATE,
+        self::ACTION_COMMENT_UPDATE,
+        self::ACTION_COMMENT_DELETE,
     ];
 
     /** @var string */
