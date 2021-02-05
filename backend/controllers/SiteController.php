@@ -9,6 +9,7 @@ namespace backend\controllers;
 
 use backend\components\Controller;
 use backend\models\Shop\Shop;
+use backend\models\Stream\StreamSession;
 use backend\models\User\User;
 use common\models\forms\User\LoginForm;
 use common\models\forms\User\RecoveryPassword;
@@ -163,20 +164,23 @@ class SiteController extends Controller
             'userId',
             'accessToken',
             'shopUri',
+            'streamSessionId',
             'centrifugoToken',
             'centrifugoUrl',
             'signEndpoint'
         ]);
-        $model->addRule(['shopUri', 'centrifugoUrl', 'signEndpoint'], 'required');
+        $model->addRule(['shopUri', 'centrifugoUrl', 'signEndpoint','streamSessionId'], 'required');
         $model->addRule(['centrifugoToken', 'centrifugoUrl'], 'string');
         $model->addRule(['signEndpoint'], 'url');
         $model->addRule('shopUri', 'string');
         $model->addRule('shopUri', 'exist', ['targetClass' => Shop::class, 'targetAttribute' => 'uri']);
+        $model->addRule('streamSessionId', 'exist', ['targetClass' => StreamSession::class, 'targetAttribute' => 'id']);
 
         if (!$model->load(Yii::$app->request->post())) {
-            //some example default values
-            $model->shopUri = 'shop1';
-            $model->centrifugoUrl = getenv('CENTRIFUGO_WEB_SOCKET');
+            //some example default values (from fixtures for quick debug)
+            $model->shopUri = Shop::find()->select('uri')->scalar();//select some shop
+            $model->streamSessionId = StreamSession::find()->orderBy(['id' => SORT_DESC])->select('id')->scalar(); //selet most resent session
+            $model->centrifugoUrl = Yii::$app->centrifugo->ws;
             $model->signEndpoint = Yii::$app->urlManagerRest->createAbsoluteUrl('v1/centrifugo/sign');
         }
         $model->validate();
@@ -213,6 +217,6 @@ class SiteController extends Controller
                 }
             }
         }
-        return $this->render('centrifugo', ['model' => $model, 'validated' => !$model->hasErrors()]);
+        return $this->render('centrifugo', ['model' => $model]);
     }
 }
