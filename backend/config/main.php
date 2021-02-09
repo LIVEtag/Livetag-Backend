@@ -1,8 +1,9 @@
 <?php
 
-use common\models\User;
+use backend\models\User\User;
 use dmstr\web\AdminLteAsset;
 use kartik\grid\Module;
+use yii\web\DbSession;
 
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
@@ -28,14 +29,9 @@ return [
                 'name' => '_backendUser',
             ]
         ],
-        // Для проверки данных, детали смотреть в классе AccessService
-//        'dataAccessManager' => [
-//            'class' => \common\components\rbac\data\AccessService::class,
-//            'itemFile' => '@common/components/rbac/data/items.php',
-//        ],
         'session' => [
+            'class' => DbSession::class,
             'name' => '_backendSessionId',
-            'savePath' => dirname(__DIR__) . '/runtime/session',
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -47,14 +43,7 @@ return [
                 ],
             ],
         ],
-        'urlManager' => [
-            'rules' => [
-                '' => '',
-                '<controller:[\w\-]+>/<action:[\w\-]+>' => '<controller>/<action>/',
-                '<module:\w+>/<controller:[\w\-]+>' => '<module>/<controller>/',
-                '<module:\w+>/<controller:[\w\-]+>/<action:[\w\-]+>' => '<module>/<controller>/<action>/',
-            ],
-        ],
+        'urlManager' => require __DIR__ . '/urlManager.php',
         'request' => [
             'trustedHosts' => [
                 '10.1.0.1',

@@ -4,16 +4,16 @@
  * See LICENSE.txt for license details.
  */
 
+use rest\common\controllers\ShopController;
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
+use rest\modules\v1\controllers\CentrifugoController;
+use rest\modules\v1\controllers\ConfigController;
+use rest\modules\v1\controllers\ProductController;
+use rest\modules\v1\controllers\StreamSessionController;
 use rest\modules\v1\Module as V1Module;
-use yii\authclient\clients\Facebook;
-use yii\authclient\clients\Google;
-use yii\authclient\clients\LinkedIn;
-use yii\authclient\clients\Twitter;
-use yii\authclient\Collection;
 use yii\data\Pagination;
 use yii\web\JsonParser;
 use yii\web\Response;
@@ -76,17 +76,6 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/user' => 'v1/auth',
-                    ],
-                    'extraPatterns' => [
-                        'POST login/<type:\w+>' => 'auth',
-                        'OPTIONS login/<type:\w+>' => 'options',
-                    ],
-                    'pluralize' => false,
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
                         'v1/user' => 'v1/access-token'
                     ],
                     'extraPatterns' => [
@@ -100,7 +89,6 @@ return [
                         'v1/user' => 'v1/user'
                     ],
                     'extraPatterns' => [
-                        'POST register' => 'create',
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
                         'OPTIONS current' => 'options',
@@ -112,6 +100,8 @@ return [
                         'OPTIONS new-password' => 'options',
                         'POST logout' => 'logout',
                         'OPTIONS logout' => 'options',
+                        'GET validate-password-token/<token:>' => 'validate-password-token',
+                        'OPTIONS validate-password-token/{token}' => 'options',
                     ],
                 ],
                 [
@@ -125,8 +115,75 @@ return [
                 ],
                 [
                     'class' => UrlRule::class,
+                    'controller' => ['v1/config'],
+                    'pluralize' => false,
+                    'only' => [
+                        ConfigController::ACTION_INDEX,
+                        ConfigController::ACTION_OPTIONS
+                    ]
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => ['v1/stream-session'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST' => StreamSessionController::ACTION_CREATE,
+                        'OPTIONS' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}' => StreamSessionController::ACTION_VIEW,
+                        'POST {id}' => StreamSessionController::ACTION_START,
+                        'DELETE {id}' => StreamSessionController::ACTION_STOP,
+                        'OPTIONS {id}' => StreamSessionController::ACTION_OPTIONS,
+                    ],
+                    'extraPatterns' => [
+                        'GET {id}/token' => StreamSessionController::ACTION_TOKEN,
+                        'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}/product' => StreamSessionController::ACTION_PRODUCTS,
+                        'OPTIONS {id}/product' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}/comment' => StreamSessionController::ACTION_COMMENT_INDEX,
+                        'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
+                        'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,
+                    ]
+                ],
+                [
+                    'class' => UrlRule::class,
                     'controller' => [
-                        'v1/config' => 'v1/config'
+                        'v1/shop' => 'v1/stream-session'
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET {slug}/stream-session/current' => StreamSessionController::ACTION_CURRENT,
+                        'OPTIONS {slug}/stream-session/current' => StreamSessionController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => ['v1/centrifugo'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST sign' => CentrifugoController::ACTION_SIGN,
+                        'OPTIONS sign' => CentrifugoController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/shop' => 'v1/product'
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET {slug}/product' => ProductController::ACTION_INDEX,
+                        'OPTIONS {slug}/product' => ProductController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/shop',
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET <id:\w+>' => ShopController::ACTION_VIEW,
+                        'OPTIONS <id:\w+>' => ShopController::ACTION_OPTIONS,
                     ],
                 ],
             ],

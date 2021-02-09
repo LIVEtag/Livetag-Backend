@@ -35,7 +35,7 @@ class ChangePasswordCest extends ActionCest
      */
     public function update(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::USER);
+        $I->amLoggedInApiAs(UserFixture::SELLER_1);
         foreach ($this->getProviderData($I, 'update') as $data) {
             $this->dataComment($I, $data);
             $I->send($this->getMethod(), $this->getUrl($I), $data['request']);
@@ -49,9 +49,10 @@ class ChangePasswordCest extends ActionCest
      */
     public function validation(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::USER);
+        $I->amLoggedInApiAs(UserFixture::SELLER_1);
         foreach ($this->getProviderData($I, 'validation') as $data) {
             $this->dataComment($I, $data);
+            
             $I->send($this->getMethod(), $this->getUrl($I), $data['request']);
             $I->seeResponseResultIsUnprocessableEntity();
             $I->seeResponseContainsJson($data['response']);

@@ -22,7 +22,7 @@ class AccessRule extends BaseAccessRule
      *        [
      *            'allow' => true,
      *            'actions' => ['current'],
-     *            'roles' => [User::ROLE_BASIC, User::ROLE_ADVANCED],
+     *            'roles' => [User::ROLE_SELLER, User::ROLE_ADMIN],
      *        ]
      *    ]
      * ]
@@ -34,9 +34,7 @@ class AccessRule extends BaseAccessRule
             return true;
         }
         if ($user === false) {
-            throw new InvalidConfigException(
-                'The user application component must be available to specify roles in AccessRule.'
-            );
+            throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
 
         if (!$user->getIsGuest() &&
@@ -48,7 +46,7 @@ class AccessRule extends BaseAccessRule
         foreach ($this->roles as $role) {
             if ($role === '?' && $user->getIsGuest()) {
                 return true;
-            } else if ($role === '@' && !$user->getIsGuest()) {
+            } elseif ($role === '@' && !$user->getIsGuest()) {
                 return true;
             } else {
                 if (!isset($roleParams)) {

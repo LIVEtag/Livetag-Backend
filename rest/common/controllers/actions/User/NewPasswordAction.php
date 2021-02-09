@@ -7,11 +7,11 @@ declare(strict_types=1);
 
 namespace rest\common\controllers\actions\User;
 
-use Yii;
-use yii\web\NotFoundHttpException;
+use common\models\forms\User\RecoveryPassword;
 use common\models\User;
-use rest\common\models\views\User\RecoveryPassword;
-use rest\components\api\actions\Action;
+use Yii;
+use yii\base\Action;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class NewPasswordAction

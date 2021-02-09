@@ -34,8 +34,8 @@ class RecoveryPasswordCest extends ActionCest
      */
     public function recovery(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::USER);
-        $user = $I->grabFixture('users', UserFixture::USER);
+        $I->amLoggedInApiAs(UserFixture::SELLER_1);
+        $user = $I->grabFixture('users', UserFixture::SELLER_1);
 
         $I->send($this->getMethod(), $this->getUrl($I), ['email' => $user->email]);
         $I->seeResponseResultIsNoContent();
@@ -50,7 +50,7 @@ class RecoveryPasswordCest extends ActionCest
      */
     public function validation(ApiTester $I)
     {
-        $I->amLoggedInApiAs(UserFixture::USER);
+        $I->amLoggedInApiAs(UserFixture::SELLER_1);
         foreach ($this->getProviderData($I, 'validation') as $data) {
             $this->dataComment($I, $data);
             $I->send($this->getMethod(), $this->getUrl($I), $data['request']);

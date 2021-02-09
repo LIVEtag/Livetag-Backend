@@ -11,7 +11,11 @@ $user = Yii::$app->user->identity;
 ?>
 
 <header class="main-header">
-    <?= Html::a('<span class="logo-mini">LT</span><span class="logo-lg">' . Yii::$app->name . '</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
+    <?= Html::a(
+        '<span class="logo-mini">LT</span><span class="logo-lg"><img src="' . Yii::getAlias('@web') . '/images/logo.png" class="user-image" alt="' . Yii::$app->name . '"/></span>',
+        Yii::$app->homeUrl,
+        ['class' => 'logo']
+    ); ?>
     <nav class="navbar navbar-static-top" role="navigation">
         <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
@@ -21,16 +25,20 @@ $user = Yii::$app->user->identity;
             <ul class="nav navbar-nav">
                 <!-- User Account: style can be found in dropdown.less -->
                 <?php if ($user) : ?>
+                <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <?= Yii::$app->formatter->asDatetime(time()); ?>
+                            <?= Yii::$app->formatter->timeZone; ?>
+                        </a>
+                    </li>
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
                             <span class="hidden-xs"><?= $user->email ?></span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
                                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-
                                 <p>
                                     <?= $user->email ?>
                                     <small>Member since <?= Yii::$app->formatter->asDate($user->createdAt) ?></small>
@@ -39,7 +47,13 @@ $user = Yii::$app->user->identity;
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    <?=
+                                    Html::a(
+                                        'Change Password',
+                                        ['/user/change-password'],
+                                        ['class' => 'btn btn-default btn-flat']
+                                    )
+                                    ?>
                                 </div>
                                 <div class="pull-right">
                                     <?=

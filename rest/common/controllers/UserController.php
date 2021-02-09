@@ -6,13 +6,14 @@
 
 namespace rest\common\controllers;
 
-use rest\common\controllers\actions\User\OptionsAction;
-use rest\common\controllers\actions\User\RecoveryAction;
-use rest\common\controllers\actions\User\SignupAction;
 use rest\common\controllers\actions\User\ChangePasswordAction;
 use rest\common\controllers\actions\User\CurrentAction;
-use rest\common\controllers\actions\User\NewPasswordAction;
 use rest\common\controllers\actions\User\LogoutAction;
+use rest\common\controllers\actions\User\NewPasswordAction;
+use rest\common\controllers\actions\User\OptionsAction;
+use rest\common\controllers\actions\User\RecoveryAction;
+use rest\common\controllers\actions\User\ValidatePasswordTokenAction;
+use rest\common\models\User;
 use rest\components\api\Controller;
 use rest\components\filters\RateLimiter\Rules\RouteRateLimitRule;
 use yii\helpers\ArrayHelper;
@@ -31,19 +32,24 @@ class UserController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => ['create', 'options', 'recovery-password', 'new-password'],
+                    'except' => ['options', 'recovery-password', 'new-password', 'validate-password-token'],
                 ],
                 'access' => [
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => ['create', 'recovery-password', 'new-password'],
+                            'actions' => ['recovery-password', 'new-password', 'validate-password-token'],
                             'roles' => ['?'],
                         ],
                         [
                             'allow' => true,
-                            'actions' => ['current', 'change-password', 'logout'],
+                            'actions' => ['current'],
                             'roles' => ['@'],
+                        ],
+                        [
+                            'allow' => true,
+                            'actions' => ['logout', 'change-password', 'validate-password-token'],
+                            'roles' => [User::ROLE_SELLER, User::ROLE_ADMIN], //this actions NOT supported for buyer
                         ],
                     ],
                 ],
@@ -54,6 +60,7 @@ class UserController extends Controller
                             'actions' => [
                                 'recovery-password',
                                 'new-password',
+                                'validate-password-token'
                             ],
                             'maxCount' => 3,
                             'interval' => 3600,
@@ -71,9 +78,6 @@ class UserController extends Controller
     public function actions()
     {
         return [
-            'create' => [
-                'class' => SignupAction::class,
-            ],
             'current' => [
                 'class' => CurrentAction::class,
             ],
@@ -88,6 +92,9 @@ class UserController extends Controller
             ],
             'new-password' => [
                 'class' => NewPasswordAction::class
+            ],
+            'validate-password-token' => [
+                'class' => ValidatePasswordTokenAction::class
             ],
             'logout' => [
                 'class' => LogoutAction::class
@@ -107,6 +114,7 @@ class UserController extends Controller
             'changePassword' => ['PATCH'],
             'recovery-password' => ['POST'],
             'new-password' => ['POST'],
+            'validate-password-token' => ['GET'],
             'logout' => ['POST'],
         ];
     }

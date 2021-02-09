@@ -3,12 +3,16 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace common\models;
 
+use common\components\behaviors\TimestampBehavior;
+use common\models\queries\Shop\ShopQuery;
+use common\models\queries\User\UserQuery;
+use common\models\Shop\Shop;
+use Yii;
 use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -20,16 +24,25 @@ use yii\web\IdentityInterface;
  * @property string $passwordHash
  * @property string $passwordResetToken
  * @property string $email
+ * @property string $uuid
+ * @property string $name
  * @property string $authKey
  * @property integer $status
  * @property integer $createdAt
  * @property integer $updatedAt
  * @property string $password write-only password
+ * @property-read boolean $isAdmin
+ * @property-read boolean $isSeller
+ * @property-read boolean $isBuyer
+ *
+ * @property-read Shop $shop
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     /**
+     * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
+     * @todo change to blocked
      */
     const STATUS_DELETED = 0;
 
@@ -39,19 +52,36 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
     /**
-     * Example role for guest user
+     * Admin of the widget integrated to the website, admin of the livestream.
      */
-    const ROLE_GUEST = 'guest';
+    const ROLE_SELLER = 'seller';
 
     /**
-     * Example role for default user
+     * Admin of the SaaS platform.
      */
-    const ROLE_BASIC = 'basic';
+    const ROLE_ADMIN = 'admin';
 
     /**
-     * Example role for advanced user
+     * The viewer of the livestream. Pseudo-user of the widget.
      */
-    const ROLE_ADVANCED = 'advanced';
+    const ROLE_BUYER = 'buyer';
+
+    /**
+     * Role Names
+     */
+    const ROLES = [
+        self::ROLE_ADMIN => 'Admin',
+        self::ROLE_SELLER => 'Seller',
+        self::ROLE_BUYER => 'Buyer',
+    ];
+
+    /**
+     * Status Names
+     */
+    const STATUSES = [
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_DELETED => 'Blocked',
+    ];
 
     /**
      * @inheritdoc
@@ -62,16 +92,49 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function behaviors(): array
     {
         return [
+            TimestampBehavior::class,
+        ];
+    }
+
+    /**
+     * @return UserQuery
+     */
+    public static function find()
+    {
+        return new UserQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules(): array
+    {
+        return [
+            ['role', 'default', 'value' => self::ROLE_SELLER],
+            ['role', 'in', 'range' => array_keys(self::ROLES)],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => array_keys(self::STATUSES)],
             [
-                'class' => TimestampBehavior::class,
-                'createdAtAttribute' => 'createdAt',
-                'updatedAtAttribute' => 'updatedAt',
+                'email',
+                'required',
+                'when' => function ($model) {
+                    return !$model->getIsBuyer();
+                }
             ],
+            [
+                'uuid',
+                'required',
+                'when' => function ($model) {
+                    return $model->getIsBuyer();
+                }
+            ],
+            ['uuid', 'match', 'pattern' => '/^[0-9A-F]{8}-[0-9A-F]{4}-[1345][0-9A-F]{3}-[0-9A-F]{4}-[0-9A-F]{12}$/i'],
+            ['email', 'email'],
         ];
     }
 
@@ -81,22 +144,65 @@ class User extends ActiveRecord implements IdentityInterface
     public function fields(): array
     {
         return [
-            'id',
-            'email',
+            'role',
+            'name' => function () {
+                return $this->getName();
+            },
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function extraFields(): array
     {
         return [
-            ['role', 'default', 'value' => self::ROLE_BASIC],
-            ['role', 'in', 'range' => [self::ROLE_BASIC, self::ROLE_ADVANCED]],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            'shop'
         ];
+    }
+
+    /**
+     * Return na,e of current user
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Check current user is Admin
+     * @return bool
+     */
+    public function getIsAdmin(): bool
+    {
+        return $this->role == self::ROLE_ADMIN;
+    }
+
+    /**
+     * Check current user is Seller
+     * @return bool
+     */
+    public function getIsSeller(): bool
+    {
+        return $this->role == self::ROLE_SELLER;
+    }
+
+    /**
+     * Check current user is Buyer
+     * @return bool
+     */
+    public function getIsBuyer(): bool
+    {
+        return $this->role == self::ROLE_BUYER;
+    }
+
+    /**
+     * @return ShopQuery
+     */
+    public function getShop(): ShopQuery
+    {
+        return $this->hasOne(Shop::class, ['id' => 'shopId'])->viaTable('user_shop', ['userId' => 'id']);
     }
 
     /**
@@ -158,8 +264,8 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
-        $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
 
@@ -195,7 +301,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password, $this->passwordHash);
+        return Yii::$app->security->validatePassword($password, $this->passwordHash);
     }
 
     /**
@@ -205,7 +311,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->passwordHash = \Yii::$app->security->generatePasswordHash($password);
+        $this->passwordHash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
@@ -213,7 +319,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->authKey = \Yii::$app->security->generateRandomString();
+        $this->authKey = Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -221,7 +327,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->passwordResetToken = \Yii::$app->security->generateRandomString() . '_' . time();
+        $this->passwordResetToken = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**

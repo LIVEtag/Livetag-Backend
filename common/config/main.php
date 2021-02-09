@@ -3,6 +3,10 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use common\components\centrifugo\Centrifugo;
+use common\components\EventDispatcher;
+use common\components\streaming\Vonage;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
 use common\components\validation\validators as RestValidators;
@@ -11,6 +15,22 @@ use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\log\FileTarget;
 use yii\swiftmailer\Mailer;
+use yii\validators\BooleanValidator;
+use yii\validators\CompareValidator;
+use yii\validators\DateValidator;
+use yii\validators\EmailValidator;
+use yii\validators\ExistValidator;
+use yii\validators\FileValidator;
+use yii\validators\ImageValidator;
+use yii\validators\IpValidator;
+use yii\validators\NumberValidator;
+use yii\validators\RangeValidator;
+use yii\validators\RegularExpressionValidator;
+use yii\validators\RequiredValidator;
+use yii\validators\StringValidator;
+use yii\validators\UniqueValidator;
+use yii\validators\UrlValidator;
+use yii\web\UrlManager;
 
 Yii::setAlias('@base.domain', getenv('YII_MAIN_DOMAIN'));
 Yii::setAlias('@rest.domain', getenv('YII_REST_DOMAIN'));
@@ -22,10 +42,19 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
     ],
-    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+    'vendorPath' => dirname(__DIR__, 2) . '/vendor',
     'timeZone' => 'UTC',
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        EventDispatcher::class,
+    ],
     'components' => [
+        'formatter' => [
+            'dateFormat' => 'dd/MM//yyyy',
+            'timeFormat' => 'HH:mm:ss',
+            'datetimeFormat' => 'dd/MM/yyyy, HH:mm:ss',
+            'timeZone' => 'Singapore',
+        ],
         'db' => [
             'class' => Connection::class,
             'dsn' => 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';port=' . getenv('DB_PORT') . '',
@@ -44,6 +73,8 @@ return [
                 'port' => getenv('MAIL_PORT'),
                 'encryption' => getenv('MAIL_ENCRYPTION'),
             ],
+            'useFileTransport' => filter_var(getenv('MAIL_USEFILETRANSPORT'), FILTER_VALIDATE_BOOLEAN),
+            'fileTransportPath' => '@common/runtime/mail',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -65,6 +96,13 @@ return [
                 ],
             ],
         ],
+        'centrifugo' => [
+            'class' => Centrifugo::class,
+            'host' => getenv('CENTRIFUGO_HOST'),
+            'ws' => getenv('CENTRIFUGO_WEB_SOCKET'),
+            'secret' => getenv('CENTRIFUGO_TOKEN_HMAC_SECRET_KEY'),
+            'apiKey' => getenv('CENTRIFUGO_API_KEY'),
+        ],
         // If the project uses a load balancer, the file cache must be replaced (redis, memcached etc.)
         'cache' => [
             'class' => FileCache::class,
@@ -75,27 +113,39 @@ return [
             'enableStrictParsing' => true,
             'showScriptName' => false,
         ],
+        'urlManagerRest' => [
+            'class' => UrlManager::class,
+            'baseUrl' => 'https://' . Yii::getAlias('@rest.domain') . '/rest',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
+        'vonage' => [
+            'class' => Vonage::class,
+            'apiKey' => getenv('VONAGE_API_KEY'),
+            'apiSecret' => getenv('VONAGE_API_SECRET'),
+        ],
+        'urlManagerBackend' => require __DIR__ . '/../../backend/config/urlManager.php',
     ],
     'container' => [
         'singletons' => [
             ErrorListInterface::class => ErrorList::class,
         ],
         'definitions' => [
-            \yii\validators\StringValidator::class => RestValidators\StringValidator::class,
-            \yii\validators\EmailValidator::class => RestValidators\EmailValidator::class,
-            \yii\validators\FileValidator::class => RestValidators\FileValidator::class,
-            \yii\validators\ImageValidator::class => RestValidators\ImageValidator::class,
-            \yii\validators\BooleanValidator::class => RestValidators\BooleanValidator::class,
-            \yii\validators\NumberValidator::class => RestValidators\NumberValidator::class,
-            \yii\validators\DateValidator::class => RestValidators\DateValidator::class,
-            \yii\validators\RangeValidator::class => RestValidators\RangeValidator::class,
-            \yii\validators\RequiredValidator::class => RestValidators\RequiredValidator::class,
-            \yii\validators\RegularExpressionValidator::class => RestValidators\RegularExpressionValidator::class,
-            \yii\validators\UrlValidator::class => RestValidators\UrlValidator::class,
-            \yii\validators\CompareValidator::class => RestValidators\CompareValidator::class,
-            \yii\validators\IpValidator::class => RestValidators\IpValidator::class,
-            \yii\validators\UniqueValidator::class => RestValidators\UniqueValidator::class,
-            \yii\validators\ExistValidator::class => RestValidators\ExistValidator::class,
+            StringValidator::class => RestValidators\StringValidator::class,
+            EmailValidator::class => RestValidators\EmailValidator::class,
+            FileValidator::class => RestValidators\FileValidator::class,
+            ImageValidator::class => RestValidators\ImageValidator::class,
+            BooleanValidator::class => RestValidators\BooleanValidator::class,
+            NumberValidator::class => RestValidators\NumberValidator::class,
+            DateValidator::class => RestValidators\DateValidator::class,
+            RangeValidator::class => RestValidators\RangeValidator::class,
+            RequiredValidator::class => RestValidators\RequiredValidator::class,
+            RegularExpressionValidator::class => RestValidators\RegularExpressionValidator::class,
+            UrlValidator::class => RestValidators\UrlValidator::class,
+            CompareValidator::class => RestValidators\CompareValidator::class,
+            IpValidator::class => RestValidators\IpValidator::class,
+            UniqueValidator::class => RestValidators\UniqueValidator::class,
+            ExistValidator::class => RestValidators\ExistValidator::class,
         ],
     ],
 ];

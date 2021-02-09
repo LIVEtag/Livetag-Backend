@@ -5,6 +5,7 @@ namespace rest\tests;
 use Codeception\Scenario;
 use Codeception\Util\HttpCode;
 use common\models\AccessToken;
+use common\models\User;
 use Faker\Generator;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
@@ -34,13 +35,28 @@ class ApiTester extends \Codeception\Actor
      */
     public function amLoggedInApiAs(int $userId)
     {
-        /** @var AccessToken $accessToken */
-        $accessToken = $this->grabFixture('accessTokens', $userId);
-        if (!isset($accessToken)) {
-            throw new \RuntimeException('User has no asses token');
+        /** var User $user */
+        $user = $this->grabFixture('users', $userId);
+        if (!$user) {
+            throw new \RuntimeException('User has not exist');
         }
-        $this->amBearerAuthenticated($accessToken->token);
-        $this->haveHttpHeader('User-Agent', $accessToken->userAgent);
+
+        switch ($user->role) {
+            case User::ROLE_ADMIN:
+            case User::ROLE_SELLER:
+                //NOTE: this is bug and works only if userid==accessTokenId
+                /** @var AccessToken $accessToken */
+                $accessToken = $this->grabFixture('accessTokens', $userId);
+                if (!isset($accessToken)) {
+                    throw new \RuntimeException('User has no asses token');
+                }
+                $this->amBearerAuthenticated($accessToken->token);
+                $this->haveHttpHeader('User-Agent', $accessToken->userAgent);
+                break;
+            case User::ROLE_BUYER:
+                $this->amHttpAuthenticated($user->uuid, '');
+                break;
+        }
     }
 
     /**
@@ -176,6 +192,97 @@ class ApiTester extends \Codeception\Actor
         $this->dontSeeHttpHeader('x-pagination-page-count');
         $this->dontSeeHttpHeader('x-pagination-per-page');
         $this->dontSeeHttpHeader('x-pagination-total-count');
+    }
+
+    //Some Basic Responses
+    /**
+     * @return array
+     */
+    public function getStreamSessionResponse(): array
+    {
+        return [
+            'id' => 'integer',
+            'shopUri' => 'string',
+            'sessionId' => 'string',
+            'status' => 'integer',
+            'createdAt' => 'integer',
+            'startedAt' => 'integer|null',
+            'stoppedAt' => 'integer|null',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getStreamSessionTokenResponse(): array
+    {
+        return [
+            'streamSessionId' => 'integer',
+            'token' => 'string',
+            'expiredAt' => 'integer',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getStreamSessionProductResponse(): array
+    {
+        return [
+            'productId' => 'integer',
+            'status' => 'integer',
+            'product' => $this->getProductResponse(),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getStreamSessionCommentResponse(): array
+    {
+        return [
+            'userId' => 'integer',
+            'message' => 'string',
+            'user' => $this->getUserResponse(),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductResponse(): array
+    {
+        return [
+            'id' => 'integer',
+            'sku' => 'string',
+            'title' => 'string',
+            'photo' => 'string',
+            'link' => 'string',
+            'options' => 'array'
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getShopResponse(): array
+    {
+        return [
+            'uri' => 'string',
+            'name' => 'string',
+            'website' => 'string',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserResponse(): array
+    {
+        return [
+            'name' => 'string|null',
+            'role' => 'string',
+        ];
     }
 
     /**

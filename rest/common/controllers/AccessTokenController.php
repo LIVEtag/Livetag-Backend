@@ -7,7 +7,6 @@
 namespace rest\common\controllers;
 
 use rest\common\controllers\actions\AccessToken\CreateAction;
-use rest\common\controllers\actions\AccessToken\EmailAction;
 use rest\common\controllers\actions\AccessToken\OptionsAction;
 use rest\components\api\Controller;
 use yii\helpers\ArrayHelper;

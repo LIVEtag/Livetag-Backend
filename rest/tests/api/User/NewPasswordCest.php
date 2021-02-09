@@ -38,7 +38,7 @@ class NewPasswordCest extends ActionCest
      */
     private function createUserWithValidResetToken(ApiTester $I)
     {
-        $userFixture = $I->grabFixture('users', UserFixture::USER);
+        $userFixture = $I->grabFixture('users', UserFixture::SELLER_1);
 
         // create valid reset token
         $user = User::findOne(['id' => $userFixture->id]);
@@ -85,12 +85,12 @@ class NewPasswordCest extends ActionCest
             [
                 [
                     'field' => 'string:=password',
-                    'message' => 'string:=Password cannot be blank.',
+                    'message' => 'string:=New Password cannot be blank.',
                     'code' => 'integer:=' . ErrorList::REQUIRED_INVALID
                 ],
                 [
                     'field' => 'string:=confirmPassword',
-                    'message' => 'string:=Confirm Password cannot be blank.',
+                    'message' => 'string:=Confirm New Password cannot be blank.',
                     'code' => 'integer:=' . ErrorList::REQUIRED_INVALID
                 ]
 
@@ -107,7 +107,7 @@ class NewPasswordCest extends ActionCest
     {
         $user = $this->createUserWithValidResetToken($I);
 
-        $password = $I->generator->password(8, 15);
+        $password = $I->generator->password(8, 15) . 'Pp1';
         $I->amGoingTo('password do not match');
 
         $I->send(
@@ -124,11 +124,11 @@ class NewPasswordCest extends ActionCest
         $I->seeResponseMatchesJsonType(
             [
                 [
-                    'field' => 'string:=password',
-                    'message' => 'string:=Password must be equal to "Confirm Password".',
+                    'field' => 'string:=confirmPassword',
+                    'message' => 'string:=Confirm New Password must be equal to "New Password".',
                     'code' => 'integer:=' . ErrorList::COMPARE_EQUAL
                 ]
-
+        
             ],
             '$.result'
         );
@@ -140,8 +140,8 @@ class NewPasswordCest extends ActionCest
      */
     public function saveNewPasswordWorks(ApiTester $I)
     {
-        $user = $I->grabFixture('users', UserFixture::USER);
-        $password = $I->generator->password(8, 15);
+        $user = $I->grabFixture('users', UserFixture::SELLER_1);
+        $password = $I->generator->password(8, 15) . 'Pp1';
         $I->wantToTest('create new password');
 
         $I->send(

@@ -6,20 +6,28 @@
 
 namespace rest\components\api;
 
+use rest\components\filters\RateLimiter;
 use Yii;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
-use rest\components\filters\RateLimiter;
-use yii\rest\Controller as BaseController;
-use yii\web\Response;
 use yii\filters\VerbFilter;
+use yii\rest\Controller as BaseController;
+use yii\rest\OptionsAction;
+use yii\web\Response;
 
 /**
  * Class Controller
  */
 class Controller extends BaseController
 {
+    /**
+     * Default Options action
+     */
+    const ACTION_OPTIONS = 'options';
+
     /**
      * @inheritdoc
      */
@@ -43,8 +51,12 @@ class Controller extends BaseController
                 ],
             ],
             'authenticator' => [
-                'class' => HttpBearerAuth::class,
-                'except' => ['options'],
+                'class' => CompositeAuth::class,
+                'authMethods' => [
+                    HttpBasicAuth::class,
+                    HttpBearerAuth::class,
+                ],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,
@@ -56,19 +68,29 @@ class Controller extends BaseController
             ],
             'rateLimiter' => [
                 'class' => RateLimiter::class,
-                'except' => ['options'],
-                //'isActive' => YII_ENV_PROD,
+                'except' => [self::ACTION_OPTIONS],
+            //'isActive' => YII_ENV_PROD,
             ],
             'access' => [
                 'class' => AccessControl::class,
                 'forbiddenMessage' => Yii::t('yii', 'You are not allowed to perform this action.'),
                 'ruleConfig' => ['class' => AccessRule::class],
-                'except' => ['options'],
+                'except' => [self::ACTION_OPTIONS],
             ],
             'verbFilter' => [
                 'class' => VerbFilter::class,
                 'actions' => $this->verbs(),
             ],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function actions()
+    {
+        return [
+            self::ACTION_OPTIONS => OptionsAction::class
         ];
     }
 }

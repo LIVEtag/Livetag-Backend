@@ -8,7 +8,8 @@ declare(strict_types=1);
 namespace rest\common\models;
 
 use common\models\User as CommonUser;
-use rest\common\models\queries\User\UserQuery;
+use yii\filters\auth\HttpBasicAuth;
+use yii\filters\auth\HttpBearerAuth;
 use yii\web\IdentityInterface;
 
 /**
@@ -18,26 +19,6 @@ use yii\web\IdentityInterface;
  */
 class User extends CommonUser
 {
-    /**
-     * @inheritdoc
-     */
-    public function fields(): array
-    {
-        return [
-            'id',
-            'email',
-        ];
-    }
-
-    /**
-     * @return object|\yii\db\ActiveQuery
-     * @throws \yii\base\InvalidConfigException
-     */
-    public static function find()
-    {
-        return \Yii::createObject(UserQuery::class, [get_called_class()]);
-    }
-
     /** @var AccessToken */
     protected $accessToken;
 
@@ -56,22 +37,45 @@ class User extends CommonUser
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        /** @var $accessToken AccessToken */
-        $accessToken = AccessToken::find()
-            ->byToken($token)
-            ->valid()
-            ->one();
+        switch ($type) {
+            case HttpBasicAuth::class:
+                return self::getOrCreateBuyer($token);
+            case HttpBearerAuth::class:
+                /** @var $accessToken AccessToken */
+                $accessToken = AccessToken::find()
+                    ->byToken($token)
+                    ->valid()
+                    ->one();
 
-        if ($accessToken !== null) {
-            $user = static::findOne(['id' => $accessToken->userId, 'status' => self::STATUS_ACTIVE]);
-            if (!empty($user)) {
-                // set current access token
-                $user->accessToken = $accessToken;
-            }
-
-            return $user;
+                if ($accessToken !== null) {
+                    $user = static::findOne(['id' => $accessToken->userId, 'status' => self::STATUS_ACTIVE]);
+                    if (!empty($user)) {
+                        $user->accessToken = $accessToken; // set current access token
+                    }
+                    return $user;
+                }
         }
-
         return null;
+    }
+
+    /**
+     * Get existing Buyer record or create new one
+     * @param string $uuid
+     * @return self|null
+     */
+    public static function getOrCreateBuyer($uuid): ?self
+    {
+        $user = self::find()
+            ->byRole(self::ROLE_BUYER)
+            ->byUuid($uuid)
+            ->one();
+        if ($user) {
+            return $user->status == self::STATUS_ACTIVE ? $user : null;
+        }
+        $user = new self([
+            'uuid' => $uuid,
+            'role' => self::ROLE_BUYER
+        ]);
+        return $user->save() ? $user : null;
     }
 }

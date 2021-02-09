@@ -11,7 +11,7 @@ use rest\tests\ApiTester;
 /**
  * @var ApiTester $I
  */
-$password = $I->generator->password(8, 15);
+$password = $I->generator->password(8, 15) . 'Pp1';
 
 return [
     'update' => [
@@ -54,8 +54,8 @@ return [
             ],
             'response' => [
                 [
-                    'field' => 'newPassword',
-                    'message' => 'New Password must be equal to "Confirm Password".',
+                    'field' => 'confirmPassword',
+                    'message' => 'Confirm Password must be equal to "New Password".',
                     'code' => ErrorList::COMPARE_EQUAL,
                 ],
             ]

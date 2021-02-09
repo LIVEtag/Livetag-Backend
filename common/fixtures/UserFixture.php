@@ -14,26 +14,33 @@ use common\models\User;
  */
 class UserFixture extends ActiveFixture
 {
-    const USER = 1;
-    const DELETED = 2;
+    const ADMIN = 1;
+    const SELLER_1 = 2;
+    const SELLER_2 = 3;
+    const SELLER_3 = 4;
+    const DELETED = 5; //todo change to blocked
+    const BUYER_1 = 6;
+    const BUYER_2 = 7;
 
     const DEFAULT_PASSWORD = 'Password_0';
 
     public $modelClass = User::class;
+
     /**
      * @inheritdoc
      */
     protected function getTemplate(): array
     {
         return [
+            'email' => $this->generator->unique()->email,
+            'uuid' => null,
             'authKey' => $this->security->generateRandomString(),
             'passwordHash' => $this->security->generatePasswordHash(self::DEFAULT_PASSWORD),
             'passwordResetToken' => null,
-            'role' => User::ROLE_BASIC,
+            'role' => User::ROLE_SELLER,
             'status' => User::STATUS_ACTIVE,
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
-            'email' => $this->generator->unique()->email,
         ];
     }
 }

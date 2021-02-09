@@ -4,6 +4,7 @@ use backend\assets\AppAsset;
 use dmstr\helpers\AdminLteHelper;
 use dmstr\web\AdminLteAsset;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 /* @var $this View */
@@ -33,6 +34,7 @@ if (Yii::$app->controller->action->id === 'login') {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
+        <?= $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/ico', 'href' => Url::to(['/images/favicon.ico'])]); ?>
         <?php $this->head() ?>
     </head>
     <body class="hold-transition <?= AdminLteHelper::skinClass() ?> sidebar-mini">

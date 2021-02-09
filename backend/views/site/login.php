@@ -4,7 +4,7 @@ use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\models\LoginForm */
+/* @var $model \common\models\forms\User\LoginForm */
 
 $this->title = 'Sign In';
 
@@ -21,9 +21,8 @@ $fieldOptions2 = [
 
 <div class="login-box">
     <div class="login-logo">
-        <a href="#"><b>Admin</b>LTE</a>
+        <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', ['alt' => Yii::$app->name]) ?>
     </div>
-    <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
 
@@ -43,14 +42,13 @@ $fieldOptions2 = [
             <div class="col-xs-8">
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
             </div>
-            <!-- /.col -->
             <div class="col-xs-4">
-                <?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block btn-flat', 'name' => 'login-button']) ?>
+                <?= Html::submitButton('Sign in', ['class' => 'btn btn-primary btn-block bg-black', 'name' => 'login-button']) ?>
             </div>
-            <!-- /.col -->
         </div>
-
+        <div>
+            <?= Html::a('Forgot password?', 'forgot-password', ['class' => 'text-center center-block']) ?>
+        </div>
         <?php ActiveForm::end(); ?>
     </div>
-    <!-- /.login-box-body -->
-</div><!-- /.login-box -->
+</div>

@@ -7,8 +7,15 @@ declare(strict_types=1);
 
 namespace rest\tests;
 
-use common\fixtures\UserFixture;
 use common\fixtures\AccessTokenFixture;
+use common\fixtures\CommentFixture;
+use common\fixtures\ProductFixture;
+use common\fixtures\ShopFixture;
+use common\fixtures\StreamSessionFixture;
+use common\fixtures\StreamSessionProductFixture;
+use common\fixtures\StreamSessionTokenFixture;
+use common\fixtures\UserFixture;
+use common\fixtures\UserShopFixture;
 
 trait BaseFixtureTrait
 {
@@ -22,6 +29,13 @@ trait BaseFixtureTrait
         return [
             'users' => UserFixture::class,
             'accessTokens' => AccessTokenFixture::class,
+            'shops' => ShopFixture::class,
+            'userShops' => UserShopFixture::class,
+            'streamSessions' => StreamSessionFixture::class,
+            'streamSessionTokens' => StreamSessionTokenFixture::class,
+            'products' => ProductFixture::class,
+            'streamSessionProducts' => StreamSessionProductFixture::class,
+            'comments' => CommentFixture::class,
         ];
     }
 }

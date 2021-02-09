@@ -1,15 +1,16 @@
 <?php
+
 namespace rest\tests\api\User;
 
 use rest\tests\AccessTestTrait;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
-use common\models\User;
-use common\fixtures\UserFixture;
+use rest\tests\ProviderDataTrait;
 
 class CurrentUserCest extends ActionCest
 {
     use AccessTestTrait;
+    use ProviderDataTrait;
 
     /**
      * @return string
@@ -30,24 +31,15 @@ class CurrentUserCest extends ActionCest
 
     /**
      * @param ApiTester $I
-     * @throws \ReflectionException
      */
-    public function update(ApiTester $I)
+    public function current(ApiTester $I)
     {
-        /** @var User $user */
-        $user = $I->grabFixture('users', UserFixture::USER);
-
-        $I->amLoggedInApiAs(UserFixture::USER);
-        $I->wantToTest('view current user');
-
+        foreach ($this->getProviderData($I, 'current') as $data) {
+            $this->dataComment($I, $data);
+            $I->amLoggedInApiAs($data['userId']);
             $I->send($this->getMethod(), $this->getUrl($I));
             $I->seeResponseResultIsOk();
-            $I->seeResponseMatchesJsonType(
-                [
-                    'id' => "integer:={$user->id}",
-                    'email' => "string:={$user->email}"
-                ],
-                '$.result'
-            );
+            $I->seeResponseMatchesJsonType($I->getUserResponse(), '$.result');
+        }
     }
 }

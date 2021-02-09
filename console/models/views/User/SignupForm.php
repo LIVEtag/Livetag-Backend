@@ -49,7 +49,7 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
-            ['role', 'in', 'range' => [User::ROLE_ADVANCED, User::ROLE_BASIC], 'skipOnEmpty' => true]
+            ['role', 'in', 'range' => [User::ROLE_ADMIN, User::ROLE_SELLER], 'skipOnEmpty' => true]
         ];
     }
 

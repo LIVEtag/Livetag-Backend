@@ -10,9 +10,21 @@ use common\fixtures\UserFixture;
 /** @var AccessTokenFixture $this */
 
 return [
-    UserFixture::USER => [
-        'userId' => UserFixture::USER,
-        'token' => 'user',
+    AccessTokenFixture::ADMIN => [
+        'userId' => UserFixture::ADMIN,
+        'token' => 'admin',
+    ],
+    AccessTokenFixture::SELLER_1 => [
+        'userId' => UserFixture::SELLER_1,
+        'token' => 'seller1',
+    ],
+    AccessTokenFixture::SELLER_2 => [
+        'userId' => UserFixture::SELLER_2,
+        'token' => 'seller2',
+    ],
+    AccessTokenFixture::SELLER_3 => [
+        'userId' => UserFixture::SELLER_3,
+        'token' => 'seller3',
     ],
     AccessTokenFixture::DELETED => [
         'userId' => UserFixture::DELETED,

@@ -3,11 +3,53 @@
     "info": {
         "description": "API for mobile && js applications.",
         "version": "1.0.0",
-        "title": "GBKSOFT Test API"
+        "title": "Livetag API"
     },
     "security": [
         {
+            "Basic": []
+        },
+        {
             "Bearer": []
+        }
+    ],
+    "servers": [
+        {
+            "url": "/rest"
+        }
+    ],
+    "tags": [
+        {
+            "name": "AnyBody",
+            "description": "Actions available without authentication"
+        },
+        {
+            "name": "Seller",
+            "description": "Actions Available for `Seller` Role"
+        },
+        {
+            "name": "Buyer",
+            "description": "Actions Available for `Buyer` Role"
+        },
+        {
+            "name": "Account",
+            "description": "User authentication, manage and details, email confirmation and authentication"
+        },
+        {
+            "name": "Stream Session",
+            "description": "Stream sessions manage"
+        },
+        {
+            "name": "Comments",
+            "description": "Stream Comments"
+        },
+        {
+            "name": "Centrifugo",
+            "description": "Centrifugo related methods"
+        },
+        {
+            "name": "Shop",
+            "description": "Shop related methods"
         }
     ],
     "paths": {
@@ -16,9 +58,36 @@
                 "security": [],
                 "summary": "Create access token for APP",
                 "tags": [
-                    "AnyBody"
+                    "AnyBody",
+                    "Account"
                 ],
                 "operationId": "userCreateAccessToken",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "seller1@nosend.net",
+                                        "description": "E-mail Minimum 2, maximum 255 characters"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Password_0",
+                                        "description": "Minimum 2, maximum 255 characters"
+                                    },
+                                    "rememberMe": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "Remember for 30 days (default true)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "OK",
@@ -27,7 +96,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status201"
+                                            "$ref": "#/components/schemas/status201"
                                         },
                                         {
                                             "properties": {
@@ -42,103 +111,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "description": "E-mail Minimum 2, maximum 255 characters"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/user/register": {
-            "post": {
-                "security": [],
-                "summary": "Create user for APP",
-                "tags": [
-                    "AnyBody"
-                ],
-                "operationId": "userCreate",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/responses/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/token"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "description": "Minimum 2, maximum 255 characters"
-                                    },
-                                    "isRememberMe": {
-                                        "enum": [
-                                            "no",
-                                            "yes"
-                                        ],
-                                        "default": "no",
-                                        "description": "are you need remember this token?"
-                                    }
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
@@ -147,9 +120,19 @@
             "get": {
                 "summary": "Current user for APP",
                 "tags": [
-                    "User"
+                    "Account",
+                    "Seller",
+                    "Buyer"
                 ],
                 "operationId": "userCurrent",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-user"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -158,7 +141,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -173,23 +156,22 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
         },
         "/v1/user/logout": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "summary": "Logout current user",
                 "tags": [
-                    "User"
+                    "Account",
+                    "Seller"
                 ],
                 "operationId": "userLogout",
                 "responses": {
@@ -198,20 +180,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/responses/status204"
+                                    "$ref": "#/components/schemas/status204"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     }
                 }
             }
@@ -232,7 +207,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status200"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -249,11 +224,56 @@
                 }
             }
         },
+        "/v1/user/validate-password-token/{token}": {
+            "get": {
+                "security": [],
+                "summary": "Validate Password Token",
+                "tags": [
+                    "Account"
+                ],
+                "operationId": "userValidatePasswordToken",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
         "/v1/user/change-password": {
             "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "summary": "Change User Password",
                 "tags": [
-                    "User"
+                    "Account",
+                    "Seller"
                 ],
                 "operationId": "userChangePassword",
                 "responses": {
@@ -264,7 +284,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -272,24 +292,10 @@
                         }
                     },
                     "401": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status401"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/401"
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 },
                 "requestBody": {
@@ -308,7 +314,8 @@
                 "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
-                    "User"
+                    "Account",
+                    "AnyBody"
                 ],
                 "operationId": "userRecoveryPasswordByEmail",
                 "responses": {
@@ -319,7 +326,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -327,14 +334,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 },
                 "requestBody": {
@@ -353,7 +353,8 @@
                 "security": [],
                 "summary": "Recovery user password by email",
                 "tags": [
-                    "User"
+                    "Account",
+                    "AnyBody"
                 ],
                 "operationId": "userRecoveryPasswordChange",
                 "responses": {
@@ -364,7 +365,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/responses/status204"
+                                            "$ref": "#/components/schemas/status204"
                                         }
                                     ]
                                 }
@@ -372,14 +373,7 @@
                         }
                     },
                     "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/responses/status422"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/422"
                     }
                 },
                 "requestBody": {
@@ -392,23 +386,818 @@
                     }
                 }
             }
+        },
+
+        "/v1/shop/{shopUri}/stream-session/current": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "View Active Stream Session for selected shop",
+                "operationId": "currentStreamSessionToken",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "Shop Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/v1/stream-session": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Stream Session",
+                    "Seller"
+                ],
+                "summary": "Create new Session for Stream",
+                "operationId": "streamSessionCreate",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+        "/v1/stream-session/{streamSessionid}": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "View Stream Session by id",
+                "operationId": "streamSessionView",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSession"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Stream Session",
+                    "Seller"
+                ],
+                "summary": "Start selected Stream Session (Create Token)",
+                "operationId": "streamSessionStart",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSessionToken"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Stream Session",
+                    "Seller"
+                ],
+                "summary": "Stop selected Stream Session",
+                "operationId": "streamSessionStop",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status204"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                }
+            }
+        },
+        "/v1/stream-session/{streamSessionid}/token": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get token for selected Stream Session",
+                "operationId": "streamSessionToken",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSessionToken"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/v1/stream-session/{streamSessionid}/product": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get products of selected Stream Session",
+                "operationId": "streamSessionProducts",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "required": false,
+                        "description": "Filter by Stream Session Product status \n* `2` - Displayed in the widget.\n* `3` -  Presented now.",
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                2,
+                                3
+                            ]
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "productId",
+                        "description": "Filter by Product Ids. Supported formats: \n* array \n* comma-separated string",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Sort ordering: use order=[-]sortOrder",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "productId",
+                                "-productId",
+                                "productTitle",
+                                "-productTitle"
+                            ]
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSessionProduct"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSessionProduct"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+
+        "/v1/stream-session/{streamSessionid}/comment": {
+            "get": {
+                "tags": [
+                    "Comments",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "List comment",
+                "operationId": "commentIndex",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    },
+                    {
+                        "in": "query",
+                        "name": "lastId",
+                        "description": "Id of last message (use for alternative pagination). The filter will show all messages with IDs less than this",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-comment"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/comment"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comments",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Create new comment (TBU)",
+                "operationId": "commentCreateNew",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-comment"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "message"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Hello!"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/comment"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+        "/v1/centrifugo/sign": {
+            "post": {
+                "summary": "Sign in centrifugo",
+                "description": "This method required by centrifugo for connection check",
+                "tags": [
+                    "Centrifugo",
+                    "Seller",
+                    "Buyer"
+                ],
+                "operationId": "centrifugoSign",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "token": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            }
+        },
+
+        "/v1/shop/{shopUri}": {
+            "get": {
+                "summary": "Get shop detail by shop uri",
+                "tags": [
+                    "Shop"
+                ],
+                "operationId": "getShopByUri",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "get shop by Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/shop"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
+        "/v1/shop/{shopUri}/product": {
+            "get": {
+                "summary": "Get products by shop uri",
+                "tags": [
+                    "Shop"
+                ],
+                "operationId": "getProductsByShop",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "shop Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/product"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    }
+                }
+            }
         }
     },
-    "servers": [
-        {
-            "url": "/rest"
-        }
-    ],
     "components": {
         "securitySchemes": {
+            "Basic": {
+                "description": "Use uuid as username and ANY password(empty is ok, but swagger does not support empty passwords) for Buyer role",
+                "type": "http",
+                "scheme": "basic"
+            },
             "Bearer": {
-                "description": "",
+                "description": "Access token for Seller and Admin roles",
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": ""
             }
         },
         "responses": {
+            "400": {
+                "description": "Bad Request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status400"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Unauthorized",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status401"
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "Forbidden",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status403"
+                        }
+                    }
+                }
+            },
+            "404": {
+                "description": "Not Found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status404"
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "Unprocessable Entity",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status422"
+                        }
+                    }
+                }
+            },
+            "500": {
+                "description": "Internal Server Error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status500"
+                        }
+                    }
+                }
+            },
+            "503": {
+                "description": "Service Unavailable",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status503"
+                        }
+                    }
+                }
+            }
+        },
+        "schemas": {
             "responseModel": {
                 "type": "object",
                 "required": [
@@ -447,7 +1236,7 @@
             "status200": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "200 OK",
@@ -465,7 +1254,7 @@
             "status200DataProvider": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/status200"
+                        "$ref": "#/components/schemas/status200"
                     },
                     {
                         "type": "object",
@@ -503,7 +1292,7 @@
             "status201": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "201 Created",
@@ -524,7 +1313,7 @@
             "status204": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "204 No Content",
@@ -542,7 +1331,7 @@
             "status400": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "400 Bad Request",
@@ -563,7 +1352,7 @@
             "status401": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "401 Unauthorized",
@@ -584,7 +1373,7 @@
             "status403": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "403 Forbidden",
@@ -605,10 +1394,10 @@
             "status404": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
-                        "title": "401 Not Found",
+                        "title": "404 Not Found",
                         "properties": {
                             "code": {
                                 "example": "404"
@@ -626,7 +1415,7 @@
             "status422": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "422 Unprocessable Entity",
@@ -643,7 +1432,7 @@
                             "result": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/responses/validateError"
+                                    "$ref": "#/components/schemas/validateError"
                                 }
                             }
                         }
@@ -653,7 +1442,7 @@
             "status500": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "500 Internal Server Error",
@@ -674,7 +1463,7 @@
             "status503": {
                 "allOf": [
                     {
-                        "$ref": "#/components/responses/responseModel"
+                        "$ref": "#/components/schemas/responseModel"
                     },
                     {
                         "title": "503 Service Unavailable",
@@ -691,17 +1480,32 @@
                         }
                     }
                 ]
-            }
-        },
-        "schemas": {
+            },
+
             "user": {
                 "type": "object",
                 "required": [
-                    "email"
+                    "role",
+                    "name"
                 ],
                 "properties": {
-                    "email": {
-                        "type": "string"
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "admin",
+                            "seller",
+                            "buyer"
+                        ],
+                        "example": "seller"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Jon Snow"
+                    },
+                    "shop": {
+                        "type": "object",
+                        "description": "EXPAND",
+                        "$ref": "#/components/schemas/shop"
                     }
                 }
             },
@@ -789,6 +1593,276 @@
                         "type": "string",
                         "description": "Minimum 2, maximum 255 characters"
                     }
+                }
+            },
+
+            "shop": {
+                "type": "object",
+                "required": [
+                    "uri",
+                    "name",
+                    "website"
+                ],
+                "properties": {
+                    "uri": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "website": {
+                        "type": "string"
+                    }
+                }
+            },
+
+            "streamSession": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "shopUri",
+                    "sessionId",
+                    "status",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "shopUri": {
+                        "type": "string",
+                        "example": "shop1"
+                    },
+                    "sessionId": {
+                        "type": "string",
+                        "example": "1_MX40NTc0ODE1Mn5-MTQ4NjEzNjg3NTg4OX5BVVBhZmZCK3E5ZTdzdmlZbVpvR041V32-QX4"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "1-NEW; 2-ACTIVE; 3-STOPPED",
+                        "enum": [1, 2, 3],
+                        "example": 1
+                    },
+                    "createdAt": {
+                        "type": "integer",
+                        "example": 1611738385
+                    },
+                    "startedAt": {
+                        "type": "integer",
+                        "example": 1611741985
+                    },
+                    "stoppedAt": {
+                        "type": "integer",
+                        "example": 1611752785
+                    }
+                }
+            },
+            "streamSessionToken": {
+                "type": "object",
+                "required": [
+                    "streamSessionId",
+                    "token",
+                    "expiredAt"
+                ],
+                "properties": {
+                    "streamSessionId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "EXPAND",
+                        "example": "T1==cGFydG5lcl9pZD00NTc0ODE1MiZzaWc9NDI2NTY1NmNiZmM4MjBmMTY2ZDQ0OWY4MDcwOTQwYTcwN2Q1MmJiMjpzZXNzaW9uX2lkPTFfTVg0ME5UYzBPREUxTW41LU1UUTROakV6TmpnM05UZzRPWDVCVlZCaFptWkNLM0U1WlRkemRtbFpiVnB2UjA0MVYzWi1RWDQmY3JlYXRlX3RpbWU9MTQ4NjEzNjg2NSZyb2xlPXB1Ymxpc2hlciZub25jZT0xNDg2MTM2ODY1LjE5ODI2MDkxMTcyNDUmZXhwaXJlX3RpbWU9MTQ4NjIyMzI2NQ=="
+                    },
+                    "expiredAt": {
+                        "type": "integer",
+                        "example": 1619827200
+                    }
+                }
+            },
+            "streamSessionProduct": {
+                "type": "object",
+                "required": [
+                    "productId",
+                    "status"
+                ],
+                "properties": {
+                    "productId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "description": "2-`Displayed in the widget`; 3-`Presented now`",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "product": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/product"
+                    }
+                }
+            },
+
+            "comment": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "message",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/user"
+                    }
+                }
+            },
+
+            "product": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "sku",
+                    "title",
+                    "photo",
+                    "link",
+                    "options"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "sku": {
+                        "type": "string",
+                        "example": "fb7e2008-50e4-3735-a320-ccc3399d7da5"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "In quas molestiae."
+                    },
+                    "photo": {
+                        "type": "string",
+                        "example": "https://picsum.photos/200"
+                    },
+                    "link": {
+                        "type": "string",
+                        "example": "http://bernier.org/"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/productOption"
+                        }
+                    }
+                }
+            },
+            "productOption": {
+                "type": "object",
+                "description": "Only price is required field. Other fields are dynamic",
+                "required": [
+                    "price"
+                ],
+                "properties": {
+                    "price": {
+                        "type": "number",
+                        "example": 178.13
+                    },
+                    "size": {
+                        "type": "string",
+                        "example": "M"
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "MediumOrchid"
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "page": {
+                "in": "query",
+                "name": "page",
+                "description": "The number of page.",
+                "required": false,
+                "example": 1,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 1
+                }
+            },
+            "perPage": {
+                "in": "query",
+                "name": "perPage",
+                "description": "The number of items returned per page",
+                "required": false,
+                "example": 20,
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 20
+                }
+            },
+            "fields": {
+                "in": "query",
+                "name": "fields",
+                "description": "Fields (coma separated)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-streamSession": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```-``` (for future use)",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-streamSessionProduct": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```product```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-comment": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```user```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-user": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```shop```",
+                "required": false,
+                "schema": {
+                    "type": "string"
                 }
             }
         }

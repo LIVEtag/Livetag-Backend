@@ -5,12 +5,9 @@
  */
 namespace rest\common\controllers\actions\User;
 
-use common\models\User;
-use rest\common\models\views\User\ChangePassword;
-use rest\common\models\views\User\RecoveryPassword;
-use rest\common\models\views\User\SendRecoveryEmailForm;
-use rest\components\api\actions\Action;
-use yii\web\NotFoundHttpException;
+use common\models\forms\User\SendRecoveryEmailForm;
+use Yii;
+use yii\base\Action;
 
 /**
  * Class RecoveryAction
@@ -20,13 +17,13 @@ class RecoveryAction extends Action
     public function run()
     {
         $model = new SendRecoveryEmailForm();
-        $model->setAttributes($this->request->post());
+        $model->setAttributes(Yii::$app->request->post());
         if (!$model->validate()) {
             return $model;
         }
 
         $model->generateAndSendEmail();
 
-        \Yii::$app->getResponse()->setStatusCode(204);
+        Yii::$app->getResponse()->setStatusCode(204);
     }
 }

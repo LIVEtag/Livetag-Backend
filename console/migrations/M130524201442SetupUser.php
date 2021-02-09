@@ -12,26 +12,30 @@ use common\components\db\Migration;
  */
 class M130524201442SetupUser extends Migration
 {
+    const TABLE_NAME = '{{%user}}';
+
     public function up()
     {
         $this->createTable(
-            '{{%user}}',
+            self::TABLE_NAME,
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'role'=>$this->string()->notNull(),
-                'email' => $this->string()->notNull()->unique(),
-                'authKey' => $this->string(32)->notNull(),
-                'passwordHash' => $this->string()->notNull(),
+                'role' => $this->enum(['admin', 'seller', 'buyer'])->notNull(),
+                'email' => $this->string()->null()->unique()->comment('email- unique identifier for seller and admin'),
+                'uuid' => $this->string(36)->null()->unique()->comment('uuid - unique identifier for buyer'),
+                'name' => $this->string(),
+                'authKey' => $this->string(32)->null(),
+                'passwordHash' => $this->string()->null(),
                 'passwordResetToken' => $this->string()->unique(),
                 'status' => $this->smallInteger()->notNull()->defaultValue(10),
-                'createdAt' => $this->integer()->unsigned()->notNull(),
-                'updatedAt' => $this->integer()->unsigned()->notNull(),
+                'createdAt' => $this->unixTimestamp(),
+                'updatedAt' => $this->unixTimestamp(),
             ]
         );
     }
 
     public function down()
     {
-        $this->dropTable('{{%user}}');
+        $this->dropTable(self::TABLE_NAME);
     }
 }

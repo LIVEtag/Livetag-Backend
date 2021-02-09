@@ -38,7 +38,7 @@ use <?= ltrim($class, '\\') ?>;
             <div class="box box-default">
                 <?= "<?php " ?>$form = ActiveForm::begin(); ?>
                 <div class="box-header">
-                    <?= "<?= " ?>Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn btn-primary']) ?>
+                    <?= "<?= " ?>Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
@@ -53,6 +53,7 @@ use <?= ltrim($class, '\\') ?>;
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <div class="form-group">
+                        <?= "<?= " ?>Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'btn bg-black']) ?>
                         <?= "<?= " ?>Html::submitButton(<?= $generator->generateString('Save') ?>, ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>

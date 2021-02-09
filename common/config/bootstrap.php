@@ -1,8 +1,8 @@
 <?php
 Yii::setAlias('@common', dirname(__DIR__));
-Yii::setAlias('@rest', dirname(dirname(__DIR__)) . '/rest');
-Yii::setAlias('@backend', dirname(dirname(__DIR__)) . '/backend');
-Yii::setAlias('@console', dirname(dirname(__DIR__)) . '/console');
+Yii::setAlias('@rest', dirname(__DIR__, 2). '/rest');
+Yii::setAlias('@backend', dirname(__DIR__, 2). '/backend');
+Yii::setAlias('@console', dirname(__DIR__, 2). '/console');
 
 if (file_exists(__DIR__ . '/../../.env')) {
     //@see https://github.com/vlucas/phpdotenv#putenv-and-getenv

@@ -86,7 +86,7 @@ Run `composer install`
 
 Run `php init --env={env} --overwrite=All` (env - environemnt name, like dev, test, etc.)
 
-Run `php yii migrate --no-interactive`
+Run `php yii migrate --interactive=0`
 
 If need run `./yii fixture/load "*"`
 

@@ -1,8 +1,5 @@
 <?php
 
-use common\components\rbac\controllers\RbacController;
-use common\components\rbac\PhpManager;
-use common\models\User;
 use yii\console\controllers\MigrateController;
 use yii\log\FileTarget;
 
@@ -27,19 +24,8 @@ return [
                 ],
             ],
         ],
-        'authManager' => [
-            'class' => PhpManager::class,
-            'defaultRoles' => [
-                User::ROLE_GUEST
-            ],
-            'itemFile' => '@common/components/rbac/items.php',
-            'ruleFile' => '@common/components/rbac/rules.php',
-        ],
     ],
     'controllerMap' => [
-        'rbac' => [
-            'class' => RbacController::class,
-        ],
         'migrate' => [
             // https://yiiframework.com.ua/ru/doc/guide/2/db-migrations/#namespaced-migrations
             // ------------
@@ -53,6 +39,7 @@ return [
             //    (new \m141106_185632_log_init)->up();
             'class' => MigrateController::class,
             'migrationPath' => null,
+            'templateFile' => '@app/views/migration.php',
             'migrationNamespaces' => [
                 'console\migrations', //base migrations
             ],
