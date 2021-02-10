@@ -10,6 +10,9 @@ namespace common\models\Product;
 use common\components\behaviors\TimestampBehavior;
 use common\components\centrifugo\channels\SessionChannel;
 use common\components\centrifugo\Message;
+use common\components\EventDispatcher;
+use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
 use common\helpers\LogHelper;
 use common\models\queries\Product\StreamSessionProductQuery;
 use common\models\Stream\StreamSession;
@@ -37,8 +40,12 @@ use yii\helpers\Json;
  * - EVENT_AFTER_DELETE
  * @see EventDispatcher
  */
-class StreamSessionProduct extends ActiveRecord
+class StreamSessionProduct extends ActiveRecord implements StreamSessionProductInterface
 {
+    /**
+     * Max items in presented now status
+     */
+    const MAX_PRESENTED_ITEMS = 4;
     const STATUS_DISPLAYED = 2;
     const STATUS_PRESENTED = 3;
 
@@ -124,8 +131,12 @@ class StreamSessionProduct extends ActiveRecord
     public function fields(): array
     {
         return [
-            'productId',
-            'status',
+            'productId' => function () {
+                return $this->getProductId();
+            },
+            'status' => function () {
+                return $this->getStatus();
+            },
         ];
     }
 
@@ -156,6 +167,72 @@ class StreamSessionProduct extends ActiveRecord
     }
 
     /**
+     * Check current session is active
+     * @return bool
+     */
+    public function isDisplayed(): bool
+    {
+        return $this->getStatus() === self::STATUS_DISPLAYED;
+    }
+
+    /**
+     * Check current session is stopped
+     * @return bool
+     */
+    public function isPresented(): bool
+    {
+        return $this->getStatus() === self::STATUS_PRESENTED;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId(): ?int
+    {
+        return $this->id ? (int) $this->id : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStreamSessionId(): ?int
+    {
+        return $this->streamSessionId ? (int) $this->streamSessionId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getProductId(): ?int
+    {
+        return $this->productId ? (int) $this->productId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status ? (int) $this->status : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCreatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUpdatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
      * Send notification about product to centrifugo
      * @param string $actionType
      */
@@ -174,5 +251,32 @@ class StreamSessionProduct extends ActiveRecord
                 ]);
             }
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert): bool
+    {
+        //Check items with presented status
+        if ($this->isAttributeChanged('status') && $this->isPresented() && $this->getCountPresented() >= self::MAX_PRESENTED_ITEMS) {
+            $errorList = Yii::createObject(ErrorListInterface::class);
+            $error = $errorList->createErrorMessage(ErrorList::CHECKED_TOO_MANY)->setParams(['number' => self::MAX_PRESENTED_ITEMS]);
+            $this->addError('status', (string) $error);
+            return false;
+        }
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * Get count of presented items in current session
+     * @return int
+     */
+    public function getCountPresented(): int
+    {
+        return (int) self::find()
+                ->byStreamSessionId($this->getStreamSessionId())
+                ->byStatus(self::STATUS_PRESENTED)
+                ->count();
     }
 }
