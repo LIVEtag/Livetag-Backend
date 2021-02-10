@@ -325,7 +325,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function isActive(): bool
     {
-        return $this->getStatus() === self::STATUS_ACTIVE; // && $this->getExpiredAt() && $this->getExpiredAt() > time();
+        return $this->getStatus() === self::STATUS_ACTIVE;
     }
 
     /**
