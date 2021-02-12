@@ -28,4 +28,13 @@ class AccessToken extends ActiveRecord
     {
         return 'access_token';
     }
+    
+    /**
+     * Invalidate access token
+     */
+    public function invalidate(): void
+    {
+        $this->expiredAt = time();
+        $this->save(false, ['expiredAt']);
+    }
 }

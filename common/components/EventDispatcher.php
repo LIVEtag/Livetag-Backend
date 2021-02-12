@@ -11,6 +11,7 @@ use common\models\Comment\Comment;
 use common\models\Product\StreamSessionProduct;
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
+use common\models\User;
 use common\observers\Comment\CreateCommentObserver;
 use common\observers\Comment\DeleteCommentObserver;
 use common\observers\Comment\UpdateCommentObserver;
@@ -21,6 +22,7 @@ use common\observers\StreamSession\UpdateStreamSessionObserver;
 use common\observers\StreamSessionProduct\CreateStreamSessionProductObserver;
 use common\observers\StreamSessionProduct\DeleteStreamSessionProductObserver;
 use common\observers\StreamSessionProduct\UpdateStreamSessionProductObserver;
+use common\observers\User\PasswordRestoreObserver;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
@@ -65,5 +67,8 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(Comment::class, Comment::EVENT_AFTER_INSERT, [Yii::createObject(CreateCommentObserver::class), 'execute']);
         Event::on(Comment::class, Comment::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateCommentObserver::class), 'execute']);
         Event::on(Comment::class, Comment::EVENT_AFTER_DELETE, [Yii::createObject(DeleteCommentObserver::class), 'execute']);
+    
+        # User events
+        Event::on(User::class, User::EVENT_PASSWORD_RESTORED, [Yii::createObject(PasswordRestoreObserver::class), 'execute']);
     }
 }
