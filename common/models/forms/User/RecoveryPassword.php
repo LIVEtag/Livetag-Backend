@@ -64,10 +64,12 @@ class RecoveryPassword extends Model
         if ($this->validate()) {
             $user->setPassword($this->password);
             $user->removePasswordResetToken();
+            if ($user->save()) {
+                $user->trigger(User::EVENT_PASSWORD_RESTORED);
+            }
         } else {
             $this->addError('resetToken', 'Token or password is invalid.');
         }
-        $user->save();
 
         return $this;
     }
