@@ -32,6 +32,10 @@
             "description": "Actions Available for `Buyer` Role"
         },
         {
+            "name": "User",
+            "description": "Actions Available for ALL Roles"
+        },
+        {
             "name": "Account",
             "description": "User authentication, manage and details, email confirmation and authentication"
         },
@@ -303,6 +307,54 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/changePassword"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/v1/user": {
+            "patch": {
+                "summary": "Update User Profile",
+                "tags": [
+                    "Account"
+                ],
+                "operationId": "userEditData",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/userProfileForm"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/userProfileForm"
                             }
                         }
                     }
@@ -1567,6 +1619,20 @@
                     "confirmPassword": {
                         "type": "string"
                     }
+                }
+            },
+            "userProfileForm": {
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                  "name": {
+                      "type": "string"
+                  },
+                  "role": {
+                      "type": "string"
+                  }
                 }
             },
             "recoveryPasswordRequest": {
