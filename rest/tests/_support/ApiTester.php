@@ -273,6 +273,17 @@ class ApiTester extends \Codeception\Actor
             'website' => 'string',
         ];
     }
+    
+    /**
+     * @return array
+     */
+    public function getUserEditResponse(): array
+    {
+        return [
+            'name' => 'string',
+            'role' => 'string',
+        ];
+    }
 
     /**
      * @return array

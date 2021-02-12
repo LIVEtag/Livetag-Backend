@@ -115,6 +115,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules(): array
     {
         return [
+            [['name'], 'string', 'max' => 255],
             ['role', 'default', 'value' => self::ROLE_SELLER],
             ['role', 'in', 'range' => array_keys(self::ROLES)],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
