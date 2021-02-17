@@ -5,6 +5,7 @@ use common\fixtures\StreamSessionProductFixture;
 use common\models\Product\StreamSessionProduct;
 
 return [
+    //New Session of Shop1 (5/8 products)
     StreamSessionProductFixture::PRODUCT_1_SESSION_3 => [
         'id' => StreamSessionProductFixture::PRODUCT_1_SESSION_3,
         'productId' => ProductFixture::PRODUCT_1_SHOP_1,
@@ -31,6 +32,7 @@ return [
         'productId' => ProductFixture::PRODUCT_5_SHOP_1,
         'streamSessionId' => StreamSessionFixture::STREAM_SESSION_3_SHOP_1_NEW,
     ],
+    //Active Session of Shop2 (4/4 products)
     StreamSessionProductFixture::PRODUCT_9_SESSION_4 => [
         'id' => StreamSessionProductFixture::PRODUCT_9_SESSION_4,
         'productId' => ProductFixture::PRODUCT_9_SHOP_2,
@@ -51,5 +53,27 @@ return [
         'id' => StreamSessionProductFixture::PRODUCT_12_SESSION_4,
         'productId' => ProductFixture::PRODUCT_12_SHOP_2,
         'streamSessionId' => StreamSessionFixture::STREAM_SESSION_4_SHOP_2_ACTIVE,
+    ],
+    //Expired Session of Shop1
+    StreamSessionProductFixture::PRODUCT_13_SESSION_1 => [
+        'id' => StreamSessionProductFixture::PRODUCT_13_SESSION_1,
+        'productId' => ProductFixture::PRODUCT_1_SHOP_1,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_1_SHOP_1_EXPIRED,
+    ],
+    StreamSessionProductFixture::PRODUCT_14_SESSION_1 => [
+        'id' => StreamSessionProductFixture::PRODUCT_14_SESSION_1,
+        'productId' => ProductFixture::PRODUCT_2_SHOP_1,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_1_SHOP_1_EXPIRED,
+    ],
+    //Expired Session of Shop2
+    StreamSessionProductFixture::PRODUCT_15_SESSION_2 => [
+        'id' => StreamSessionProductFixture::PRODUCT_15_SESSION_2,
+        'productId' => ProductFixture::PRODUCT_9_SHOP_2,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_2_SHOP_2_EXPIRED,
+    ],
+    StreamSessionProductFixture::PRODUCT_16_SESSION_2 => [
+        'id' => StreamSessionProductFixture::PRODUCT_16_SESSION_2,
+        'productId' => ProductFixture::PRODUCT_10_SHOP_2,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_2_SHOP_2_EXPIRED,
     ],
 ];

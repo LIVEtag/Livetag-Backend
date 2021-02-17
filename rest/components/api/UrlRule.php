@@ -20,6 +20,7 @@ class UrlRule extends BaseUrlRule
     {
         $this->tokens = [
             '{id}' => '<id:\\d[\\d,]*>',
+            '{productId}' => '<productId:\\d[\\d,]*>',
             '{slug}' => '<slug:[0-9a-zA-Z\-]+>',
         ];
         parent::__construct($config);
