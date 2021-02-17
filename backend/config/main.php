@@ -32,6 +32,11 @@ return [
         'session' => [
             'class' => DbSession::class,
             'name' => '_backendSessionId',
+            'writeCallback' => static function () {
+                return [
+                    'userId' => Yii::$app->user->id
+                ];
+            }
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

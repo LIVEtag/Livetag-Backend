@@ -40,6 +40,11 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     /**
+     * When user restore his own password
+     */
+    const EVENT_PASSWORD_RESTORED = 'passwordRestored';
+    
+    /**
      * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
      * @todo change to blocked
@@ -115,6 +120,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules(): array
     {
         return [
+            [['name'], 'string', 'max' => 255],
             ['role', 'default', 'value' => self::ROLE_SELLER],
             ['role', 'in', 'range' => array_keys(self::ROLES)],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],

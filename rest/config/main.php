@@ -5,6 +5,7 @@
  */
 
 use rest\common\controllers\ShopController;
+use rest\common\controllers\UserController;
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
@@ -76,17 +77,12 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/user' => 'v1/access-token'
-                    ],
-                    'extraPatterns' => [
-                        'POST login' => 'create',
-                        'OPTIONS login' => 'options',
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
                         'v1/user' => 'v1/user'
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'PATCH' => UserController::ACTION_UPDATE,
+                        'OPTIONS' => UserController::ACTION_OPTIONS,
                     ],
                     'extraPatterns' => [
                         'OPTIONS register' => 'options',
@@ -102,6 +98,16 @@ return [
                         'OPTIONS logout' => 'options',
                         'GET validate-password-token/<token:>' => 'validate-password-token',
                         'OPTIONS validate-password-token/{token}' => 'options',
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/user' => 'v1/access-token'
+                    ],
+                    'extraPatterns' => [
+                        'POST login' => 'create',
+                        'OPTIONS login' => 'options',
                     ],
                 ],
                 [
