@@ -33,6 +33,15 @@ class ProductQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('status') => $status]);
     }
+    
+    /**
+     * @param string $sku
+     * @return $this
+     */
+    public function bySku(string $sku): self
+    {
+        return $this->andWhere([$this->getFieldName('sku') => $sku]);
+    }
 
     /**
      * @param int|array $id

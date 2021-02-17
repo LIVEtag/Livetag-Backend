@@ -47,19 +47,19 @@ class Product extends ActiveRecord implements ProductInterface
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_DELETED => 'Deleted',
     ];
-
+    
     /**
-     * required field price in option
+     * required field price in option and header
      */
     const PRICE = 'price';
-
+    
     /**
      * required fields in option
      */
     const OPTION_REQUIRED = [
         self::PRICE,
     ];
-
+    
     /**
      * @inheritdoc
      */
