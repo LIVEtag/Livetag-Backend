@@ -7,10 +7,12 @@ declare(strict_types=1);
 
 namespace common\components;
 
+use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Comment\Comment;
 use common\models\Product\StreamSessionProduct;
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
+use common\observers\Analytics\CreateStreamSessionProductEventObserver;
 use common\observers\Comment\CreateCommentObserver;
 use common\observers\Comment\DeleteCommentObserver;
 use common\observers\Comment\UpdateCommentObserver;
@@ -65,5 +67,11 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(Comment::class, Comment::EVENT_AFTER_INSERT, [Yii::createObject(CreateCommentObserver::class), 'execute']);
         Event::on(Comment::class, Comment::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateCommentObserver::class), 'execute']);
         Event::on(Comment::class, Comment::EVENT_AFTER_DELETE, [Yii::createObject(DeleteCommentObserver::class), 'execute']);
+
+        # Analytics
+        Event::on(StreamSessionProductEvent::class, StreamSessionProductEvent::EVENT_AFTER_INSERT, [
+            Yii::createObject(CreateStreamSessionProductEventObserver::class),
+            'execute'
+        ]);
     }
 }

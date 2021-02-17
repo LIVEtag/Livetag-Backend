@@ -41,9 +41,9 @@ use yii\helpers\Json;
 class Comment extends ActiveRecord implements CommentInterface
 {
     /**
-     * Seller can answer with any size and any html
+     * Category for logs
      */
-    const SCENARIO_SELLER = 'seller';
+    const LOG_CATEGORY = 'comment';
 
     /**
      * User relation key

@@ -139,6 +139,8 @@ return [
                         'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/product' => StreamSessionController::ACTION_PRODUCTS,
                         'OPTIONS {id}/product' => StreamSessionController::ACTION_OPTIONS,
+                        'POST {id}/product/{productId}/event' => StreamSessionController::ACTION_EVENT,
+                        'OPTIONS {id}/product/{productId}/event' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/comment' => StreamSessionController::ACTION_COMMENT_INDEX,
                         'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
                         'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,

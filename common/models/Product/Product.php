@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * @property int $createdAt  [int(11) unsigned]
  * @property int $updatedAt  [int(11) unsigned]
  */
-class Product extends ActiveRecord
+class Product extends ActiveRecord implements ProductInterface
 {
     /**
      * Removed product. required for analytics
@@ -128,12 +128,24 @@ class Product extends ActiveRecord
     public function fields(): array
     {
         return [
-            'id',
-            'sku',
-            'title',
-            'photo',
-            'link',
-            'options'
+            'id' => function () {
+                return $this->getId();
+            },
+            'sku' => function () {
+                return $this->getSku();
+            },
+            'title' => function () {
+                return $this->getTitle();
+            },
+            'photo' => function () {
+                return $this->getPhoto();
+            },
+            'link' => function () {
+                return $this->getLink();
+            },
+            'options' => function () {
+                return $this->getOptions();
+            },
         ];
     }
 
@@ -143,6 +155,86 @@ class Product extends ActiveRecord
     public function getShop(): ActiveQuery
     {
         return $this->hasOne(Shop::class, ['id' => 'shopId']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId(): ?int
+    {
+        return $this->id ? (int) $this->id : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSku(): ?string
+    {
+        return $this->sku ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getShopId(): ?int
+    {
+        return $this->shopId ? (int) $this->shopId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPhoto(): ?string
+    {
+        return $this->photo ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLink(): ?string
+    {
+        return $this->link ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptions(): array
+    {
+        return $this->options ?: [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status ? (int) $this->status : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCreatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUpdatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
     }
 
     /**

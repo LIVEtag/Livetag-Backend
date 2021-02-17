@@ -13,9 +13,11 @@ use common\components\centrifugo\Message;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\helpers\LogHelper;
+use common\models\Analytics\StreamSessionStatistic;
 use common\models\Comment\Comment;
 use common\models\Product\Product;
 use common\models\Product\StreamSessionProduct;
+use common\models\queries\Analytics\StreamSessionStatisticQuery;
 use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Product\ProductQuery;
 use common\models\queries\Product\StreamSessionProductQuery;
@@ -47,6 +49,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
  * @property-read Product[] $products
+ * @property-read StreamSessionStatistic $streamSessionStatistic
  *
  * EVENTS:
  * - EVENT_AFTER_INSERT
@@ -236,6 +239,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function getProducts(): ProductQuery
     {
         return $this->hasMany(Product::class, ['id' => 'productId'])->via('streamSessionProducts');
+    }
+
+    /**
+     * @return StreamSessionStatisticQuery
+     */
+    public function getStreamSessionStatistic(): StreamSessionStatisticQuery
+    {
+        return $this->hasOne(StreamSessionStatistic::class, ['streamSessionId' => 'id']);
     }
 
     /**

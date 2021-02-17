@@ -59,11 +59,9 @@ class UserController extends Controller
                             'class' => RouteRateLimitRule::class,
                             'actions' => [
                                 'recovery-password',
-                                'new-password',
-                                'validate-password-token'
                             ],
                             'maxCount' => 3,
-                            'interval' => 3600,
+                            'interval' => 60,
                         ],
                     ],
                     'isActive' => YII_ENV_PROD
