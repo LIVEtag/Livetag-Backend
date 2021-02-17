@@ -8,11 +8,14 @@ declare(strict_types=1);
 namespace backend\controllers;
 
 use backend\components\Controller;
+use backend\models\Comment\Comment;
+use backend\models\Comment\CommentSearch;
 use backend\models\Product\StreamSessionProduct;
 use backend\models\Product\StreamSessionProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
 use backend\models\User\User;
+use common\models\forms\Comment\CommentForm;
 use kartik\grid\EditableColumnAction;
 use Throwable;
 use Yii;
@@ -89,7 +92,7 @@ class StreamSessionController extends Controller
         $searchModel = new StreamSessionSearch();
         $params = Yii::$app->request->queryParams;
         if ($user->isSeller) {
-            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
+            $params = ArrayHelper::merge($params, [StringHelper::basename(\get_class($searchModel)) => ['shopId' => $user->shop->id]]);
         }
         $dataProvider = $searchModel->search($params);
 
@@ -114,17 +117,40 @@ class StreamSessionController extends Controller
         }
 
         $model = $this->findModel($id);
+        
         $productSearchModel = new StreamSessionProductSearch();
         //modify params for search models and pagination
         $params = ArrayHelper::merge(
             Yii::$app->request->queryParams,
-            [StringHelper::basename(get_class($productSearchModel)) => ['streamSessionId' => $model->id]]
+            [StringHelper::basename(\get_class($productSearchModel)) => ['streamSessionId' => $model->id]]
         );
         $productDataProvider = $productSearchModel->search($params);
-        return $this->render('view', [
+    
+        $commentSearchModel = new CommentSearch();
+        //modify params for search models and pagination
+        $paramsComment = ArrayHelper::merge(
+            Yii::$app->request->queryParams,
+            [StringHelper::basename(\get_class($commentSearchModel)) => ['streamSessionId' => $model->id]]
+        );
+        $commentDataProvider = $commentSearchModel->search($paramsComment);
+        
+        $commentModel = new CommentForm();
+        $commentModel->streamSessionId = $id;
+        $commentModel->userId = $user->id;
+        if ($commentModel->load(Yii::$app->request->post()) && $commentModel->save()) {
+            $commentModel = new CommentForm();
+            $commentModel->streamSessionId = $id;
+            $commentModel->userId = $user->id;
+        }
+   
+        $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+        return $this->$method('view', [
                 'model' => $model,
                 'productSearchModel' => $productSearchModel,
                 'productDataProvider' => $productDataProvider,
+                'commentSearchModel' => $commentSearchModel,
+                'commentDataProvider' => $commentDataProvider,
+                'commentModel' => $commentModel,
         ]);
     }
 
@@ -158,6 +184,24 @@ class StreamSessionController extends Controller
         $model->delete();
         if (Yii::$app->request->isAjax) {
             return $this->productList($model->streamSessionId);
+        }
+        $streamUrl = Url::to(['view', 'id' => $model->streamSessionId]);
+        return $this->redirect($streamUrl);
+    }
+    
+    /**
+     * Deletes comment from Session.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDeleteComment(int $id)
+    {
+        $model = $this->findCommentModel($id);
+        $model->delete();
+        if (Yii::$app->request->isAjax) {
+            return $this->commentList($model->streamSessionId);
         }
         $streamUrl = Url::to(['view', 'id' => $model->streamSessionId]);
         return $this->redirect(Yii::$app->request->referrer ?: [$streamUrl]);
@@ -194,6 +238,43 @@ class StreamSessionController extends Controller
                 'streamSessionId' => $streamSessionId,
         ]);
     }
+    
+    /**
+     * @param int $streamSessionId
+     */
+    protected function commentList(int $streamSessionId)
+    {
+        $commentSearchModel = new CommentSearch();
+        //modify params for search models and pagination
+        $queryParams = Yii::$app->request->getQueryParams();
+        //extract original filters from referrer
+        $parts = parse_url(Yii::$app->request->referrer);
+        $referrerParams = [];
+        mb_parse_str($parts['query'], $referrerParams);
+        //merge all params
+        $params = ArrayHelper::merge(
+            $queryParams,
+            $referrerParams,
+            [StringHelper::basename(\get_class($commentSearchModel)) => ['streamSessionId' => $streamSessionId]]
+        );
+        //set params back to use sorting
+        Yii::$app->request->setQueryParams($params);
+    
+        $commentModel = new Comment();
+        $commentModel->streamSessionId = $streamSessionId;
+        $commentModel->userId = Yii::$app->user->identity;
+        
+        $commentDataProvider = $commentSearchModel->search($params);
+        $commentDataProvider->sort->route = '/stream-session/view';
+        $commentDataProvider->pagination->route = '/stream-session/view';
+        $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+        return $this->$method('comment-index', [
+            'commentSearchModel' => $commentSearchModel,
+            'commentDataProvider' => $commentDataProvider,
+            'streamSessionId' => $streamSessionId,
+            'commentModel' => $commentModel,
+        ]);
+    }
 
     /**
      * Finds the StreamSessionProduct model based on its primary key value.
@@ -210,7 +291,23 @@ class StreamSessionController extends Controller
         }
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
-
+    
+    /**
+     * Finds the StreamSessionProduct model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Comment the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findCommentModel(int $id)
+    {
+        $model = Comment::findOne($id);
+        if ($model !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+    
     /**
      * Finds the StreamSession model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

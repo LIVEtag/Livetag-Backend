@@ -4,14 +4,24 @@
  * See LICENSE.txt for license details.
  */
 
+use backend\models\Comment\Comment;
+use backend\models\Comment\CommentSearch;
+use backend\models\Product\StreamSessionProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\DetailView;
 
 /* @var $this View */
 /* @var $model StreamSession */
+/* @var $commentSearchModel CommentSearch */
+/* @var $commentDataProvider ActiveDataProvider */
+/* @var $productSearchModel StreamSessionProductSearch */
+/* @var $productDataProvider ActiveDataProvider */
+/* @var $commentModel Comment */
+/* @var $isPosted bool */
 
 $this->title = 'Livestream details #' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestream'), 'url' => ['index']];
@@ -90,7 +100,12 @@ $user = Yii::$app->user->identity ?? null;
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane " id="comments">
-                        <b>TBU</b>
+                        <?= $this->render('comment-index', [
+                            'commentSearchModel' => $commentSearchModel,
+                            'commentDataProvider' => $commentDataProvider,
+                            'streamSessionId' => $model->id,
+                            'commentModel' => $commentModel,
+                        ]); ?>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane active" id="products">
