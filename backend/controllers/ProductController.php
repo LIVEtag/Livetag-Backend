@@ -13,12 +13,14 @@ use backend\models\Product\Product;
 use backend\models\Product\ProductSearch;
 use backend\models\StreamSessionProduct\StreamSessionProduct;
 use backend\models\User\User;
+use common\models\forms\Product\ProductsUploadForm;
 use kartik\grid\EditableColumnAction;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -54,6 +56,7 @@ class ProductController extends Controller
     /**
      * Lists all Product models.
      * @return mixed
+     * @throws \Throwable
      */
     public function actionIndex()
     {
@@ -65,13 +68,30 @@ class ProductController extends Controller
 
         $searchModel = new ProductSearch();
         $params = Yii::$app->request->queryParams;
+        $shopId = $user->shop->id;
         if ($user->isSeller) {
-            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
+            $params = ArrayHelper::merge($params, [StringHelper::basename(\get_class($searchModel)) => ['shopId' => $shopId]]);
         }
+        
         $dataProvider = $searchModel->search($params);
+        $isProductsExists = Product::find()->byShop($shopId)->exists();
+        $model = new ProductsUploadForm();
+        
+        if ($shopId && $model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->validate() && $model->save($shopId)) {
+                Yii::$app->session->setFlash('success', 'The list of the products was added.');
+            } else {
+                Yii::$app->session->setFlash('error', $model->getModelErrors());
+            }
+            return $this->redirect(['product/index']);
+        }
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'model' => $model,
+            'isProductsExists' => $isProductsExists,
         ]);
     }
 
