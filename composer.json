@@ -19,7 +19,6 @@
         "gbksoft/shell-command-builder": "1.0.1",
         "kartik-v/yii2-grid": "^3.3",
         "kartik-v/yii2-widget-select2": "2.1.0",
-        "kosinix/grafika": "2.0.8",
         "kartik-v/yii2-widgets": "3.4.0",
         "centrifugal/phpcent": "^3.1",
         "deployer/deployer": "6.1",

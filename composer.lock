@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb84cfc36fd74a135af5d41a98e25b51",
+    "content-hash": "39b36bd3d15e3061a5769d709fa23cf4",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -111,7 +111,7 @@
             "version": "v3.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/twbs/bootstrap.git",
+                "url": "git@github.com:twbs/bootstrap.git",
                 "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
             },
             "dist": {
@@ -153,7 +153,7 @@
             "version": "3.5.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:jquery/jquery-dist.git",
+                "url": "https://github.com/jquery/jquery-dist.git",
                 "reference": "4c0e4becb8263bb5b3e6dadc448d8e7305ef8215"
             },
             "dist": {
@@ -2828,47 +2828,6 @@
                 "yii2"
             ],
             "time": "2014-11-09T19:54:17+00:00"
-        },
-        {
-            "name": "kosinix/grafika",
-            "version": "2.0.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kosinix/grafika.git",
-                "reference": "211f61fc334b8b36616b23e8af7c5727971d96ee"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kosinix/grafika/zipball/211f61fc334b8b36616b23e8af7c5727971d96ee",
-                "reference": "211f61fc334b8b36616b23e8af7c5727971d96ee",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Grafika\\": "src/Grafika"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT",
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Nico Amarilla",
-                    "homepage": "https://www.kosinix.com"
-                }
-            ],
-            "description": "An image manipulation library for PHP.",
-            "homepage": "http://kosinix.github.io/grafika",
-            "keywords": [
-                "grafika"
-            ],
-            "time": "2017-06-20T03:13:49+00:00"
         },
         {
             "name": "notamedia/yii2-sentry",

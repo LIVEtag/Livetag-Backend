@@ -55,6 +55,7 @@ use yii\web\UnprocessableEntityHttpException;
  * - EVENT_AFTER_INSERT
  * - EVENT_AFTER_UPDATE
  * - EVENT_END_SOON
+ * - EVENT_SUBSCRIBER_TOKEN_CREATED
  * @see EventDispatcher
  */
 class StreamSession extends ActiveRecord implements StreamSessionInterface
@@ -63,6 +64,11 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
      */
     const EVENT_END_SOON = 'endSoon';
+
+    /**
+     * Created vonage token for subscriber
+     */
+    const EVENT_SUBSCRIBER_TOKEN_CREATED = 'subscriberTokenCreated';
 
     /**
      * Default Session lifetime (3 hours)
@@ -364,7 +370,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         if ($user && $this->getIsOwner($user)) {
             return $this->getPublisherToken();
         }
-        return $this->createSubscriberToken();
+        $subscriberToken = $this->createSubscriberToken();
+        $this->trigger(StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, new StreamSessionSubscriberTokenCreatedEvent($user));
+        return $subscriberToken;
     }
 
     /**
