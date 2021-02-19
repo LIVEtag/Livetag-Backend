@@ -10,8 +10,7 @@ namespace common\models\Analytics;
 use common\components\behaviors\TimestampBehavior;
 use common\components\EventDispatcher;
 use common\components\validation\validators\ArrayValidator;
-use common\models\Product\Product;
-use common\models\queries\Analytics\StreamSessionProductEventQuery;
+use common\models\queries\Analytics\StreamSessionEventQuery;
 use common\models\Stream\StreamSession;
 use common\models\User;
 use Yii;
@@ -19,17 +18,15 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "stream_session_product_event".
+ * This is the model class for table "stream_session_event".
  *
  * @property integer $id
  * @property integer $streamSessionId
- * @property integer $productId
  * @property integer $userId
  * @property string $type
  * @property array $payload
  * @property integer $createdAt
  *
- * @property-read Product $product
  * @property-read StreamSession $streamSession
  * @property-read User $user
  *
@@ -37,13 +34,8 @@ use yii\db\ActiveRecord;
  * - EVENT_AFTER_INSERT
  * @see EventDispatcher
  */
-class StreamSessionProductEvent extends ActiveRecord implements StreamSessionProductEventInterface
+class StreamSessionEvent extends ActiveRecord implements StreamSessionEventInterface
 {
-    /**
-     * Product relation key
-     */
-    const REL_PRODUCT = 'product';
-
     /**
      * StreamSession relation key
      */
@@ -57,13 +49,13 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
     /**
      * “Add to cart” clicks
      */
-    const TYPE_ADD_TO_CART = 'addToCart';
+    const TYPE_VIEW = 'view';
 
     /**
      * Available type
      */
     const TYPES = [
-        self::TYPE_ADD_TO_CART => 'Add to cart click'
+        self::TYPE_VIEW => 'View'
     ];
 
     /**
@@ -71,7 +63,16 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
      */
     public static function tableName(): string
     {
-        return '{{%stream_session_product_event}}';
+        return '{{%stream_session_event}}';
+    }
+
+    /**
+     * @inheritdoc
+     * @return StreamSessionEventQuery the active query used by this AR class.
+     */
+    public static function find(): StreamSessionEventQuery
+    {
+        return new StreamSessionEventQuery(get_called_class());
     }
 
     /**
@@ -89,24 +90,14 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
 
     /**
      * @inheritdoc
-     * @return StreamSessionProductEventQuery the active query used by this AR class.
-     */
-    public static function find(): StreamSessionProductEventQuery
-    {
-        return new StreamSessionProductEventQuery(get_called_class());
-    }
-
-    /**
-     * @inheritdoc
      */
     public function rules(): array
     {
         return [
-            [['streamSessionId', 'productId', 'userId', 'type'], 'required'],
-            [['streamSessionId', 'productId', 'userId'], 'integer'],
+            [['streamSessionId', 'userId', 'type'], 'required'],
+            [['streamSessionId', 'userId'], 'integer'],
             ['type', 'in', 'range' => array_keys(self::TYPES)],
             ['payload', ArrayValidator::class],
-            [['productId'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetRelation' => 'product'],
             [['streamSessionId'], 'exist', 'skipOnError' => true, 'targetClass' => StreamSession::class, 'targetRelation' => 'streamSession'],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetRelation' => 'user'],
         ];
@@ -120,7 +111,6 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
         return [
             'id' => Yii::t('app', 'ID'),
             'streamSessionId' => Yii::t('app', 'Stream Session ID'),
-            'productId' => Yii::t('app', 'Product ID'),
             'userId' => Yii::t('app', 'User ID'),
             'type' => Yii::t('app', 'Type'),
             'payload' => Yii::t('app', 'Payload'),
@@ -140,9 +130,6 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
             'userId' => function () {
                 return $this->getUserId();
             },
-            'productId' => function () {
-                return $this->getProductId();
-            },
             'type' => function () {
                 return $this->getType();
             },
@@ -153,14 +140,6 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
                 return $this->getCreatedAt();
             },
         ];
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getProduct(): ActiveQuery
-    {
-        return $this->hasOne(Product::class, ['id' => 'productId']);
     }
 
     /**
@@ -193,14 +172,6 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
     public function getStreamSessionId(): ?int
     {
         return $this->streamSessionId ? (int) $this->streamSessionId : null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getProductId(): ?int
-    {
-        return $this->productId ? (int) $this->productId : null;
     }
 
     /**

@@ -129,7 +129,10 @@ class StreamSessionStatistic extends ActiveRecord
                     ->count();
                 break;
             case self::ATTR_VIEWS_COUNT:
-                $newValue = 0; //TBU
+                $newValue = StreamSessionEvent::find()
+                    ->byStreamSessionId($streamSessionId)
+                    ->byType(StreamSessionEvent::TYPE_VIEW)
+                    ->count();
                 break;
         }
 
