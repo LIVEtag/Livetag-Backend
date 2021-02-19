@@ -32,10 +32,6 @@
             "description": "Actions Available for `Buyer` Role"
         },
         {
-            "name": "User",
-            "description": "Actions Available for ALL Roles"
-        },
-        {
             "name": "Account",
             "description": "User authentication, manage and details, email confirmation and authentication"
         },
@@ -167,6 +163,62 @@
                         "$ref": "#/components/responses/401"
                     }
                 }
+            },
+            "patch": {
+                "summary": "Update User Profile",
+                "tags": [
+                    "Account",
+                    "Seller",
+                    "Buyer"
+                ],
+                "operationId": "updateUserProfile",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jon Snow"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
             }
         },
         "/v1/user/logout": {
@@ -289,53 +341,6 @@
             }
         },
 
-        "/v1/user": {
-            "patch": {
-                "summary": "Update User Profile",
-                "tags": [
-                    "Account"
-                ],
-                "operationId": "userEditData",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status200"
-                                        },
-                                        {
-                                            "properties": {
-                                                "result": {
-                                                    "$ref": "#/components/schemas/userProfileForm"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/401"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/422"
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/userProfileForm"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/v1/user/recovery-password": {
             "post": {
                 "security": [],
@@ -1577,6 +1582,10 @@
                     "name"
                 ],
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
                     "role": {
                         "type": "string",
                         "enum": [
@@ -1655,20 +1664,6 @@
                     "confirmPassword": {
                         "type": "string"
                     }
-                }
-            },
-            "userProfileForm": {
-                "type": "object",
-                "required": [
-                    "name"
-                ],
-                "properties": {
-                  "name": {
-                      "type": "string"
-                  },
-                  "role": {
-                      "type": "string"
-                  }
                 }
             },
             "recoveryPasswordRequest": {
