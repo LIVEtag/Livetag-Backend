@@ -81,12 +81,13 @@ return [
                     ],
                     'pluralize' => false,
                     'patterns' => [
-                        'PATCH' => UserController::ACTION_UPDATE,
+                        'PATCH' => UserController::ACTION_UPDATE,//todo: remove this, keep PATCH /v1/user/current
                         'OPTIONS' => UserController::ACTION_OPTIONS,
                     ],
                     'extraPatterns' => [
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
+                        'PATCH current' => UserController::ACTION_UPDATE,
                         'OPTIONS current' => 'options',
                         'PATCH change-password' => 'change-password',
                         'OPTIONS change-password' => 'options',

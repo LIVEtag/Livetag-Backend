@@ -43,7 +43,7 @@ class User extends ActiveRecord implements IdentityInterface
      * When user restore his own password
      */
     const EVENT_PASSWORD_RESTORED = 'passwordRestored';
-    
+
     /**
      * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
@@ -150,6 +150,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function fields(): array
     {
         return [
+            'id',
             'role',
             'name' => function () {
                 return $this->getName();
