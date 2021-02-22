@@ -49,6 +49,8 @@ use yii\web\UnprocessableEntityHttpException;
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
  * @property-read Product[] $products
+ * @property-read StreamSessionEvent[] $streamSessionEvents
+ * @property-read StreamSessionProductEvent[] $streamSessionProductEvents
  * @property-read StreamSessionStatistic $streamSessionStatistic
  *
  * EVENTS:
@@ -60,6 +62,30 @@ use yii\web\UnprocessableEntityHttpException;
  */
 class StreamSession extends ActiveRecord implements StreamSessionInterface
 {
+    /** @see getShop() */
+    const REL_SHOP = 'shop';
+
+    /** @see getProducts() */
+    const REL_PRODUCT = 'products';
+
+    /** @see getStreamSessionProducts() */
+    const REL_STREAM_SESSION_PRODUCT = 'streamSessionProducts';
+
+    /** @see getComments() */
+    const REL_COMMENT = 'comments';
+
+    /** @see getStreamSessionTokens() */
+    const REL_STREAM_SESSION_TOKEN = 'streamSessionTokens';
+
+    /** @see getStreamSessionEvents() */
+    const REL_STREAM_SESSION_EVENT = 'streamSessionEvents';
+
+    /** @see getStreamSessionProductEvents() */
+    const REL_STREAM_SESSION_PRODUCT_EVENT = 'streamSessionProductEvents';
+
+    /** @see getStreamSessionStatistic() */
+    const REL_STREAM_SESSION_STATISTIC = 'streamSessionStatistic';
+
     /**
      * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
      */

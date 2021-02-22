@@ -47,7 +47,7 @@ class StreamSessionController extends Controller
                     'rules' => [
                         [
                             'allow' => true,
-                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
+                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER], //todo: add RBAC with check access
                         ],
                     ],
                 ],
@@ -117,7 +117,7 @@ class StreamSessionController extends Controller
         }
 
         $model = $this->findModel($id);
-        
+
         $productSearchModel = new StreamSessionProductSearch();
         //modify params for search models and pagination
         $params = ArrayHelper::merge(
@@ -125,7 +125,7 @@ class StreamSessionController extends Controller
             [StringHelper::basename(\get_class($productSearchModel)) => ['streamSessionId' => $model->id]]
         );
         $productDataProvider = $productSearchModel->search($params);
-    
+
         $commentSearchModel = new CommentSearch();
         //modify params for search models and pagination
         $paramsComment = ArrayHelper::merge(
@@ -133,7 +133,7 @@ class StreamSessionController extends Controller
             [StringHelper::basename(\get_class($commentSearchModel)) => ['streamSessionId' => $model->id]]
         );
         $commentDataProvider = $commentSearchModel->search($paramsComment);
-        
+
         $commentModel = new CommentForm();
         $commentModel->streamSessionId = $id;
         $commentModel->userId = $user->id;
@@ -142,7 +142,7 @@ class StreamSessionController extends Controller
             $commentModel->streamSessionId = $id;
             $commentModel->userId = $user->id;
         }
-   
+
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('view', [
                 'model' => $model,
@@ -188,7 +188,7 @@ class StreamSessionController extends Controller
         $streamUrl = Url::to(['view', 'id' => $model->streamSessionId]);
         return $this->redirect($streamUrl);
     }
-    
+
     /**
      * Deletes comment from Session.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -238,7 +238,7 @@ class StreamSessionController extends Controller
                 'streamSessionId' => $streamSessionId,
         ]);
     }
-    
+
     /**
      * @param int $streamSessionId
      */
@@ -259,11 +259,11 @@ class StreamSessionController extends Controller
         );
         //set params back to use sorting
         Yii::$app->request->setQueryParams($params);
-    
+
         $commentModel = new Comment();
         $commentModel->streamSessionId = $streamSessionId;
         $commentModel->userId = Yii::$app->user->identity;
-        
+
         $commentDataProvider = $commentSearchModel->search($params);
         $commentDataProvider->sort->route = '/stream-session/view';
         $commentDataProvider->pagination->route = '/stream-session/view';
@@ -279,35 +279,49 @@ class StreamSessionController extends Controller
     /**
      * Finds the StreamSessionProduct model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
+     * @todo add RBAC for access check
+     *
      * @param integer $id
      * @return StreamSessionProduct the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findProductModel(int $id)
     {
-        $model = StreamSessionProduct::findOne($id);
-        if ($model !== null) {
-            return $model;
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        $model = StreamSessionProduct::findOne($id);
+        if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        return $model;
     }
-    
+
     /**
      * Finds the StreamSessionProduct model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
+     * @todo add RBAC for access check
+     *
      * @param integer $id
      * @return Comment the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findCommentModel(int $id)
     {
-        $model = Comment::findOne($id);
-        if ($model !== null) {
-            return $model;
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        $model = Comment::findOne($id);
+        if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        return $model;
     }
-    
+
     /**
      * Finds the StreamSession model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -317,10 +331,15 @@ class StreamSessionController extends Controller
      */
     protected function findModel(int $id)
     {
-        $model = StreamSession::findOne($id);
-        if ($model !== null) {
-            return $model;
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        $model = StreamSession::findOne($id);
+        if (!$model || ($user->isSeller && $user->shop->id != $model->shopId)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        return $model;
     }
 }
