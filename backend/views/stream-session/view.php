@@ -3,7 +3,6 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
 use backend\models\Product\StreamSessionProductSearch;
@@ -70,6 +69,20 @@ $user = Yii::$app->user->identity ?? null;
                             'createdAt:datetime',
                             'startedAt:datetime',
                             'stoppedAt:datetime',
+                            [
+                                'label' => 'Number of views',
+                                'attribute' => 'streamSessionStatistic.viewsCount',
+                            ],
+                            [
+                                'label' => '“Add to cart” clicks',
+                                'attribute' => 'streamSessionStatistic.addToCartCount',
+                            ],
+                            [
+                                'label' => '“Add to cart” rate',
+                                'value' => function (StreamSession $model) {
+                                    return $model->getAddToCartRate();
+                                }
+                            ],
                             [
                                 'label' => 'Duration',
                                 'value' => function (StreamSession $model) {

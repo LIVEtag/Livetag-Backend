@@ -48,7 +48,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'label' => 'Shop',
                                 'format' => 'raw',
                                 'filter' => Html::activeDropDownList($searchModel, 'shopId', Shop::getIndexedArray(), ['class' => 'form-control', 'prompt' => '']),
-                                'value' => function (StreamSession $model) {
+                                'value' => function (StreamSessionSearch $model) {
                                     return $model->shopId ? Html::a($model->shop->name, ['/shop/view', 'id' => $model->shop->id], ['data-pjax' => '0']) : null;
                                 },
                                 'visible' => $user && $user->isAdmin,
@@ -64,42 +64,37 @@ $user = Yii::$app->user->identity ?? null;
                                 'filter' => false
                             ],
                             [
-                                'label' => 'Duration',
+                                'attribute' => 'duration',
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                                 'mergeHeader' => true,
                                 'filter' => false,
-                                'value' => function (StreamSession $model) {
-                                    return $model->getDuration();
+                                'value' => function (StreamSessionSearch $model) {
+                                    return $model->duration ? gmdate("H:i:s", $model->duration) : null;
                                 }
                             ],
                             [
                                 'label' => 'Number of views',
-                                'mergeHeader' => true,
+                                'attribute' => 'viewsCount',
+                                'headerOptions' => ['width' => '150'],
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
-                                'value' => function () {
-                                    return null; //TBU
-                                },
                             ],
                             [
                                 'label' => '“Add to cart” clicks',
-                                'mergeHeader' => true,
+                                'attribute' => 'addToCartCount',
+                                'headerOptions' => ['width' => '150'],
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
-                                'value' => function () {
-                                    return null; //TBU
-                                },
                             ],
                             [
                                 'label' => '“Add to cart” rate',
+                                'attribute' => 'addToCartRate',
+                                'headerOptions' => ['width' => '150'],
                                 'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
-                                'value' => function () {
-                                    return null; //TBU
-                                },
                             ],
                             [
                                 'attribute' => 'status',
@@ -107,7 +102,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                                 'filter' => Html::activeDropDownList($searchModel, 'status', StreamSession::STATUSES, ['class' => 'form-control', 'prompt' => '']),
-                                'value' => function (StreamSession $model) {
+                                'value' => function (StreamSessionSearch $model) {
                                     return $model->getStatusName();
                                 },
                             ],

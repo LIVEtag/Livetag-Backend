@@ -63,6 +63,12 @@ use <?= ltrim($queryClassFullName, '\\'); ?>;
  */
 class <?= $className ?> extends <?= getShortArName('\\' . ltrim($generator->baseClass, '\\')) . "\n" ?>
 {
+<?php if (!empty($relations)) : ?>
+<?php foreach ($relations as $name => $relation) : ?>
+    /** @see get<?= $name; ?>() */
+    const <?= $generator->relationConstant($relation[1])  . " = '" . lcfirst($name) . "';\n" ?>
+<?php endforeach; ?>
+<?php endif; ?>
     /**
      * @inheritdoc
      */
