@@ -73,6 +73,7 @@ class ActiveController extends BaseActiveController
                     'Access-Control-Max-Age' => 86400,
                     'Access-Control-Allow-Credentials' => false,
                     'Access-Control-Allow-Headers' => ['Content-Type', 'Authorization', 'Date'],
+                    'Access-Control-Expose-Headers' => ['Date'],
                 ],
             ],
             'authenticator' => [
