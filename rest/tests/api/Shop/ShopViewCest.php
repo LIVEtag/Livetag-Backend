@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace rest\tests\api\Shop;
 
 use common\fixtures\ShopFixture;
+use common\fixtures\UserFixture;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
 
@@ -41,6 +42,7 @@ class ShopViewCest extends ActionCest
      */
     public function successGetShopDetailByUri(ApiTester $I)
     {
+        $I->amLoggedInApiAs(UserFixture::SELLER_1);
         $shop = $I->grabFixture('shops', ShopFixture::SHOP_1);
         $this->shopUri = $shop->uri;
         $I->send($this->getMethod(), $this->getUrl($I));

@@ -814,6 +814,9 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
@@ -1161,7 +1164,6 @@
                         }
                     }
                 ],
-
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1189,6 +1191,12 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
