@@ -176,23 +176,14 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/shop' => 'v1/product'
-                    ],
-                    'pluralize' => false,
-                    'patterns' => [
-                        'GET {slug}/product' => ProductController::ACTION_INDEX,
-                        'OPTIONS {slug}/product' => ProductController::ACTION_OPTIONS,
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
                         'v1/shop',
                     ],
                     'pluralize' => false,
                     'patterns' => [
-                        'GET <id:\w+>' => ShopController::ACTION_VIEW,
+                        'GET <id:\w+>' => ShopController::ACTION_VIEW,//todo: change to {slug}
                         'OPTIONS <id:\w+>' => ShopController::ACTION_OPTIONS,
+                        'GET {slug}/product' => ShopController::ACTION_PRODUCTS,
+                        'OPTIONS {slug}/product' => ShopController::ACTION_OPTIONS,
                     ],
                 ],
             ],

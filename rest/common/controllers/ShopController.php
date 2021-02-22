@@ -6,7 +6,9 @@
 
 namespace rest\common\controllers;
 
+use rest\common\controllers\actions\Shop\ProductsAction;
 use rest\common\models\Shop\Shop;
+use rest\common\models\User;
 use rest\components\api\ActiveController;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -16,11 +18,13 @@ use yii\web\NotFoundHttpException;
  */
 class ShopController extends ActiveController
 {
+    const ACTION_PRODUCTS = 'products';
+
     /**
      * @var string
      */
     public $modelClass = Shop::class;
-    
+
     /**
      * @inheritdoc
      */
@@ -29,22 +33,22 @@ class ShopController extends ActiveController
         return ArrayHelper::merge(
             parent::behaviors(),
             [
-                'authenticator' => [
-                    'except' => [self::ACTION_VIEW, self::ACTION_OPTIONS],
-                ],
                 'access' => [
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => [self::ACTION_VIEW, self::ACTION_OPTIONS],
-                            'roles' => ['?'],
+                            'actions' => [
+                                self::ACTION_VIEW,
+                                self::ACTION_PRODUCTS
+                            ],
+                            'roles' => [User::ROLE_BUYER, USER::ROLE_SELLER],
                         ],
                     ],
                 ],
             ]
         );
     }
-    
+
     /**
      * @return array
      */
@@ -56,10 +60,15 @@ class ShopController extends ActiveController
                 self::ACTION_VIEW => [
                     'findModel' => [$this, 'findModel'],
                 ],
+                self::ACTION_PRODUCTS => [
+                    'class' => ProductsAction::class,
+                    'modelClass' => $this->modelClass,
+                    'findModel' => [$this, 'findModel'],
+                ]
             ]
         );
     }
-    
+
     /**
      * @param $uri
      * @return mixed
@@ -68,11 +77,9 @@ class ShopController extends ActiveController
     public function findModel($uri)
     {
         $model = Shop::find()->byUri($uri)->one();
-        
         if ($model !== null) {
             return $model;
         }
-    
         throw new NotFoundHttpException("Shop not found by uri: $uri");
     }
 }

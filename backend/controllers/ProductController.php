@@ -11,10 +11,8 @@ namespace backend\controllers;
 use backend\components\Controller;
 use backend\models\Product\Product;
 use backend\models\Product\ProductSearch;
-use backend\models\StreamSessionProduct\StreamSessionProduct;
 use backend\models\User\User;
 use common\models\forms\Product\ProductsUploadForm;
-use kartik\grid\EditableColumnAction;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -72,11 +70,11 @@ class ProductController extends Controller
         if ($user->isSeller) {
             $params = ArrayHelper::merge($params, [StringHelper::basename(\get_class($searchModel)) => ['shopId' => $shopId]]);
         }
-        
+
         $dataProvider = $searchModel->search($params);
         $isProductsExists = Product::find()->byShop($shopId)->exists();
         $model = new ProductsUploadForm();
-        
+
         if ($shopId && $model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstance($model, 'file');
             if ($model->validate() && $model->save($shopId)) {
@@ -86,7 +84,7 @@ class ProductController extends Controller
             }
             return $this->redirect(['product/index']);
         }
-        
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
