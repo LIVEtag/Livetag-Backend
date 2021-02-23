@@ -28,6 +28,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 /** @var User $user */
 $user = Yii::$app->user->identity ?? null;
+
+$this->registerJs(
+    '$("#reset-button").on("click", function(val) {
+        $.pjax.reload({container:"#comment-list-pjax"});  //Reload GridView
+    });
+
+    $(\'a[data-toggle="tab"][href="#comments"]\').on("shown.bs.tab", function (e) {
+        $(".comments-content").show();
+    })
+    $(\'a[data-toggle="tab"][href="#products"]\').on("shown.bs.tab", function (e) {
+        $(".comments-content").hide();
+    })'
+);
+
 ?>
 <section class="stream-session-view">
     <div class="row">
@@ -107,21 +121,26 @@ $user = Yii::$app->user->identity ?? null;
             <!-- Custom Tabs -->
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <!-- TODO: set active class to comments -->
-                    <li class=""><a href="#comments" data-toggle="tab" aria-expanded="true">Comments</a></li>
-                    <li class="active"><a href="#products" data-toggle="tab"aria-expanded="false">Products</a></li>
+                    <li class="active"><a href="#comments" data-toggle="tab" aria-expanded="true">Chat</a></li>
+                    <li><a href="#products" data-toggle="tab" aria-expanded="false">Products</a></li>
+                    <li class="pull-right comments-content">
+                        <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'btn btn-xs bg-black', 'id' => "reset-button"]); ?>
+                    </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane " id="comments">
+                    <div class="tab-pane active" id="comments">
                         <?= $this->render('comment-index', [
                             'commentSearchModel' => $commentSearchModel,
                             'commentDataProvider' => $commentDataProvider,
                             'streamSessionId' => $model->id,
                             'commentModel' => $commentModel,
                         ]); ?>
+                        <?= $this->render('_form-comment', [
+                            'commentModel' => $commentModel,
+                        ]); ?>
                     </div>
                     <!-- /.tab-pane -->
-                    <div class="tab-pane active" id="products">
+                    <div class="tab-pane" id="products">
                         <?= $this->render('product-index', [
                             'productSearchModel' => $productSearchModel,
                             'productDataProvider' => $productDataProvider,
