@@ -52,19 +52,19 @@ class CommentSearch extends Comment
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => ArrayHelper::getValue($params, 'pageSize', 20)
+                'pageSize' => ArrayHelper::getValue($params, 'pageSize', 10)
             ],
             'sort' => [
-                'defaultOrder' => ['createdAt' => SORT_ASC]
+                'defaultOrder' => ['createdAt' => SORT_DESC]
             ],
         ]);
-    
+
         $dataProvider->sort->attributes['username'] = [
             'asc' => [User::tableName() . '.name' => SORT_ASC],
             'desc' => [User::tableName() . '.name' => SORT_DESC],
         ];
-        
-    
+
+
         $this->load($params);
 
         if (!$this->validate()) {
