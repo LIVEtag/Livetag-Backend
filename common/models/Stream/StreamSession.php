@@ -39,6 +39,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $id
  * @property integer $shopId
  * @property integer $status
+ * @property noolean $commentsEnabled
  * @property string $sessionId
  * @property integer $createdAt
  * @property integer $startedAt
@@ -170,6 +171,8 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             [['shopId', 'status', 'startedAt', 'stoppedAt'], 'integer'],
             ['sessionId', 'string', 'max' => 255],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
+            ['commentsEnabled', 'default', 'value' => true],
+            ['commentsEnabled', 'boolean'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             [
@@ -198,6 +201,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'id' => Yii::t('app', 'ID'),
             'shopId' => Yii::t('app', 'Shop ID'),
             'status' => Yii::t('app', 'Status'),
+            'commentsEnabled' => Yii::t('app', 'Comments Enabled'),
             'sessionId' => Yii::t('app', 'Session ID'),
             'expiredAt' => Yii::t('app', 'Expired At'),
             'createdAt' => Yii::t('app', 'Created At'),
@@ -220,6 +224,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'sessionId',
             'status' => function () {
                 return $this->getStatus();
+            },
+            'commentsEnabled' => function () {
+                return $this->getCommentsEnabled();
             },
             'createdAt' => function () {
                 return $this->getCreatedAt();
@@ -303,6 +310,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function getStatus(): ?int
     {
         return $this->status ? (int) $this->status : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCommentsEnabled(): bool
+    {
+        return (bool) $this->commentsEnabled;
     }
 
     /**

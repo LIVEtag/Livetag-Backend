@@ -18,12 +18,12 @@ class CommentForm extends Model
      * @var string
      */
     public $message;
-    
+
     /**
      * @var integer
      */
     public $userId;
-    
+
     /**
      * @var string
      */
@@ -41,17 +41,20 @@ class CommentForm extends Model
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['userId' => 'id']],
         ];
     }
-    
+
     public function save()
     {
-        if ($this->validate()) {
-            $comment = new Comment();
-            $comment->userId = $this->userId;
-            $comment->streamSessionId = $this->streamSessionId;
-            $comment->message = $this->message;
-            $comment->save();
-            return true;
+        if (!$this->validate()) {
+            return false;
         }
-        return $this;
+        $comment = new Comment();
+        $comment->userId = $this->userId;
+        $comment->streamSessionId = $this->streamSessionId;
+        $comment->message = $this->message;
+        if (!$comment->save()) {
+            $this->addErrors($comment->getErrors());
+            return false;
+        }
+        return true;
     }
 }

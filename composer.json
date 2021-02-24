@@ -28,7 +28,8 @@
         "vlucas/phpdotenv": "^5.2",
         "opentok/opentok": "4.4.x",
         "kartik-v/yii2-editable": "1.7.8",
-        "2amigos/yii2-ckeditor-widget" : "~2.1"
+        "2amigos/yii2-ckeditor-widget" : "~2.1",
+        "lavrentiev/yii2-toastr": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "2.0.14",

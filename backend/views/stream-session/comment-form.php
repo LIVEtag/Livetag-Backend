@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
 /* @var $this View */
-/* @var $model Comment */
+/* @var $streamSessionId integer */
 /* @var $commentModel Comment */
 
 $this->registerJs(
@@ -21,8 +21,8 @@ $this->registerJs(
 );
 ?>
 
-<?php Pjax::begin(['id' => 'new_comment']) ?>
-<?php $form = ActiveForm::begin(['action' => '', 'options' => ['autocomplete' => 'off', 'data-pjax' => true]]); ?>
+<?php Pjax::begin(['id' => 'new_comment', 'enablePushState' => false]) ?>
+<?php $form = ActiveForm::begin(['action' => ['create-comment', 'id' => $streamSessionId], 'options' => ['autocomplete' => 'off', 'data-pjax' => true]]); ?>
 <?= $form->field($commentModel, 'message')->widget(CKEditor::class, [
     'options' => ['rows' => 4],
     'preset' => 'custom',

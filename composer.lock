@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "39b36bd3d15e3061a5769d709fa23cf4",
+    "content-hash": "2caacf57e1e3b6354bf25d544b66ce47",
     "packages": [
         {
             "name": "2amigos/yii2-ckeditor-widget",
@@ -178,6 +178,24 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/bestiejs/punycode.js/zipball/38c8d3131a82567bfef18da09f7f4db68c84f8a3",
                 "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
+            },
+            "type": "bower-asset"
+        },
+        {
+            "name": "bower-asset/toastr",
+            "version": "2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/johnpapa/toastr-bower.git",
+                "reference": "e648a870a60103bbc3986c1fe2b2de86ea4a9569"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/johnpapa/toastr-bower/zipball/e648a870a60103bbc3986c1fe2b2de86ea4a9569",
+                "reference": "e648a870a60103bbc3986c1fe2b2de86ea4a9569"
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.6.3"
             },
             "type": "bower-asset"
         },
@@ -2828,6 +2846,52 @@
                 "yii2"
             ],
             "time": "2014-11-09T19:54:17+00:00"
+        },
+        {
+            "name": "lavrentiev/yii2-toastr",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lavrentiev/yii2-toastr.git",
+                "reference": "a5392f09c64285fc15d5be17bb23ae959b3b382d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lavrentiev/yii2-toastr/zipball/a5392f09c64285fc15d5be17bb23ae959b3b382d",
+                "reference": "a5392f09c64285fc15d5be17bb23ae959b3b382d",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/toastr": "^2.1",
+                "yiisoft/yii2": "~2.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "lavrentiev\\widgets\\toastr\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Eugene Lavrentiev (RyanTedder)",
+                    "email": "lavrentiev.e@gmail.com",
+                    "homepage": "https://github.com/lavrentiev"
+                }
+            ],
+            "description": "Simple javascript toast notifications",
+            "homepage": "https://github.com/lavrentiev/yii2-toastr",
+            "keywords": [
+                "extension",
+                "jquery",
+                "notification",
+                "toastr",
+                "yii2"
+            ],
+            "time": "2017-10-24T08:49:46+00:00"
         },
         {
             "name": "notamedia/yii2-sentry",
@@ -8492,12 +8556,12 @@
             "version": "1.9.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
                 "shasum": ""
             },

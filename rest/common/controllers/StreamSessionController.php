@@ -204,11 +204,22 @@ class StreamSessionController extends ActiveController
                 if (!$model || !$user) {
                     throw new ForbiddenHttpException('You are not allowed to access this entity.'); //just in case
                 }
+                if (!$model->getCommentsEnabled()) {
+                    throw new ForbiddenHttpException('Comment section of the widget was disabled');
+                }
                 //Do not allow seller from another shop post a comment
                 if ($user->isSeller && (!$user->shop || $user->shop->id !== $model->shopId)) {
                     throw new ForbiddenHttpException('You can not leave comments in non-your broadcast.');
                 } elseif ($user->isBuyer && !$user->name) {
                     throw new ForbiddenHttpException('You cannot leave a comment without specifying a name.');
+                }
+                break;
+            case self::ACTION_COMMENT_INDEX:
+                if (!$model || !$user) {
+                    throw new ForbiddenHttpException('You are not allowed to access this entity.'); //just in case
+                }
+                if (!$model->getCommentsEnabled()) {
+                    throw new ForbiddenHttpException('Comment section of the widget was disabled');
                 }
                 break;
             default:

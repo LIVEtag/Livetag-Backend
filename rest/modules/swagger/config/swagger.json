@@ -1749,6 +1749,10 @@
                         "enum": [1, 2, 3],
                         "example": 1
                     },
+                    "commentsEnabled": {
+                        "type": "boolean",
+                        "example": true
+                    },
                     "createdAt": {
                         "type": "integer",
                         "example": 1611738385
