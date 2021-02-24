@@ -41,7 +41,6 @@ $this->registerJs(
         $(".comments-content").hide();
     })'
 );
-
 ?>
 <section class="stream-session-view">
     <div class="row">
@@ -124,7 +123,12 @@ $this->registerJs(
                     <li class="active"><a href="#comments" data-toggle="tab" aria-expanded="true">Chat</a></li>
                     <li><a href="#products" data-toggle="tab" aria-expanded="false">Products</a></li>
                     <li class="pull-right comments-content">
-                        <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'btn btn-xs bg-black', 'id' => "reset-button"]); ?>
+                        <div>
+                            <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'btn btn-xs bg-black', 'id' => "reset-button"]); ?>
+                        </div>
+                    </li>
+                    <li class="pull-right comments-content">
+                        <?= $this->render('comment-enable-form', ['streamSession' => $model, 'time' => date('H:i:s'),]); ?>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -135,8 +139,9 @@ $this->registerJs(
                             'streamSessionId' => $model->id,
                             'commentModel' => $commentModel,
                         ]); ?>
-                        <?= $this->render('_form-comment', [
+                        <?= $this->render('comment-form', [
                             'commentModel' => $commentModel,
+                            'streamSessionId' => $model->id,
                         ]); ?>
                     </div>
                     <!-- /.tab-pane -->

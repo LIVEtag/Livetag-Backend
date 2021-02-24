@@ -155,6 +155,55 @@ class StreamSessionController extends Controller
     }
 
     /**
+     * Create Comment
+     * @param int $id
+     * @throws NotFoundHttpException
+     */
+    public function actionCreateComment(int $id)
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        /** @var StreamSession $model */
+        $model = $this->findModel($id);//get entity and check access
+
+        $commentModel = new CommentForm();
+        $commentModel->streamSessionId = $id;
+        $commentModel->userId = $user->id;
+        if ($commentModel->load(Yii::$app->request->post()) && $commentModel->save()) {
+            $commentModel = new CommentForm();
+            $commentModel->streamSessionId = $id;
+            $commentModel->userId = $user->id;
+        }
+
+        $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+        return $this->$method('comment-form', [
+                'commentModel' => $commentModel,
+            'streamSessionId' => $model->id,
+        ]);
+    }
+
+    /**
+     * Enable/Disable comments in Stream Session
+     * @param int $id
+     */
+    public function actionEnableComment(int $id)
+    {
+        /** @var StreamSession $model */
+        $model = $this->findModel($id); //get entity and check access
+
+        //quite fast solution without form
+        $model->commentsEnabled = (bool) Yii::$app->request->post('commentsEnabled');
+        $model->save(true, ['commentsEnabled']);
+        $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+        return $this->$method('comment-enable-form', [
+            'streamSession' => $model,
+        ]);
+    }
+
+    /**
      * Stop an existing Stream
      * @param integer $id
      * @return mixed
@@ -260,10 +309,6 @@ class StreamSessionController extends Controller
         //set params back to use sorting
         Yii::$app->request->setQueryParams($params);
 
-        $commentModel = new Comment();
-        $commentModel->streamSessionId = $streamSessionId;
-        $commentModel->userId = Yii::$app->user->identity;
-
         $commentDataProvider = $commentSearchModel->search($params);
         $commentDataProvider->sort->route = '/stream-session/view';
         $commentDataProvider->pagination->route = '/stream-session/view';
@@ -272,7 +317,6 @@ class StreamSessionController extends Controller
             'commentSearchModel' => $commentSearchModel,
             'commentDataProvider' => $commentDataProvider,
             'streamSessionId' => $streamSessionId,
-            'commentModel' => $commentModel,
         ]);
     }
 

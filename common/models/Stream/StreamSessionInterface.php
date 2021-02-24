@@ -30,6 +30,11 @@ interface StreamSessionInterface
     public function getStatus(): ?int;
 
     /**
+     * @return bool
+     */
+    public function getCommentsEnabled(): bool;
+
+    /**
      * @return string|null
      */
     public function getSessionId(): ?string;
