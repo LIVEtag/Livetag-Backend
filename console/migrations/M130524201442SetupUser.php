@@ -23,7 +23,7 @@ class M130524201442SetupUser extends Migration
                 'role' => $this->enum(['admin', 'seller', 'buyer'])->notNull(),
                 'email' => $this->string()->null()->unique()->comment('email- unique identifier for seller and admin'),
                 'uuid' => $this->string(36)->null()->unique()->comment('uuid - unique identifier for buyer'),
-                'name' => $this->string(),
+                'name' => $this->string(40),
                 'authKey' => $this->string(32)->null(),
                 'passwordHash' => $this->string()->null(),
                 'passwordResetToken' => $this->string()->unique(),
