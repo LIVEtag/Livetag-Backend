@@ -139,10 +139,13 @@ $this->registerJs(
                             'streamSessionId' => $model->id,
                             'commentModel' => $commentModel,
                         ]); ?>
-                        <?= $this->render('comment-form', [
-                            'commentModel' => $commentModel,
-                            'streamSessionId' => $model->id,
-                        ]); ?>
+                        <?php if ($model->isActive()) : ?>
+                        <!--Display comment form only for active session-->
+                            <?= $this->render('comment-form', [
+                                'commentModel' => $commentModel,
+                                'streamSessionId' => $model->id,
+                            ]); ?>
+                        <?php endif; ?>
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="products">

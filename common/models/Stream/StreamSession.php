@@ -13,6 +13,8 @@ use common\components\centrifugo\Message;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\helpers\LogHelper;
+use common\models\Analytics\StreamSessionEvent;
+use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Analytics\StreamSessionStatistic;
 use common\models\Comment\Comment;
 use common\models\Product\Product;
@@ -31,10 +33,14 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
  * This is the model class for table "stream_session".
+ *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
  *
  * @property integer $id
  * @property integer $shopId
@@ -393,6 +399,27 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function isStopped(): bool
     {
         return $this->getStatus() === self::STATUS_STOPPED;
+    }
+
+    /**
+     * Check user can add comment to current stream
+     * @param User $user
+     * @throws ForbiddenHttpException
+     */
+    public function checkCanAddComment(User $user)
+    {
+        if (!$this->isActive()) {
+            throw new ForbiddenHttpException('Commenting is available only for the active livestream');
+        }
+        if (!$this->getCommentsEnabled()) {
+            throw new ForbiddenHttpException('Comment section of the widget was disabled');
+        }
+        //Do not allow seller from another shop post a comment
+        if ($user->isSeller && (!$user->shop || $user->shop->id !== $this->shopId)) {
+            throw new ForbiddenHttpException('You can not leave comments in non-your broadcast.');
+        } elseif ($user->isBuyer && !$user->name) {
+            throw new ForbiddenHttpException('You cannot leave a comment without specifying a name.');
+        }
     }
 
     /**
