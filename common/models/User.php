@@ -140,7 +140,9 @@ class User extends ActiveRecord implements IdentityInterface
                 }
             ],
             ['uuid', 'match', 'pattern' => '/^[0-9A-F]{8}-[0-9A-F]{4}-[1345][0-9A-F]{3}-[0-9A-F]{4}-[0-9A-F]{12}$/i'],
+            ['uuid', 'unique'],
             ['email', 'email'],
+            ['email', 'unique'],
         ];
     }
 
