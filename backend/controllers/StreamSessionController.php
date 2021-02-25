@@ -167,21 +167,23 @@ class StreamSessionController extends Controller
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
         /** @var StreamSession $model */
-        $model = $this->findModel($id);//get entity and check access
-
-        $commentModel = new CommentForm();
-        $commentModel->streamSessionId = $id;
-        $commentModel->userId = $user->id;
-        if ($commentModel->load(Yii::$app->request->post()) && $commentModel->save()) {
-            $commentModel = new CommentForm();
-            $commentModel->streamSessionId = $id;
-            $commentModel->userId = $user->id;
+        $model = $this->findModel($id); //get entity and check access
+        $commentModel = new CommentForm(['streamSessionId' => $id]);
+        try {
+            $model->checkCanAddComment($user);
+            if ($commentModel->load(Yii::$app->request->post())) {
+                $commentModel->userId = $user->id;
+                if ($commentModel->save()) {
+                    $commentModel = new CommentForm(['streamSessionId' => $id]); //reset form
+                }
+            }
+        } catch (\yii\web\ForbiddenHttpException $ex) {
+            $commentModel->addError('message', $ex->getMessage());
         }
-
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('comment-form', [
                 'commentModel' => $commentModel,
-            'streamSessionId' => $model->id,
+                'streamSessionId' => $model->id,
         ]);
     }
 

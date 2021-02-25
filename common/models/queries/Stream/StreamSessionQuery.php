@@ -54,6 +54,14 @@ class StreamSessionQuery extends ActiveQuery
     }
 
     /**
+     * @return $this
+     */
+    public function commentsEnabled(): self
+    {
+        return $this->andWhere([$this->getFieldName('commentsEnabled') => true]);
+    }
+
+    /**
      * Order by creation date. Latest first
      * @return $this
      */

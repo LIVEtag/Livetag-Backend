@@ -23,6 +23,7 @@ $this->registerJs(
 
 <?php Pjax::begin(['id' => 'new_comment', 'enablePushState' => false]) ?>
 <?php $form = ActiveForm::begin(['action' => ['create-comment', 'id' => $streamSessionId], 'options' => ['autocomplete' => 'off', 'data-pjax' => true]]); ?>
+<?= $form->field($commentModel, 'streamSessionId')->hiddenInput()->label(false) ?>
 <?= $form->field($commentModel, 'message')->widget(CKEditor::class, [
     'options' => ['rows' => 4],
     'preset' => 'custom',

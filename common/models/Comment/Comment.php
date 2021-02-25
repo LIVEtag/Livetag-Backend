@@ -10,8 +10,10 @@ namespace common\models\Comment;
 use common\components\behaviors\TimestampBehavior;
 use common\components\centrifugo\channels\SessionChannel;
 use common\components\centrifugo\Message;
+use common\components\EventDispatcher;
 use common\helpers\LogHelper;
 use common\models\queries\Comment\CommentQuery;
+use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Stream\StreamSession;
 use common\models\User;
 use Yii;
@@ -91,7 +93,16 @@ class Comment extends ActiveRecord implements CommentInterface
             [['userId', 'streamSessionId', 'message'], 'required'],
             [['userId', 'streamSessionId'], 'integer'],
             ['message', 'string'],
-            [['streamSessionId'], 'exist', 'skipOnError' => true, 'targetClass' => StreamSession::class, 'targetRelation' => 'streamSession'],
+            [
+                'streamSessionId',
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => StreamSession::class,
+                'targetRelation' => 'streamSession',
+                'filter' => function (StreamSessionQuery $query) {
+                    return $query->active()->commentsEnabled();
+                }
+            ],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetRelation' => 'user'],
         ];
     }
