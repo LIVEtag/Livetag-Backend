@@ -27,7 +27,8 @@ use common\observers\StreamSession\UpdateStreamSessionObserver;
 use common\observers\StreamSessionProduct\CreateStreamSessionProductObserver;
 use common\observers\StreamSessionProduct\DeleteStreamSessionProductObserver;
 use common\observers\StreamSessionProduct\UpdateStreamSessionProductObserver;
-use common\observers\User\PasswordRestoreObserver;
+use common\observers\User\PasswordChangedObserver;
+use common\observers\User\PasswordRestoredObserver;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\BootstrapInterface;
@@ -78,7 +79,8 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(Comment::class, Comment::EVENT_AFTER_DELETE, [Yii::createObject(DeleteCommentObserver::class), 'execute']);
 
         # User events
-        Event::on(User::class, User::EVENT_PASSWORD_RESTORED, [Yii::createObject(PasswordRestoreObserver::class), 'execute']);
+        Event::on(User::class, User::EVENT_PASSWORD_RESTORED, [Yii::createObject(PasswordRestoredObserver::class), 'execute']);
+        Event::on(User::class, User::EVENT_PASSWORD_CHANGED, [Yii::createObject(PasswordChangedObserver::class), 'execute']);
 
         # Analytics
         Event::on(StreamSessionEvent::class, StreamSessionEvent::EVENT_AFTER_INSERT, [

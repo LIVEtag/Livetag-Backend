@@ -8,12 +8,12 @@ declare(strict_types=1);
 namespace common\observers\User;
 
 use backend\models\User\User;
-use common\models\AccessToken;
 use common\models\Session;
+use rest\common\models\AccessToken;
 use RuntimeException;
 use yii\base\Event;
 
-class PasswordRestoreObserver
+class PasswordRestoredObserver
 {
     /**
      * @param Event $event
@@ -23,17 +23,20 @@ class PasswordRestoreObserver
     {
         /** @var User $user */
         $user = $event->sender;
-        /** @var AccessToken $accessToken */
-        $accessTokens = AccessToken::find()->where(['userId' => $user->id])->all();
-        if (\is_array($accessTokens)) {
-            foreach ($accessTokens as $accessToken) {
-                $accessToken->invalidate();
-            }
+
+        // Invalidate access tokens
+        $accessTokensQuery = AccessToken::find()->byUserId($user->id);
+        foreach ($accessTokensQuery->each() as $accessToken) {
+            $accessToken->invalidate();
         }
+
+         // Clear authKey
         $user->generateAuthKey();
-        $user->save();
-        $sessionList = Session::find()->where(['userId' => $user->id])->all();
-        foreach ($sessionList as $session) {
+        $user->save(true, ['authKey']);
+
+        // Invalidate sessions
+        $sessionsQuery = Session::find()->where(['userId' => $user->id]);
+        foreach ($sessionsQuery->each() as $session) {
             $session->delete();
         }
     }
