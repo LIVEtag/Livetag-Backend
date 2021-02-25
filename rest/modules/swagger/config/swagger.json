@@ -781,6 +781,12 @@
                         }
                     },
                     {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
                         "$ref": "#/components/parameters/fields"
                     },
                     {
@@ -795,7 +801,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
@@ -954,7 +960,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
@@ -1162,6 +1168,15 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
                     }
                 ],
                 "responses": {
@@ -1172,7 +1187,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
