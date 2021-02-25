@@ -45,6 +45,11 @@ class User extends ActiveRecord implements IdentityInterface
     const EVENT_PASSWORD_RESTORED = 'passwordRestored';
 
     /**
+     * User changed password
+     */
+    const EVENT_PASSWORD_CHANGED = 'passwordChanged';
+
+    /**
      * Note: for now statuses not used. No fake user delete
      * Disabled user (marked as deleted)
      * @todo change to blocked

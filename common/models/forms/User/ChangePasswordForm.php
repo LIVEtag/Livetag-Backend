@@ -84,6 +84,7 @@ class ChangePasswordForm extends Model
             $this->addError('newPassword', 'New password was not changed');
             return false;
         }
+        $user->trigger(User::EVENT_PASSWORD_CHANGED);
         return $user;
     }
 }
