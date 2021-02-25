@@ -44,6 +44,9 @@
     # For version file
     RewriteRule ^version\.txt$ version.txt [L,PT]
 
+    #show apple-app-site-association file
+    RewriteRule ^apple-app-site-association$ apple-app-site-association [L,PT]
+
     #Swagger
     RewriteCond %{REQUEST_URI} !^/swagger/dist/? [NC]
     RewriteRule ^swagger/?(.*)$ /swagger/dist/$1 [L]
