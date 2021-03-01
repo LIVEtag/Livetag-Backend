@@ -17,7 +17,7 @@ use yii\data\ActiveDataProvider;
 /* @var $searchModel ProductSearch */
 /* @var $dataProvider ActiveDataProvider */
 /* @var $model ProductsUploadForm */
-/* @var $isProductsExists bool */
+/* @var $activeStreamSessionExists bool */
 
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
@@ -28,36 +28,39 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <h3>
-                        <?= Html::a('CSV file sample', Yii::$app->urlManagerBackend->createAbsoluteUrl(['/web/uploads/product.csv'])) ?>
-                    </h3>
-                    <?php if (!$isProductsExists) : ?>
-                        <h4>You did not have uploaded products yet. Please upload your first CSV-file with products.</h4>
-                    <?php endif;?>
-                    <button type="button" class="btn btn-primary bg-black" data-toggle="modal" data-target="#ModalUploadCsvForm">
+                    <button
+                        type="button"
+                        class="btn btn-primary bg-black"
+                        data-toggle="modal"
+                        data-target="#ModalUploadCsvForm"
+                        <?= $activeStreamSessionExists ? 'disabled title="' . Yii::t('app', 'You cannot upload products while Live Stream is active') . '"' : ''; ?>  >
                         Upload products
                     </button>
-    
+                    <?= Html::a(
+                        Html::tag('i', ' CSV file sample', ['class' => 'fa fa-download']),
+                        Yii::$app->urlManagerBackend->createAbsoluteUrl(['/web/uploads/product.csv']),
+                        ['class' => 'btn btn-default']
+                    ); ?>
                     <!-- Modal HTML Markup -->
                     <div id="ModalUploadCsvForm" class="modal fade">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
+                                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
                                 <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
                                     <h4 class="modal-title">Refresh products list</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <h4>Do you want to refresh your product list?</h4>
-                                    <?php $form = ActiveForm::begin([
-                                        'options' => ['enctype'=>'multipart/form-data']
-                                    ]); ?>
-                                    <?= $form->field($model, 'file')->fileInput() ?>
-                    
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <?= Html::submitButton('Refresh', ['class' => 'btn btn-success']) ?>
-                                    </div>
-                                    <?php ActiveForm::end(); ?>
+                                    <p>Do you want to refresh your product list?</p>
+                                    <?= $form->field($model, 'file')->fileInput()->label(false) ?>
                                 </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+                                    <?= Html::submitButton('Refresh', ['class' => 'btn btn-success']) ?>
+                                </div>
+                                <?php ActiveForm::end(); ?>
                             </div><!-- /.modal-content -->
                         </div><!-- /.modal-dialog -->
                     </div><!-- /.modal -->

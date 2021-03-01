@@ -510,6 +510,17 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * Check active session exist for selected shop
+     *
+     * @param int $shopId
+     * @return self|null
+     */
+    public static function activeExists($shopId): bool
+    {
+        return self::find()->byShopId($shopId)->active()->exists();
+    }
+
+    /**
      * Create translation for selected shop
      * Do not allow create new session if active exist
      *
