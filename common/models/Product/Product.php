@@ -47,19 +47,19 @@ class Product extends ActiveRecord implements ProductInterface
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_DELETED => 'Deleted',
     ];
-    
+
     /**
-     * required field price in option and header
+     * required field price in optionOnly files with these types are allowed and headerOnly files with these types are allowed
      */
     const PRICE = 'price';
-    
+
     /**
      * required fields in option
      */
     const OPTION_REQUIRED = [
         self::PRICE,
     ];
-    
+
     /**
      * @inheritdoc
      */
@@ -93,15 +93,36 @@ class Product extends ActiveRecord implements ProductInterface
     public function rules(): array
     {
         return [
-            [['sku', 'shopId', 'title'], 'required'],
+            [['sku', 'shopId', 'title', 'photo', 'link'], 'required'],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
             [['sku', 'title', 'link', 'photo'], 'string', 'max' => 255],
+            [['link', 'photo'], 'url', 'defaultScheme' => 'https'],
+            ['photo', 'validateImage'],
             [['sku', 'shopId'], 'unique', 'targetAttribute' => ['sku', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
+    }
+
+    /**
+     * Check link extention
+     * we do NOT check actual image (via getimagesize for example) and check only extention
+     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
+     * @param string $attribute
+     */
+    public function validateImage($attribute)
+    {
+        $extension = pathinfo($this->$attribute, PATHINFO_EXTENSION);
+        $allowedExtentions = ['jpeg', 'jpg', 'png', 'jpg'];
+        if (!in_array($extension, $allowedExtentions)) {
+            $this->addError(
+                $attribute,
+                Yii::t('app', 'Only files with these types are allowed: {mimeTypes}.', ['mimeTypes' => implode(', ', $allowedExtentions)])
+            );
+            return;
+        }
     }
 
     /**
@@ -245,5 +266,28 @@ class Product extends ActiveRecord implements ProductInterface
     {
         $this->status = self::STATUS_DELETED;
         return $this->save(true, ['status']);
+    }
+
+    /**
+     * Get or Create product by shop and SKU
+     * @param int $shopId
+     * @param string $sku
+     * @return self|null
+     */
+    public static function getOrCreate(int $shopId, string $sku): self
+    {
+        $product = self::find()->byShop($shopId)->bySku($sku)->one();
+        return $product ?? new self(['shopId' => $shopId, 'sku' => $sku]);
+    }
+
+    /**
+     * Add new option to existing one
+     * @param array $option
+     */
+    public function addOption(array $option)
+    {
+        $options = $this->options;
+        $options[] = $option;
+        $this->options = array_unique($options, SORT_REGULAR);
     }
 }

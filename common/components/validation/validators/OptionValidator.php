@@ -9,12 +9,14 @@ namespace common\components\validation\validators;
 
 use common\components\validation\ValidationErrorTrait;
 use common\models\Product\Product;
+use Yii;
+use yii\base\DynamicModel;
 use yii\validators\Validator as BaseValidator;
 
 class OptionValidator extends BaseValidator
 {
     use ValidationErrorTrait;
-    
+
     /**
      * validate if options and option's item of product are being correct json type
      * @param $model
@@ -24,69 +26,57 @@ class OptionValidator extends BaseValidator
     public function validateAttribute($model, $attribute)
     {
         $optionValues = $model->$attribute;
-        if (!\is_array($optionValues)) {
+        if (!is_array($optionValues)) {
+            $this->addError($model, $attribute, "{$attribute} must be an array");
+            return false;
+        }
+
+        $missedAttributes = array_diff_key(array_flip(Product::OPTION_REQUIRED), $optionValues);
+        if ($missedAttributes) {
             $this->addError(
                 $model,
                 $attribute,
-                "property {$attribute} has wrong data"
+                Yii::t(
+                    'app',
+                    '{attribute} required elements are missing: {missed}',
+                    [
+                        'attribute' => $attribute,
+                        'missed' => implode(', ', array_flip($missedAttributes)),
+                    ]
+                )
             );
             return false;
         }
-        $result = array_diff_key(array_flip(Product::OPTION_REQUIRED), $optionValues);
-        if (!empty($result)) {
-            $result = array_flip($result);
-            $notExists = implode(', ', $result);
-            $this->addError(
-                $model,
-                $attribute,
-                "Options must have {$notExists} values"
-            );
-            return false;
-        }
-        
-    
+
         foreach ($optionValues as $optionKey => $optionValue) {
-            $this->isValidOptionItemValue($model, $attribute, $optionKey, $optionValue);
+            $this->validateOptionItem($model, $attribute, $optionKey, $optionValue);
         }
         return true;
     }
-    
+
     /**
+     * Validate option and add errror to model
      * @param $model
      * @param $attribute
      * @param $optionKey
      * @param $optionValue
      * @return bool
      */
-    public function isValidOptionItemValue($model, $attribute, $optionKey, $optionValue): bool
+    public function validateOptionItem($model, $attribute, $optionKey, $optionValue)
     {
-        if (Product::PRICE === $optionKey && !is_numeric($optionValue)) {
-            $this->addError(
-                $model,
-                $attribute,
-                "{$optionKey} must be number type"
-            );
-            return false;
+        //Price cannot be blank.
+        $validationModel = new DynamicModel([$optionKey]);
+        $validationModel->addRule($optionKey, 'string', ['max' => 255]);
+        //Validate required fields
+        if (in_array($optionKey, Product::OPTION_REQUIRED)) {
+            $validationModel->addRule($optionKey, 'required');
         }
-    
-        if (Product::PRICE !== $optionKey && !\is_string($optionValue)) {
-            $this->addError(
-                $model,
-                $attribute,
-                "{$optionKey} must be string type"
-            );
-            return false;
+        if ($optionKey == Product::PRICE) {
+            $validationModel->addRule($optionKey, 'number');
         }
-    
-        if (\is_string($optionValue) && \strlen($optionValue) > 255) {
-            $this->addError(
-                $model,
-                $attribute,
-                "{$optionKey} must be lower than 255"
-            );
-            return false;
+        $validationModel->$optionKey = $optionValue;
+        if (!$validationModel->validate()) {
+            $model->addError($attribute, $validationModel->getFirstError($optionKey));
         }
-    
-        return true;
     }
 }

@@ -11,8 +11,10 @@ namespace backend\controllers;
 use backend\components\Controller;
 use backend\models\Product\Product;
 use backend\models\Product\ProductSearch;
+use backend\models\Stream\StreamSession;
 use backend\models\User\User;
 use common\models\forms\Product\ProductsUploadForm;
+use Throwable;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -54,42 +56,42 @@ class ProductController extends Controller
     /**
      * Lists all Product models.
      * @return mixed
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function actionIndex()
     {
         /** @var User $user */
         $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
+        if (!$user || !$user->isSeller || !$user->shop) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
+        //Product List
         $searchModel = new ProductSearch();
         $params = Yii::$app->request->queryParams;
-        $shopId = $user->shop->id;
         if ($user->isSeller) {
-            $params = ArrayHelper::merge($params, [StringHelper::basename(\get_class($searchModel)) => ['shopId' => $shopId]]);
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
         }
-
         $dataProvider = $searchModel->search($params);
-        $isProductsExists = Product::find()->byShop($shopId)->exists();
-        $model = new ProductsUploadForm();
 
-        if ($shopId && $model->load(Yii::$app->request->post())) {
+        //Product upload Form
+        $model = new ProductsUploadForm($user->shop);
+        if ($model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstance($model, 'file');
-            if ($model->validate() && $model->save($shopId)) {
+            if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'The list of the products was added.');
             } else {
-                Yii::$app->session->setFlash('error', $model->getModelErrors());
+                Yii::$app->session->setFlash('error', $model->getErrorsAsString());
             }
-            return $this->redirect(['product/index']);
         }
+
+        $activeStreamSessionExists = StreamSession::activeExists($user->shop->id);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,
-            'isProductsExists' => $isProductsExists,
+            'activeStreamSessionExists' => $activeStreamSessionExists
         ]);
     }
 
