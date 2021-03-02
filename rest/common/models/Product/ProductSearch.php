@@ -22,7 +22,7 @@ class ProductSearch extends Product
         return [
             [['status'], 'integer'],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
-            [['title', 'sku'], 'string', 'max' => 255],
+            [['title', 'externalId'], 'string', 'max' => 255],
             [['slug'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['slug' => 'uri']],
             [['slug'], 'string', 'max' => 50],
         ];
@@ -67,7 +67,7 @@ class ProductSearch extends Product
         ]);
 
         $query
-            ->andFilterWhere(['like', 'sku', $this->sku])
+            ->andFilterWhere(['like', 'externalId', $this->externalId])
             ->andFilterWhere(['like', 'title', $this->title]);
         return $dataProvider;
     }

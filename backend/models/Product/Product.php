@@ -25,12 +25,11 @@ class Product extends BaseModel
         if (empty($options)) {
             return null;
         }
-        $lastItem = array_pop($options);
-        if (!\is_array($lastItem) && empty($lastItem)) {
+        $item = $options[0];
+        if (!$item || !is_array($item)) {
             return null;
         }
-        $headers = array_keys($lastItem);
-        $options[] = $lastItem;
+        $headers = array_keys($item);
         $html = '';
         $html .= '<table class="table table-condensed">';
         $html .= '<thead>';
