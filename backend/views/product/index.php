@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'headerOptions' => ['width' => '60'],
                             ],
                             [
-                                'attribute' => 'sku',
+                                'attribute' => 'externalId',
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                             ],

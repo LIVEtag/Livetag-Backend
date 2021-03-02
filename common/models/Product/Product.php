@@ -18,7 +18,7 @@ use yii\db\ActiveRecord;
 /**
  * This is the model class for table "product".
  * @property int $id         [int(10) unsigned]
- * @property string $sku     [varchar(255)]
+ * @property string $externalId     [varchar(255)]
  * @property int $shopId     [int(11) unsigned]
  * @property string $title      [varchar(255)]
  * @property array $options    [json]
@@ -54,10 +54,25 @@ class Product extends ActiveRecord implements ProductInterface
     const PRICE = 'price';
 
     /**
+     * sku moved to options
+     */
+    const SKU = 'sku';
+
+    /**
+     * external unique id
+     */
+    const EXTERNAL_ID = 'externalId';
+
+    const TITLE = 'title';
+    const PHOTO = 'photo';
+    const LINK = 'link';
+
+    /**
      * required fields in option
      */
     const OPTION_REQUIRED = [
         self::PRICE,
+        self::SKU,
     ];
 
     /**
@@ -93,36 +108,16 @@ class Product extends ActiveRecord implements ProductInterface
     public function rules(): array
     {
         return [
-            [['sku', 'shopId', 'title', 'photo', 'link'], 'required'],
+            [['externalId', 'shopId', 'title', 'photo', 'link'], 'required'],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
-            [['sku', 'title', 'link', 'photo'], 'string', 'max' => 255],
+            [['externalId', 'title', 'link', 'photo'], 'string', 'max' => 255],
             [['link', 'photo'], 'url', 'defaultScheme' => 'https'],
-            ['photo', 'validateImage'],
-            [['sku', 'shopId'], 'unique', 'targetAttribute' => ['sku', 'shopId']],
+            [['externalId', 'shopId'], 'unique', 'targetAttribute' => ['externalId', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
         ];
-    }
-
-    /**
-     * Check link extention
-     * we do NOT check actual image (via getimagesize for example) and check only extention
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
-     * @param string $attribute
-     */
-    public function validateImage($attribute)
-    {
-        $extension = pathinfo($this->$attribute, PATHINFO_EXTENSION);
-        $allowedExtentions = ['jpeg', 'jpg', 'png', 'jpg'];
-        if (!in_array($extension, $allowedExtentions)) {
-            $this->addError(
-                $attribute,
-                Yii::t('app', 'Only files with these types are allowed: {mimeTypes}.', ['mimeTypes' => implode(', ', $allowedExtentions)])
-            );
-            return;
-        }
     }
 
     /**
@@ -132,10 +127,10 @@ class Product extends ActiveRecord implements ProductInterface
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'externalId' => Yii::t('app', 'External ID'),
+            'shopId' => Yii::t('app', 'Shop Id'),
             'title' => Yii::t('app', 'Title'),
             'price' => Yii::t('app', 'Price'),
-            'sku' => Yii::t('app', 'SKU'),
-            'shopId' => Yii::t('app', 'Shop Id'),
             'photo' => Yii::t('app', 'Photo'),
             'status' => Yii::t('app', 'Status'),
             'createdAt' => Yii::t('app', 'Created At'),
@@ -152,8 +147,8 @@ class Product extends ActiveRecord implements ProductInterface
             'id' => function () {
                 return $this->getId();
             },
-            'sku' => function () {
-                return $this->getSku();
+            'externalId' => function () {
+                return $this->getExternalId();
             },
             'title' => function () {
                 return $this->getTitle();
@@ -189,9 +184,9 @@ class Product extends ActiveRecord implements ProductInterface
     /**
      * @inheritdoc
      */
-    public function getSku(): ?string
+    public function getExternalId(): ?string
     {
-        return $this->sku ?: null;
+        return $this->externalId ?: null;
     }
 
     /**
@@ -271,13 +266,13 @@ class Product extends ActiveRecord implements ProductInterface
     /**
      * Get or Create product by shop and SKU
      * @param int $shopId
-     * @param string $sku
+     * @param string $externalId
      * @return self|null
      */
-    public static function getOrCreate(int $shopId, string $sku): self
+    public static function getOrCreate(int $shopId, string $externalId): self
     {
-        $product = self::find()->byShop($shopId)->bySku($sku)->one();
-        return $product ?? new self(['shopId' => $shopId, 'sku' => $sku]);
+        $product = self::find()->byShop($shopId)->byExternalId($externalId)->one();
+        return $product ?? new self(['shopId' => $shopId, self::EXTERNAL_ID => $externalId]);
     }
 
     /**

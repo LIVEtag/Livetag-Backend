@@ -13,7 +13,7 @@ use backend\models\Product\Product;
 use backend\models\Product\ProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
-use common\models\forms\Product\ProductsUploadForm;
+use backend\models\Product\ProductsUploadForm;
 use Throwable;
 use Yii;
 use yii\filters\VerbFilter;

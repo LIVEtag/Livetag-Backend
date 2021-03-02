@@ -254,7 +254,7 @@ class ApiTester extends \Codeception\Actor
     {
         return [
             'id' => 'integer',
-            'sku' => 'string',
+            'externalId' => 'string',
             'title' => 'string',
             'photo' => 'string',
             'link' => 'string',
@@ -273,7 +273,7 @@ class ApiTester extends \Codeception\Actor
             'website' => 'string',
         ];
     }
-    
+
     /**
      * @return array
      */

@@ -3,7 +3,7 @@
  * Copyright © 2018 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-namespace common\models\forms\Product;
+namespace backend\models\Product;
 
 use backend\models\Shop\Shop;
 use backend\models\Stream\StreamSession;
@@ -19,21 +19,25 @@ use yii\web\UploadedFile;
  */
 class ProductsUploadForm extends Model
 {
-    const SKU = 'sku';
-    const TITLE = 'title';
-    const PHOTO = 'photo';
-    const LINK = 'link';
-    const PRICE = 'price';
+    const ID = 'id';
+
+    /**
+     * Mapping fields from csv with existing fields
+     */
+    const HEADER_MAPPING = [
+        self::ID => Product::EXTERNAL_ID
+    ];
 
     /**
      * Required headers in csv upload
      */
     const REQUIRED_HEADERS = [
-        self::SKU,
-        self::TITLE,
-        self::PHOTO,
-        self::LINK,
-        self::PRICE,
+        Product::EXTERNAL_ID, //@see HEADER_MAPPING
+        Product::SKU,
+        Product::TITLE,
+        Product::PHOTO,
+        Product::LINK,
+        Product::PRICE,
     ];
 
     /**
@@ -45,7 +49,8 @@ class ProductsUploadForm extends Model
      * required fields in options (not dynamic)
      */
     const OPTION_FIELDS = [
-        self::PRICE,
+        Product::SKU,
+        Product::PRICE,
     ];
 
     /**
@@ -58,7 +63,7 @@ class ProductsUploadForm extends Model
 
     /**
      * Array of extracted products
-     * indexed by sku (to determinate multiple rows with same sku)
+     * indexed by externalId (to determinate multiple rows with same id)
      * @var Product[]
      */
     protected $products = [];
@@ -135,7 +140,8 @@ class ProductsUploadForm extends Model
 
         //Extract and validate header
         $header = array_map(function ($item) {
-            return strtolower(trim($item));
+            $item = strtolower(trim($item));
+            return self::HEADER_MAPPING[$item] ?? $item;
         }, array_shift($rows));
         //Basic Header validation
         $missingHeader = array_diff(self::REQUIRED_HEADERS, $header);
@@ -185,17 +191,17 @@ class ProductsUploadForm extends Model
                 unset($productAttributes[$field]);
             }
         }
-        $sku = ArrayHelper::getValue($productAttributes, self::SKU);
-        if (!array_key_exists($sku, $this->products)) {
-            $this->products[$sku] = Product::getOrCreate($this->shop->getId(), $sku);
+        $id = ArrayHelper::getValue($productAttributes, Product::EXTERNAL_ID);
+        if (!array_key_exists($id, $this->products)) {
+            $this->products[$id] = Product::getOrCreate($this->shop->getId(), $id);
         } else {
-            $this->products[$sku]->addOption($productAttributes['options'][0]); //add option to existing item
+            $this->products[$id]->addOption($productAttributes['options'][0]); //add option to existing item
             unset($productAttributes['options']);
         }
-        $this->products[$sku]->setAttributes($productAttributes);
-        $this->products[$sku]->status = Product::STATUS_ACTIVE;
-        if (!$this->products[$sku]->validate()) {
-            $this->addError($key + 2, implode(' ', $this->products[$sku]->getFirstErrors()));
+        $this->products[$id]->setAttributes($productAttributes);
+        $this->products[$id]->status = Product::STATUS_ACTIVE;
+        if (!$this->products[$id]->validate()) {
+            $this->addError($key + 2, implode(' ', $this->products[$id]->getFirstErrors()));
         }
     }
     /*
@@ -209,7 +215,7 @@ class ProductsUploadForm extends Model
         try {
             //Mark products as deleted
             $deleteProductQuery = Product::find()
-                ->andWhere(['NOT IN', 'sku', array_keys($this->products)])
+                ->andWhere(['NOT IN', Product::EXTERNAL_ID, array_keys($this->products)])
                 ->andWhere(['<>', 'status', Product::STATUS_DELETED]);
             foreach ($deleteProductQuery->each() as $product) {
                 if (!$product->delete()) {

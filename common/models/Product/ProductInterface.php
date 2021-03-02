@@ -22,7 +22,7 @@ interface ProductInterface
     /**
      * @return string|null
      */
-    public function getSku(): ?string;
+    public function getExternalId(): ?string;
 
     /**
      * @return int|null
