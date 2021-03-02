@@ -71,7 +71,7 @@ $user = Yii::$app->user->identity ?? null;
                                 'mergeHeader' => true,
                                 'filter' => false,
                                 'value' => function (StreamSessionSearch $model) {
-                                    return $model->duration ? gmdate("H:i:s", $model->duration) : null;
+                                    return $model->getDuration();
                                 }
                             ],
                             [
