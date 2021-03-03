@@ -34,9 +34,8 @@ GridView::widget([
             'headerOptions' => ['width' => '60'],
         ],
         [
-            'attribute' => 'sku',
-            'value' => 'product.sku',
-            'label' => 'SKU',
+            'attribute' => 'externalId',
+            'value' => 'product.externalId',
             'hAlign' => GridView::ALIGN_LEFT,
             'headerOptions' => ['width' => '100'],
         ],
