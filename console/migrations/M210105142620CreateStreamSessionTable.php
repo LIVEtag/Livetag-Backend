@@ -21,6 +21,7 @@ class M210105142620CreateStreamSessionTable extends Migration
                 'shopId' => $this->integer()->unsigned()->notNull(),
                 'status' => $this->smallInteger()->notNull()->defaultValue(1),
                 'sessionId' => $this->string(255)->notNull(), //A session ID string can be up to 255 characters long.
+                'commentsEnabled' => $this->boolean()->notNull()->defaultValue(true),
                 'createdAt' => $this->unixTimestamp(),
                 'startedAt' => $this->integer()->unsigned()->null()->comment('The actual start time (when the seller clicks start and receives a token)'),
                 'stoppedAt' => $this->integer()->unsigned()->null()->comment('The actual end time (when the seller stops broadcasting)'),

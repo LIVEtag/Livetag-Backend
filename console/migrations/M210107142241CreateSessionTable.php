@@ -18,6 +18,7 @@ class M210107142241CreateSessionTable extends Migration
             [
                 'id' => $this->string()->notNull(),
                 'expire' => $this->unixTimestamp(),
+                'userId' => $this->integer(),
                 'data' => $this->binary(),
             ]
         );

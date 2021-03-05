@@ -18,7 +18,7 @@ use yii\db\ActiveRecord;
 /**
  * This is the model class for table "product".
  * @property int $id         [int(10) unsigned]
- * @property string $sku     [varchar(255)]
+ * @property string $externalId     [varchar(255)]
  * @property int $shopId     [int(11) unsigned]
  * @property string $title      [varchar(255)]
  * @property array $options    [json]
@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * @property int $createdAt  [int(11) unsigned]
  * @property int $updatedAt  [int(11) unsigned]
  */
-class Product extends ActiveRecord
+class Product extends ActiveRecord implements ProductInterface
 {
     /**
      * Removed product. required for analytics
@@ -49,15 +49,30 @@ class Product extends ActiveRecord
     ];
 
     /**
-     * required field price in option
+     * required field price in optionOnly files with these types are allowed and headerOnly files with these types are allowed
      */
     const PRICE = 'price';
+
+    /**
+     * sku moved to options
+     */
+    const SKU = 'sku';
+
+    /**
+     * external unique id
+     */
+    const EXTERNAL_ID = 'externalId';
+
+    const TITLE = 'title';
+    const PHOTO = 'photo';
+    const LINK = 'link';
 
     /**
      * required fields in option
      */
     const OPTION_REQUIRED = [
         self::PRICE,
+        self::SKU,
     ];
 
     /**
@@ -93,11 +108,12 @@ class Product extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['sku', 'shopId', 'title'], 'required'],
+            [['externalId', 'shopId', 'title', 'photo', 'link'], 'required'],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
-            [['sku', 'title', 'link', 'photo'], 'string', 'max' => 255],
-            [['sku', 'shopId'], 'unique', 'targetAttribute' => ['sku', 'shopId']],
+            [['externalId', 'title', 'link', 'photo'], 'string', 'max' => 255],
+            [['link', 'photo'], 'url', 'defaultScheme' => 'https'],
+            [['externalId', 'shopId'], 'unique', 'targetAttribute' => ['externalId', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
@@ -111,10 +127,10 @@ class Product extends ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'externalId' => Yii::t('app', 'External ID'),
+            'shopId' => Yii::t('app', 'Shop Id'),
             'title' => Yii::t('app', 'Title'),
             'price' => Yii::t('app', 'Price'),
-            'sku' => Yii::t('app', 'SKU'),
-            'shopId' => Yii::t('app', 'Shop Id'),
             'photo' => Yii::t('app', 'Photo'),
             'status' => Yii::t('app', 'Status'),
             'createdAt' => Yii::t('app', 'Created At'),
@@ -128,12 +144,24 @@ class Product extends ActiveRecord
     public function fields(): array
     {
         return [
-            'id',
-            'sku',
-            'title',
-            'photo',
-            'link',
-            'options'
+            'id' => function () {
+                return $this->getId();
+            },
+            'externalId' => function () {
+                return $this->getExternalId();
+            },
+            'title' => function () {
+                return $this->getTitle();
+            },
+            'photo' => function () {
+                return $this->getPhoto();
+            },
+            'link' => function () {
+                return $this->getLink();
+            },
+            'options' => function () {
+                return $this->getOptions();
+            },
         ];
     }
 
@@ -146,6 +174,86 @@ class Product extends ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getId(): ?int
+    {
+        return $this->id ? (int) $this->id : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExternalId(): ?string
+    {
+        return $this->externalId ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getShopId(): ?int
+    {
+        return $this->shopId ? (int) $this->shopId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTitle(): ?string
+    {
+        return $this->title ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPhoto(): ?string
+    {
+        return $this->photo ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLink(): ?string
+    {
+        return $this->link ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptions(): array
+    {
+        return $this->options ?: [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status ? (int) $this->status : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCreatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUpdatedAt(): ?int
+    {
+        return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
      * Fake delete
      * @todo: add delete logic
      */
@@ -153,5 +261,28 @@ class Product extends ActiveRecord
     {
         $this->status = self::STATUS_DELETED;
         return $this->save(true, ['status']);
+    }
+
+    /**
+     * Get or Create product by shop and SKU
+     * @param int $shopId
+     * @param string $externalId
+     * @return self|null
+     */
+    public static function getOrCreate(int $shopId, string $externalId): self
+    {
+        $product = self::find()->byShop($shopId)->byExternalId($externalId)->one();
+        return $product ?? new self(['shopId' => $shopId, self::EXTERNAL_ID => $externalId]);
+    }
+
+    /**
+     * Add new option to existing one
+     * @param array $option
+     */
+    public function addOption(array $option)
+    {
+        $options = $this->options;
+        $options[] = $option;
+        $this->options = array_unique($options, SORT_REGULAR);
     }
 }

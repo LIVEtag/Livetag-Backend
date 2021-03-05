@@ -73,9 +73,11 @@ task('gitlab:cron', function () {
 
     cd('{{release_path}}');
 
-    run('cat ./.cron > /var/spool/cron/crontabs/www-data');
+    run('printenv | awk -F= \'{print "export "$1"="$2 }\' > /tmp/environment');
+    run('echo SHELL=/bin/bash > /var/spool/cron/crontabs/www-data');
+    run('echo BASH_ENV=/tmp/environment >> /var/spool/cron/crontabs/www-data');
+    run('cat .cron >> /var/spool/cron/crontabs/www-data');
     run('echo >> /var/spool/cron/crontabs/www-data');
-    run('chown www-data:crontab /var/spool/cron/crontabs/www-data');
     run('chmod 600 /var/spool/cron/crontabs/www-data');
     run('cron');
 })->desc('Create cron task')

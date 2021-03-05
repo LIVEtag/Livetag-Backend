@@ -18,7 +18,7 @@ class M210111122050CreateProductTable extends Migration
             self::TABLE_NAME,
             [
                 'id' => $this->primaryKey()->unsigned(),
-                'sku' => $this->string(255)->notNull(),
+                'externalId' => $this->string(255)->notNull(),
                 'shopId' => $this->integer()->unsigned(),
                 'title' => $this->string(255)->notNull(),
                 'photo'  => $this->string(255),
@@ -29,9 +29,9 @@ class M210111122050CreateProductTable extends Migration
                 'updatedAt' => $this->unixTimestamp(),
             ]
         );
-        
+
         $this->addFK(self::TABLE_NAME, 'shopId', Shop::TABLE_NAME, 'id', 'CASCADE');
-        $this->createIndex(self::SKU_SHOP_ID_INDEX, self::TABLE_NAME, ['sku', 'shopId'], true);
+        $this->createIndex(self::SKU_SHOP_ID_INDEX, self::TABLE_NAME, ['externalId', 'shopId'], true);
     }
 
     public function down()

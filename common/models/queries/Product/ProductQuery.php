@@ -35,6 +35,15 @@ class ProductQuery extends ActiveQuery
     }
 
     /**
+     * @param string $externalId
+     * @return $this
+     */
+    public function byExternalId(string $externalId): self
+    {
+        return $this->andWhere([$this->getFieldName(Product::EXTERNAL_ID) => $externalId]);
+    }
+
+    /**
      * @param int|array $id
      * @return $this
      */

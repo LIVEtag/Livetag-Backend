@@ -35,4 +35,13 @@ class StreamSessionProductQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('productId') => $id]);
     }
+
+    /**
+     * @param int|array $status
+     * @return $this
+     */
+    public function byStatus($status): self
+    {
+        return $this->andWhere([$this->getFieldName('status') => $status]);
+    }
 }

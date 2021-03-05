@@ -43,6 +43,9 @@ class StreamSessionController extends Controller
 
         /** @var StreamSession $streamSession */
         foreach ($streamSessionQuery->each() as $streamSession) {
+            if (!$streamSession->getExpiredAt()) {
+                continue;
+            }
             $endSoon = $this->getEndSoonTimestamp($streamSession->getExpiredAt());
             echo PHP_EOL . Table::widget([
                 'rows' => [

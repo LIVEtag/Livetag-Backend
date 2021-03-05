@@ -12,6 +12,7 @@ use rest\common\controllers\actions\User\LogoutAction;
 use rest\common\controllers\actions\User\NewPasswordAction;
 use rest\common\controllers\actions\User\OptionsAction;
 use rest\common\controllers\actions\User\RecoveryAction;
+use rest\common\controllers\actions\User\UpdateAction;
 use rest\common\controllers\actions\User\ValidatePasswordTokenAction;
 use rest\common\models\User;
 use rest\components\api\Controller;
@@ -23,6 +24,11 @@ use yii\helpers\ArrayHelper;
  */
 class UserController extends Controller
 {
+    /**
+     * Update User Profile
+     */
+    const ACTION_UPDATE = 'update';
+    
     /**
      * @inheritdoc
      */
@@ -43,7 +49,7 @@ class UserController extends Controller
                         ],
                         [
                             'allow' => true,
-                            'actions' => ['current'],
+                            'actions' => ['current', 'update'],
                             'roles' => ['@'],
                         ],
                         [
@@ -59,11 +65,9 @@ class UserController extends Controller
                             'class' => RouteRateLimitRule::class,
                             'actions' => [
                                 'recovery-password',
-                                'new-password',
-                                'validate-password-token'
                             ],
                             'maxCount' => 3,
-                            'interval' => 3600,
+                            'interval' => 60,
                         ],
                     ],
                     'isActive' => YII_ENV_PROD
@@ -99,6 +103,9 @@ class UserController extends Controller
             'logout' => [
                 'class' => LogoutAction::class
             ],
+            'update' => [
+                'class' => UpdateAction::class
+            ],
         ];
     }
 
@@ -116,6 +123,7 @@ class UserController extends Controller
             'new-password' => ['POST'],
             'validate-password-token' => ['GET'],
             'logout' => ['POST'],
+            'update' => ['PATCH']
         ];
     }
 }

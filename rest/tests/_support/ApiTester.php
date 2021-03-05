@@ -254,7 +254,7 @@ class ApiTester extends \Codeception\Actor
     {
         return [
             'id' => 'integer',
-            'sku' => 'string',
+            'externalId' => 'string',
             'title' => 'string',
             'photo' => 'string',
             'link' => 'string',
@@ -271,6 +271,17 @@ class ApiTester extends \Codeception\Actor
             'uri' => 'string',
             'name' => 'string',
             'website' => 'string',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserEditResponse(): array
+    {
+        return [
+            'name' => 'string',
+            'role' => 'string',
         ];
     }
 

@@ -7,6 +7,7 @@
 namespace rest\common\controllers;
 
 use common\models\Stream\StreamSession;
+use rest\common\controllers\actions\Stream\EventAction;
 use rest\common\controllers\actions\Stream\CommentCreateAction;
 use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
@@ -78,6 +79,11 @@ class StreamSessionController extends ActiveController
     const ACTION_COMMENT_CREATE = 'comment-create';
 
     /**
+     * Add to cart click event
+     */
+    const ACTION_EVENT = 'event';
+
+    /**
      * @inheritdoc
      */
     public function behaviors(): array
@@ -107,6 +113,13 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_COMMENT_CREATE,
                             ],
                             'roles' => [User::ROLE_SELLER, User::ROLE_BUYER]
+                        ],
+                        [
+                            'allow' => true,
+                            'actions' => [
+                                self::ACTION_EVENT,
+                            ],
+                            'roles' => [User::ROLE_BUYER]
                         ],
                     ],
                 ]
@@ -156,6 +169,11 @@ class StreamSessionController extends ActiveController
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess']
                 ],
+                self::ACTION_EVENT => [
+                    'class' => EventAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess']
+                ],
             ]
         );
     }
@@ -186,11 +204,14 @@ class StreamSessionController extends ActiveController
                 if (!$model || !$user) {
                     throw new ForbiddenHttpException('You are not allowed to access this entity.'); //just in case
                 }
-                //Do not allow seller from another shop post a comment
-                if ($user->isSeller && (!$user->shop || $user->shop->id !== $model->shopId)) {
-                    throw new ForbiddenHttpException('You can not leave comments in non-your broadcast.');
-                } elseif ($user->isBuyer && !$user->name) {
-                    throw new ForbiddenHttpException('You cannot leave a comment without specifying a name.');
+                $model->checkCanAddComment($user);
+                break;
+            case self::ACTION_COMMENT_INDEX:
+                if (!$model || !$user) {
+                    throw new ForbiddenHttpException('You are not allowed to access this entity.'); //just in case
+                }
+                if (!$model->getCommentsEnabled()) {
+                    throw new ForbiddenHttpException('Comment section of the widget was disabled');
                 }
                 break;
             default:

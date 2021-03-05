@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace backend\models\User;
 
+use backend\models\Shop\Shop;
+use common\models\queries\Shop\ShopQuery;
 use common\models\User as BaseModel;
 use yii\helpers\ArrayHelper;
 
@@ -30,5 +32,13 @@ class User extends BaseModel
     public function getStatusName(): ?string
     {
         return ArrayHelper::getValue(self::STATUSES, $this->status);
+    }
+
+     /**
+     * @return ShopQuery
+     */
+    public function getShop(): ShopQuery
+    {
+        return $this->hasOne(Shop::class, ['id' => 'shopId'])->viaTable('user_shop', ['userId' => 'id']);
     }
 }

@@ -103,3 +103,12 @@ a.desc:after {
 .nav > li > form > button:hover {
     text-decoration: none;
 }
+
+.comments-content > div > a {
+    margin: 10px 5px;
+    display: block;
+}
+.comments-content > div > form > button {
+    margin: 10px 5px;
+    display: block;
+}

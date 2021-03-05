@@ -83,6 +83,7 @@ class ErrorList implements ErrorListInterface
 
     //Stream
     const STREAM_IN_PROGRESS = 1263;
+    const CHECKED_TOO_MANY = 1273;
 
     const THIRD_PARTY_NOT_DOCUMENTED_ERROR = 3000;
 
@@ -187,6 +188,7 @@ class ErrorList implements ErrorListInterface
         self::USER_NOT_FOUND => 'User not found.',
 
         self::STREAM_IN_PROGRESS => 'Please end your existing livestrean to start a new livestream.',
+        self::CHECKED_TOO_MANY => 'You can check only {number} items at once.'
     ];
 
     /**

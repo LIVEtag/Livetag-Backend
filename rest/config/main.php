@@ -5,6 +5,7 @@
  */
 
 use rest\common\controllers\ShopController;
+use rest\common\controllers\UserController;
 use rest\common\models\User as RestUser;
 use rest\components\api\ErrorHandler;
 use rest\components\api\UrlRule;
@@ -76,21 +77,17 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/user' => 'v1/access-token'
-                    ],
-                    'extraPatterns' => [
-                        'POST login' => 'create',
-                        'OPTIONS login' => 'options',
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
                         'v1/user' => 'v1/user'
+                    ],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'PATCH' => UserController::ACTION_UPDATE,//todo: remove this, keep PATCH /v1/user/current
+                        'OPTIONS' => UserController::ACTION_OPTIONS,
                     ],
                     'extraPatterns' => [
                         'OPTIONS register' => 'options',
                         'GET current' => 'current',
+                        'PATCH current' => UserController::ACTION_UPDATE,
                         'OPTIONS current' => 'options',
                         'PATCH change-password' => 'change-password',
                         'OPTIONS change-password' => 'options',
@@ -102,6 +99,16 @@ return [
                         'OPTIONS logout' => 'options',
                         'GET validate-password-token/<token:>' => 'validate-password-token',
                         'OPTIONS validate-password-token/{token}' => 'options',
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => [
+                        'v1/user' => 'v1/access-token'
+                    ],
+                    'extraPatterns' => [
+                        'POST login' => 'create',
+                        'OPTIONS login' => 'options',
                     ],
                 ],
                 [
@@ -139,6 +146,8 @@ return [
                         'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/product' => StreamSessionController::ACTION_PRODUCTS,
                         'OPTIONS {id}/product' => StreamSessionController::ACTION_OPTIONS,
+                        'POST {id}/product/{productId}/event' => StreamSessionController::ACTION_EVENT,
+                        'OPTIONS {id}/product/{productId}/event' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/comment' => StreamSessionController::ACTION_COMMENT_INDEX,
                         'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
                         'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,
@@ -167,23 +176,14 @@ return [
                 [
                     'class' => UrlRule::class,
                     'controller' => [
-                        'v1/shop' => 'v1/product'
-                    ],
-                    'pluralize' => false,
-                    'patterns' => [
-                        'GET {slug}/product' => ProductController::ACTION_INDEX,
-                        'OPTIONS {slug}/product' => ProductController::ACTION_OPTIONS,
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => [
                         'v1/shop',
                     ],
                     'pluralize' => false,
                     'patterns' => [
-                        'GET <id:\w+>' => ShopController::ACTION_VIEW,
+                        'GET <id:\w+>' => ShopController::ACTION_VIEW,//todo: change to {slug}
                         'OPTIONS <id:\w+>' => ShopController::ACTION_OPTIONS,
+                        'GET {slug}/product' => ShopController::ACTION_PRODUCTS,
+                        'OPTIONS {slug}/product' => ShopController::ACTION_OPTIONS,
                     ],
                 ],
             ],

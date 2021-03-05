@@ -1,3 +1,5 @@
+php_value max_execution_time 300
+
 <IfModule mod_autoindex.c>
     # Disable Indexes
     Options -Indexes
@@ -43,6 +45,9 @@
 
     # For version file
     RewriteRule ^version\.txt$ version.txt [L,PT]
+
+    #show apple-app-site-association file
+    RewriteRule ^apple-app-site-association$ apple-app-site-association [L,PT]
 
     #Swagger
     RewriteCond %{REQUEST_URI} !^/swagger/dist/? [NC]

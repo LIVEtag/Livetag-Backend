@@ -145,4 +145,12 @@ class Shop extends ActiveRecord
     {
         return $this->hasMany(StreamSession::class, ['shopId' => 'id']);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getId(): ?int
+    {
+        return $this->id ? (int) $this->id : null;
+    }
 }

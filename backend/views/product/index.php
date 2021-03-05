@@ -5,15 +5,19 @@
  */
 
 use backend\models\Product\Product;
+use common\models\forms\Product\ProductsUploadForm;
 use backend\models\Product\ProductSearch;
 use kartik\grid\GridView;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use yii\web\View;
+use yii\data\ActiveDataProvider;
 
 /* @var $this View */
 /* @var $searchModel ProductSearch */
 /* @var $dataProvider ActiveDataProvider */
+/* @var $model ProductsUploadForm */
+/* @var $activeStreamSessionExists bool */
 
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,9 +28,42 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <h3>
-                        <?= Html::a('CSV file sample', Yii::$app->urlManagerBackend->createAbsoluteUrl(['/web/uploads/product.csv'])) ?>
-                    </h3>
+                    <button
+                        type="button"
+                        class="btn btn-primary bg-black"
+                        data-toggle="modal"
+                        data-target="#ModalUploadCsvForm"
+                        <?= $activeStreamSessionExists ? 'disabled title="' . Yii::t('app', 'You cannot upload products while Live Stream is active') . '"' : ''; ?>  >
+                        Upload products
+                    </button>
+                    <?= Html::a(
+                        Html::tag('i', ' CSV file sample', ['class' => 'fa fa-download']),
+                        Yii::$app->urlManagerBackend->createAbsoluteUrl(['/web/uploads/product.csv']),
+                        ['class' => 'btn btn-default']
+                    ); ?>
+                    <!-- Modal HTML Markup -->
+                    <div id="ModalUploadCsvForm" class="modal fade">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Refresh products list</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Do you want to refresh your product list?</p>
+                                    <?= $form->field($model, 'file')->fileInput()->label(false) ?>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+                                    <?= Html::submitButton('Refresh', ['class' => 'btn btn-success']) ?>
+                                </div>
+                                <?php ActiveForm::end(); ?>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
@@ -44,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'headerOptions' => ['width' => '60'],
                             ],
                             [
-                                'attribute' => 'sku',
+                                'attribute' => 'externalId',
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                             ],

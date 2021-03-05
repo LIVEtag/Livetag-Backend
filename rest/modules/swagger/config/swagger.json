@@ -40,6 +40,10 @@
             "description": "Stream sessions manage"
         },
         {
+            "name": "Product",
+            "description": "Operations with Products"
+        },
+        {
             "name": "Comments",
             "description": "Stream Comments"
         },
@@ -159,6 +163,62 @@
                         "$ref": "#/components/responses/401"
                     }
                 }
+            },
+            "patch": {
+                "summary": "Update User Profile",
+                "tags": [
+                    "Account",
+                    "Seller",
+                    "Buyer"
+                ],
+                "operationId": "updateUserProfile",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jon Snow"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/user"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
             }
         },
         "/v1/user/logout": {
@@ -176,14 +236,7 @@
                 "operationId": "userLogout",
                 "responses": {
                     "204": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/status204"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/204"
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
@@ -244,18 +297,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status204"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/204"
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
@@ -278,18 +320,7 @@
                 "operationId": "userChangePassword",
                 "responses": {
                     "204": {
-                        "description": "No Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status204"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/204"
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
@@ -309,6 +340,7 @@
                 }
             }
         },
+
         "/v1/user/recovery-password": {
             "post": {
                 "security": [],
@@ -320,18 +352,7 @@
                 "operationId": "userRecoveryPasswordByEmail",
                 "responses": {
                     "204": {
-                        "description": "No Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status204"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/204"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -359,18 +380,7 @@
                 "operationId": "userRecoveryPasswordChange",
                 "responses": {
                     "204": {
-                        "description": "No content",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status204"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/204"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -644,18 +654,7 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "No Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/status204"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/204"
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
@@ -724,6 +723,7 @@
             "get": {
                 "tags": [
                     "Stream Session",
+                    "Product",
                     "Seller",
                     "Buyer"
                 ],
@@ -781,6 +781,12 @@
                         }
                     },
                     {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
                         "$ref": "#/components/parameters/fields"
                     },
                     {
@@ -795,7 +801,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
@@ -814,6 +820,92 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+        "/v1/stream-session/{streamSessionid}/product/{productId}/event": {
+            "post": {
+                "security": [
+                    {
+                        "Basic": []
+                    }
+                ],
+                "tags": [
+                    "Stream Session",
+                    "Product",
+                    "Buyer"
+                ],
+                "summary": "Events with Stream Session Products",
+                "operationId": "streamSessionProductEvent",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "example": 4,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "productId",
+                        "description": "Product Id",
+                        "required": true,
+                        "example": 9,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "type",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "addToCart"
+                                        ],
+                                        "example": "addToCart"
+                                    },
+                                    "payload": {
+                                        "type": "string",
+                                        "example": {
+                                            "price": 99.99,
+                                            "version": "S21 Phantom Pink"
+                                        },
+                                        "description": "Selected option for addToCart (JSON)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
@@ -868,7 +960,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
@@ -893,7 +985,7 @@
                     "Seller",
                     "Buyer"
                 ],
-                "summary": "Create new comment (TBU)",
+                "summary": "Create new comment",
                 "operationId": "commentCreateNew",
                 "parameters": [
                     {
@@ -1076,9 +1168,17 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
                     }
                 ],
-
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1087,7 +1187,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200"
+                                            "$ref": "#/components/schemas/status200DataProvider"
                                         },
                                         {
                                             "properties": {
@@ -1106,6 +1206,12 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
                     }
                 }
             }
@@ -1126,6 +1232,16 @@
             }
         },
         "responses": {
+            "204": {
+                "description": "No Response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/status204"
+                        }
+                    }
+                }
+            },
             "400": {
                 "description": "Bad Request",
                 "content": {
@@ -1489,6 +1605,10 @@
                     "name"
                 ],
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
                     "role": {
                         "type": "string",
                         "enum": [
@@ -1644,6 +1764,10 @@
                         "enum": [1, 2, 3],
                         "example": 1
                     },
+                    "commentsEnabled": {
+                        "type": "boolean",
+                        "example": true
+                    },
                     "createdAt": {
                         "type": "integer",
                         "example": 1611738385
@@ -1738,7 +1862,7 @@
                 "type": "object",
                 "required": [
                     "id",
-                    "sku",
+                    "externalID",
                     "title",
                     "photo",
                     "link",
@@ -1749,9 +1873,9 @@
                         "type": "integer",
                         "example": 1
                     },
-                    "sku": {
+                    "externalID": {
                         "type": "string",
-                        "example": "fb7e2008-50e4-3735-a320-ccc3399d7da5"
+                        "example": "2136541"
                     },
                     "title": {
                         "type": "string",
@@ -1780,6 +1904,10 @@
                     "price"
                 ],
                 "properties": {
+                    "sku": {
+                        "type": "string",
+                        "example": "fb7e2008-50e4-3735-a320-ccc3399d7da5"
+                    },
                     "price": {
                         "type": "number",
                         "example": 178.13

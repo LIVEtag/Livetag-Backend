@@ -25,6 +25,12 @@ class StreamSessionProductFixture extends ActiveFixture
     const PRODUCT_10_SESSION_4 = 7;
     const PRODUCT_11_SESSION_4 = 8;
     const PRODUCT_12_SESSION_4 = 9;
+    //Expired Session of Shop1
+    const PRODUCT_13_SESSION_1 = 10;
+    const PRODUCT_14_SESSION_1 = 11;
+    //Expired Session of Shop2
+    const PRODUCT_15_SESSION_2 = 12;
+    const PRODUCT_16_SESSION_2 = 13;
 
     public $modelClass = StreamSessionProduct::class;
     public $depends = [

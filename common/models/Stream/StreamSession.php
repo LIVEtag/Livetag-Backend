@@ -13,9 +13,13 @@ use common\components\centrifugo\Message;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\helpers\LogHelper;
+use common\models\Analytics\StreamSessionEvent;
+use common\models\Analytics\StreamSessionProductEvent;
+use common\models\Analytics\StreamSessionStatistic;
 use common\models\Comment\Comment;
 use common\models\Product\Product;
 use common\models\Product\StreamSessionProduct;
+use common\models\queries\Analytics\StreamSessionStatisticQuery;
 use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Product\ProductQuery;
 use common\models\queries\Product\StreamSessionProductQuery;
@@ -29,14 +33,19 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
  * This is the model class for table "stream_session".
  *
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
+ *
  * @property integer $id
  * @property integer $shopId
  * @property integer $status
+ * @property noolean $commentsEnabled
  * @property string $sessionId
  * @property integer $createdAt
  * @property integer $startedAt
@@ -47,19 +56,52 @@ use yii\web\UnprocessableEntityHttpException;
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
  * @property-read Product[] $products
+ * @property-read StreamSessionEvent[] $streamSessionEvents
+ * @property-read StreamSessionProductEvent[] $streamSessionProductEvents
+ * @property-read StreamSessionStatistic $streamSessionStatistic
  *
  * EVENTS:
  * - EVENT_AFTER_INSERT
  * - EVENT_AFTER_UPDATE
  * - EVENT_END_SOON
+ * - EVENT_SUBSCRIBER_TOKEN_CREATED
  * @see EventDispatcher
  */
 class StreamSession extends ActiveRecord implements StreamSessionInterface
 {
+    /** @see getShop() */
+    const REL_SHOP = 'shop';
+
+    /** @see getProducts() */
+    const REL_PRODUCT = 'products';
+
+    /** @see getStreamSessionProducts() */
+    const REL_STREAM_SESSION_PRODUCT = 'streamSessionProducts';
+
+    /** @see getComments() */
+    const REL_COMMENT = 'comments';
+
+    /** @see getStreamSessionTokens() */
+    const REL_STREAM_SESSION_TOKEN = 'streamSessionTokens';
+
+    /** @see getStreamSessionEvents() */
+    const REL_STREAM_SESSION_EVENT = 'streamSessionEvents';
+
+    /** @see getStreamSessionProductEvents() */
+    const REL_STREAM_SESSION_PRODUCT_EVENT = 'streamSessionProductEvents';
+
+    /** @see getStreamSessionStatistic() */
+    const REL_STREAM_SESSION_STATISTIC = 'streamSessionStatistic';
+
     /**
      * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
      */
     const EVENT_END_SOON = 'endSoon';
+
+    /**
+     * Created vonage token for subscriber
+     */
+    const EVENT_SUBSCRIBER_TOKEN_CREATED = 'subscriberTokenCreated';
 
     /**
      * Default Session lifetime (3 hours)
@@ -135,6 +177,8 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             [['shopId', 'status', 'startedAt', 'stoppedAt'], 'integer'],
             ['sessionId', 'string', 'max' => 255],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
+            ['commentsEnabled', 'default', 'value' => true],
+            ['commentsEnabled', 'boolean'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             [
@@ -163,6 +207,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'id' => Yii::t('app', 'ID'),
             'shopId' => Yii::t('app', 'Shop ID'),
             'status' => Yii::t('app', 'Status'),
+            'commentsEnabled' => Yii::t('app', 'Comments Enabled'),
             'sessionId' => Yii::t('app', 'Session ID'),
             'expiredAt' => Yii::t('app', 'Expired At'),
             'createdAt' => Yii::t('app', 'Created At'),
@@ -185,6 +230,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'sessionId',
             'status' => function () {
                 return $this->getStatus();
+            },
+            'commentsEnabled' => function () {
+                return $this->getCommentsEnabled();
             },
             'createdAt' => function () {
                 return $this->getCreatedAt();
@@ -239,6 +287,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @return StreamSessionStatisticQuery
+     */
+    public function getStreamSessionStatistic(): StreamSessionStatisticQuery
+    {
+        return $this->hasOne(StreamSessionStatistic::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getId(): ?int
@@ -260,6 +316,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function getStatus(): ?int
     {
         return $this->status ? (int) $this->status : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCommentsEnabled(): bool
+    {
+        return (bool) $this->commentsEnabled;
     }
 
     /**
@@ -325,7 +389,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function isActive(): bool
     {
-        return $this->getStatus() === self::STATUS_ACTIVE; // && $this->getExpiredAt() && $this->getExpiredAt() > time();
+        return $this->getStatus() === self::STATUS_ACTIVE;
     }
 
     /**
@@ -335,6 +399,27 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function isStopped(): bool
     {
         return $this->getStatus() === self::STATUS_STOPPED;
+    }
+
+    /**
+     * Check user can add comment to current stream
+     * @param User $user
+     * @throws ForbiddenHttpException
+     */
+    public function checkCanAddComment(User $user)
+    {
+        if (!$this->isActive()) {
+            throw new ForbiddenHttpException('Commenting is available only for the active livestream');
+        }
+        if (!$this->getCommentsEnabled()) {
+            throw new ForbiddenHttpException('Comment section of the widget was disabled');
+        }
+        //Do not allow seller from another shop post a comment
+        if ($user->isSeller && (!$user->shop || $user->shop->id !== $this->shopId)) {
+            throw new ForbiddenHttpException('You can not leave comments in non-your broadcast.');
+        } elseif ($user->isBuyer && !$user->name) {
+            throw new ForbiddenHttpException('You cannot leave a comment without specifying a name.');
+        }
     }
 
     /**
@@ -353,7 +438,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         if ($user && $this->getIsOwner($user)) {
             return $this->getPublisherToken();
         }
-        return $this->createSubscriberToken();
+        $subscriberToken = $this->createSubscriberToken();
+        $this->trigger(StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, new StreamSessionSubscriberTokenCreatedEvent($user));
+        return $subscriberToken;
     }
 
     /**
@@ -420,6 +507,17 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public static function getCurrent($shopId): ?self
     {
         return self::find()->byShopId($shopId)->active()->orderByLatest()->one();
+    }
+
+    /**
+     * Check active session exist for selected shop
+     *
+     * @param int $shopId
+     * @return self|null
+     */
+    public static function activeExists($shopId): bool
+    {
+        return self::find()->byShopId($shopId)->active()->exists();
     }
 
     /**
