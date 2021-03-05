@@ -392,8 +392,7 @@ prod:build:
     - echo "Build the image ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/backend:${CI_COMMIT_SHORT_SHA}"
     - . ./.gitlab-ci/build_image.sh
   only:
-    - master
-    - deploy
+    - tags
   dependencies:
     - build_vendor
   tags:
@@ -429,8 +428,7 @@ prod:deploy:
        . ./.gitlab-ci/migrations.sh
        echo "Deploy complete"
   only:
-    - master
-    - deploy
+    - tags
   dependencies:
     - build_vendor
   tags:
