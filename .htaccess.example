@@ -68,5 +68,5 @@ php_value max_execution_time 300
     RewriteCond %{REQUEST_URI} !^/swagger/? [NC] #For Swagger
 
     # Root path
-    RewriteRule ^/?(.*)$ /backend/web/$1 [L]
+    #RewriteRule ^/?(.*)$ /backend/web/$1 [L]
 </IfModule>
