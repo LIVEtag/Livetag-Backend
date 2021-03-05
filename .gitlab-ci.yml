@@ -411,6 +411,8 @@ prod:deploy:
        aws ecr describe-images \
            --repository-name backend \
            --image-id="[{\"imageTag\":\"${CI_COMMIT_SHORT_SHA}\"}]"
+       echo "Migrations"
+       . ./.gitlab-ci/migrations.sh
        echo "Deploy backend"
        ecs deploy livetag backend \
            --tag ${CI_COMMIT_SHORT_SHA} \
@@ -424,8 +426,6 @@ prod:deploy:
            --diff \
            --timeout 900 \
            --deregister
-       echo "Migrations"
-       . ./.gitlab-ci/migrations.sh
        echo "Deploy complete"
   only:
     - tags
