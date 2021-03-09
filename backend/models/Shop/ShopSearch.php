@@ -25,7 +25,7 @@ class ShopSearch extends Shop
     {
         return [
             [['id'], 'integer'],
-            [['name', 'website'], 'safe'],
+            [['name', 'website', 'uri'], 'safe'],
         ];
     }
 
@@ -71,6 +71,7 @@ class ShopSearch extends Shop
         $query->andFilterWhere([self::tableName() . '.id' => $this->id]);
 
         $query->andFilterWhere(['like', self::tableName() . '.name', $this->name])
+            ->andFilterWhere(['like', self::tableName() . '.uri', $this->uri])
             ->andFilterWhere(['like', self::tableName() . '.website', $this->website]);
 
         return $dataProvider;

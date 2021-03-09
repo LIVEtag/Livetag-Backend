@@ -13,7 +13,7 @@ $user = Yii::$app->user->identity;
 <header class="main-header">
     <?= Html::a(
         '<span class="logo-mini">LT</span><span class="logo-lg"><img src="' . Yii::getAlias('@web') . '/images/logo.png" class="user-image" alt="' . Yii::$app->name . '"/></span>',
-        Yii::$app->homeUrl,
+        $user->isSeller ? ['shop/my'] : Yii::$app->homeUrl,
         ['class' => 'logo']
     ); ?>
     <nav class="navbar navbar-static-top" role="navigation">

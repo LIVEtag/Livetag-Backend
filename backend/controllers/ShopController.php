@@ -12,6 +12,8 @@ use backend\models\Shop\Shop;
 use backend\models\Shop\ShopSearch;
 use backend\models\User\User;
 use backend\models\User\UserSearch;
+use common\helpers\LogHelper;
+use Throwable;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -39,6 +41,16 @@ class ShopController extends Controller
                             'allow' => true,
                             'roles' => [User::ROLE_ADMIN],
                         ],
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                            'allow' => true,
+                            'roles' => [User::ROLE_ADMIN],
+                        ],
+                        [
+                            'actions' => ['my'],
+                            'allow' => true,
+                            'roles' => [User::ROLE_SELLER],
+                        ],
                     ],
                 ],
                 'verbs' => [
@@ -61,8 +73,8 @@ class ShopController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-                'searchModel' => $searchModel,
-                'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -87,9 +99,42 @@ class ShopController extends Controller
         );
         $userDataProvider = $userSearchModel->search($params);
         return $this->render('view', [
-                'model' => $model,
-                'userSearchModel' => $userSearchModel,
-                'userDataProvider' => $userDataProvider,
+            'model' => $model,
+            'userSearchModel' => $userSearchModel,
+            'userDataProvider' => $userDataProvider,
+        ]);
+    }
+
+    /**
+     * Display seller shop details (curent shop)
+     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionMy()
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || !$user->isSeller || !$user->shop) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        $model = $this->findModel($user->shop->id);
+
+        try {
+            $url = Yii::$app->urlManagerSDK->createAbsoluteUrl('/lib/snippet.txt');
+            $snippet = htmlentities(Yii::t('app', file_get_contents($url), ['shopUri' => $user->shop->uri]));
+        } catch (Throwable $ex) {
+            $snippet = null;
+            LogHelper::error(
+                'Failed to get snippet',
+                'sdk',
+                LogHelper::extraForException($user->shop, $ex)
+            );
+        }
+
+        return $this->render('my', [
+            'model' => $model,
+            'snippet' => $snippet
         ]);
     }
 
