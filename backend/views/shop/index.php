@@ -4,7 +4,6 @@
  * See LICENSE.txt for license details.
  */
 
-use backend\models\Shop\Shop;
 use backend\models\Shop\ShopSearch;
 use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
@@ -42,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'headerOptions' => ['width' => '80'],
                             ],
                             'name',
+                            'uri',
                             [
                                 'attribute' => 'website',
                                 'format' => ['url', ['target' => '_blank']]

@@ -92,7 +92,7 @@ class StreamSessionController extends Controller
         $searchModel = new StreamSessionSearch();
         $params = Yii::$app->request->queryParams;
         if ($user->isSeller) {
-            $params = ArrayHelper::merge($params, [StringHelper::basename(\get_class($searchModel)) => ['shopId' => $user->shop->id]]);
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
         }
         $dataProvider = $searchModel->search($params);
 

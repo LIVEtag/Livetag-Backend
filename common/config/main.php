@@ -35,6 +35,7 @@ use yii\web\UrlManager;
 Yii::setAlias('@base.domain', getenv('YII_MAIN_DOMAIN'));
 Yii::setAlias('@rest.domain', getenv('YII_REST_DOMAIN'));
 Yii::setAlias('@backend.domain', getenv('YII_BACKEND_DOMAIN'));
+Yii::setAlias('@sdk.domain', getenv('SDK_DOMAIN'));
 
 return [
     'name' => 'LiveTag',
@@ -108,6 +109,11 @@ return [
             'class' => FileCache::class,
             'cachePath' => Yii::getAlias('@rest') . '/runtime/cache'//to store cache it one place for invalidation
         ],
+        'vonage' => [
+            'class' => Vonage::class,
+            'apiKey' => getenv('VONAGE_API_KEY'),
+            'apiSecret' => getenv('VONAGE_API_SECRET'),
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
@@ -119,12 +125,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
         ],
-        'vonage' => [
-            'class' => Vonage::class,
-            'apiKey' => getenv('VONAGE_API_KEY'),
-            'apiSecret' => getenv('VONAGE_API_SECRET'),
-        ],
         'urlManagerBackend' => require __DIR__ . '/../../backend/config/urlManager.php',
+        'urlManagerSDK' => [
+            'class' => UrlManager::class,
+            'baseUrl' => Yii::getAlias('@sdk.domain'),
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
     ],
     'container' => [
         'singletons' => [
