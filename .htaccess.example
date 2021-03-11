@@ -39,6 +39,7 @@ php_value max_execution_time 300
     RewriteRule .* - [L,R=405]
 
     # For HTTP(s)
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteCond %{HTTP_HOST} {{YII_MAIN_DOMAIN}}$ [NC] # MAIN_DOMAIN - variable from env
     RewriteCond %{HTTPS} !=on
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
