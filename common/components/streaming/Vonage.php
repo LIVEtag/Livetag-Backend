@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace common\components\streaming;
 
+use OpenTok\ArchiveMode;
 use OpenTok\MediaMode;
 use OpenTok\OpenTok;
 use yii\base\Component;
@@ -42,6 +43,7 @@ class Vonage extends Component
     {
         $session = $this->opentok->createSession([
             'mediaMode' => MediaMode::ROUTED,
+            'archiveMode' => ArchiveMode::ALWAYS,
         ]);
         return $session->getSessionId();
     }

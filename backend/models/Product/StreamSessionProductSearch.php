@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
  */
 class StreamSessionProductSearch extends StreamSessionProduct
 {
-    public $sku;
+    public $externalId;
     public $title;
     public $link;
 
@@ -28,7 +28,7 @@ class StreamSessionProductSearch extends StreamSessionProduct
     {
         return [
             [['id', 'streamSessionId', 'productId', 'status'], 'integer'],
-            [['sku', 'title', 'link'], 'safe'],
+            [['externalId', 'title', 'link'], 'safe'],
         ];
     }
 
@@ -60,9 +60,9 @@ class StreamSessionProductSearch extends StreamSessionProduct
             'query' => $query,
         ]);
 
-        $dataProvider->sort->attributes['sku'] = [
-            'asc' => [Product::tableName() . '.sku' => SORT_ASC],
-            'desc' => [Product::tableName() . '.sku' => SORT_DESC],
+        $dataProvider->sort->attributes['externalId'] = [
+            'asc' => [Product::tableName() . '.externalId' => SORT_ASC],
+            'desc' => [Product::tableName() . '.externalId' => SORT_DESC],
         ];
         $dataProvider->sort->attributes['title'] = [
             'asc' => [Product::tableName() . '.title' => SORT_ASC],
@@ -91,7 +91,7 @@ class StreamSessionProductSearch extends StreamSessionProduct
         ]);
 
         //Product filter
-        $query->andFilterWhere(['like', Product::tableName() . '.sku', $this->sku])
+        $query->andFilterWhere(['like', Product::tableName() . '.externalId', $this->externalId])
             ->andFilterWhere(['like', Product::tableName() . '.title', $this->title])
             ->andFilterWhere(['like', Product::tableName() . '.link', $this->link]);
 
