@@ -53,8 +53,8 @@ class StreamSessionProduct extends ActiveRecord implements StreamSessionProductI
      * Status Names
      */
     const STATUSES = [
-        self::STATUS_DISPLAYED => 'Displayed in the widget',
-        self::STATUS_PRESENTED => 'Presented now',
+        self::STATUS_DISPLAYED => 'In widget',
+        self::STATUS_PRESENTED => 'Presented',
     ];
 
     /**
