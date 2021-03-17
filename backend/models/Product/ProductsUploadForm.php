@@ -104,7 +104,7 @@ class ProductsUploadForm extends Model
     public function validateCanUpload()
     {
         //do not allow upload for active session
-        if (StreamSession::activeExists($this->shop->id)) {
+        if (StreamSession::activeExists($this->shop->getId())) {
             $this->addError('file', Yii::t('app', 'You cannot upload products while Live Stream is active'));
         }
     }
@@ -215,6 +215,7 @@ class ProductsUploadForm extends Model
         try {
             //Mark products as deleted
             $deleteProductQuery = Product::find()
+                ->andWhere(['shopId' => $this->shop->getId()])
                 ->andWhere(['NOT IN', Product::EXTERNAL_ID, array_keys($this->products)])
                 ->andWhere(['<>', 'status', Product::STATUS_DELETED]);
             foreach ($deleteProductQuery->each() as $product) {
