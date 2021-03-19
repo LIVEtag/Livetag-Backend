@@ -4,6 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
+use backend\models\Shop\Shop;
 use backend\models\Shop\ShopSearch;
 use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
@@ -39,6 +40,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'id',
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '80'],
+                            ],
+                            [
+                                'attribute' => 'logo',
+                                'format' => ['image', ['width' => '100']],
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'hAlign' => GridView::ALIGN_LEFT,
+                                'mergeHeader' => true,
+                                'value' => function (Shop $model) {
+                                    return $model->getUrl();
+                                }
                             ],
                             'name',
                             'uri',

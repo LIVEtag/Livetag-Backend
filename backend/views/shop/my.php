@@ -5,6 +5,7 @@
  */
 use backend\assets\HighlightAsset;
 use backend\models\Shop\Shop;
+use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\DetailView;
 
@@ -13,7 +14,6 @@ use yii\widgets\DetailView;
 
 $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;
-
 
 HighlightAsset::register($this);
 
@@ -25,12 +25,21 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
     <div class="row">
         <div class="col-md-12">
             <div class="box box-default">
-                <div class="box-header"></div>
+                <div class="box-header">
+                    <?= Html::a(Yii::t('app', 'Update'), ['update-my'], ['class' => 'btn btn-primary']) ?>
+                </div>
                 <!--/.box-header -->
                 <div class="box-body">
                     <?= DetailView::widget([
                         'model' => $model,
                         'attributes' => [
+                            [
+                                'attribute' => 'logo',
+                                'format' => ['image', ['width' => '150']],
+                                'value' => function ($model) {
+                                    return $model->getUrl();
+                                }
+                            ],
                             'name',
                             'uri',
                             [

@@ -40,6 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attributes' => [
                             'id',
                             'name',
+                            [
+                                'attribute' => 'logo',
+                                'format' => ['image', ['width' => '150']],
+                                'value' => function ($model) {
+                                    return $model->getUrl();
+                                }
+                            ],
                             'uri',
                             [
                                 'attribute' => 'website',
