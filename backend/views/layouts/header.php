@@ -8,11 +8,12 @@ use yii\web\View;
 
 /* @var $user User */
 $user = Yii::$app->user->identity;
+$logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
 ?>
 
 <header class="main-header">
     <?= Html::a(
-        '<span class="logo-mini">LT</span><span class="logo-lg"><img src="' . Yii::getAlias('@web') . '/images/logo.png" class="user-image" alt="' . Yii::$app->name . '"/></span>',
+        '<span class="logo-mini">LT</span><span class="logo-lg"><img src="' . $logo . '" class="user-image" alt="' . Yii::$app->name . '"/></span>',
         $user->isSeller ? ['shop/my'] : Yii::$app->homeUrl,
         ['class' => 'logo']
     ); ?>

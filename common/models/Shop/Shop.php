@@ -9,6 +9,8 @@ namespace common\models\Shop;
 
 use common\components\behaviors\TimestampBehavior;
 use common\components\EventDispatcher;
+use common\components\FileSystem\FileResourceInterface;
+use common\components\FileSystem\S3FileResourceTrait;
 use common\models\queries\Shop\ShopQuery;
 use common\models\Stream\StreamSession;
 use common\models\User;
@@ -16,7 +18,9 @@ use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "shop".
@@ -35,8 +39,20 @@ use yii\helpers\Inflector;
  * - EVENT_BEFORE_DELETE
  * @see EventDispatcher
  */
-class Shop extends ActiveRecord
+class Shop extends ActiveRecord implements FileResourceInterface
 {
+    use S3FileResourceTrait;
+
+    /**
+     * Scenario for seller shop update
+     */
+    const SCENARIO_SELLER = 'seller';
+
+    /**
+     *
+     * @var UploadedFile
+     */
+    public $file;
 
     /**
      * @inheritdoc
@@ -55,13 +71,27 @@ class Shop extends ActiveRecord
         return new ShopQuery(get_called_class());
     }
 
-    /**
-     * @inherritdoc
+     /**
+     * @inheritdoc
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function transactions(): array
     {
+        $transactions = [];
+        foreach ($this->scenarios() as $scenario => $fields) {
+            $transactions[$scenario] = self::OP_DELETE;
+        }
+        return $transactions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
         return [
-            self::SCENARIO_DEFAULT => self::OP_DELETE
+            self::SCENARIO_DEFAULT => ArrayHelper::getValue(parent::scenarios(), self::SCENARIO_DEFAULT),
+            self::SCENARIO_SELLER => [],//no fields for seller for now
         ];
     }
 
@@ -99,7 +129,17 @@ class Shop extends ActiveRecord
             ],
             ['uri', 'unique'],
             ['website', 'string', 'max' => 255],
-            ['website', 'url', 'defaultScheme' => 'https']
+            ['website', 'url', 'defaultScheme' => 'https'],
+
+            [
+                'file',
+                'file',
+                'skipOnEmpty' => true,
+                'mimeTypes' => [
+                    'image/svg+xml',
+                ],
+                'maxSize' => Yii::$app->params['maxUploadLogoSize'],
+            ],
         ];
     }
 
@@ -126,7 +166,10 @@ class Shop extends ActiveRecord
         return [
             'uri',
             'name',
-            'website'
+            'website',
+            'logo' => function () {
+                return $this->getUrl();
+            }
         ];
     }
 
@@ -152,5 +195,60 @@ class Shop extends ActiveRecord
     public function getId(): ?int
     {
         return $this->id ? (int) $this->id : null;
+    }
+
+    /**
+     * Remove logo from s3
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        if ($this->logo) {
+            $this->deleteFile();
+        }
+        return parent::beforeDelete();
+    }
+
+    /**
+     * Store logo on s3 if new file uploaded
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        parent::beforeSave($insert);
+        if ($this->file) {
+            return $this->saveFile();
+        }
+        return true;
+    }
+
+    /**
+     * Remove previous logo if new set
+     * @inheritdoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($this->isAttributeChanged('logo')) {
+            $this->deleteFile();
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * Get name of field, that used for storing file (path)
+     * @return string
+     */
+    public static function getPathFieldName(): string
+    {
+        return 'logo';
+    }
+
+    /**
+     * Get relative path for file store
+     * @return string
+     */
+    public function getRelativePath(): string
+    {
+        return 'logo';
     }
 }

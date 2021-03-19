@@ -271,6 +271,7 @@ class ApiTester extends \Codeception\Actor
             'uri' => 'string',
             'name' => 'string',
             'website' => 'string',
+            'logo' => 'string|null',
         ];
     }
 

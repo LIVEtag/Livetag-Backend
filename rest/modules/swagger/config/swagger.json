@@ -1721,7 +1721,8 @@
                 "required": [
                     "uri",
                     "name",
-                    "website"
+                    "website",
+                    "logo"
                 ],
                 "properties": {
                     "uri": {
@@ -1731,6 +1732,9 @@
                         "type": "string"
                     },
                     "website": {
+                        "type": "string"
+                    },
+                    "logo": {
                         "type": "string"
                     }
                 }

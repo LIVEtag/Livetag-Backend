@@ -10,6 +10,7 @@ use common\components\streaming\Vonage;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
 use common\components\validation\validators as RestValidators;
+use creocoder\flysystem\AwsS3Filesystem;
 use notamedia\sentry\SentryTarget;
 use yii\caching\FileCache;
 use yii\db\Connection;
@@ -62,6 +63,15 @@ return [
             'username' => getenv('DB_USERNAME'),
             'password' => getenv('DB_PASSWORD'),
             'charset' => 'utf8mb4',
+        ],
+        'fs' => [
+            'class' => AwsS3Filesystem::class,
+            'key' => getenv('AMAZON_ACCESS_KEY'),
+            'secret' => getenv('AMAZON_SECRET_KEY'),
+            'bucket' => getenv('AMAZON_S3_BUCKET'),
+            'region' => getenv('AMAZON_S3_REGION'),
+            'prefix' => getenv('AMAZON_S3_PREFIX'),
+            'options' => ['ACL' => 'public-read'],
         ],
         'mailer' => [
             'class' => Mailer::class,
