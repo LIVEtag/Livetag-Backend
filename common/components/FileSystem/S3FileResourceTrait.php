@@ -98,8 +98,18 @@ trait S3FileResourceTrait
         if (!$this->getPath()) {
             return false;
         }
+        return self::deleteFileByPath($this->getPath());
+    }
+
+    /**
+     * Delete file from s3 by path (todo: move to helper or other class)
+     * @param string $path
+     * @return bool
+     */
+    public static function deleteFileByPath($path): bool
+    {
         try {
-            return Yii::$app->fs->delete($this->getPath());
+            return Yii::$app->fs->delete($path);
         } catch (FileNotFoundException $ex) {
             LogHelper::warning('Failed to remove file', 'file', LogHelper::extraForException($this, $ex));
             return true;
