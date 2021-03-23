@@ -91,7 +91,7 @@ class Shop extends ActiveRecord implements FileResourceInterface
     {
         return [
             self::SCENARIO_DEFAULT => ArrayHelper::getValue(parent::scenarios(), self::SCENARIO_DEFAULT),
-            self::SCENARIO_SELLER => [],//no fields for seller for now
+            self::SCENARIO_SELLER => ['file'], // Seller can change only logo for now
         ];
     }
 
@@ -136,6 +136,7 @@ class Shop extends ActiveRecord implements FileResourceInterface
                 'file',
                 'skipOnEmpty' => true,
                 'mimeTypes' => [
+                    'image/svg',
                     'image/svg+xml',
                 ],
                 'maxSize' => Yii::$app->params['maxUploadLogoSize'],
@@ -228,8 +229,8 @@ class Shop extends ActiveRecord implements FileResourceInterface
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if ($this->isAttributeChanged('logo')) {
-            $this->deleteFile();
+        if (isset($changedAttributes['logo'])) {
+            self::deleteFileByPath($changedAttributes['logo']);
         }
         parent::afterSave($insert, $changedAttributes);
     }
