@@ -7,11 +7,12 @@
 namespace rest\common\controllers;
 
 use common\models\Stream\StreamSession;
-use rest\common\controllers\actions\Stream\EventAction;
+use rest\common\controllers\actions\Stream\ArchiveStartAction;
 use rest\common\controllers\actions\Stream\CommentCreateAction;
 use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
 use rest\common\controllers\actions\Stream\CurrentAction;
+use rest\common\controllers\actions\Stream\EventAction;
 use rest\common\controllers\actions\Stream\ProductsAction;
 use rest\common\controllers\actions\Stream\StartAction;
 use rest\common\controllers\actions\Stream\StopAction;
@@ -84,6 +85,11 @@ class StreamSessionController extends ActiveController
     const ACTION_EVENT = 'event';
 
     /**
+     * Start archiving
+     */
+    const ACTION_ARCHIVE_START = 'archive-start';
+
+    /**
      * @inheritdoc
      */
     public function behaviors(): array
@@ -99,6 +105,7 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_CREATE,
                                 self::ACTION_START,
                                 self::ACTION_STOP,
+                                self::ACTION_ARCHIVE_START,
                             ],
                             'roles' => [User::ROLE_SELLER]
                         ],
@@ -174,6 +181,11 @@ class StreamSessionController extends ActiveController
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess']
                 ],
+                 self::ACTION_ARCHIVE_START => [
+                    'class' => ArchiveStartAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess']
+                ],
             ]
         );
     }
@@ -193,6 +205,7 @@ class StreamSessionController extends ActiveController
         switch ($action) {
             case self::ACTION_START:
             case self::ACTION_STOP:
+            case self::ACTION_ARCHIVE_START:
                 if (!$model || !$user) {
                     throw new ForbiddenHttpException('You are not allowed to access this entity.'); //just in case
                 }
