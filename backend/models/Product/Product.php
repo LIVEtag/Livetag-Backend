@@ -56,4 +56,17 @@ class Product extends BaseModel
 
         return $html;
     }
+
+    /**
+     * Get all entities as indexed array
+     * @return array [id=>key] array of entities
+     */
+    public static function getIndexedArray($shopId = null): array
+    {
+        $query = self::find()->select(['title', 'id'])->indexBy('id');
+        if ($shopId) {
+            $query->byShop($shopId);
+        }
+        return $query->column();
+    }
 }

@@ -11,6 +11,7 @@ use common\components\behaviors\TimestampBehavior;
 use common\components\EventDispatcher;
 use common\components\FileSystem\FileResourceInterface;
 use common\components\FileSystem\S3FileResourceTrait;
+use common\models\Product\Product;
 use common\models\queries\Shop\ShopQuery;
 use common\models\Stream\StreamSession;
 use common\models\User;
@@ -32,6 +33,7 @@ use yii\web\UploadedFile;
  * @property integer $createdAt
  * @property integer $updatedAt
  *
+ * @property-read Product[] $products
  * @property-read StreamSession[] $streamSessions
  * @property-read User[] $users
  *
@@ -42,6 +44,15 @@ use yii\web\UploadedFile;
 class Shop extends ActiveRecord implements FileResourceInterface
 {
     use S3FileResourceTrait;
+
+    /** @see getProducts() */
+    const REL_PRODUCT = 'products';
+
+    /** @see getStreamSessions() */
+    const REL_STREAM_SESSION = 'streamSessions';
+
+    /** @see getUsers() */
+    const REL_USER = 'users';
 
     /**
      * Scenario for seller shop update
@@ -172,6 +183,14 @@ class Shop extends ActiveRecord implements FileResourceInterface
                 return $this->getUrl();
             }
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProducts(): ActiveQuery
+    {
+        return $this->hasMany(Product::class, ['shopId' => 'id']);
     }
 
     /**

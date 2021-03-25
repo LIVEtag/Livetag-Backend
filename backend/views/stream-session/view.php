@@ -47,14 +47,18 @@ $this->registerJs(
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?php if ($model->isActive()) : ?>
-                        <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
-                            'class' => 'btn btn-danger',
-                            'data' => [
-                                'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
-                                'method' => 'post',
-                            ],
-                        ]); ?>
+                    <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
+                    <?php if ($user && $user->isSeller) : ?>
+                        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                        <?php if ($model->isActive()) : ?>
+                            <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
+                                'class' => 'btn btn-danger',
+                                'data' => [
+                                    'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
+                                    'method' => 'post',
+                                ],
+                            ]); ?>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
                 <!--/.box-header -->
@@ -63,6 +67,7 @@ $this->registerJs(
                         'model' => $model,
                         'attributes' => [
                             'id',
+                            'name',
                             [
                                 'attribute' => 'status',
                                 'value' => function (StreamSession $model) {
@@ -79,6 +84,13 @@ $this->registerJs(
                                 'visible' => $user && $user->isAdmin,
                             ],
                             'sessionId',
+                            'announcedAt:datetime',
+                            [
+                                'label' => 'Maximum Duration',
+                                'value' => function (StreamSession $model) {
+                                    return $model->getMaximumDuration();
+                                }
+                            ],
                             'createdAt:datetime',
                             'startedAt:datetime',
                             'stoppedAt:datetime',
@@ -99,7 +111,7 @@ $this->registerJs(
                             [
                                 'label' => 'Duration',
                                 'value' => function (StreamSession $model) {
-                                    return $model->getDuration();
+                                    return $model->getActualDuration();
                                 }
                             ],
                         ],
