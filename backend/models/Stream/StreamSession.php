@@ -20,7 +20,7 @@ class StreamSession extends BaseModel
      * Display stream duration
      * @return string|null
      */
-    public function getDuration(): ?string
+    public function getActualDuration(): ?string
     {
         if (!$this->getStartedAt()) {
             return null;
@@ -57,5 +57,13 @@ class StreamSession extends BaseModel
     public function getStatusName(): ?string
     {
         return ArrayHelper::getValue(self::STATUSES, $this->status);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMaximumDuration(): ?string
+    {
+        return ArrayHelper::getValue(self::DURATIONS, $this->duration);
     }
 }

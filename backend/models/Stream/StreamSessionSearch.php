@@ -29,7 +29,7 @@ class StreamSessionSearch extends StreamSession
      * Duration in seconds
      * @var int
      */
-    public $duration;
+    public $actualDuration;
 
     /**
      * “Add to cart” rate =
@@ -46,7 +46,7 @@ class StreamSessionSearch extends StreamSession
         return [
             [['id', 'shopId', 'status', 'viewsCount', 'addToCartCount'], 'integer'],
             ['addToCartRate', 'number'],
-            [['sessionId'], 'string'],
+            [['sessionId', 'name'], 'string'],
         ];
     }
 
@@ -73,11 +73,11 @@ class StreamSessionSearch extends StreamSession
             . 'NULLIF(' . StreamSessionStatistic::tableName() . '.viewsCount,0) AS addToCartRate'
         );
 
-        $durationExpression = new Expression('
+        $actualDurationExpression = new Expression('
             CASE WHEN ' . self::tableName() . '.startedAt IS NOT NULL
                 THEN COALESCE(' . self::tableName() . '.stoppedAt, NOW()) - ' . self::tableName() . '.startedAt
                 ELSE NULL
-            END AS duration');
+            END AS actualDuration');
 
         $query = self::find()
             ->joinWith(self::REL_STREAM_SESSION_STATISTIC)
@@ -85,7 +85,7 @@ class StreamSessionSearch extends StreamSession
                 StreamSessionStatistic::tableName() . '.addToCartCount',
                 StreamSessionStatistic::tableName() . '.viewsCount',
                 $addToCartRateExpression,
-                $durationExpression
+                $actualDurationExpression
             ]);
 
         $dataProvider = new ActiveDataProvider([
@@ -94,7 +94,7 @@ class StreamSessionSearch extends StreamSession
                 'pageSize' => ArrayHelper::getValue($params, 'pageSize', 20)
             ],
             'sort' => [
-                'defaultOrder' => ['createdAt' => SORT_DESC]
+                'defaultOrder' => ['announcedAt' => SORT_DESC]
             ],
         ]);
 
@@ -117,9 +117,9 @@ class StreamSessionSearch extends StreamSession
             'asc' => ['addToCartRate' => SORT_ASC],
             'desc' => ['addToCartRate' => SORT_DESC],
         ];
-        $dataProvider->sort->attributes['duration'] = [
-            'asc' => ['duration' => SORT_ASC],
-            'desc' => ['duration' => SORT_DESC],
+        $dataProvider->sort->attributes['actualDuration'] = [
+            'asc' => ['actualDuration' => SORT_ASC],
+            'desc' => ['actualDuration' => SORT_DESC],
         ];
 
         // grid filtering conditions
@@ -132,6 +132,7 @@ class StreamSessionSearch extends StreamSession
         ]);
 
         $query->andFilterWhere(['like', self::tableName() . '.sessionId', $this->sessionId]);
+        $query->andFilterWhere(['like', self::tableName() . '.name', $this->name]);
 
         return $dataProvider;
     }

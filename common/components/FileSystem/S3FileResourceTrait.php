@@ -53,7 +53,6 @@ trait S3FileResourceTrait
             throw new InvalidConfigException('Incorrect file type');
         }
 
-
         $stream = fopen($file->tempName, 'r+');
         if ($stream === false) {
             $this->addError(self::getFileFieldName(), 'Can\'t get content from resource');
