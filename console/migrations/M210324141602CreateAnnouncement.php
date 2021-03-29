@@ -17,7 +17,7 @@ class M210324141602CreateAnnouncement extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn(StreamSession::TABLE_NAME, 'name', $this->string(55)->after('status')->notNull());
+        $this->addColumn(StreamSession::TABLE_NAME, 'name', $this->string(55)->after('status')->null());
 
         $this->addColumn(
             StreamSession::TABLE_NAME,
