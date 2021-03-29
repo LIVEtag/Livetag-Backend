@@ -10,8 +10,10 @@ namespace backend\controllers;
 use backend\components\Controller;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
+use backend\models\Product\Product;
 use backend\models\Product\StreamSessionProduct;
 use backend\models\Product\StreamSessionProductSearch;
+use backend\models\Stream\SaveAnnouncementForm;
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
 use backend\models\User\User;
@@ -23,6 +25,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -46,6 +49,21 @@ class StreamSessionController extends Controller
                 'access' => [
                     'rules' => [
                         [
+                            'actions' => ['create', 'update'],
+                            'allow' => true,
+                            'roles' => [User::ROLE_SELLER],
+                        ],
+                        [
+                            'actions' => [
+                                'index',
+                                'view',
+                                self::ACTION_EDITABLE_PRODUCT,
+                                'create-comment',
+                                'delete-comment',
+                                'delete-product',
+                                'enable-comment',
+                                'stop'
+                            ],
                             'allow' => true,
                             'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER], //todo: add RBAC with check access
                         ],
@@ -84,10 +102,7 @@ class StreamSessionController extends Controller
     public function actionIndex()
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
 
         $searchModel = new StreamSessionSearch();
         $params = Yii::$app->request->queryParams;
@@ -103,6 +118,60 @@ class StreamSessionController extends Controller
     }
 
     /**
+     * Creates a new StreamSession model. (only for seller)
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        /** @var User $user */
+        $user = $this->getAndCheckCurrentUser();
+
+        $model = new SaveAnnouncementForm();
+        $params = Yii::$app->request->post();
+        if ($params) {
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->streamSession->id]);
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+            'productIds' => Product::getIndexedArray($user->shop->id)
+        ]);
+    }
+
+    /**
+     * Updates an existing StreamSession model. (only for seller)
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate(int $id)
+    {
+        $streamSession = $this->findModel($id);
+        $user = Yii::$app->user->identity;//shop and seller checked before
+
+        $model = new SaveAnnouncementForm($streamSession);
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->streamSession->id]);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+            'productIds' => Product::getIndexedArray($user->shop->id)
+        ]);
+    }
+
+
+    /**
      * Displays a single StreamSession model.
      * @param integer $id
      * @return mixed
@@ -111,10 +180,7 @@ class StreamSessionController extends Controller
     public function actionView(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
 
         $model = $this->findModel($id);
 
@@ -162,10 +228,7 @@ class StreamSessionController extends Controller
     public function actionCreateComment(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         /** @var StreamSession $model */
         $model = $this->findModel($id); //get entity and check access
         $commentModel = new CommentForm(['streamSessionId' => $id]);
@@ -177,7 +240,7 @@ class StreamSessionController extends Controller
                     $commentModel = new CommentForm(['streamSessionId' => $id]); //reset form
                 }
             }
-        } catch (\yii\web\ForbiddenHttpException $ex) {
+        } catch (ForbiddenHttpException $ex) {
             $commentModel->addError('message', $ex->getMessage());
         }
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
@@ -223,7 +286,7 @@ class StreamSessionController extends Controller
     }
 
     /**
-     * Deletes aProduct from Session.
+     * Deletes a Product from Session.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -334,10 +397,7 @@ class StreamSessionController extends Controller
     protected function findProductModel(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         $model = StreamSessionProduct::findOne($id);
         if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
@@ -357,10 +417,7 @@ class StreamSessionController extends Controller
     protected function findCommentModel(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         $model = Comment::findOne($id);
         if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
@@ -378,14 +435,26 @@ class StreamSessionController extends Controller
     protected function findModel(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         $model = StreamSession::findOne($id);
         if (!$model || ($user->isSeller && $user->shop->id != $model->shopId)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
         return $model;
+    }
+
+    /**
+     * Get user. Check shop exist for seller
+     * @return User
+     * @throws NotFoundHttpException
+     */
+    protected function getAndCheckCurrentUser()
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        return $user;
     }
 }

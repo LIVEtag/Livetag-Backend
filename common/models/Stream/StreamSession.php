@@ -12,6 +12,8 @@ use common\components\centrifugo\channels\ShopChannel;
 use common\components\centrifugo\Message;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
+use common\components\validation\ErrorListInterface;
+use common\exception\AfterSaveException;
 use common\helpers\LogHelper;
 use common\models\Analytics\StreamSessionEvent;
 use common\models\Analytics\StreamSessionProductEvent;
@@ -31,6 +33,7 @@ use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -40,14 +43,19 @@ use yii\web\UnprocessableEntityHttpException;
  * This is the model class for table "stream_session".
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
+ * @todo: The class StreamSession has 21 public methods. Consider refactoring StreamSession to keep number of public methods under 20.
  *
  * @property integer $id
+ * @property string $name
  * @property integer $shopId
  * @property integer $status
  * @property noolean $commentsEnabled
  * @property string $sessionId
  * @property integer $createdAt
+ * @property integer $announcedAt
+ * @property integer $duration
  * @property integer $startedAt
  * @property integer $stoppedAt
  *
@@ -99,14 +107,42 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     const EVENT_END_SOON = 'endSoon';
 
     /**
+     * Date.TooBig (366 days after today)
+     */
+    const MAX_ANNOUNCED_AT_DAYS = 366;
+
+    /**
      * Created vonage token for subscriber
      */
     const EVENT_SUBSCRIBER_TOKEN_CREATED = 'subscriberTokenCreated';
+    const DURATION_30 = 1800;
+    const DURATION_60 = 3600;
+    const DURATION_90 = 5400;
+    const DURATION_120 = 7200;
+    const DURATION_150 = 9000;
+    const DURATION_180 = 10800;
+
+    /**
+     * Available durations
+     */
+    const DURATIONS = [
+        self::DURATION_30 => '30m',
+        self::DURATION_60 => '1h',
+        self::DURATION_90 => '1h 30m',
+        self::DURATION_120 => '2h',
+        self::DURATION_150 => '2h 30m',
+        self::DURATION_180 => '3h',
+    ];
 
     /**
      * Default Session lifetime (3 hours)
      */
-    const DEFAULT_DURATION = 10800;
+    const DEFAULT_DURATION = self::DURATION_180;
+
+    /**
+     * maximum name length
+     */
+    const MAX_NAME_LENGTH = 55;
 
     /**
      * Default status afrer creation
@@ -124,6 +160,11 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     const STATUS_STOPPED = 3;
 
     /**
+     * Archived Translation
+     */
+    const STATUS_ARCHIVED = 4;
+
+    /**
      * Category for logs
      */
     const LOG_CATEGORY = 'streamSession';
@@ -136,6 +177,16 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_STOPPED => 'Stopped',
     ];
+
+    /**
+     * Array of Product ids to link
+     *
+     * null represent, that field not extracted and processed
+     * empty array means that there is no releated products
+     *
+     * @var array|null
+     */
+    protected $productIds = null;
 
     /**
      * @inheritdoc
@@ -159,6 +210,16 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @inherritdoc
+     */
+    public function transactions(): array
+    {
+        return [
+            self::SCENARIO_DEFAULT => self::OP_ALL
+        ];
+    }
+
+    /**
      * @inheritdoc
      * @return StreamSessionQuery the active query used by this AR class.
      */
@@ -173,14 +234,20 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function rules(): array
     {
         return [
-            [['shopId', 'sessionId'], 'required'],
-            [['shopId', 'status', 'startedAt', 'stoppedAt'], 'integer'],
+            [['shopId', 'announcedAt'], 'required'],
+            [['shopId', 'status', 'startedAt', 'stoppedAt', 'announcedAt'], 'integer'],
             ['sessionId', 'string', 'max' => 255],
+            ['name', 'default', 'value' => ''],
+            ['name', 'string', 'max' => self::MAX_NAME_LENGTH],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
             ['commentsEnabled', 'default', 'value' => true],
             ['commentsEnabled', 'boolean'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
+            ['duration', 'default', 'value' => self::DEFAULT_DURATION],
+            ['duration', 'in', 'range' => array_keys(self::DURATIONS)],
+            ['announcedAt', 'validateLimits'],
+            ['announcedAt', 'validateBusyTime'],
             [
                 'startedAt',
                 'required',
@@ -194,8 +261,106 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
                 'when' => function (self $model) {
                     return $model->isStopped();
                 }
-            ]
+            ],
+            [
+                'productIds',
+                'each',
+                'rule' => [
+                    'exist',
+                    'targetClass' => Product::class,
+                    'targetAttribute' => 'id',
+                    'filter' => function (ProductQuery $query) {
+                        $query->byShop($this->getShopId());
+                    }
+                ],
+            ],
         ];
+    }
+
+    /**
+     * Validate (>now)  && (<366 days after today)
+     * @param string $attribute
+     */
+    public function validateLimits($attribute)
+    {
+        $now = time();
+        if ($this->$attribute > ($now+self::MAX_ANNOUNCED_AT_DAYS * 24 * 60 * 60)) {
+            $errorList = Yii::createObject(ErrorListInterface::class);
+            $this->addError(
+                $attribute,
+                $errorList->createErrorMessage(ErrorList::DATE_TOO_BIG)
+                    ->setParams([
+                        'attribute' => $this->getAttributeLabel($attribute),
+                        'max' => self::MAX_ANNOUNCED_AT_DAYS
+                    ])
+            );
+        } elseif ($this->$attribute < $now) {
+            $errorList = Yii::createObject(ErrorListInterface::class);
+            $this->addError(
+                $attribute,
+                $errorList->createErrorMessage(ErrorList::DATE_TOO_SMALL)
+                    ->setParams([
+                        'attribute' => $this->getAttributeLabel($attribute),
+                        'min' => 'now'
+                    ])
+            );
+        }
+    }
+
+    /**
+     * Validate crosses with other streams
+     * @see https://helgesverre.com/blog/mysql-overlapping-intersecting-dates/
+     * @param $attribute
+     */
+    public function validateBusyTime($attribute)
+    {
+        //do not validate if other validation failed
+        //'shopId' and 'announcedAt' required for this validation
+        if ($this->hasErrors()) {
+            return;
+        }
+
+        $startTime = $this->$attribute;
+        $endTime = $startTime + $this->getDuration();
+
+        $query = self::find()
+            ->byShopId($this->getShopId())
+            ->select(['announcedAt', new Expression('announcedAt + duration as expiredAt')])
+            ->andHaving([
+                'OR',
+                [
+                    'AND',
+                    ['<', 'announcedAt', $endTime],
+                    ['>', 'expiredAt', $startTime],
+                ],
+                [
+                    'AND',
+                    ['>', 'announcedAt', $endTime],
+                    ['<', 'announcedAt', $startTime],
+                    ['<', 'expiredAt', $startTime],
+                ],
+                [
+                    'AND',
+                    ['<', 'expiredAt', $startTime],
+                    ['>', 'expiredAt', $endTime],
+                    ['<', 'announcedAt', $endTime],
+                ],
+                [
+                    'AND',
+                    ['>', 'announcedAt', $endTime],
+                    ['<', 'announcedAt', $startTime],
+                ]
+            ]);
+
+        $id = $this->getId();
+        if ($id) {
+            $query->andWhere(['<>', 'id', $id]); // allow to update model to itself - compare with another intervals
+        }
+
+        if ($query->exists()) {
+            $errorList = Yii::createObject(ErrorListInterface::class);
+            $this->addError($attribute, $errorList->createErrorMessage(ErrorList::BUSY_TIME));
+        }
     }
 
     /**
@@ -205,13 +370,16 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'name' => Yii::t('app', 'Name'),
             'shopId' => Yii::t('app', 'Shop ID'),
             'status' => Yii::t('app', 'Status'),
             'commentsEnabled' => Yii::t('app', 'Comments Enabled'),
             'sessionId' => Yii::t('app', 'Session ID'),
-            'expiredAt' => Yii::t('app', 'Expired At'),
             'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'announcedAt' => Yii::t('app', 'Start At'),
+            'duration' => Yii::t('app', 'Duration'),
+            'startedAt' => Yii::t('app', 'Started At'),
+            'stoppedAt' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -224,6 +392,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'id' => function () {
                 return $this->getId();
             },
+            'name',
             'shopUri' => function () {
                 return $this->shop->uri;
             },
@@ -236,6 +405,12 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             },
             'createdAt' => function () {
                 return $this->getCreatedAt();
+            },
+            'announcedAt' => function () {
+                return $this->getAnnouncedAt();
+            },
+            'duration' => function () {
+                return $this->getDuration();
             },
             'startedAt' => function () {
                 return $this->getStartedAt();
@@ -287,6 +462,27 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * Allow unset products (if empty array came).
+     * If productIds is null - no action required
+     * @return array
+     */
+    public function getProductIds(): array
+    {
+        if ($this->productIds === null) {
+            $this->productIds = $this->getStreamSessionProducts()->select('productId')->column();
+        }
+        return $this->productIds;
+    }
+
+    /**
+     * @param array $ids
+     */
+    public function setProductIds($ids)
+    {
+        $this->productIds = $ids;
+    }
+
+    /**
      * @return StreamSessionStatisticQuery
      */
     public function getStreamSessionStatistic(): StreamSessionStatisticQuery
@@ -300,6 +496,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function getId(): ?int
     {
         return $this->id ? (int) $this->id : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**
@@ -353,6 +557,22 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @inheritdoc
      */
+    public function getAnnouncedAt(): ?int
+    {
+        return $this->announcedAt ? (int) $this->announcedAt : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDuration(): ?int
+    {
+        return $this->duration ? (int) $this->duration : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getStartedAt(): ?int
     {
         return $this->startedAt ? (int) $this->startedAt : null;
@@ -371,7 +591,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function getExpiredAt(): ?int
     {
-        return $this->getStartedAt() ? $this->getStartedAt() + self::DEFAULT_DURATION : null;
+        return $this->getStartedAt() && $this->getDuration() ? $this->getStartedAt() + $this->getDuration() : null;
     }
 
     /**
@@ -540,28 +760,15 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     {
         $currentSession = self::getCurrent($shop->id);
         if ($currentSession) {
-            throw new UnprocessableEntityHttpException(ErrorList::errorTextByCode(ErrorList::STREAM_IN_PROGRESS));
+            throw new UnprocessableEntityHttpException(ErrorList::errorTextByCode(ErrorList::STREAM_IN_PROGRESS)); //!
         }
 
         $session = new self([
             'shopId' => $shop->id,
-            'status' => self::STATUS_NEW
+            'status' => self::STATUS_NEW,
+            'announcedAt' => time() + 60, //start in minute to avoid "<now" validation
         ]);
 
-        //1. Validate shop for broadcast start (check is active)
-        if (!$session->validate(['shopId', 'status'])) {
-            return $session; //return model errors
-        }
-
-        // 2. Create session with tokbox
-        try {
-            $session->sessionId = Yii::$app->vonage->createSession();
-        } catch (Throwable $ex) {
-            $session->addError('sessionId', $ex->getMessage());
-            return $session; //return model with errors
-        }
-
-        // 4. Store session into DB
         $session->save();
         return $session; //return model or model with erros
     }
@@ -637,20 +844,100 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
-     * Link all existing Products to current Stream Session
+     * @inheritdoc
      */
-    public function linkProducts()
+    public function beforeSave($insert)
     {
-        $productQuery = Product::find()->byShop($this->shopId)->active();
-        foreach ($productQuery->each() as $product) {
+        // Create session with tokbox
+        if ($insert && !$this->sessionId) {
             try {
-                $this->link('products', $product, ['status' => StreamSessionProduct::STATUS_DISPLAYED]);
+                $this->sessionId = Yii::$app->vonage->createSession();
             } catch (Throwable $ex) {
-                LogHelper::error(
-                    'Failed to link Product to Stream Session',
-                    self::LOG_CATEGORY,
-                    LogHelper::extraForException($product, $ex)
-                );
+                $this->addError('sessionId', $ex->getMessage());
+                return false;
+            }
+        }
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * Scenario with transaction rollback, if error in afterSave catch -  thrown exception
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @param boolean $runValidation
+     * @param array $attributeNames
+     * @return boolean
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        try {
+            return parent::save($runValidation, $attributeNames);
+        } catch (AfterSaveException $ex) {
+            return false;
+        }
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     * @throws AfterSaveException
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->saveRelations();
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * Save relation tables
+     * Each related table should add errors to main model if save failed
+     *
+     * @throws AfterSaveException
+     */
+    public function saveRelations()
+    {
+        if ($this->productIds !== null) {
+            $this->linkProducts();
+        }
+        if ($this->hasErrors()) {
+            throw new AfterSaveException();
+        }
+    }
+
+    /**
+     * If product ID not exist - this ID will be ignoring.
+     * If product ID is duplicate - only one relation will be save.
+     */
+    protected function linkProducts()
+    {
+        //sorts by value: from smallest to largest
+        sort($this->productIds);
+        $existProductIds = $this->getStreamSessionProducts()->select('productId')->orderBy('productId')->column();
+
+        //remove old
+        $productsIdsToRemove = array_diff($existProductIds, $this->productIds);
+        if ($productsIdsToRemove) {
+            $removeQuery = $this->getStreamSessionProducts()->andWhere(['productId' => $productsIdsToRemove]);
+            foreach ($removeQuery->each() as $streamSessionProduct) {
+                if (!$streamSessionProduct->delete()) {
+                    $this->addError(
+                        'productIds',
+                        Yii::t('app', 'Failed to unlink product {productId}', ['productId' => $streamSessionProduct->productId])
+                    );
+                }
+            }
+        }
+
+        //create new
+        $newProductIds = array_diff($this->productIds, $existProductIds);
+        foreach ($newProductIds as $productId) {
+            $model = new StreamSessionProduct([
+                'streamSessionId' => $this->id,
+                'productId' => $productId,
+                'status' => StreamSessionProduct::STATUS_DISPLAYED
+            ]);
+            if (!$model->save()) {
+                $this->addError('productIds', implode(', ', $model->getFirstErrors()));
+                return;
             }
         }
     }
