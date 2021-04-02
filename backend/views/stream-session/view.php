@@ -69,6 +69,13 @@ $this->registerJs(
                             'id',
                             'name',
                             [
+                                'label' => 'Photo (cover image)',
+                                'format' => ['image', ['width' => '200']],
+                                'value' => function (StreamSession $model) {
+                                    return $model->getCoverUrl();
+                                }
+                            ],
+                            [
                                 'attribute' => 'status',
                                 'value' => function (StreamSession $model) {
                                     return $model->getStatusName();
