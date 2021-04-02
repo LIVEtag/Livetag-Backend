@@ -7,8 +7,10 @@ declare(strict_types=1);
 
 namespace backend\models\Stream;
 
+use common\models\Stream\StreamSessionCover;
 use Yii;
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 /**
  * Description of SaveAnnouncementForm
@@ -49,7 +51,12 @@ class SaveAnnouncementForm extends Model
     public $duration = StreamSession::DEFAULT_DURATION;
 
     /**
-     * @var array
+     * @var UploadedFile
+     */
+    public $file;
+
+    /**
+     * @var array|null
      */
     public $productIds;
 
@@ -71,7 +78,7 @@ class SaveAnnouncementForm extends Model
                 $this->announcedAtDatetime = Yii::$app->formatter->asDatetime($streamSession->announcedAt, self::DATETIME_FORMAT);
             }
         }
-        $this->streamSession = $streamSession ?: new StreamSession();
+        $this->streamSession = $streamSession ?: new StreamSession(['status' => StreamSession::STATUS_NEW]);
         parent::__construct($config);
     }
 
@@ -82,7 +89,13 @@ class SaveAnnouncementForm extends Model
     {
         return [
             [['name', 'shopId', 'announcedAtDatetime', 'duration'], 'required'],
-            ['productIds', 'safe'], //validate in main model
+            [
+                'productIds', //validate in main model. select2 do not return null on empty select
+                'filter',
+                'filter' => function ($value) {
+                    return $value == '' ? null : $value;
+                }
+            ],
             ['name', 'string', 'max' => StreamSession::MAX_NAME_LENGTH],
             [
                 'announcedAtDatetime',
@@ -91,6 +104,12 @@ class SaveAnnouncementForm extends Model
                 'timeZone' => Yii::$app->formatter->timeZone,
                 'timestampAttribute' => 'announcedAt',
                 'skipOnEmpty' => false
+            ],
+            [
+                'file',
+                'file',
+                'mimeTypes' => StreamSessionCover::getMimeTypes(),
+                'maxSize' => Yii::$app->params['maxUploadImageSize'],
             ],
         ];
     }
@@ -116,14 +135,70 @@ class SaveAnnouncementForm extends Model
         if (!$this->validate()) {
             return false;
         }
-        $this->streamSession->setAttributes($this->getAttributes());
-        if (!$this->streamSession->save()) {
-            $this->addErrors($this->streamSession->getErrors());
-            if ($this->streamSession->hasErrors('announcedAt')) {
-                $this->addError('announcedAtDatetime', $this->streamSession->getFirstError('announcedAt'));
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $this->streamSession->setAttributes($this->getAttributes());
+            if (!$this->streamSession->save()) {
+                $this->addErrors($this->streamSession->getErrors());
+                if ($this->streamSession->hasErrors('announcedAt')) {
+                    $this->addError('announcedAtDatetime', $this->streamSession->getFirstError('announcedAt'));
+                }
+                $transaction->rollBack();
+                return false;
             }
+            if (!$this->uploadCover()) {
+                $transaction->rollBack();
+                return false;
+            }
+            $transaction->commit();
+            return true;
+        } catch (Throwable $ex) {
+            $transaction->rollBack();
+            throw $ex;
+        }
+    }
+
+
+    /**
+     * Upload file to s3
+     * @return boolean
+     */
+    protected function uploadCover()
+    {
+        if ($this->file instanceof UploadedFile && !$this->uploadFile($this->file)) {
             return false;
         }
+        return true;
+    }
+
+    /**
+     * Upload single file and store it as media
+     * @param UploadedFile $uploadedFile
+     * @return bool
+     * @throws Throwable
+     */
+    protected function uploadFile(UploadedFile $uploadedFile): bool
+    {
+        $oldCover = $this->streamSession->streamSessionCover ?? null;
+
+        $media = new StreamSessionCover();
+        $media->setFile($uploadedFile);
+        if (!$media->saveFile()) {
+            $this->addErrors($media->getErrors());
+            return false;
+        }
+        $media->streamSessionId = $this->streamSession->id;
+        if (!$media->save()) {
+            $this->addErrors($media->getErrors());
+            return false;
+        }
+
+        // delete old cover(if exist)
+        if ($oldCover) {
+            $oldCover->delete();
+        }
+
+
         return true;
     }
 }

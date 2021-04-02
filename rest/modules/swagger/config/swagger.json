@@ -1754,6 +1754,15 @@
                         "type": "integer",
                         "example": 1
                     },
+                    "name": {
+                        "type": "string",
+                        "example": "Some Stream Name"
+                    },
+                    "streamSessionCover": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/streamSessionCover"
+                    },
+
                     "shopUri": {
                         "type": "string",
                         "example": "shop1"
@@ -1775,6 +1784,14 @@
                     "createdAt": {
                         "type": "integer",
                         "example": 1611738385
+                    },
+                    "announcedAt": {
+                        "type": "integer",
+                        "example": 1611738485
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "example": 10800
                     },
                     "startedAt": {
                         "type": "integer",

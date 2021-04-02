@@ -61,6 +61,7 @@ use yii\web\UnprocessableEntityHttpException;
  *
  * @property-read Comment[] $comments
  * @property-read Shop $shop
+ * @property-read StreamSessionCover $streamSessionCover
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
  * @property-read Product[] $products
@@ -79,6 +80,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
 {
     /** @see getShop() */
     const REL_SHOP = 'shop';
+
+    /** @see getStreamSessionCover() */
+    const REL_STREAM_SESSION_COVER = 'streamSessionCover';
 
     /** @see getProducts() */
     const REL_PRODUCT = 'products';
@@ -246,8 +250,20 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             ['duration', 'default', 'value' => self::DEFAULT_DURATION],
             ['duration', 'in', 'range' => array_keys(self::DURATIONS)],
-            ['announcedAt', 'validateLimits'],
-            ['announcedAt', 'validateBusyTime'],
+            [
+                'announcedAt',
+                'validateLimits',
+                'when' => function ($model) {
+                    return $model->isNew();
+                }
+            ],
+            [
+                'announcedAt',
+                'validateBusyTime',
+                'when' => function ($model) {
+                    return $model->isNew();
+                }
+            ],
             [
                 'startedAt',
                 'required',
@@ -284,7 +300,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function validateLimits($attribute)
     {
         $now = time();
-        if ($this->$attribute > ($now+self::MAX_ANNOUNCED_AT_DAYS * 24 * 60 * 60)) {
+        if ($this->$attribute > ($now + self::MAX_ANNOUNCED_AT_DAYS * 24 * 60 * 60)) {
             $errorList = Yii::createObject(ErrorListInterface::class);
             $this->addError(
                 $attribute,
@@ -326,6 +342,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         $query = self::find()
             ->byShopId($this->getShopId())
             ->select(['announcedAt', new Expression('announcedAt + duration as expiredAt')])
+            ->byStatus([self::STATUS_NEW, self::STATUS_ACTIVE])
             ->andHaving([
                 'OR',
                 [
@@ -393,6 +410,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
                 return $this->getId();
             },
             'name',
+            'streamSessionCover',
             'shopUri' => function () {
                 return $this->shop->uri;
             },
@@ -440,6 +458,24 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @return ActiveQuery
      */
+    public function getStreamSessionCover(): ActiveQuery
+    {
+        return $this->hasOne(StreamSessionCover::class, ['streamSessionId' => 'id']);
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getCoverUrl(): ?string
+    {
+        $cover = $this->streamSessionCover;
+        return $cover ? $cover->getUrl() : null;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getStreamSessionToken(): ActiveQuery
     {
         return $this->hasOne(StreamSessionToken::class, ['streamSessionId' => 'id']);
@@ -464,9 +500,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * Allow unset products (if empty array came).
      * If productIds is null - no action required
-     * @return array
+     * @return array|null
      */
-    public function getProductIds(): array
+    public function getProductIds(): ?array
     {
         if ($this->productIds === null) {
             $this->productIds = $this->getStreamSessionProducts()->select('productId')->column();
@@ -591,7 +627,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function getExpiredAt(): ?int
     {
-        return $this->getStartedAt() && $this->getDuration() ? $this->getStartedAt() + $this->getDuration() : null;
+        return $this->getAnnouncedAt() && $this->getDuration() ? $this->getAnnouncedAt() + $this->getDuration() : null;
     }
 
     /**

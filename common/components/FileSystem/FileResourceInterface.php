@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace common\components\FileSystem;
 
+use yii\web\UploadedFile;
+
 /**
  * Entity has file and path with relative url to store it
  */
@@ -24,6 +26,17 @@ interface FileResourceInterface
      * @return string
      */
     public static function getFileFieldName(): string;
+
+    /**
+     * @param UploadedFile $value
+     */
+    public function setFile(UploadedFile $value);
+
+    /**
+     * Get relative path for file store
+     * @return string
+     */
+    public function getRelativePath(): string;
 
     /**
      * Save file resource

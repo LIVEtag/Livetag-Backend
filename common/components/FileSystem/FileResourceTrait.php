@@ -12,16 +12,15 @@ use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\FileNotFoundException;
 use Throwable;
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 /**
- * Trait S3FileResourceTrait, implements FileResourceInterface.
+ * Trait FileResourceTrait, implements FileResourceInterface.
  * phpcs:disable PHPCS_SecurityAudit.BadFunctions
  * @see FileResourceInterface
  */
-trait S3FileResourceTrait
+trait FileResourceTrait
 {
     /**
      * Get name of field, that used for storing file (path)
@@ -42,16 +41,29 @@ trait S3FileResourceTrait
     }
 
     /**
+     * Some kind of checks before file save
+     * @return bool
+     */
+    public function beforeSaveFile(): bool
+    {
+        $file = $this->getFile();
+        if (!$file || !$file instanceof UploadedFile) {
+            $this->addError(self::getFileFieldName(), 'Please specify a valid file to save.');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Save file
      * @return bool
      */
     public function saveFile(): bool
     {
-        $fileField = self::getFileFieldName();
-        $file = $this->$fileField;
-
-        if (!$file instanceof UploadedFile) {
-            throw new InvalidConfigException('Incorrect file type');
+        if (!$this->beforeSaveFile()) {
+            return false;
         }
+        $file = $this->getFile();
 
         $stream = fopen($file->tempName, 'r+');
         if ($stream === false) {
@@ -59,20 +71,21 @@ trait S3FileResourceTrait
             return false;
         }
 
-        $sourceExtension = $this->prepareSourceExtension($file->getExtension(), $file->tempName);
-        $path = $this->genUniqPath($this->getRelativePath(), $sourceExtension);
+        $sourceExtension = self::prepareSourceExtension($file->getExtension(), $file->tempName);
+        $path = self::genUniqPath($this->getRelativePath(), $sourceExtension);
         try {
             Yii::$app->fs->writeStream($path, $stream);
-            $this->setPath($path);
+            $this->setPath($path); //set successfully saved path to model
+            return true;
         } catch (Throwable $ex) {
             $this->addError(self::getFileFieldName(), 'Failed to upload file:' . $ex->getMessage());
             LogHelper::error('Failed to upload file', 'file', LogHelper::extraForException($this, $ex));
             return false;
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
         }
-        if (is_resource($stream)) {
-            fclose($stream);
-        }
-        return true;
     }
 
     /**
@@ -95,28 +108,32 @@ trait S3FileResourceTrait
     public function deleteFile(): bool
     {
         if (!$this->getPath()) {
+            $this->addError(self::getPathFieldName(), 'Failed to remove file');
             return false;
         }
-        return self::deleteFileByPath($this->getPath());
+        if (!self::deleteFileByPath($this->getPath())) {
+            $this->addError(self::getPathFieldName(), 'Failed to remove file');
+            return false;
+        }
+        return true;
     }
 
     /**
-     * Delete file from s3 by path (todo: move to helper or other class)
-     * @param string $path
-     * @return bool
+     * @return UploadedFile
      */
-    public static function deleteFileByPath($path): bool
+    public function getFile()
     {
-        try {
-            return Yii::$app->fs->delete($path);
-        } catch (FileNotFoundException $ex) {
-            LogHelper::warning('Failed to remove file', 'file', LogHelper::extraForException($this, $ex));
-            return true;
-        } catch (Throwable $ex) {
-            $this->addError(self::getPathFieldName(), 'Failed to remove file:' . $ex->getMessage());
-            LogHelper::error('Failed to remove file', 'file', LogHelper::extraForException($this, $ex));
-            return false;
-        }
+        $field = self::getFileFieldName();
+        return $this->$field;
+    }
+
+    /**
+     * @param UploadedFile $value
+     */
+    public function setFile(UploadedFile $value)
+    {
+        $field = self::getFileFieldName();
+        $this->$field = $value;
     }
 
     /**
@@ -129,36 +146,53 @@ trait S3FileResourceTrait
     }
 
     /**
-     * @param string $path
+     * @param string $value
      */
-    public function setPath($path)
+    public function setPath($value)
     {
         $pathField = self::getPathFieldName();
-        $this->$pathField = $path;
+        $this->$pathField = $value;
     }
 
     /**
-     * Generate unique path in storage
+     * Delete file from s3 by path (todo: move to helper or other class)
+     * @param string $path
+     * @return bool
+     */
+    public static function deleteFileByPath($path): bool
+    {
+        try {
+            return Yii::$app->fs->delete($path);
+        } catch (FileNotFoundException $ex) {
+            LogHelper::warning('Failed to remove file (already removed)', 'file', ['error' => $ex->getMessage(), 'trace' => $ex->getTraceAsString()]);
+            return true; //file already not exist
+        } catch (Throwable $ex) {
+            LogHelper::error('Failed to remove file', 'file', ['error' => $ex->getMessage(), 'trace' => $ex->getTraceAsString()]);
+            return false;
+        }
+    }
+
+    /**
+     * Generate unique path in storage  (todo: move to helper or other class)
      * @param string $relativePath
      * @param string $extension
      * @return string
      */
-    protected function genUniqPath(string $relativePath, string $extension)
+    public static function genUniqPath(string $relativePath, string $extension)
     {
         $uniqId = str_replace('.', '', uniqid('', true));
         return "{$relativePath}/{$uniqId}.{$extension}";
     }
 
     /**
+     * Get file extention. If file do not have it -> extract from mime type (todo: move to helper or other class)
      * @param string|null $extension
-     * @param $sourcePath
-     * @return mixed|string|string[]|null
-     * @throws InvalidConfigException
+     * @param string $sourcePath
+     * @return string|null
      */
-    protected function prepareSourceExtension(?string $extension, $sourcePath)
+    public static function prepareSourceExtension(?string $extension, $sourcePath)
     {
         $sourceExtension = $extension ?? pathinfo($sourcePath, PATHINFO_EXTENSION);
-        $mimeType = null;
         if (!$sourceExtension) {
             $mimeType = FileHelper::getMimeType($sourcePath);
             $extensions = FileHelper::getExtensionsByMimeType($mimeType);

@@ -31,6 +31,8 @@ class StreamSessionFixture extends ActiveFixture
             'sessionId' => '1_MX4' . $this->generator->password(64, 64) . '-QX4',
             'status' => StreamSession::STATUS_STOPPED,
             'createdAt' => $expiredTime - 4 * 60 * 60,
+            'announcedAt' => $expiredTime - 3 * 60 * 60,
+            'duration' => StreamSession::DEFAULT_DURATION,
             'startedAt' => $expiredTime - 3 * 60 * 60,
             'stoppedAt' => $expiredTime,
         ];

@@ -1,5 +1,4 @@
 <?php
-
 use common\fixtures\ShopFixture;
 use common\fixtures\StreamSessionFixture;
 use common\models\Stream\StreamSession;
@@ -17,8 +16,10 @@ return [
         'id' => StreamSessionFixture::STREAM_SESSION_3_SHOP_1_NEW,
         'shopId' => ShopFixture::SHOP_1,
         'status' => StreamSession::STATUS_NEW,
-        'sessionId' => Yii::$app->vonage->createSession(),//use one real session to test start
+        'sessionId' => Yii::$app->vonage->createSession(), //use one real session to test start
         'createdAt' => $this->generator->incrementalTime - 60,
+        'announcedAt' => $this->generator->incrementalTime,
+        'duration' => StreamSession::DEFAULT_DURATION,
         'startedAt' => null,
         'stoppedAt' => null,
     ],
