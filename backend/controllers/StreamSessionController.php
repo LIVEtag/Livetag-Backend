@@ -27,6 +27,7 @@ use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * StreamSessionController implements the CRUD actions for StreamSession model.
@@ -132,10 +133,12 @@ class StreamSessionController extends Controller
         if ($params) {
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
         }
-        if ($model->load($params) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->streamSession->id]);
+        if ($model->load($params)) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
         }
-
         return $this->render('create', [
             'model' => $model,
             'productIds' => Product::getIndexedArray($user->shop->id)
@@ -159,11 +162,12 @@ class StreamSessionController extends Controller
         if ($params) { //shop and seller checked before
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
         }
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->streamSession->id]);
+        if ($model->load($params)) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
         }
-
         return $this->render('update', [
             'model' => $model,
             'productIds' => Product::getIndexedArray($user->shop->id)

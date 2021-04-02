@@ -10,7 +10,7 @@ namespace common\models\Shop;
 use common\components\behaviors\TimestampBehavior;
 use common\components\EventDispatcher;
 use common\components\FileSystem\FileResourceInterface;
-use common\components\FileSystem\S3FileResourceTrait;
+use common\components\FileSystem\FileResourceTrait;
 use common\models\Product\Product;
 use common\models\queries\Shop\ShopQuery;
 use common\models\Stream\StreamSession;
@@ -43,7 +43,7 @@ use yii\web\UploadedFile;
  */
 class Shop extends ActiveRecord implements FileResourceInterface
 {
-    use S3FileResourceTrait;
+    use FileResourceTrait;
 
     /** @see getProducts() */
     const REL_PRODUCT = 'products';
@@ -60,7 +60,6 @@ class Shop extends ActiveRecord implements FileResourceInterface
     const SCENARIO_SELLER = 'seller';
 
     /**
-     *
      * @var UploadedFile
      */
     public $file;
@@ -223,8 +222,8 @@ class Shop extends ActiveRecord implements FileResourceInterface
      */
     public function beforeDelete()
     {
-        if ($this->logo) {
-            $this->deleteFile();
+        if ($this->logo && !$this->deleteFile()) {
+            return false;
         }
         return parent::beforeDelete();
     }
