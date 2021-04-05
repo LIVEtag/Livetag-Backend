@@ -410,7 +410,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
                 return $this->getId();
             },
             'name',
-            'streamSessionCover',
+            'cover' => 'streamSessionCover',
             'shopUri' => function () {
                 return $this->shop->uri;
             },
