@@ -44,7 +44,7 @@ class StreamSessionSearch extends StreamSession
     public function rules(): array
     {
         return [
-            [['id', 'shopId', 'status', 'viewsCount', 'addToCartCount'], 'integer'],
+            [['id', 'shopId', 'status', 'viewsCount', 'addToCartCount', 'duration'], 'integer'],
             ['addToCartRate', 'number'],
             [['sessionId', 'name'], 'string'],
         ];
@@ -127,6 +127,7 @@ class StreamSessionSearch extends StreamSession
             self::tableName() . '.id' => $this->id,
             self::tableName() . '.shopId' => $this->shopId,
             self::tableName() . '.status' => $this->status,
+            self::tableName() . '.duration' => $this->duration,
             StreamSessionStatistic::tableName() . '.viewsCount' => $this->viewsCount,
             StreamSessionStatistic::tableName() . '.addToCartCount' => $this->addToCartCount,
         ]);
