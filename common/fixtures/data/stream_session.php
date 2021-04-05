@@ -31,4 +31,20 @@ return [
         'startedAt' => $this->generator->incrementalTime,
         'stoppedAt' => null,
     ],
+    [
+        'id' => StreamSessionFixture::STREAM_SESSION_5_SHOP_2_EXPIRED_UNPUBLISHED,
+        'shopId' => ShopFixture::SHOP_2,
+        'isPublished' => false,
+    ],
+    [
+        'id' => StreamSessionFixture::STREAM_SESSION_6_SHOP_2_NEW_UNPUBLISHED,
+        'shopId' => ShopFixture::SHOP_2,
+        'status' => StreamSession::STATUS_NEW,
+        'createdAt' => $this->generator->incrementalTime - 60,
+        'announcedAt' => $this->generator->incrementalTime,
+        'duration' => StreamSession::DEFAULT_DURATION,
+        'startedAt' => null,
+        'stoppedAt' => null,
+        'isPublished' => false,
+    ],
 ];

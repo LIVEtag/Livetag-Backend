@@ -50,7 +50,7 @@ class StreamSessionController extends Controller
                 'access' => [
                     'rules' => [
                         [
-                            'actions' => ['create', 'update'],
+                            'actions' => ['create', 'update', 'publish', 'unpublish'],
                             'allow' => true,
                             'roles' => [User::ROLE_SELLER],
                         ],
@@ -283,6 +283,41 @@ class StreamSessionController extends Controller
         try {
             $this->findModel($id)->stop();
             Yii::$app->session->setFlash('success', Yii::t('app', 'Live stream is over.'));
+        } catch (Throwable $ex) {
+            Yii::$app->session->setFlash('error', $ex->getMessage());
+        }
+        return $this->redirect(Yii::$app->request->referrer ?: ['index']);
+    }
+
+    /**
+     * Publish an existing Stream
+     * @param int $id
+     * @return \yii\web\Response
+     */
+    public function actionPublish(int $id)
+    {
+        try {
+            $this->findModel($id)->publish();
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Live stream was published.'));
+        } catch (Throwable $ex) {
+            Yii::$app->session->setFlash('error', $ex->getMessage());
+        }
+        return $this->redirect(Yii::$app->request->referrer ?: ['index']);
+    }
+
+    /**
+     * Unpublish an existing Stream
+     * @param int $id
+     * @return \yii\web\Response
+     */
+    public function actionUnpublish(int $id)
+    {
+        try {
+            $this->findModel($id)->unpublish();
+            Yii::$app->session->setFlash(
+                'success',
+                Yii::t('app', 'Live stream was unpublished.')
+            );
         } catch (Throwable $ex) {
             Yii::$app->session->setFlash('error', $ex->getMessage());
         }
