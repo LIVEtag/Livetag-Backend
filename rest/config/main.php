@@ -160,7 +160,9 @@ return [
                     ],
                     'pluralize' => false,
                     'patterns' => [
+                        'GET {slug}/stream-session' => StreamSessionController::ACTION_INDEX,
                         'GET {slug}/stream-session/current' => StreamSessionController::ACTION_CURRENT,
+                        'OPTIONS {slug}/stream-session' => StreamSessionController::ACTION_OPTIONS,
                         'OPTIONS {slug}/stream-session/current' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
