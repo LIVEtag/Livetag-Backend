@@ -29,6 +29,32 @@ $this->params['breadcrumbs'][] = $this->title;
 /** @var User $user */
 $user = Yii::$app->user->identity ?? null;
 
+$publishOptions = [
+    'class' => 'btn btn-success',
+];
+$publishUrl = ['publish', 'id' => $model->id];
+
+if ($model->isPublished) {
+    $publishOptionsExtra = [
+        'data' => [
+            'confirm' => Yii::t('app', 'Do you want to unpublish this livestream?'),
+            'method' => 'post',
+        ]
+    ];
+
+    if ($model->isActive()) {
+        $publishOptionsExtra = [
+            'disabled' => 'disabled',
+            'title' =>  Yii::t('app', 'You cannot unpublish while Live Stream is active'),
+        ];
+    }
+    $publishOptions = array_merge([
+        'id' => 'publication-link',
+        'class' => 'btn btn-danger',
+    ], $publishOptionsExtra);
+    $publishUrl = ['unpublish', 'id' => $model->id];
+}
+
 $this->registerJs(
     '$("#reset-button").on("click", function(val) {
         $.pjax.reload({container:"#comment-list-pjax"});  //Reload GridView
@@ -58,31 +84,11 @@ $this->registerJs(
                     <?php if ($user && $user->isSeller) : ?>
                         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 
-                        <?php if ($model->isPublished) : ?>
-                            <?php $options = [
-                                'data' => [
-                                    'confirm' => Yii::t('app', 'Do you want to unpublish this livestream?'),
-                                    'method' => 'post',
-                                ]
-                            ];
-                            if ($model->isActive()) {
-                                $options = [
-                                    'disabled' => 'disabled',
-                                ];
-                            }
-                            echo Html::a(Yii::t('app', 'Unpublish'), ['unpublish', 'id' => $model->id],
-                                array_merge([
-                                    'id' => 'publication-link',
-                                    'class' => 'btn btn-danger',
-                                ], $options)
-                            );
-                            ?>
-                        <?php else: ?>
-                            <?= Html::a(Yii::t('app', 'Publish'), ['publish', 'id' => $model->id], [
-                                'id' => 'publication-link',
-                                'class' => 'btn btn-success',
-                            ]); ?>
-                        <?php endif; ?>
+                        <?= Html::a(
+                            Yii::t('app', $model->isPublished ? 'Unpublish' : 'Publish'),
+                            $publishUrl,
+                            $publishOptions
+                        ); ?>
 
                         <?php if ($model->isActive()) : ?>
                             <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [

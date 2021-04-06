@@ -58,7 +58,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $duration
  * @property integer $startedAt
  * @property integer $stoppedAt
- *  * @property boolean $isPublished
+ * @property boolean $isPublished
  *
  * @property-read Comment[] $comments
  * @property-read Shop $shop
