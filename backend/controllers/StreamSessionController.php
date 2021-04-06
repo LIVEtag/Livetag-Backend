@@ -18,6 +18,7 @@ use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
 use backend\models\User\User;
 use common\models\forms\Comment\CommentForm;
+use Exception;
 use kartik\grid\EditableColumnAction;
 use Throwable;
 use Yii;
@@ -297,7 +298,9 @@ class StreamSessionController extends Controller
     public function actionPublish(int $id)
     {
         try {
-            $this->findModel($id)->publish();
+            if (!$this->findModel($id)->publish()) {
+                throw new Exception('Live stream publication status was not updated.');
+            }
             Yii::$app->session->setFlash('success', Yii::t('app', 'Live stream was published.'));
         } catch (Throwable $ex) {
             Yii::$app->session->setFlash('error', $ex->getMessage());
@@ -313,7 +316,9 @@ class StreamSessionController extends Controller
     public function actionUnpublish(int $id)
     {
         try {
-            $this->findModel($id)->unpublish();
+            if (!$this->findModel($id)->unpublish()) {
+                throw new Exception('Live stream publication status was not updated.');
+            }
             Yii::$app->session->setFlash(
                 'success',
                 Yii::t('app', 'Live stream was unpublished.')

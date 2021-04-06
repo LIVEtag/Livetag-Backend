@@ -866,12 +866,11 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * Publish stream
      * @return bool
-     * @throws BadRequestHttpException
      */
     public function publish(): bool
     {
         if ($this->isPublished) {
-            throw new BadRequestHttpException('You can publish only unpublished translations');
+            return true;
         }
         $this->isPublished = true;
         return $this->save(true, ['isPublished']);
@@ -884,8 +883,11 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function unpublish(): bool
     {
+        if ($this->isActive()) {
+            throw new BadRequestHttpException('You can\'t unpublish active translations');
+        }
         if (!$this->isPublished) {
-            throw new BadRequestHttpException('You can unpublish only published translations');
+            return true;
         }
         $this->isPublished = false;
         return $this->save(true, ['isPublished']);

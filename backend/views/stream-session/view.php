@@ -39,7 +39,14 @@ $this->registerJs(
     })
     $(\'a[data-toggle="tab"][href="#products"]\').on("shown.bs.tab", function (e) {
         $(".comments-content").hide();
-    })'
+    })
+
+    $(\'#publication-link\').on(\'click\', function(e) {
+        if ($(this).attr(\'disabled\') == \'disabled\') {
+            e.preventDefault();
+        }
+    });
+    '
 );
 ?>
 <section class="stream-session-view">
@@ -50,6 +57,33 @@ $this->registerJs(
                     <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
                     <?php if ($user && $user->isSeller) : ?>
                         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
+                        <?php if ($model->isPublished) : ?>
+                            <?php $options = [
+                                'data' => [
+                                    'confirm' => Yii::t('app', 'Do you want to unpublish this livestream?'),
+                                    'method' => 'post',
+                                ]
+                            ];
+                            if ($model->isActive()) {
+                                $options = [
+                                    'disabled' => 'disabled',
+                                ];
+                            }
+                            echo Html::a(Yii::t('app', 'Unpublish'), ['unpublish', 'id' => $model->id],
+                                array_merge([
+                                    'id' => 'publication-link',
+                                    'class' => 'btn btn-danger',
+                                ], $options)
+                            );
+                            ?>
+                        <?php else: ?>
+                            <?= Html::a(Yii::t('app', 'Publish'), ['publish', 'id' => $model->id], [
+                                'id' => 'publication-link',
+                                'class' => 'btn btn-success',
+                            ]); ?>
+                        <?php endif; ?>
+
                         <?php if ($model->isActive()) : ?>
                             <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
                                 'class' => 'btn btn-danger',

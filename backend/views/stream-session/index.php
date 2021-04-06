@@ -146,37 +146,6 @@ $user = Yii::$app->user->identity ?? null;
                                     }
                                 ],
                             ],
-                            [
-                                'header' => '',
-                                'class' => ActionColumn::class,
-                                'vAlign' => GridView::ALIGN_TOP,
-                                'visible' => $user && $user->isSeller,
-                                'template' => '{change-publication-status}',
-                                'buttons' => [
-                                    'change-publication-status' => function ($url, StreamSession $model) {
-                                        if ($model->isPublished) {
-                                            return Html::a(
-                                                'Unpublish',
-                                                ['stream-session/unpublish', 'id' => $model->id],
-                                                [
-                                                    'title' => 'Unpublish the livestream',
-                                                    'data-confirm' => 'Do you want to unpublish this livestream?',
-                                                    'data-method' => 'post',
-                                                    'class' => 'btn btn-primary btn-publication',
-                                                ]
-                                            );
-                                        }
-                                        return Html::a(
-                                            'Publish',
-                                            ['stream-session/publish', 'id' => $model->id],
-                                            [
-                                                'class' => 'btn btn-success btn-publication',
-                                                'data-pjax' => '0',
-                                            ]
-                                        );
-                                    }
-                                ],
-                            ],
                         ],
                     ]); ?>
                 </div>
