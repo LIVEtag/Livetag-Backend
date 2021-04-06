@@ -51,13 +51,14 @@ use yii\web\UnprocessableEntityHttpException;
  * @property string $name
  * @property integer $shopId
  * @property integer $status
- * @property noolean $commentsEnabled
+ * @property boolean $commentsEnabled
  * @property string $sessionId
  * @property integer $createdAt
  * @property integer $announcedAt
  * @property integer $duration
  * @property integer $startedAt
  * @property integer $stoppedAt
+ * @property boolean $isPublished
  *
  * @property-read Comment[] $comments
  * @property-read Shop $shop
@@ -244,8 +245,8 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             ['name', 'default', 'value' => ''],
             ['name', 'string', 'max' => self::MAX_NAME_LENGTH],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
-            ['commentsEnabled', 'default', 'value' => true],
-            ['commentsEnabled', 'boolean'],
+            [['commentsEnabled', 'isPublished'], 'default', 'value' => true],
+            [['commentsEnabled', 'isPublished'], 'boolean'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             ['duration', 'default', 'value' => self::DEFAULT_DURATION],
@@ -397,6 +398,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'duration' => Yii::t('app', 'Duration'),
             'startedAt' => Yii::t('app', 'Started At'),
             'stoppedAt' => Yii::t('app', 'Updated At'),
+            'isPublished' => Yii::t('app', 'Is Published'),
         ];
     }
 
@@ -762,7 +764,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public static function getCurrent($shopId): ?self
     {
-        return self::find()->byShopId($shopId)->active()->orderByLatest()->one();
+        return self::find()->byShopId($shopId)->active()->published()->orderByLatest()->one();
     }
 
     /**
@@ -859,6 +861,36 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         $this->status = self::STATUS_STOPPED;
         $this->touch('stoppedAt');
         return $this->save(true, ['status', 'stoppedAt']);
+    }
+
+    /**
+     * Publish stream
+     * @return bool
+     */
+    public function publish(): bool
+    {
+        if ($this->isPublished) {
+            return true;
+        }
+        $this->isPublished = true;
+        return $this->save(true, ['isPublished']);
+    }
+
+    /**
+     * Unpublish stream
+     * @return bool
+     * @throws BadRequestHttpException
+     */
+    public function unpublish(): bool
+    {
+        if ($this->isActive()) {
+            throw new BadRequestHttpException('You can\'t unpublish active translations');
+        }
+        if (!$this->isPublished) {
+            return true;
+        }
+        $this->isPublished = false;
+        return $this->save(true, ['isPublished']);
     }
 
     /**

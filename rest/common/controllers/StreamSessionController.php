@@ -22,6 +22,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\rest\ViewAction;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
 /**
  * StreamSessionController implements the CRUD actions for StreamSession model.
@@ -66,7 +67,7 @@ class StreamSessionController extends ActiveController
     /**
      * Get products of selected session
      */
-    const ACTION_PRODUCTS = 'produtcs';
+    const ACTION_PRODUCTS = 'products';
 
     /**
      * Get comments list of session
@@ -140,39 +141,49 @@ class StreamSessionController extends ActiveController
                 self::ACTION_START => [
                     'class' => StartAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_CURRENT => CurrentAction::class,
-                self::ACTION_VIEW => ['class' => ViewAction::class],
+                self::ACTION_VIEW => [
+                    'class' => ViewAction::class,
+                    'findModel' => [$this, 'findModel'],
+                ],
                 self::ACTION_STOP => [
                     'class' => StopAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_TOKEN => [
                     'class' => TokenAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_PRODUCTS => [
                     'class' => ProductsAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_COMMENT_INDEX => [
                     'class' => CommentIndexAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_COMMENT_CREATE => [
                     'class' => CommentCreateAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_EVENT => [
                     'class' => EventAction::class,
                     'modelClass' => $this->modelClass,
-                    'checkAccess' => [$this, 'checkAccess']
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
                 ],
             ]
         );
@@ -217,5 +228,23 @@ class StreamSessionController extends ActiveController
             default:
                 break;
         }
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function findModel($id)
+    {
+        $model = StreamSession::find()
+            ->byId($id)
+            ->published()
+            ->one();
+
+        if ($model !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException("Stream Session not found by id: $id");
     }
 }

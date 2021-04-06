@@ -17,6 +17,14 @@ use common\components\db\ActiveQuery;
  */
 class StreamSessionQuery extends ActiveQuery
 {
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function byId(int $id): self
+    {
+        return $this->andWhere([$this->getFieldName('id') => $id]);
+    }
 
     /**
      * @param int $shopId
@@ -61,5 +69,14 @@ class StreamSessionQuery extends ActiveQuery
     public function orderByLatest()
     {
         return $this->orderBy([$this->getFieldName('createdAt') => SORT_DESC]);
+    }
+
+    /**
+     * Return published session
+     * @return $this
+     */
+    public function published()
+    {
+        return $this->andWhere([$this->getFieldName('isPublished') => true]);
     }
 }
