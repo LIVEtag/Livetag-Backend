@@ -178,6 +178,7 @@ class StreamSessionController extends Controller
 
     /**
      * Displays a single StreamSession model.
+     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -214,6 +215,18 @@ class StreamSessionController extends Controller
             $commentModel->userId = $user->id;
         }
 
+        try {
+            $url = Yii::$app->urlManagerSDK->createAbsoluteUrl('/lib/watch-session.txt');
+            $snippet = htmlentities(Yii::t('app', file_get_contents($url), ['sessionId' => $id])); //todo: cache it
+        } catch (Throwable $ex) {
+            $snippet = null;
+            LogHelper::error(
+                'Failed to get snippet',
+                'sdk',
+                LogHelper::extraForException($user->shop, $ex)
+            );
+        }
+
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('view', [
                 'model' => $model,
@@ -222,6 +235,7 @@ class StreamSessionController extends Controller
                 'commentSearchModel' => $commentSearchModel,
                 'commentDataProvider' => $commentDataProvider,
                 'commentModel' => $commentModel,
+                'snippet' => $snippet
         ]);
     }
 

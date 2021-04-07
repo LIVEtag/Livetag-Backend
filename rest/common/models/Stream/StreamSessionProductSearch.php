@@ -75,16 +75,9 @@ class StreamSessionProductSearch extends StreamSessionProduct
 
         $query = $this->streamSession->getStreamSessionProducts();
 
-        // Join only with active(not deleted) products
+        // Join with all products
         // Use eager loading only for expand requested
-        $query->innerJoinWith(
-            [
-                self::REL_PRODUCT => function (ProductQuery $query) {
-                    $query->active();
-                },
-            ],
-            ArrayHelper::isIn(self::REL_PRODUCT, ExpandHelper::getExpand($params))
-        );
+        $query->innerJoinWith(self::REL_PRODUCT, ArrayHelper::isIn(self::REL_PRODUCT, ExpandHelper::getExpand($params)));
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
