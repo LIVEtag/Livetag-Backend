@@ -15,7 +15,10 @@ use yii\data\ActiveDataProvider;
 
 class StreamSessionSearch extends StreamSession
 {
+    /** @var int */
     public $announcedAtFrom;
+
+    /** @var int */
     public $announcedAtTo;
 
     /** @var Shop */
