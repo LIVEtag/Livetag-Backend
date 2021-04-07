@@ -16,6 +16,7 @@ use rest\common\controllers\actions\Stream\ProductsAction;
 use rest\common\controllers\actions\Stream\StartAction;
 use rest\common\controllers\actions\Stream\StopAction;
 use rest\common\controllers\actions\Stream\TokenAction;
+use rest\common\controllers\actions\Stream\IndexAction;
 use rest\common\models\User;
 use rest\components\api\ActiveController;
 use Yii;
@@ -106,6 +107,7 @@ class StreamSessionController extends ActiveController
                         [
                             'allow' => true,
                             'actions' => [
+                                self::ACTION_INDEX,
                                 self::ACTION_VIEW,
                                 self::ACTION_CURRENT,
                                 self::ACTION_TOKEN,
@@ -145,6 +147,7 @@ class StreamSessionController extends ActiveController
                     'findModel' => [$this, 'findModel'],
                 ],
                 self::ACTION_CURRENT => CurrentAction::class,
+                self::ACTION_INDEX => IndexAction::class,
                 self::ACTION_VIEW => [
                     'class' => ViewAction::class,
                     'findModel' => [$this, 'findModel'],

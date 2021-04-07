@@ -455,6 +455,117 @@
                 }
             }
         },
+        "/v1/shop/{shopUri}/stream-session": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "List of Stream Sessions for selected shop",
+                "operationId": "streamSessionIndex",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "shopUri",
+                        "description": "Shop Uri",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "description": "Filter by Stream Session status. Supported formats: comma-separated string. \n Possible statuses: \n* `1` -  New.\n* `2` -  Active.\n* `3` -  Stopped.\n* `4` -  Archived.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "announcedAtFrom",
+                        "description": "Filter by Announced At From, timestamp",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "announcedAtTo",
+                        "description": "Filter by Announced At To, timestamp",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Sort ordering: use order=[-]sortOrder",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "announcedAt",
+                                "-announcedAt",
+                                "startedAt",
+                                "-startedAt"
+                            ]
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/streamSession"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            }
+        },
         "/v1/stream-session": {
             "post": {
                 "security": [
