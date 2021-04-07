@@ -29,7 +29,7 @@ $user = Yii::$app->user->identity ?? null;
             <div class="box box-default">
                 <div class="box-header">
                     <?php if ($user && $user->isSeller) : ?>
-                        <?= Html::a(Yii::t('app', 'Set'), ['create'], ['class' => 'btn bg-black']) ?>
+                        <?= Html::a(Yii::t('app', 'Create show'), ['create'], ['class' => 'btn bg-black']) ?>
                     <?php endif; ?>
                 </div>
                 <!--/.box-header -->
