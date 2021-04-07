@@ -463,7 +463,7 @@
                     "Buyer"
                 ],
                 "summary": "List of Stream Sessions for selected shop",
-                "operationId": "streamSessions",
+                "operationId": "streamSessionIndex",
                 "parameters": [
                     {
                         "in": "path",
@@ -477,7 +477,7 @@
                     {
                         "in": "query",
                         "name": "status",
-                        "description": "Filter by Stream Session status. Supported formats: \n* comma-separated string",
+                        "description": "Filter by Stream Session status. Supported formats: comma-separated string. \n Possible statuses: \n* `1` -  New.\n* `2` -  Active.\n* `3` -  Stopped.\n* `4` -  Archived.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -524,6 +524,9 @@
                     },
                     {
                         "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSession"
                     }
                 ],
                 "responses": {
@@ -627,7 +630,7 @@
                     "Buyer"
                 ],
                 "summary": "View Stream Session by id",
-                "operationId": "streamSessionIndex",
+                "operationId": "streamSessionView",
                 "parameters": [
                     {
                         "in": "path",

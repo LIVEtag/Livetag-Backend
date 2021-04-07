@@ -181,6 +181,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         self::STATUS_NEW => 'New',
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_STOPPED => 'Stopped',
+        self::STATUS_ARCHIVED => 'Archived',
     ];
 
     /**

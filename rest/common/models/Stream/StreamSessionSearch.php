@@ -8,24 +8,28 @@ declare(strict_types=1);
 namespace rest\common\models\Stream;
 
 use common\components\validation\validators\ArrayFilter;
+use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 class StreamSessionSearch extends StreamSession
 {
-    /**
-     * Status Names
-     */
-    const STATUSES = [
-        self::STATUS_NEW => 'New',
-        self::STATUS_ACTIVE => 'Active',
-        self::STATUS_STOPPED => 'Stopped',
-        self::STATUS_ARCHIVED => 'Archived',
-    ];
-
     public $announcedAtFrom;
     public $announcedAtTo;
+
+    /** @var Shop */
+    private $shop;
+
+    /**
+     * StreamSessionSearch constructor.
+     * @param Shop $shop
+     */
+    public function __construct(Shop $shop)
+    {
+        parent::__construct();
+        $this->shop = $shop;
+    }
 
     /**
      * @inheritdoc
@@ -35,7 +39,6 @@ class StreamSessionSearch extends StreamSession
         return [
             [['announcedAtFrom', 'announcedAtTo'], 'integer'],
             ['status', ArrayFilter::class],
-            ['status', 'each', 'rule' => ['integer']],
             ['status', 'each', 'rule' => ['in', 'range' => array_keys(self::STATUSES)]],
         ];
     }
@@ -54,17 +57,16 @@ class StreamSessionSearch extends StreamSession
      *
      * @param array $params
      *
-     * @param int $shopId
      * @return ActiveDataProvider|self
      */
-    public function search($params, int $shopId)
+    public function search($params)
     {
         $this->setAttributes($params);
         if (!$this->validate()) {
             return $this;
         }
 
-        $query = StreamSession::find()->published()->byShopId($shopId);
+        $query = StreamSession::find()->published()->byShopId($this->shop->id);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
