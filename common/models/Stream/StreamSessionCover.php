@@ -143,7 +143,7 @@ class StreamSessionCover extends ActiveRecord implements MediaInterface
     {
         return [
             MediaTypeEnum::TYPE_IMAGE,
-            MediaTypeEnum::TYPE_VIDEO, //temp
+            //MediaTypeEnum::TYPE_VIDEO, //todo
         ];
     }
 

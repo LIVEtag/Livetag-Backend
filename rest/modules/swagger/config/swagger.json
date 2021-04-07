@@ -1758,11 +1758,10 @@
                         "type": "string",
                         "example": "Some Stream Name"
                     },
-                    "streamSessionCover": {
+                    "cover": {
                         "type": "object",
                         "$ref": "#/components/schemas/streamSessionCover"
                     },
-
                     "shopUri": {
                         "type": "string",
                         "example": "shop1"
@@ -1846,6 +1845,25 @@
                         "type": "object",
                         "description": "Available via `expand`",
                         "$ref": "#/components/schemas/product"
+                    }
+                }
+            },
+            "streamSessionCover": {
+                "type": "object",
+                "required": [
+                    "productId",
+                    "status"
+                ],
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "image",
+                            "video"
+                        ]
                     }
                 }
             },

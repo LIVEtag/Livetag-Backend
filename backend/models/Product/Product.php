@@ -63,7 +63,10 @@ class Product extends BaseModel
      */
     public static function getIndexedArray($shopId = null): array
     {
-        $query = self::find()->select(['title', 'id'])->indexBy('id');
+        $query = self::find()
+            ->active()
+            ->select(['title', 'id'])
+            ->indexBy('id');
         if ($shopId) {
             $query->byShop($shopId);
         }
