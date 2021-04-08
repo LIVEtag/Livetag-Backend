@@ -128,7 +128,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'label' => 'Photo (cover image)',
                                 'visible' => $user && $user->isSeller,
                                 'format' => 'raw',
-                                'value' => function (StreamSession $model)  {
+                                'value' => function (StreamSession $model) {
                                     $imageUrl = $model->getCoverUrl();
                                     if (!$imageUrl) {
                                         return null;

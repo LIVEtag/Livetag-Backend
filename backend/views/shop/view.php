@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'attribute' => 'logo',
                                 'format' => 'raw',
-                                'value' => function (Shop $model)  {
+                                'value' => function (Shop $model) {
                                     $imageUrl = $model->getUrl();
                                     if (!$imageUrl) {
                                         return null;
