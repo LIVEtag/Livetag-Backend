@@ -51,7 +51,7 @@ class StreamSessionController extends Controller
                 'access' => [
                     'rules' => [
                         [
-                            'actions' => ['create', 'update', 'publish', 'unpublish'],
+                            'actions' => ['create', 'update', 'publish', 'unpublish', 'delete-cover-image'],
                             'allow' => true,
                             'roles' => [User::ROLE_SELLER],
                         ],
@@ -76,6 +76,7 @@ class StreamSessionController extends Controller
                     'actions' => [
                         'stop' => ['POST'],
                         'delete' => ['POST'],
+                        'delete-cover-image' => ['POST'],
                     ],
                 ]
             ]
@@ -237,6 +238,38 @@ class StreamSessionController extends Controller
                 'commentModel' => $commentModel,
                 'snippet' => $snippet
         ]);
+    }
+
+    /**
+     * Delete cover image from stream session
+     * @param int $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDeleteCoverImage(int $id)
+    {
+        $model = $this->findModel($id);
+        $cover = $model->streamSessionCover;
+
+        if (!$cover) {
+            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have cover image.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        if (!$cover->deleteFile()) {
+            Yii::$app->session->setFlash('error', implode(', ', $cover->getFirstErrors()));
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        if ($cover->delete() === false) {
+            Yii::$app->session->setFlash('error', 'Failed to remove cover image.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The cover image was removed.'));
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     /**

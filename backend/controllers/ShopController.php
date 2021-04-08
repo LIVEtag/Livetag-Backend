@@ -227,13 +227,23 @@ class ShopController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $model = $this->findModel($id);
         if (!$model->deleteFile()) {
-            return ['error' => 'Failed to remove logo: ' . implode(',', $model->getFirstErrors())];
+            Yii::$app->session->setFlash(
+                'error',
+                'Failed to remove logo: ' . implode(', ', $model->getFirstErrors())
+            );
+            return $this->redirect([$user->isSeller ? 'my' : 'view', 'id' => $model->id]);
         }
         $model->logo = null;
         if (!$model->save()) {
-            return ['error' => 'Failed to remove logo: ' . implode(',', $model->getFirstErrors())];
+            Yii::$app->session->setFlash(
+                'error',
+                'Failed to remove logo: ' . implode(', ', $model->getFirstErrors())
+            );
+            return $this->redirect([$user->isSeller ? 'my' : 'view', 'id' => $model->id]);
         }
-        return [];
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The logo was removed.'));
+        return $this->redirect([$user->isSeller ? 'my' : 'view', 'id' => $model->id]);
     }
 
     /**
