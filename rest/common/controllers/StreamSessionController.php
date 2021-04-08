@@ -195,7 +195,7 @@ class StreamSessionController extends ActiveController
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],
                 ],
-                 self::ACTION_ARCHIVE_START => [
+                self::ACTION_ARCHIVE_START => [
                     'class' => ArchiveStartAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess']
