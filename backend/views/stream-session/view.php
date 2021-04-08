@@ -3,6 +3,8 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use backend\assets\HighlightAsset;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
 use backend\models\Product\StreamSessionProductSearch;
@@ -74,6 +76,11 @@ $this->registerJs(
     });
     '
 );
+
+$this->registerJsFile('/backend/web/js/highlight.js', [
+    'depends' => [HighlightAsset::class],
+]);
+
 ?>
 <section class="stream-session-view">
     <div class="row">
@@ -161,6 +168,13 @@ $this->registerJs(
                                     return $model->getActualDuration();
                                 }
                             ],
+                            [
+                                'label'=>'Integration Snippet',
+                                'format' => 'raw',
+                                'value' => function () use ($snippet) {
+                                    return '<pre><code class="language-html">' . $snippet . '</code></pre>';
+                                }
+                            ]
                         ],
                     ]); ?>
                 </div>
