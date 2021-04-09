@@ -112,3 +112,35 @@ a.desc:after {
     margin: 10px 5px;
     display: block;
 }
+
+.shop-logo {
+    position: relative;
+    width: 150px;
+}
+
+.shop-logo__image {
+    position: relative;
+    width: 150px;
+}
+
+.shop-logo__trash {
+    position: absolute;
+    text-align: right;
+    width: 150px;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+}
+
+.shop-logo__trash:hover, :focus, :active {
+    opacity: 1;
+}
+
+.stream-session-view .shop-logo,
+.stream-session-view .shop-logo__trash,
+.stream-session-view .shop-logo__image {
+    width: 200px;
+}
