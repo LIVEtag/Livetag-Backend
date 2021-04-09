@@ -258,11 +258,6 @@ class StreamSessionController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        if (!$cover->deleteFile()) {
-            Yii::$app->session->setFlash('error', implode(', ', $cover->getFirstErrors()));
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
         if ($cover->delete() === false) {
             Yii::$app->session->setFlash('error', 'Failed to remove cover image.');
             return $this->redirect(['view', 'id' => $model->id]);
