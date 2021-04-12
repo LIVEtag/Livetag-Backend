@@ -26,9 +26,7 @@ class UpdateStreamSessionObserver
             throw new RuntimeException('Not StreamSession instance');
         }
         $streamSession->notify(Message::ACTION_STREAM_SESSION_UPDATE);
-        if (isset($event->changedAttributes['status'])
-            && ($event->changedAttributes['status'] === StreamSession::STATUS_NEW)
-        ) {
+        if (isset($event->changedAttributes['status']) && $streamSession->isActive()) {
             $streamSession->saveProductEventsToDatabase();
         }
     }

@@ -23,6 +23,7 @@ class M210411203450AlterTypeInStreamSessionProductEvent extends Migration
      */
     public function safeDown()
     {
+        $this->delete(StreamSessionProductEvent::TABLE_NAME, ['type' => ['productCreate', 'productUpdate', 'productDelete']]);
         $this->alterColumn(StreamSessionProductEvent::TABLE_NAME, 'type', $this->enum(['addToCart'])->notNull());
     }
 }

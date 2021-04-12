@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace common\observers\StreamSessionProduct;
 
 use common\components\centrifugo\Message;
+use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Product\StreamSessionProduct;
 use RuntimeException;
 use yii\base\Event;
@@ -27,6 +28,9 @@ class CreateStreamSessionProductObserver
         }
         //Notify about create
         $streamSessionProduct->notify(Message::ACTION_PRODUCT_CREATE);
-        $streamSessionProduct->saveEventToDatabase(Message::ACTION_PRODUCT_CREATE);
+        $streamSession = $streamSessionProduct->streamSession;
+        if ($streamSession && $streamSession->isActive()) {
+            $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_CREATE);
+        }
     }
 }

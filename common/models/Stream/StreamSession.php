@@ -917,25 +917,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      */
     public function saveProductEventsToDatabase()
     {
-        if ($this->isActive()) {
-            $streamSessionProducts = $this->streamSessionProducts;
-            foreach ($streamSessionProducts as $streamSessionProduct) {
-                /** @var StreamSessionProductEvent $event */
-                $event = new StreamSessionProductEvent();
-                $event->streamSessionId = $this->id;
-                $event->productId = $streamSessionProduct->getProductId();
-                $event->userId = Yii::$app->user->identity->getId();
-                $event->type = Message::ACTION_PRODUCT_CREATE;
-                $event->payload = ['status' => $streamSessionProduct->getStatus()];
-
-                if (!$event->save()) {
-                    LogHelper::error(
-                        'Failed to save stream session product event',
-                        StreamSessionProduct::LOG_CATEGORY,
-                        LogHelper::extraForModelError($event)
-                    );
-                }
-            }
+        $streamSessionProducts = $this->streamSessionProducts;
+        foreach ($streamSessionProducts as $streamSessionProduct) {
+            $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_CREATE);
         }
     }
 

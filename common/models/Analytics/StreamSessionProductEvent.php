@@ -120,7 +120,7 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
     public function rules(): array
     {
         return [
-            [['streamSessionId', 'productId', 'userId', 'type'], 'required'],
+            [['streamSessionId', 'productId', 'type'], 'required'],
             [['streamSessionId', 'productId', 'userId'], 'integer'],
             ['type', 'in', 'range' => array_keys(self::TYPES)],
             ['payload', ArrayValidator::class],
