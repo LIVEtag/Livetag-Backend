@@ -27,5 +27,6 @@ class CreateStreamSessionProductObserver
         }
         //Notify about create
         $streamSessionProduct->notify(Message::ACTION_PRODUCT_CREATE);
+        $streamSessionProduct->saveEventToDatabase(Message::ACTION_PRODUCT_CREATE);
     }
 }

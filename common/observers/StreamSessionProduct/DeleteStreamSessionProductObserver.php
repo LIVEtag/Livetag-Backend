@@ -27,5 +27,6 @@ class DeleteStreamSessionProductObserver
         }
         //Notify about delete
         $streamSessionProduct->notify(Message::ACTION_PRODUCT_DELETE);
+        $streamSessionProduct->saveEventToDatabase(Message::ACTION_PRODUCT_DELETE);
     }
 }

@@ -27,5 +27,6 @@ class UpdateStreamSessionProductObserver
         }
         //Notify about update
         $streamSessionProduct->notify(Message::ACTION_PRODUCT_UPDATE);
+        $streamSessionProduct->saveEventToDatabase(Message::ACTION_PRODUCT_UPDATE);
     }
 }

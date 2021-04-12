@@ -60,10 +60,28 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
     const TYPE_ADD_TO_CART = 'addToCart';
 
     /**
+     * Add product to stream
+     */
+    const TYPE_PRODUCT_CREATE = 'productCreate';
+
+    /**
+     * Update product of stream
+     */
+    const TYPE_PRODUCT_UPDATE = 'productUpdate';
+
+    /**
+     * Remove product from stream
+     */
+    const TYPE_PRODUCT_DELETE = 'productDelete';
+
+    /**
      * Available type
      */
     const TYPES = [
-        self::TYPE_ADD_TO_CART => 'Add to cart click'
+        self::TYPE_ADD_TO_CART => 'Add to cart click',
+        self::TYPE_PRODUCT_CREATE => 'Create product',
+        self::TYPE_PRODUCT_UPDATE => 'Update product',
+        self::TYPE_PRODUCT_DELETE => 'Delete product'
     ];
 
     /**

@@ -14,6 +14,7 @@ use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
 use common\helpers\LogHelper;
+use common\models\Analytics\StreamSessionProductEvent;
 use common\models\queries\Product\StreamSessionProductQuery;
 use common\models\Stream\StreamSession;
 use Yii;
@@ -249,6 +250,32 @@ class StreamSessionProduct extends ActiveRecord implements StreamSessionProductI
                     'actionType' => $actionType,
                     'streamSessionProduct' => Json::encode($this->toArray(), JSON_PRETTY_PRINT),
                 ]);
+            }
+        }
+    }
+
+    /**
+     * Save product event of active stream session to database
+     * @param string $actionType
+     */
+    public function saveEventToDatabase(string $actionType)
+    {
+        $streamSession = $this->streamSession;
+        if ($streamSession && $streamSession->isActive()) {
+            /** @var StreamSessionProductEvent $event */
+            $event = new StreamSessionProductEvent();
+            $event->streamSessionId = $streamSession->id;
+            $event->productId = $this->getProductId();
+            $event->userId = Yii::$app->user->identity->getId();
+            $event->type = $actionType;
+            $event->payload = ['status' => $this->getStatus()];
+
+            if (!$event->save()) {
+                LogHelper::error(
+                    'Failed to save stream session product event',
+                    self::LOG_CATEGORY,
+                    LogHelper::extraForModelError($event)
+                );
             }
         }
     }
