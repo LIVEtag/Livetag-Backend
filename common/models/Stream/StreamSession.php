@@ -913,6 +913,17 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * Save product events of active stream session to database
+     */
+    public function saveProductEventsToDatabase()
+    {
+        $streamSessionProducts = $this->streamSessionProducts;
+        foreach ($streamSessionProducts as $streamSessionProduct) {
+            $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_CREATE);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function beforeSave($insert)
