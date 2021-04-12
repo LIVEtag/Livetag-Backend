@@ -84,6 +84,8 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
         self::TYPE_PRODUCT_DELETE => 'Delete product'
     ];
 
+    const SCENARIO_USER = 'user';
+
     /**
      * @inheritdoc
      */
@@ -121,6 +123,7 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
     {
         return [
             [['streamSessionId', 'productId', 'type'], 'required'],
+            [['userId'], 'required', 'on' => self::SCENARIO_USER],
             [['streamSessionId', 'productId', 'userId'], 'integer'],
             ['type', 'in', 'range' => array_keys(self::TYPES)],
             ['payload', ArrayValidator::class],
