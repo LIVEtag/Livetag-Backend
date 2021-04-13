@@ -60,6 +60,7 @@ class ShopSearch extends Shop
         ]);
 
         $this->load($params);
+        $this->detachBehavior('slug');
 
         if (!$this->validate()) {
             //do not return any records when validation fails
