@@ -46,6 +46,16 @@ class StreamSessionQuery extends ActiveQuery
     }
 
     /**
+     * Return session with archived status
+     *
+     * @return $this
+     */
+    public function archived()
+    {
+        return $this->andWhere([$this->getFieldName('status') => StreamSession::STATUS_ARCHIVED]);
+    }
+
+    /**
      * @param int|array $status
      * @return $this
      */

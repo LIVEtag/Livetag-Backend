@@ -939,6 +939,134 @@
             }
         },
 
+        "/v1/stream-session/{streamSessionid}/snapshot": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get snapshots of selected archive Stream Session",
+                "operationId": "streamSessionSnapshots",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200DataProvider"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/streamSessionSnapshot"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+
+        "/v1/stream-session/{streamSessionid}/presented-product": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get presented products of selected archive Stream Session",
+                "operationId": "streamSessionPresentedProducts",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200DataProvider"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/product"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
         "/v1/stream-session/{streamSessionid}/product/{productId}/event": {
             "post": {
                 "security": [
@@ -1956,6 +2084,36 @@
                         "type": "object",
                         "description": "Available via `expand`",
                         "$ref": "#/components/schemas/product"
+                    }
+                }
+            },
+            "streamSessionSnapshot": {
+                "type": "object",
+                "required": [
+                    "timestamp",
+                    "products"
+                ],
+                "properties": {
+                    "timestamp": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "productId": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "status": {
+                                    "description": "2-`Displayed in the widget`; 3-`Presented now`",
+                                    "type": "integer",
+                                    "example": 2
+                                }
+                            }
+                        }
                     }
                 }
             },

@@ -12,7 +12,9 @@ use rest\common\controllers\actions\Stream\CommentCreateAction;
 use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
 use rest\common\controllers\actions\Stream\CurrentAction;
+use rest\common\controllers\actions\Stream\PresentedProductsAction;
 use rest\common\controllers\actions\Stream\ProductsAction;
+use rest\common\controllers\actions\Stream\SnapshotsAction;
 use rest\common\controllers\actions\Stream\StartAction;
 use rest\common\controllers\actions\Stream\StopAction;
 use rest\common\controllers\actions\Stream\TokenAction;
@@ -71,6 +73,16 @@ class StreamSessionController extends ActiveController
     const ACTION_PRODUCTS = 'products';
 
     /**
+     * Get snapshots of selected session
+     */
+    const ACTION_SNAPSHOTS = 'snapshots';
+
+    /**
+     * Get presented products of selected session
+     */
+    const ACTION_PRESENTED_PRODUCTS = 'presented-products';
+
+    /**
      * Get comments list of session
      */
     const ACTION_COMMENT_INDEX = 'comment-index';
@@ -112,6 +124,8 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_CURRENT,
                                 self::ACTION_TOKEN,
                                 self::ACTION_PRODUCTS,
+                                self::ACTION_SNAPSHOTS,
+                                self::ACTION_PRESENTED_PRODUCTS,
                                 self::ACTION_COMMENT_INDEX,
                                 self::ACTION_COMMENT_CREATE,
                             ],
@@ -169,6 +183,14 @@ class StreamSessionController extends ActiveController
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_SNAPSHOTS => [
+                    'class' => SnapshotsAction::class,
+                    'modelClass' => $this->modelClass,
+                ],
+                self::ACTION_PRESENTED_PRODUCTS => [
+                    'class' => PresentedProductsAction::class,
+                    'modelClass' => $this->modelClass,
                 ],
                 self::ACTION_COMMENT_INDEX => [
                     'class' => CommentIndexAction::class,
