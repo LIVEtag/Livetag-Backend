@@ -42,9 +42,24 @@ $this->params['breadcrumbs'][] = $this->title;
                             'name',
                             [
                                 'attribute' => 'logo',
-                                'format' => ['image', ['width' => '150']],
-                                'value' => function ($model) {
-                                    return $model->getUrl();
+                                'format' => 'raw',
+                                'value' => function (Shop $model) {
+                                    $imageUrl = $model->getUrl();
+                                    if (!$imageUrl) {
+                                        return null;
+                                    }
+
+                                    $action = Url::to(['/shop/delete-logo', 'id' => $model->id]);
+                                    return "<div class=\"shop-logo\">
+                                                <div class=\"shop-logo__trash\">
+                                                    <a type=\"button\" class=\"btn btn-sm btn-default\" 
+                                                        href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
+                                                        data-confirm=\"Are you sure to delete this item?\">
+                                                        <i class=\"glyphicon glyphicon-trash\"></i>
+                                                    </a>
+                                                </div>
+                                                <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
+                                            </div>";
                                 }
                             ],
                             'uri',

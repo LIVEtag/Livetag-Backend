@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace common\observers\StreamSessionProduct;
 
 use common\components\centrifugo\Message;
+use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Product\StreamSessionProduct;
 use RuntimeException;
 use yii\base\Event;
@@ -27,5 +28,9 @@ class DeleteStreamSessionProductObserver
         }
         //Notify about delete
         $streamSessionProduct->notify(Message::ACTION_PRODUCT_DELETE);
+        $streamSession = $streamSessionProduct->streamSession;
+        if ($streamSession && $streamSession->isActive()) {
+            $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_DELETE);
+        }
     }
 }

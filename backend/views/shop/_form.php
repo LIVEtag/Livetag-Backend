@@ -39,8 +39,7 @@ $user = Yii::$app->user->identity;
                             'initialPreviewConfig' => [
                                 [
                                     'caption' => $model->logo,
-                                    'url' => Url::to(['/shop/delete-logo', 'id' => $model->id]),
-                                    'showRemove' => true,
+                                    'showRemove' => false,
                                     'showZoom' => true,
                                     'showDrag' => false,
                                 ],

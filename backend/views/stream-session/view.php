@@ -12,6 +12,7 @@ use backend\models\Stream\StreamSession;
 use backend\models\User\User;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\DetailView;
 
@@ -117,9 +118,33 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'name',
                             [
                                 'label' => 'Photo (cover image)',
+                                'visible' => $user && $user->isAdmin,
                                 'format' => ['image', ['width' => '200']],
                                 'value' => function (StreamSession $model) {
                                     return $model->getCoverUrl();
+                                }
+                            ],
+                            [
+                                'label' => 'Photo (cover image)',
+                                'visible' => $user && $user->isSeller,
+                                'format' => 'raw',
+                                'value' => function (StreamSession $model) {
+                                    $imageUrl = $model->getCoverUrl();
+                                    if (!$imageUrl) {
+                                        return null;
+                                    }
+
+                                    $action = Url::to(['/stream-session/delete-cover-image', 'id' => $model->id]);
+                                    return "<div class=\"shop-logo\">
+                                                <div class=\"shop-logo__trash\">
+                                                    <a type=\"button\" class=\"btn btn-sm btn-default\" 
+                                                        href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
+                                                        data-confirm=\"Are you sure to delete this item?\">
+                                                        <i class=\"glyphicon glyphicon-trash\"></i>
+                                                    </a>
+                                                </div>
+                                                <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
+                                            </div>";
                                 }
                             ],
                             [
