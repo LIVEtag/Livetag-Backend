@@ -59,6 +59,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $startedAt
  * @property integer $stoppedAt
  * @property boolean $isPublished
+ * @property string $rotate
  *
  * @property-read Comment[] $comments
  * @property-read Shop $shop
@@ -184,6 +185,18 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         self::STATUS_ARCHIVED => 'Archived',
     ];
 
+    const ROTATE_0 = '0';
+    const ROTATE_90 = '90';
+    const ROTATE_180 = '180';
+    const ROTATE_270 = '270';
+
+    const ROTATIONS = [
+        self::ROTATE_0 => '0 degrees',
+        self::ROTATE_90 => '90 degrees',
+        self::ROTATE_180 => '180 degrees',
+        self::ROTATE_270 => '270 degrees',
+    ];
+
     /**
      * Array of Product ids to link
      *
@@ -252,6 +265,8 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             ['duration', 'default', 'value' => self::DEFAULT_DURATION],
             ['duration', 'in', 'range' => array_keys(self::DURATIONS)],
+            ['rotate', 'default', 'value' => self::ROTATE_0],
+            ['rotate', 'in', 'range' => array_keys(self::ROTATIONS)],
             [
                 'announcedAt',
                 'validateLimits',
@@ -400,6 +415,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'startedAt' => Yii::t('app', 'Started At'),
             'stoppedAt' => Yii::t('app', 'Updated At'),
             'isPublished' => Yii::t('app', 'Is Published'),
+            'rotate' => Yii::t('app', 'Rotate'),
         ];
     }
 
@@ -439,6 +455,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'stoppedAt' => function () {
                 return $this->getStoppedAt();
             },
+            'rotate' => function () {
+                return $this->getRotate();
+            }
         ];
     }
 
@@ -634,6 +653,14 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @return int
+     */
+    public function getRotate(): int
+    {
+        return (int)$this->rotate;
+    }
+
+    /**
      * Check current session is new (announcement)
      * @return bool
      */
@@ -816,6 +843,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
      * Start translation and return token
      * @return StreamSessionToken
      * @throws BadRequestHttpException
+     * @throws \yii\db\Exception
      */
     public function start(): StreamSessionToken
     {

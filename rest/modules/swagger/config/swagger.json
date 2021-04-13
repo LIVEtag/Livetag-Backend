@@ -707,6 +707,22 @@
                         "$ref": "#/components/parameters/expand-streamSession"
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "rotate": {
+                                        "type": "integer",
+                                        "example": 90,
+                                        "description": "Rotation value that should be 90 degrees by default."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "OK",
