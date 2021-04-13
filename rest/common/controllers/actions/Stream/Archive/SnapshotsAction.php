@@ -5,11 +5,10 @@
  */
 declare(strict_types=1);
 
-namespace rest\common\controllers\actions\Stream;
+namespace rest\common\controllers\actions\Stream\Archive;
 
 use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Stream\StreamSession;
-use yii\data\ArrayDataProvider;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 
@@ -17,7 +16,7 @@ class SnapshotsAction extends Action
 {
     /**
      * @param int $id
-     * @return \yii\data\ArrayDataProvider
+     * @return array
      * @throws NotFoundHttpException
      */
     public function run(int $id)
@@ -28,9 +27,7 @@ class SnapshotsAction extends Action
             throw new NotFoundHttpException('Stream Session was not found.');
         }
 
-        return new ArrayDataProvider([
-            'allModels' => $this->getSnapshots($streamSession),
-        ]);
+        return $this->getSnapshots($streamSession);
     }
 
     /**
@@ -39,28 +36,25 @@ class SnapshotsAction extends Action
      */
     private function getSnapshots(StreamSession $streamSession)
     {
-        $events = StreamSessionProductEvent::find()
+        $query = StreamSessionProductEvent::find()
             ->select(['`payload`', '`productId`', '`createdAt`'])
             ->byStreamSessionId($streamSession->id)
             ->byProductTypes()
-            ->orderBy(['`createdAt`' => SORT_ASC])
-            ->all();
-
-        $productsByCreatedAt = [];
-        /** @var StreamSessionProductEvent $event */
-        foreach ($events as $event) {
-            $currProducts = [];
-            $currProducts['productId'] = $event->productId;
-            $currProducts['status'] = $event->payload['status'];
-            $productsByCreatedAt[$event->createdAt][] = $currProducts;
-        }
+            ->orderBy(['`createdAt`' => SORT_ASC]);
 
         $snapshots = [];
-        foreach ($productsByCreatedAt as $createdAt => $products) {
-            $currSnapshot = [];
-            $currSnapshot['timestamp'] = $createdAt - $streamSession->startedAt;
-            $currSnapshot['products'] = $products;
-            $snapshots[] = $currSnapshot;
+        $createdAt = 0;
+        $i = 0;
+        /** @var StreamSessionProductEvent $event */
+        foreach ($query->each() as $event) {
+            if (($createdAt !== $event->createdAt)) {
+                $snapshots[$i]['timestamp'] = $event->createdAt - $streamSession->startedAt;
+                $createdAt = $event->createdAt;
+                $i++;
+            }
+            $currProduct['productId'] = $event->productId;
+            $currProduct['status'] = $event->payload['status'] ?? null;
+            $snapshots[$i - 1]['products'][] = $currProduct;
         }
 
         return $snapshots;

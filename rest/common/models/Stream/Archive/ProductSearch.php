@@ -5,15 +5,15 @@
  */
 declare(strict_types=1);
 
-namespace rest\common\models\Product;
+namespace rest\common\models\Stream\Archive;
 
 use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Stream\StreamSession;
+use rest\common\models\Product\Product;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use yii\helpers\ArrayHelper;
 
-class PresentedProductSearch extends Product
+class ProductSearch extends Product
 {
     /**
      * @var StreamSession
@@ -49,13 +49,10 @@ class PresentedProductSearch extends Product
             ->byStreamSessionId($this->streamSession->id)
             ->byProductTypes()
             ->distinct()
-            ->asArray()
-            ->all();
-
-        $query = Product::find()->byId(ArrayHelper::getColumn($productsId, 'productId'));
+            ->column();
 
         return new ActiveDataProvider([
-            'query' => $query,
+            'query' => Product::find()->byId($productsId),
         ]);
     }
 }

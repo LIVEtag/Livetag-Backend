@@ -42,7 +42,7 @@ class StreamSessionQuery extends ActiveQuery
      */
     public function active()
     {
-        return $this->andWhere([$this->getFieldName('status') => StreamSession::STATUS_ACTIVE]);
+        return $this->byStatus(StreamSession::STATUS_ACTIVE);
     }
 
     /**
@@ -52,7 +52,7 @@ class StreamSessionQuery extends ActiveQuery
      */
     public function archived()
     {
-        return $this->andWhere([$this->getFieldName('status') => StreamSession::STATUS_ARCHIVED]);
+        return $this->byStatus(StreamSession::STATUS_ARCHIVED);
     }
 
     /**

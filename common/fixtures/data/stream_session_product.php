@@ -76,4 +76,15 @@ return [
         'productId' => ProductFixture::PRODUCT_10_SHOP_2,
         'streamSessionId' => StreamSessionFixture::STREAM_SESSION_2_SHOP_2_EXPIRED,
     ],
+    //Archived Session of Shop2
+    StreamSessionProductFixture::PRODUCT_17_SESSION_7 => [
+        'id' => StreamSessionProductFixture::PRODUCT_17_SESSION_7,
+        'productId' => ProductFixture::PRODUCT_9_SHOP_2,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_7_SHOP_2_ARCHIVED,
+    ],
+    StreamSessionProductFixture::PRODUCT_18_SESSION_7 => [
+        'id' => StreamSessionProductFixture::PRODUCT_18_SESSION_7,
+        'productId' => ProductFixture::PRODUCT_10_SHOP_2,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_7_SHOP_2_ARCHIVED,
+    ],
 ];

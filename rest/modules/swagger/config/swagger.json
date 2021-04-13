@@ -939,7 +939,7 @@
             }
         },
 
-        "/v1/stream-session/{streamSessionid}/snapshot": {
+        "/v1/stream-session/{streamSessionid}/archive/snapshot": {
             "get": {
                 "tags": [
                     "Stream Session",
@@ -947,7 +947,7 @@
                     "Buyer"
                 ],
                 "summary": "Get snapshots of selected archive Stream Session",
-                "operationId": "streamSessionSnapshots",
+                "operationId": "streamSessionArchiveSnapshots",
                 "parameters": [
                     {
                         "in": "path",
@@ -968,7 +968,7 @@
                                 "schema": {
                                     "allOf": [
                                         {
-                                            "$ref": "#/components/schemas/status200DataProvider"
+                                            "$ref": "#/components/schemas/status200"
                                         },
                                         {
                                             "properties": {
@@ -999,15 +999,15 @@
         },
 
 
-        "/v1/stream-session/{streamSessionid}/presented-product": {
+        "/v1/stream-session/{streamSessionid}/archive/product": {
             "get": {
                 "tags": [
                     "Stream Session",
                     "Seller",
                     "Buyer"
                 ],
-                "summary": "Get presented products of selected archive Stream Session",
-                "operationId": "streamSessionPresentedProducts",
+                "summary": "Get products of selected archive Stream Session",
+                "operationId": "streamSessionArchiveProducts",
                 "parameters": [
                     {
                         "in": "path",
@@ -2102,17 +2102,7 @@
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "properties": {
-                                "productId": {
-                                    "type": "integer",
-                                    "example": 1
-                                },
-                                "status": {
-                                    "description": "2-`Displayed in the widget`; 3-`Presented now`",
-                                    "type": "integer",
-                                    "example": 2
-                                }
-                            }
+                            "$ref": "#/components/schemas/streamSessionProduct"
                         }
                     }
                 }
