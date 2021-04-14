@@ -12,7 +12,6 @@ use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\controllers\CentrifugoController;
 use rest\modules\v1\controllers\ConfigController;
-use rest\modules\v1\controllers\ProductController;
 use rest\modules\v1\controllers\StreamSessionController;
 use rest\modules\v1\Module as V1Module;
 use yii\data\Pagination;
@@ -151,6 +150,9 @@ return [
                         'GET {id}/comment' => StreamSessionController::ACTION_COMMENT_INDEX,
                         'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
                         'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,
+                        'POST {id}/archive' => StreamSessionController::ACTION_ARCHIVE_START,
+                        'DELETE {id}/archive' => StreamSessionController::ACTION_ARCHIVE_STOP,
+                        'OPTIONS {id}/archive' => StreamSessionController::ACTION_OPTIONS,
                     ]
                 ],
                 [
