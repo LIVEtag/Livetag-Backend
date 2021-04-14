@@ -8,24 +8,20 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\Stream;
 
 use common\models\Stream\StreamSession;
-use common\models\Stream\StreamSessionToken;
-use rest\common\models\views\StreamSession\UpdateStreamSession;
+use rest\common\models\views\StreamSession\StartStreamSession;
 use Yii;
 use yii\rest\Action;
-use yii\web\ServerErrorHttpException;
 
 class StartAction extends Action
 {
 
     /**
      * @param int $id
-     * @return StreamSessionToken|UpdateStreamSession
-     * @throws ServerErrorHttpException
-     * @throws \Throwable
+     * @return object
      * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\StaleObjectException
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\db\Exception
      */
     public function run(int $id)
     {
@@ -36,18 +32,15 @@ class StartAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
-        /** @var UpdateStreamSession $updateStreamSession */
-        $updateStreamSession = Yii::createObject(UpdateStreamSession::class, [$streamSession]);
-        $updateStreamSession->setAttributes(Yii::$app->request->getBodyParams());
+        /** @var StartStreamSession $updateStreamSession */
+        $startStreamSession = Yii::createObject(StartStreamSession::class, [$streamSession]);
+        $startStreamSession->setAttributes(Yii::$app->request->getBodyParams());
+        $token = $startStreamSession->start();
 
-        if (!$updateStreamSession->update() && !$updateStreamSession->hasErrors()) {
-            throw new ServerErrorHttpException('Failed to update Stream Session.');
+        if ($startStreamSession->hasErrors()) {
+            return $startStreamSession;
         }
 
-        if ($updateStreamSession->hasErrors()) {
-            return $updateStreamSession;
-        }
-
-        return $streamSession->start();
+        return $token;
     }
 }

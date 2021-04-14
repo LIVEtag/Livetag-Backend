@@ -1926,6 +1926,10 @@
                     "stoppedAt": {
                         "type": "integer",
                         "example": 1611752785
+                    },
+                    "rotate": {
+                        "type": "integer",
+                        "example": 90
                     }
                 }
             },

@@ -840,44 +840,6 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
-     * Start translation and return token
-     * @return StreamSessionToken
-     * @throws BadRequestHttpException
-     * @throws \yii\db\Exception
-     */
-    public function start(): StreamSessionToken
-    {
-        if (!$this->isNew()) {
-            throw new BadRequestHttpException('This translation already started');
-        }
-        // 1. Touch startedAt to generate expired time for token
-        $this->touch('startedAt');
-
-        // 2. Create publisher token
-        $token = $this->createPublisherToken();
-
-        //Save token and update session status
-        $transaction = Yii::$app->db->beginTransaction();
-
-        // 3. Save token
-        if (!$token->save()) {
-            $transaction->rollBack();
-            LogHelper::error('Session start failed. Session Token not saved', self::LOG_CATEGORY, LogHelper::extraForModelError($token));
-            throw new BadRequestHttpException(Yii::t('app', 'Failed to start session for unknown reason'));
-        }
-
-        // 4. Update status and save session
-        $this->status = self::STATUS_ACTIVE;
-        if (!$this->save(true, ['status', 'startedAt'])) {
-            $transaction->rollBack();
-            LogHelper::error('Session start failed. Session not saved', self::LOG_CATEGORY, LogHelper::extraForModelError($this));
-            throw new BadRequestHttpException(Yii::t('app', 'Failed to start session for unknown reason'));
-        }
-        $transaction->commit();
-        return $token;
-    }
-
-    /**
      * Stop translation
      * @return bool
      * @throws BadRequestHttpException
