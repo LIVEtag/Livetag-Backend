@@ -32,8 +32,16 @@
             "description": "Actions Available for `Buyer` Role"
         },
         {
+            "name": "Centrifugo",
+            "description": "Centrifugo related methods"
+        },
+        {
             "name": "Account",
             "description": "User authentication, manage and details, email confirmation and authentication"
+        },
+        {
+            "name": "Shop",
+            "description": "Shop related methods"
         },
         {
             "name": "Stream Session",
@@ -48,12 +56,8 @@
             "description": "Stream Comments"
         },
         {
-            "name": "Centrifugo",
-            "description": "Centrifugo related methods"
-        },
-        {
-            "name": "Shop",
-            "description": "Shop related methods"
+            "name": "Archives",
+            "description": "Manage Archives in Stream Session"
         }
     ],
     "paths": {
@@ -1155,6 +1159,79 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+        "/v1/stream-session/{streamSessionid}/archive": {
+            "post": {
+                "tags": [
+                    "Stream Session",
+                    "Archives",
+                    "Seller"
+                ],
+                "summary": "Start archiving in session",
+                "operationId": "startArchiving",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Stream Session",
+                    "Archives",
+                    "Seller"
+                ],
+                "summary": "Stop archiving in session",
+                "operationId": "stopArchiving",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
                     },
                     "401": {
                         "$ref": "#/components/responses/401"

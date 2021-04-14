@@ -12,7 +12,10 @@ use OpenTok\Exception\DomainException;
 use OpenTok\MediaMode;
 use OpenTok\OpenTok;
 use OpenTok\OutputMode;
+use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
@@ -20,6 +23,11 @@ use yii\web\UnprocessableEntityHttpException;
  */
 class Vonage extends Component
 {
+    /**
+     * API url for overriden client
+     */
+    const TOKBOX_API_URL = 'https://api.opentok.com';
+
     /** @var string */
     public $apiKey;
 
@@ -35,6 +43,19 @@ class Vonage extends Component
     public function init()
     {
         $this->opentok = new OpenTok($this->apiKey, $this->apiSecret);
+    }
+
+    /**
+     * Alternative overrided client
+     * @return Client
+     * @throws InvalidConfigException
+     */
+    public function createClient()
+    {
+        /** @var Client $opentokClient */
+        $opentokClient = Yii::createObject(Client::class);
+        $opentokClient->configure($this->apiKey, $this->apiSecret, self::TOKBOX_API_URL);
+        return $opentokClient;
     }
 
     /**
@@ -68,15 +89,17 @@ class Vonage extends Component
      * Start archiving
      *
      * @param string $sessionId
+     * @param string $name (optional atrchive name)
      *
      * @return void
      */
-    public function startArchiving($sessionId)
+    public function startArchiving($sessionId, $name = null)
     {
         try {
             return $this->opentok->startArchive($sessionId, [
-                'outputMode' => OutputMode::INDIVIDUAL, // default: OutputMode::COMPOSED
-                //'resolution' => '1280x720',// default: '640x480'
+                    'name' => $name,
+                    'outputMode' => OutputMode::COMPOSED, // default: OutputMode::COMPOSED
+                    'resolution' => '1280x720', // default: '640x480'
             ]);
         } catch (DomainException $e) {
             $this->processClientException($e);
@@ -84,14 +107,22 @@ class Vonage extends Component
     }
 
     /**
-     * Stop archiving
+     * Stop archiving for session
      *
-     * @param string $archiveId
+     * @param string $sessionId
      */
-    public function stopArchive($archiveId)
+    public function stopArchiving($sessionId)
     {
         try {
-            return $this->opentok->stopArchive($archiveId);
+            $client = $this->createClient();
+            $archiveJson = $client->getArchiveBySessionId($sessionId);
+            $archives = ArrayHelper::getValue($archiveJson, 'items', []);
+            foreach ($archives as $item) {
+                $archiveId = ArrayHelper::getValue($item, 'id');
+                if ($archiveId) {
+                    $this->opentok->stopArchive($archiveId);
+                }
+            }
         } catch (DomainException $e) {
             $this->processClientException($e);
         }

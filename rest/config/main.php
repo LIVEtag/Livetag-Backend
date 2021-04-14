@@ -151,6 +151,8 @@ return [
                         'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
                         'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,
                         'POST {id}/archive' => StreamSessionController::ACTION_ARCHIVE_START,
+                        'DELETE {id}/archive' => StreamSessionController::ACTION_ARCHIVE_STOP,
+                        'OPTIONS {id}/archive' => StreamSessionController::ACTION_OPTIONS,
                     ]
                 ],
                 [

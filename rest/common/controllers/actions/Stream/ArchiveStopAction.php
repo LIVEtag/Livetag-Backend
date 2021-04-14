@@ -11,7 +11,7 @@ use common\models\Stream\StreamSession;
 use Yii;
 use yii\rest\Action;
 
-class ArchiveStartAction extends Action
+class ArchiveStopAction extends Action
 {
 
     /**
@@ -26,7 +26,8 @@ class ArchiveStartAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
-        Yii::$app->vonage->startArchiving($streamSession->sessionId, $streamSession->name);
+
+        Yii::$app->vonage->stopArchiving($streamSession->sessionId);
         Yii::$app->response->setStatusCode(204);
     }
 }
