@@ -22,9 +22,9 @@ class SnapshotsAction extends Action
     public function run(int $id)
     {
         /** @var StreamSession $streamSession */
-        $streamSession = StreamSession::find()->byId($id)->archived()->published()->one();
-        if (!$streamSession) {
-            throw new NotFoundHttpException('Stream Session was not found.');
+        $streamSession = $this->findModel($id);
+        if (!$streamSession->isArchived()) {
+            throw new NotFoundHttpException('Archived Stream Session was not found.');
         }
 
         return $this->getSnapshots($streamSession);
@@ -43,18 +43,18 @@ class SnapshotsAction extends Action
             ->orderBy(['`createdAt`' => SORT_ASC]);
 
         $snapshots = [];
-        $createdAt = 0;
         $i = 0;
         /** @var StreamSessionProductEvent $event */
         foreach ($query->each() as $event) {
-            if (($createdAt !== $event->createdAt)) {
-                $snapshots[$i]['timestamp'] = $event->createdAt - $streamSession->startedAt;
-                $createdAt = $event->createdAt;
+            $timestamp = $event->createdAt - $streamSession->startedAt;
+            if (isset($snapshots[$i]['timestamp']) && ($snapshots[$i]['timestamp'] != $timestamp)) {
                 $i++;
             }
-            $currProduct['productId'] = $event->productId;
-            $currProduct['status'] = $event->payload['status'] ?? null;
-            $snapshots[$i - 1]['products'][] = $currProduct;
+            $snapshots[$i]['timestamp'] = $timestamp;
+            $snapshots[$i]['products'][] = [
+                'productId' => $event->productId,
+                'status' => $event->payload['status'] ?? null
+            ];
         }
 
         return $snapshots;

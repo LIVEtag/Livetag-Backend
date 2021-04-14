@@ -8,26 +8,26 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\Stream\Archive;
 
 use common\models\Stream\StreamSession;
-use rest\common\models\Stream\Archive\ProductSearch;
+use Yii;
 use yii\rest\Action;
-use yii\web\NotFoundHttpException;
 
-class ProductsAction extends Action
+class StopAction extends Action
 {
+
     /**
      * @param int $id
-     * @return ProductSearch|\yii\data\ActiveDataProvider
-     * @throws NotFoundHttpException
      */
     public function run(int $id)
     {
         /** @var StreamSession $streamSession */
         $streamSession = $this->findModel($id);
-        if (!$streamSession->isArchived()) {
-            throw new NotFoundHttpException('Archived Stream Session was not found.');
+        if ($this->checkAccess) {
+            // phpcs:disable
+            call_user_func($this->checkAccess, $this->id, $streamSession);
+            // phpcs:enable
         }
 
-        $searchModel = new ProductSearch($streamSession);
-        return $searchModel->search();
+        Yii::$app->vonage->stopArchiving($streamSession->sessionId);
+        Yii::$app->response->setStatusCode(204);
     }
 }
