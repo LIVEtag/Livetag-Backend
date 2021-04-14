@@ -112,7 +112,7 @@ class Shop extends ActiveRecord implements FileResourceInterface
     {
         return [
             TimestampBehavior::class,
-            [
+            'slug' => [
                 'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'slugAttribute' => 'uri',
