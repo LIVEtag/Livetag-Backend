@@ -16,6 +16,9 @@ use yii\web\BadRequestHttpException;
 
 class StartStreamSession extends Model
 {
+    /** @var int 15 minutes is seconds */
+    const START_AT_DELTA = 900;
+
     /** @var int|string */
     public $rotate;
 
@@ -47,6 +50,26 @@ class StartStreamSession extends Model
     }
 
     /**
+     * @return bool
+     */
+    public function isStartTimeCorrect()
+    {
+        if (!$this->streamSession->startedAt) {
+            return false;
+        }
+
+        $max = $this->streamSession->startedAt + self::START_AT_DELTA;
+        $min = $this->streamSession->startedAt - self::START_AT_DELTA;
+        $now = time();
+
+        if ($now > $max || $now < $min) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @return bool|StreamSessionToken
      * @throws BadRequestHttpException
      * @throws \yii\db\Exception
@@ -60,6 +83,11 @@ class StartStreamSession extends Model
         if (!$this->streamSession->isNew()) {
             throw new BadRequestHttpException('This translation already started');
         }
+
+        if (!$this->isStartTimeCorrect()) {
+            throw new BadRequestHttpException('You can start a scheduled livestream only 15 minutes before or after its start time.');
+        }
+
         // 1. Touch startedAt to generate expired time for token
         $this->streamSession->touch('startedAt');
 
