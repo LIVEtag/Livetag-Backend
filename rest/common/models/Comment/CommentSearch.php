@@ -30,12 +30,22 @@ class CommentSearch extends Comment
     public $lastId;
 
     /**
+     * @var integer
+     */
+    public $createdAtFrom;
+
+    /**
+     * @var integer
+     */
+    public $createdAtTo;
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
     {
         return [
-            [['userId', 'lastId'], 'integer'],
+            [['userId', 'lastId', 'createdAtFrom', 'createdAtTo'], 'integer'],
         ];
     }
 
@@ -85,8 +95,10 @@ class CommentSearch extends Comment
         ]);
 
         // grid filtering conditions
-        $query->andFilterWhere([self::tableName() . '.userId' => $this->userId]);
-
+        $query
+            ->andFilterWhere([self::tableName() . '.userId' => $this->userId])
+            ->andFilterWhere(['<=', self::tableName() . '.createdAt', $this->createdAtTo])
+            ->andFilterWhere(['>=', self::tableName() . '.createdAt', $this->createdAtFrom]);
 
         if ($this->lastId) {
             $query->andWhere(['<', $query->getFieldName('id'), $this->lastId]);

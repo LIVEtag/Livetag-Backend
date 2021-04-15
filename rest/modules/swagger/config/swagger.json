@@ -1185,6 +1185,24 @@
                         }
                     },
                     {
+                        "in": "query",
+                        "name": "createdAtFrom",
+                        "description": "Filter by Created At From, timestamp",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "createdAtTo",
+                        "description": "Filter by Created At To, timestamp",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "$ref": "#/components/parameters/page"
                     },
                     {
