@@ -83,7 +83,7 @@ class CommentSearch extends Comment
         }
 
         $query = $this->streamSession->getComments()
-            ->orderBy(['id' => SORT_DESC]);
+            ->orderBy(['id' => SORT_ASC]);
 
         //join need only when expand required
         if (ArrayHelper::isIn(self::REL_USER, ExpandHelper::getExpand($params))) {
