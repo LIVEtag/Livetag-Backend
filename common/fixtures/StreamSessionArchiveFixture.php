@@ -39,8 +39,10 @@ class StreamSessionArchiveFixture extends ActiveFixture
      */
     public function generateVideo(string $videoName): string
     {
+        // phpcs:disable
         $temp = tempnam(null, null) . ".mp4";
         copy(__DIR__ . "/data/archiveVideo/$videoName.mp4", $temp);
+        // phpcs:enable
         return $this->createS3UploadedData(
             (new StreamSessionArchive())->getRelativePath(),
             $temp,
