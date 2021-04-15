@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace rest\common\controllers\actions\Stream;
+namespace rest\common\controllers\actions\Stream\Archive;
 
 use common\models\Stream\StreamSession;
 use Yii;
 use yii\rest\Action;
 
-class ArchiveStopAction extends Action
+class StopAction extends Action
 {
 
     /**

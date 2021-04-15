@@ -7,8 +7,10 @@
 namespace rest\common\controllers;
 
 use common\models\Stream\StreamSession;
-use rest\common\controllers\actions\Stream\ArchiveStartAction;
-use rest\common\controllers\actions\Stream\ArchiveStopAction;
+use rest\common\controllers\actions\Stream\Archive\StartAction as ArchiveStartAction;
+use rest\common\controllers\actions\Stream\Archive\StopAction as ArchiveStopAction;
+use rest\common\controllers\actions\Stream\Archive\ProductsAction as ArchiveProductsAction;
+use rest\common\controllers\actions\Stream\Archive\SnapshotsAction;
 use rest\common\controllers\actions\Stream\CommentCreateAction;
 use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
@@ -73,6 +75,16 @@ class StreamSessionController extends ActiveController
     const ACTION_PRODUCTS = 'products';
 
     /**
+     * Get snapshots of selected session
+     */
+    const ACTION_ARCHIVE_SNAPSHOTS = 'archive-snapshots';
+
+    /**
+     * Get presented products of selected session
+     */
+    const ACTION_ARCHIVE_PRODUCTS = 'archive-products';
+
+    /**
      * Get comments list of session
      */
     const ACTION_COMMENT_INDEX = 'comment-index';
@@ -126,6 +138,8 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_CURRENT,
                                 self::ACTION_TOKEN,
                                 self::ACTION_PRODUCTS,
+                                self::ACTION_ARCHIVE_SNAPSHOTS,
+                                self::ACTION_ARCHIVE_PRODUCTS,
                                 self::ACTION_COMMENT_INDEX,
                                 self::ACTION_COMMENT_CREATE,
                             ],
@@ -180,6 +194,18 @@ class StreamSessionController extends ActiveController
                 ],
                 self::ACTION_PRODUCTS => [
                     'class' => ProductsAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_ARCHIVE_SNAPSHOTS => [
+                    'class' => SnapshotsAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_ARCHIVE_PRODUCTS => [
+                    'class' => ArchiveProductsAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],

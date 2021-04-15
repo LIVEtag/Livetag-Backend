@@ -5,13 +5,13 @@
  */
 declare(strict_types=1);
 
-namespace rest\common\controllers\actions\Stream;
+namespace rest\common\controllers\actions\Stream\Archive;
 
 use common\models\Stream\StreamSession;
 use Yii;
 use yii\rest\Action;
 
-class ArchiveStartAction extends Action
+class StartAction extends Action
 {
 
     /**
@@ -26,6 +26,7 @@ class ArchiveStartAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
+
         Yii::$app->vonage->startArchiving($streamSession->sessionId, $streamSession->name);
         Yii::$app->response->setStatusCode(204);
     }

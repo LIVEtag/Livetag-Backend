@@ -643,6 +643,15 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * Check current session is archived
+     * @return bool
+     */
+    public function isArchived(): bool
+    {
+        return $this->getStatus() === self::STATUS_ARCHIVED;
+    }
+
+    /**
      * Check current session is active
      * @return bool
      */

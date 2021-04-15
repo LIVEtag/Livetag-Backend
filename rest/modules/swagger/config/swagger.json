@@ -943,6 +943,136 @@
             }
         },
 
+        "/v1/stream-session/{streamSessionid}/archive/snapshot": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Archives",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get snapshots of selected archive Stream Session",
+                "operationId": "streamSessionArchiveSnapshots",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/streamSessionSnapshot"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+
+        "/v1/stream-session/{streamSessionid}/archive/product": {
+            "get": {
+                "tags": [
+                    "Stream Session",
+                    "Archives",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get products of selected archive Stream Session",
+                "operationId": "streamSessionArchiveProducts",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 3
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200DataProvider"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/product"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
         "/v1/stream-session/{streamSessionid}/product/{productId}/event": {
             "post": {
                 "security": [
@@ -2033,6 +2163,26 @@
                         "type": "object",
                         "description": "Available via `expand`",
                         "$ref": "#/components/schemas/product"
+                    }
+                }
+            },
+            "streamSessionSnapshot": {
+                "type": "object",
+                "required": [
+                    "timestamp",
+                    "products"
+                ],
+                "properties": {
+                    "timestamp": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "products": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/streamSessionProduct"
+                        }
                     }
                 }
             },
