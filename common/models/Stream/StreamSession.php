@@ -398,7 +398,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
             'announcedAt' => Yii::t('app', 'Start At'),
             'duration' => Yii::t('app', 'Duration'),
             'startedAt' => Yii::t('app', 'Started At'),
-            'stoppedAt' => Yii::t('app', 'Updated At'),
+            'stoppedAt' => Yii::t('app', 'Stopped At'),
             'isPublished' => Yii::t('app', 'Is Published'),
         ];
     }
