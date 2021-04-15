@@ -3,6 +3,8 @@
  * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+declare(strict_types=1);
+
 namespace rest\common\models\views\StreamSession;
 
 use common\helpers\LogHelper;
