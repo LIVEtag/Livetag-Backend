@@ -54,12 +54,12 @@ class StartStreamSession extends Model
      */
     public function isStartTimeCorrect()
     {
-        if (!$this->streamSession->startedAt) {
+        if (!$this->streamSession->announcedAt) {
             return false;
         }
 
-        $max = $this->streamSession->startedAt + self::START_AT_DELTA;
-        $min = $this->streamSession->startedAt - self::START_AT_DELTA;
+        $max = $this->streamSession->announcedAt + self::START_AT_DELTA;
+        $min = $this->streamSession->announcedAt - self::START_AT_DELTA;
         $now = time();
 
         if ($now > $max || $now < $min) {
