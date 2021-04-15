@@ -47,4 +47,10 @@ return [
         'stoppedAt' => null,
         'isPublished' => false,
     ],
+    [
+        'id' => StreamSessionFixture::STREAM_SESSION_7_SHOP_2_ARCHIVED,
+        'shopId' => ShopFixture::SHOP_2,
+        'status' => StreamSession::STATUS_ARCHIVED,
+        'isPublished' => true,
+    ],
 ];

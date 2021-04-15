@@ -8,10 +8,12 @@ declare(strict_types=1);
 namespace common\components\test;
 
 use Faker\Generator;
+use RuntimeException;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\Security;
 use yii\db\ActiveQuery;
+use yii\helpers\FileHelper;
 
 /**
  * Class ActiveFixture
@@ -113,5 +115,44 @@ abstract class ActiveFixture extends \yii\test\ActiveFixture
         /** @var ActiveQuery $activeQuery */
         $activeQuery = $this->modelClass::find();
         return $activeQuery->andWhere($primaryKeys)->one();
+    }
+
+    /**
+     * Upload file to S3 and return origin path
+     * @param string $relativePath
+     * @param string $path
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function createS3UploadedData(string $relativePath, string $path): string
+    {
+        #$content = @file_get_contents($path);
+        $stream = fopen($path, 'r+');
+        if ($stream === false) {
+            throw new RuntimeException("Can't get content from resource: {$path}");
+        }
+        $pathParts = pathinfo($path);
+        $uniqId = str_replace('.', '', uniqid('', true));
+        if (empty($pathParts['extension'])) {
+            #$finfo = new finfo(FILEINFO_MIME_TYPE);
+            #$mimeType = $finfo->buffer($content);
+            $mimeType = FileHelper::getMimeType($path);
+            $extensions = FileHelper::getExtensionsByMimeType($mimeType);
+            if (!empty($extensions)) {
+                $extension = end($extensions);
+            }
+        } else {
+            $extension = $pathParts['extension'];
+        }
+        $relativePath = 'fixture/' . $relativePath;
+        $remotePath = "{$relativePath}/{$uniqId}.{$extension}";
+        \Yii::$app->fs->putStream(
+            $remotePath,
+            $stream
+        );
+        if (is_resource($stream)) {
+            fclose($stream);
+        }
+        return $remotePath;
     }
 }
