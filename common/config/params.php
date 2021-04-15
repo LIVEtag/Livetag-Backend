@@ -9,5 +9,5 @@ return [
     'adminEmail' => getenv('ADMIN_EMAIL'),
     'maxUploadLogoSize' => 102400, // 1024 * 100 -> 100 Kb
     'maxUploadImageSize' => 15728640, //1024 * 1024 * 15 -> 15 Mb
-    'maxUploadVideoSize' => 5000000000 // 5Gb
+    'maxUploadVideoSize' => 5368709120,  // 1024*1024*1024*5
 ];

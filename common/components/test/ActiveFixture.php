@@ -126,7 +126,6 @@ abstract class ActiveFixture extends \yii\test\ActiveFixture
      */
     public function createS3UploadedData(string $relativePath, string $path): string
     {
-        #$content = @file_get_contents($path);
         // phpcs:disable
         $stream = fopen($path, 'r+');
         // phpcs:enable
@@ -138,8 +137,6 @@ abstract class ActiveFixture extends \yii\test\ActiveFixture
         // phpcs:enable
         $uniqId = str_replace('.', '', uniqid('', true));
         if (empty($pathParts['extension'])) {
-            #$finfo = new finfo(FILEINFO_MIME_TYPE);
-            #$mimeType = $finfo->buffer($content);
             $mimeType = FileHelper::getMimeType($path);
             $extensions = FileHelper::getExtensionsByMimeType($mimeType);
             if (!empty($extensions)) {
