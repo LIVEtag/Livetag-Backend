@@ -2155,6 +2155,11 @@
                     "rotate": {
                         "type": "integer",
                         "example": 90
+                    },
+                    "archive": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/archive"
                     }
                 }
             },
@@ -2336,6 +2341,18 @@
                         "example": "MediumOrchid"
                     }
                 }
+            },
+
+            "archive": {
+                "type": "object",
+                "required": [
+                    "playlist"
+                ],
+                "properties": {
+                    "playlist": {
+                        "type": "string"
+                    }
+                }
             }
         },
         "parameters": {
@@ -2375,7 +2392,7 @@
             "expand-streamSession": {
                 "in": "query",
                 "name": "expand",
-                "description": "Extra Fields (coma separated). Available values: ```-``` (for future use)",
+                "description": "Extra Fields (coma separated). Available values: ```archive```",
                 "required": false,
                 "schema": {
                     "type": "string"

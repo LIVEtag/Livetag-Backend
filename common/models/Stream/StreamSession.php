@@ -64,6 +64,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property-read Comment[] $comments
  * @property-read Shop $shop
  * @property-read StreamSessionCover $streamSessionCover
+ * @property-read StreamSessionArchive $streamSessionArchive
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
  * @property-read Product[] $products
@@ -85,6 +86,9 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
 
     /** @see getStreamSessionCover() */
     const REL_STREAM_SESSION_COVER = 'streamSessionCover';
+
+    /** @see getStreamSessionArchive() */
+    const REL_STREAM_SESSION_ARCHIVE = 'archive';
 
     /** @see getProducts() */
     const REL_PRODUCT = 'products';
@@ -462,6 +466,18 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
+    {
+        return [
+            self::REL_STREAM_SESSION_ARCHIVE => function () {
+                return $this->streamSessionArchive;
+            }
+        ];
+    }
+
+    /**
      * @return CommentQuery
      */
     public function getComments(): CommentQuery
@@ -485,6 +501,13 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
         return $this->hasOne(StreamSessionCover::class, ['streamSessionId' => 'id']);
     }
 
+    /**
+     * @return ActiveQuery
+     */
+    public function getStreamSessionArchive(): ActiveQuery
+    {
+        return $this->hasOne(StreamSessionArchive::class, ['streamSessionId' => 'id']);
+    }
 
     /**
      * @return string|null
