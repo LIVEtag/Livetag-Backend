@@ -82,8 +82,7 @@ class CommentSearch extends Comment
             return $this; //return errors when validation fails
         }
 
-        $query = $this->streamSession->getComments()
-            ->orderBy(['id' => SORT_DESC]);
+        $query = $this->streamSession->getComments();
 
         //join need only when expand required
         if (ArrayHelper::isIn(self::REL_USER, ExpandHelper::getExpand($params))) {
@@ -101,7 +100,10 @@ class CommentSearch extends Comment
             ->andFilterWhere(['>=', self::tableName() . '.createdAt', $this->createdAtFrom]);
 
         if ($this->lastId) {
-            $query->andWhere(['<', $query->getFieldName('id'), $this->lastId]);
+            $dataProvider->sort = false;
+            $query
+                ->andWhere(['<', $query->getFieldName('id'), $this->lastId])
+                ->orderBy(['id' => SORT_DESC]);
         }
 
         return $dataProvider;

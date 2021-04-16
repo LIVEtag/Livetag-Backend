@@ -1195,7 +1195,7 @@
                     {
                         "in": "query",
                         "name": "lastId",
-                        "description": "Id of last message (use for alternative pagination). The filter will show all messages with IDs less than this",
+                        "description": "Id of last message (use for alternative pagination). The filter will show all messages with IDs less than this.",
                         "schema": {
                             "type": "integer"
                         }
@@ -1216,6 +1216,19 @@
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Sort ordering: use order=[-]sortOrder. It doesn't work when using lastId.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "id",
+                                "-id"
+                            ]
                         }
                     },
                     {
