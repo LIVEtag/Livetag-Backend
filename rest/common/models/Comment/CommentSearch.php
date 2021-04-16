@@ -90,18 +90,8 @@ class CommentSearch extends Comment
             $query->joinWith(self::REL_USER);
         }
 
-        $sort = [
-            'asc' => ['id' => SORT_ASC],
-            'desc' => ['id' => SORT_DESC],
-        ];
-        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => [
-                'attributes' => [
-                    'id' => $this->lastId ? false : $sort,
-                ]
-            ],
         ]);
 
         // grid filtering conditions
@@ -111,6 +101,7 @@ class CommentSearch extends Comment
             ->andFilterWhere(['>=', self::tableName() . '.createdAt', $this->createdAtFrom]);
 
         if ($this->lastId) {
+            $dataProvider->sort = false;
             $query->andWhere(['<', $query->getFieldName('id'), $this->lastId]);
         }
 
