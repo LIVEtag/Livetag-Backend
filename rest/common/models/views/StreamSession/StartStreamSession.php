@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace rest\common\models\views\StreamSession;
 
+use common\components\validation\ErrorList;
 use common\helpers\LogHelper;
 use common\models\Stream\StreamSession;
 use common\models\Stream\StreamSessionToken;
@@ -85,7 +86,7 @@ class StartStreamSession extends Model
         }
 
         if (!$this->isStartTimeCorrect()) {
-            throw new BadRequestHttpException('You can start a scheduled livestream only 15 minutes before or after its start time.');
+            throw new BadRequestHttpException(ErrorList::errorTextByCode(ErrorList::START_WITH_FIFTEEN_MINUTES));
         }
 
         // 1. Touch startedAt to generate expired time for token
