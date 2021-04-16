@@ -83,15 +83,25 @@ class CommentSearch extends Comment
         }
 
         $query = $this->streamSession->getComments()
-            ->orderBy(['id' => SORT_ASC]);
+            ->orderBy(['id' => SORT_DESC]);
 
         //join need only when expand required
         if (ArrayHelper::isIn(self::REL_USER, ExpandHelper::getExpand($params))) {
             $query->joinWith(self::REL_USER);
         }
 
+        $sort = [
+            'asc' => ['id' => SORT_ASC],
+            'desc' => ['id' => SORT_DESC],
+        ];
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'attributes' => [
+                    'id' => $this->lastId ? false : $sort,
+                ]
+            ],
         ]);
 
         // grid filtering conditions
