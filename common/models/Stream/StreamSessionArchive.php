@@ -11,6 +11,8 @@ use common\components\behaviors\TimestampBehavior;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
+use common\models\queries\Stream\StreamSessionArchiveQuery;
+use League\Flysystem\Adapter\AbstractAdapter;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -85,6 +87,15 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
 
     /**
      * @inheritdoc
+     * @return StreamSessionArchiveQuery the active query used by this AR class.
+     */
+    public static function find(): StreamSessionArchiveQuery
+    {
+        return new StreamSessionArchiveQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function rules(): array
     {
@@ -140,6 +151,58 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
             'createdAt' => Yii::t('app', 'Created At'),
             'updatedAt' => Yii::t('app', 'Updated At'),
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields(): array
+    {
+        return [
+            'playlist' => function () {
+                return $this->getPlaylistUrl();
+            }
+        ];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlaylist(): ?string
+    {
+        return $this->playlist;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlaylistUrl(): ?string
+    {
+        if (!$this->isReady() || !$this->getPlaylist()) {
+            return null;
+        }
+        /** @var AbstractAdapter $adapter */
+        $adapter = Yii::$app->fs->getAdapter();
+        return $adapter
+            ->getClient()
+            ->getObjectUrl(Yii::$app->fs->bucket, $adapter->applyPathPrefix($this->getPlaylist()));
+    }
+
+    /**
+     * Check current archive is ready
+     * @return bool
+     */
+    public function isReady(): bool
+    {
+        return $this->getStatus() === self::STATUS_READY;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status ? (int)$this->status : null;
     }
 
     /**
