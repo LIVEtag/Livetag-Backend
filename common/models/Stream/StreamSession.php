@@ -64,7 +64,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property-read Comment[] $comments
  * @property-read Shop $shop
  * @property-read StreamSessionCover $streamSessionCover
- * @property-read StreamSessionArchive $streamSessionArchive
+ * @property-read StreamSessionArchive $archive
  * @property-read StreamSessionToken $streamSessionToken
  * @property-read StreamSessionProduct[] $streamSessionProducts
  * @property-read Product[] $products
@@ -87,8 +87,8 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /** @see getStreamSessionCover() */
     const REL_STREAM_SESSION_COVER = 'streamSessionCover';
 
-    /** @see getStreamSessionArchive() */
-    const REL_STREAM_SESSION_ARCHIVE = 'archive';
+    /** @see getArchive() */
+    const REL_ARCHIVE = 'archive';
 
     /** @see getProducts() */
     const REL_PRODUCT = 'products';
@@ -471,9 +471,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     public function extraFields(): array
     {
         return [
-            self::REL_STREAM_SESSION_ARCHIVE => function () {
-                return $this->streamSessionArchive;
-            }
+            self::REL_ARCHIVE,
         ];
     }
 
@@ -504,7 +502,7 @@ class StreamSession extends ActiveRecord implements StreamSessionInterface
     /**
      * @return ActiveQuery
      */
-    public function getStreamSessionArchive(): ActiveQuery
+    public function getArchive(): ActiveQuery
     {
         return $this->hasOne(StreamSessionArchive::class, ['streamSessionId' => 'id']);
     }
