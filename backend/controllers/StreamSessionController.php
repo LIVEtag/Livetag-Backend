@@ -16,6 +16,7 @@ use backend\models\Product\StreamSessionProductSearch;
 use backend\models\Stream\SaveAnnouncementForm;
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
+use backend\models\Stream\UploadRecordedShowForm;
 use backend\models\User\User;
 use common\models\forms\Comment\CommentForm;
 use Exception;
@@ -51,7 +52,14 @@ class StreamSessionController extends Controller
                 'access' => [
                     'rules' => [
                         [
-                            'actions' => ['create', 'update', 'publish', 'unpublish', 'delete-cover-image'],
+                            'actions' => [
+                                'create',
+                                'update',
+                                'publish',
+                                'unpublish',
+                                'delete-cover-image',
+                                'upload-recorded-show',
+                            ],
                             'allow' => true,
                             'roles' => [User::ROLE_SELLER],
                         ],
@@ -144,6 +152,34 @@ class StreamSessionController extends Controller
         return $this->render('create', [
             'model' => $model,
             'productIds' => Product::getIndexedArray($user->shop->id)
+        ]);
+    }
+
+    /**
+     * @return string
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionUploadRecordedShow()
+    {
+        /** @var User $user */
+        $user = $this->getAndCheckCurrentUser();
+
+        $model = new UploadRecordedShowForm();
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+
+        return $this->render('upload-recorded-show', [
+            'model' => $model,
+            'productIds' => Product::getIndexedArray($user->shop->id),
         ]);
     }
 

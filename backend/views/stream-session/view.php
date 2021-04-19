@@ -26,7 +26,7 @@ use yii\widgets\DetailView;
 /* @var $isPosted bool */
 
 $this->title = 'Livestream details #' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestream'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 /** @var User $user */
