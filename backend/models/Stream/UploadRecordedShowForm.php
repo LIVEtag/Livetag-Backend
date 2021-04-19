@@ -207,20 +207,23 @@ class UploadRecordedShowForm extends Model
 
     /**
      * @return bool
-     * @SuppressWarnings(PHPCS)
      */
     public function setFileFromUrl(): bool
     {
         if (!$this->isLink()) {
             return false;
         }
+        // phpcs:disable
         $fileName = basename($this->directUrl);
         $tempFile = tmpfile();
         $fileContent = file_get_contents($this->directUrl);
+        // phpcs:enable
         if (!$fileContent) {
             return false;
         }
+        // phpcs:disable
         fwrite($tempFile, $fileContent);
+        // phpcs:enable
         $metaData = stream_get_meta_data($tempFile);
         if (!isset($metaData['uri'])) {
             return false;
@@ -229,8 +232,10 @@ class UploadRecordedShowForm extends Model
         $this->file = new UploadedFile([
             'name' => $fileName,
             'tempName' => $metaData['uri'],
+            // phpcs:disable
             'size' => filesize($metaData['uri']),
             'type' => mime_content_type($metaData['uri']),
+            // phpcs:enable
             'tempResource' => $tempFile,
         ]);
         return true;
