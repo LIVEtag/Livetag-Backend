@@ -33,6 +33,7 @@ use yii\web\UploadedFile;
 
 /**
  * StreamSessionController implements the CRUD actions for StreamSession model.
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class StreamSessionController extends Controller
 {
