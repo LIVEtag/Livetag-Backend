@@ -22,16 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
 $js = /** @lang JavaScript */
     <<<SCRP
     $('#uploadrecordedshowform-type-link').on('click', function() {
-        if ($(this).is(':checked')) { 
-            console.log('link checked!!!');
+        if ($(this).is(':checked')) {
             $('#uploadrecordedshowform-directurl').prop('disabled', false);
             $('#uploadrecordedshowform-file').fileinput('lock').fileinput('refresh');
         }
     });
 
     $('#uploadrecordedshowform-type-upload').on('click', function() {
-        if ($(this).is(':checked')) { 
-            console.log('upload checked!!!');
+        if ($(this).is(':checked')) {
             var directurlInput = $('#uploadrecordedshowform-directurl');
             directurlInput.val('');
             directurlInput.prop('disabled', true);
@@ -57,7 +55,7 @@ $this->registerJs($js);
                                 'maxlength' => true,
                             ]) ?>
 
-                        <?= $form->field($model, 'type')->radio([
+                        <?= $form->field($model, 'uploadType')->radio([
                             'id' => 'uploadrecordedshowform-type-link',
                             'value' => UploadRecordedShowForm::TYPE_LINK,
                             'uncheck' => null,
@@ -70,7 +68,7 @@ $this->registerJs($js);
                             ->label(false);
                         ?>
 
-                        <?= $form->field($model, 'type')->radio([
+                        <?= $form->field($model, 'uploadType')->radio([
                             'id' => 'uploadrecordedshowform-type-upload',
                             'value' => UploadRecordedShowForm::TYPE_UPLOAD,
                             'uncheck' => null,

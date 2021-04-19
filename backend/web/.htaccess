@@ -5,3 +5,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 # Otherwise forward the request to index.php
 RewriteRule . index.php
+
+php_value upload_max_filesize 5G
+php_value post_max_size 5G
+php_value memory_limit 5G

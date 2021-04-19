@@ -27,11 +27,11 @@ class UploadRecordedShowForm extends Model
     const TYPE_LINK = 'link';
 
     /**
-     * To upload video
+     * To upload video from device storage
      */
     const TYPE_UPLOAD = 'upload';
 
-    const TYPES = [
+    const UPLOAD_TYPES = [
         self::TYPE_LINK,
         self::TYPE_UPLOAD,
     ];
@@ -39,7 +39,7 @@ class UploadRecordedShowForm extends Model
     const RESPONSE_CODE_SUCCESS = 200;
 
     /** @var string */
-    public $type;
+    public $uploadType;
 
     /** @var string */
     public $name;
@@ -49,9 +49,6 @@ class UploadRecordedShowForm extends Model
 
     /** @var UploadedFile */
     public $file;
-
-    /** @var UploadedFile */
-    private $fileFromUrl;
 
     /** @var string|null */
     public $directUrl;
@@ -79,7 +76,7 @@ class UploadRecordedShowForm extends Model
         return [
             [['name', 'productIds', 'shopId'], 'required'],
             ['name', 'string', 'max' => StreamSession::MAX_NAME_LENGTH],
-            ['type', 'in', 'range' => self::TYPES],
+            ['uploadType', 'in', 'range' => self::UPLOAD_TYPES],
             [
                 'productIds', //validate in main model. select2 do not return null on empty select
                 'filter',
@@ -116,6 +113,7 @@ class UploadRecordedShowForm extends Model
         curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
+        // phpcs:enable
 
         $errorsList = Yii::createObject(ErrorListInterface::class);
         if (!isset($info['http_code']) || $info['http_code'] !== self::RESPONSE_CODE_SUCCESS) {
@@ -129,13 +127,14 @@ class UploadRecordedShowForm extends Model
         }
         if (!isset($info['download_content_length'])
             || ($info['download_content_length'] > Yii::$app->params['maxUploadVideoSize'])) {
+            // phpcs:disable
             $this->addError($attribute, $errorsList->createErrorMessage(ErrorList::FILE_TOO_BIG)
                 ->setParams([
                     'file' => basename($this->$attribute),
                     'formattedLimit' => Yii::$app->params['maxUploadVideoSize'],
                 ]));
+            // phpcs:enable
         }
-        // phpcs:enable
     }
 
     /**
@@ -155,24 +154,24 @@ class UploadRecordedShowForm extends Model
     /**
      * @return bool
      */
-    public function isLink()
+    public function isLink(): bool
     {
-        return $this->type === self::TYPE_LINK;
+        return $this->uploadType === self::TYPE_LINK;
     }
 
     /**
      * @return bool
      */
-    public function isUpload()
+    public function isUpload(): bool
     {
-        return $this->type === self::TYPE_UPLOAD;
+        return $this->uploadType === self::TYPE_UPLOAD;
     }
 
     /**
      * @return bool
      * @throws Throwable
      */
-    public function save()
+    public function save(): bool
     {
         if (!$this->validate()) {
             return false;
@@ -181,30 +180,23 @@ class UploadRecordedShowForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->streamSession->setAttributes($this->getAttributes());
-            //TODO Change period
             $currentTime = time();
             $this->streamSession->startedAt = $currentTime;
             $this->streamSession->announcedAt = $currentTime;
-            $this->streamSession->stoppedAt = $currentTime + StreamSession::DURATION_180;
+            $this->streamSession->stoppedAt = $currentTime + StreamSession::DEFAULT_DURATION;
             if (!$this->streamSession->save()) {
                 $this->addErrors($this->streamSession->getErrors());
                 $transaction->rollBack();
                 return false;
             }
-
-            $errorsList = Yii::createObject(ErrorListInterface::class);
-            if ($this->isLink() && (!$this->saveFileLocallyFromUrl() || !$this->uploadFile($this->fileFromUrl))) {
-                $this->addError('directUrl', $errorsList->createErrorMessage(ErrorList::FILE_INVALID));
+            $this->setFileFromUrl();
+            if (!$this->uploadFile()) {
+                $attribute = $this->isLink() ? 'directUrl' : 'file';
+                $errorsList = Yii::createObject(ErrorListInterface::class);
+                $this->addError($attribute, $errorsList->createErrorMessage(ErrorList::FILE_INVALID));
                 $transaction->rollBack();
                 return false;
             }
-
-            if ($this->isUpload() && !$this->uploadFile($this->file)) {
-                $this->addError('file', $errorsList->createErrorMessage(ErrorList::FILE_INVALID));
-                $transaction->rollBack();
-                return false;
-            }
-
             $transaction->commit();
             return true;
         } catch (Throwable $ex) {
@@ -215,62 +207,44 @@ class UploadRecordedShowForm extends Model
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPCS)
      */
-    private function saveFileLocallyFromUrl()
-    {
-        // phpcs:disable
-        $fileName = basename($this->directUrl);
-        $filePath = $this->getFileDir() . $fileName;
-        $fileContent = file_get_contents($this->directUrl);
-        if (!$fileContent) {
-            return false;
-        }
-
-        if (!file_put_contents($filePath, $fileContent)) {
-            return false;
-        }
-
-        $this->fileFromUrl = new UploadedFile([
-            'name' => $fileName,
-            'tempName' => $filePath,
-            'size' => filesize($filePath),
-            'type' => mime_content_type($filePath),
-        ]);
-        // phpcs:enable
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    private function getFileDir()
-    {
-        return Yii::getAlias('@webroot/uploads/');
-    }
-
-    /**
-     * @return bool
-     */
-    private function removeLocalFile()
+    public function setFileFromUrl(): bool
     {
         if (!$this->isLink()) {
             return false;
         }
-        // phpcs:disable
-        return unlink($this->getFileDir() . basename($this->directUrl));
-        // phpcs:enable
+        $fileName = basename($this->directUrl);
+        $tempFile = tmpfile();
+        $fileContent = file_get_contents($this->directUrl);
+        if (!$fileContent) {
+            return false;
+        }
+        fwrite($tempFile, $fileContent);
+        $metaData = stream_get_meta_data($tempFile);
+        if (!isset($metaData['uri'])) {
+            return false;
+        }
+
+        $this->file = new UploadedFile([
+            'name' => $fileName,
+            'tempName' => $metaData['uri'],
+            'size' => filesize($metaData['uri']),
+            'type' => mime_content_type($metaData['uri']),
+            'tempResource' => $tempFile,
+        ]);
+        return true;
     }
 
     /**
      * Create archive and save file to s3
-     * @param UploadedFile $uploadedFile
      * @return bool
      * @throws Throwable
      */
-    private function uploadFile(UploadedFile $uploadedFile): bool
+    private function uploadFile(): bool
     {
         $archive = new StreamSessionArchive();
-        $archive->setFile($uploadedFile);
+        $archive->setFile($this->file);
         if (!$archive->saveFile()) {
             return false;
         }
@@ -279,7 +253,6 @@ class UploadRecordedShowForm extends Model
             return false;
         }
 
-        $this->removeLocalFile();
         return true;
     }
 }
