@@ -215,12 +215,18 @@ class UploadRecordedShowForm extends Model
         // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $fileName = basename($this->directUrl);
         $tempFile = tmpfile();
-        fwrite($tempFile, file_get_contents($this->directUrl));
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
+        
         $metaData = stream_get_meta_data($tempFile);
         if (!isset($metaData['uri'])) {
             return false;
         }
+
+        $fp = fopen($metaData['uri'], 'w+b');
+        $ch = curl_init($this->directUrl);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_exec($ch);
+        // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
+        curl_close($ch);
 
         $this->file = new UploadedFile([
             'name' => $fileName,
