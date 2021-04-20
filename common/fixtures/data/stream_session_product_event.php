@@ -135,6 +135,7 @@ return [
         'payload' => [
             'status' => StreamSessionProduct::STATUS_DISPLAYED,
         ],
+        'createdAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT,
     ],
     StreamSessionProductEventFixture::EVENT_13_SESSION_8 => [
         'id' => StreamSessionProductEventFixture::EVENT_13_SESSION_8,
@@ -145,5 +146,6 @@ return [
         'payload' => [
             'status' => StreamSessionProduct::STATUS_DISPLAYED,
         ],
+        'createdAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT,
     ],
 ];
