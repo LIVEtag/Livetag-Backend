@@ -78,7 +78,7 @@ class SnapshotsAction extends Action
             $productsById[$event->productId] = [
                 'productId' => $event->productId,
                 'status' => $event->payload['status'] ?? null,
-            ];;
+            ];
 
             if (isset($snapshots[$i]['timestamp']) && ($snapshots[$i]['timestamp'] != $timestamp)) {
                 $i++;
