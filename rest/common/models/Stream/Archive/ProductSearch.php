@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace rest\common\models\Stream\Archive;
 
 use common\models\Analytics\StreamSessionProductEvent;
+use common\models\Product\StreamSessionProduct;
 use common\models\Stream\StreamSession;
 use rest\common\models\Product\Product;
 use yii\base\Model;
@@ -40,19 +41,32 @@ class ProductSearch extends Product
     }
 
     /**
+     * @return array
+     */
+    public function getProductsId()
+    {
+        if ($this->streamSession->sessionId) {
+            return StreamSessionProductEvent::find()
+                ->select(['`productId`'])
+                ->byStreamSessionId($this->streamSession->id)
+                ->byProductTypes()
+                ->distinct()
+                ->column();
+        }
+
+        return StreamSessionProduct::find()
+            ->select(['`productId`'])
+            ->byStreamSessionId($this->streamSession->id)
+            ->column();
+    }
+
+    /**
      * @return ActiveDataProvider
      */
     public function search()
     {
-        $productsId = StreamSessionProductEvent::find()
-            ->select(['`productId`'])
-            ->byStreamSessionId($this->streamSession->id)
-            ->byProductTypes()
-            ->distinct()
-            ->column();
-
         return new ActiveDataProvider([
-            'query' => Product::find()->byId($productsId),
+            'query' => Product::find()->byId($this->getProductsId()),
         ]);
     }
 }
