@@ -107,13 +107,13 @@ class UploadRecordedShowForm extends Model
      */
     public function validateFileFromUrl($attribute)
     {
-        // phpcs:disable
         $ch = curl_init($this->$attribute);
         curl_setopt($ch, CURLOPT_NOBODY, true);
+        // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         curl_exec($ch);
+        // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $info = curl_getinfo($ch);
         curl_close($ch);
-        // phpcs:enable
 
         $errorsList = Yii::createObject(ErrorListInterface::class);
         if (!isset($info['http_code']) || $info['http_code'] !== self::RESPONSE_CODE_SUCCESS) {
@@ -127,13 +127,13 @@ class UploadRecordedShowForm extends Model
         }
         if (!isset($info['download_content_length'])
             || ($info['download_content_length'] > Yii::$app->params['maxUploadVideoSize'])) {
-            // phpcs:disable
+            // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
             $this->addError($attribute, $errorsList->createErrorMessage(ErrorList::FILE_TOO_BIG)
                 ->setParams([
                     'file' => basename($this->$attribute),
                     'formattedLimit' => Yii::$app->params['maxUploadVideoSize'],
                 ]));
-            // phpcs:enable
+            // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         }
     }
 
@@ -189,7 +189,9 @@ class UploadRecordedShowForm extends Model
                 $transaction->rollBack();
                 return false;
             }
-            $this->setFileFromUrl();
+            if ($this->isLink()) {
+                $this->setFileFromUrl();
+            }
             if (!$this->uploadFile()) {
                 $attribute = $this->isLink() ? 'directUrl' : 'file';
                 $errorsList = Yii::createObject(ErrorListInterface::class);
@@ -210,20 +212,11 @@ class UploadRecordedShowForm extends Model
      */
     public function setFileFromUrl(): bool
     {
-        if (!$this->isLink()) {
-            return false;
-        }
-        // phpcs:disable
+        // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $fileName = basename($this->directUrl);
         $tempFile = tmpfile();
-        $fileContent = file_get_contents($this->directUrl);
-        // phpcs:enable
-        if (!$fileContent) {
-            return false;
-        }
-        // phpcs:disable
-        fwrite($tempFile, $fileContent);
-        // phpcs:enable
+        fwrite($tempFile, file_get_contents($this->directUrl));
+        // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $metaData = stream_get_meta_data($tempFile);
         if (!isset($metaData['uri'])) {
             return false;
@@ -232,10 +225,10 @@ class UploadRecordedShowForm extends Model
         $this->file = new UploadedFile([
             'name' => $fileName,
             'tempName' => $metaData['uri'],
-            // phpcs:disable
+            // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
             'size' => filesize($metaData['uri']),
             'type' => mime_content_type($metaData['uri']),
-            // phpcs:enable
+            // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
             'tempResource' => $tempFile,
         ]);
         return true;

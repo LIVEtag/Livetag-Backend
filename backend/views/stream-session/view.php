@@ -194,6 +194,17 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 }
                             ],
                             [
+                                'label' => 'Recorded video link',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    $archiveUrl = $model->archive ? $model->archive->getUrl() : null;
+                                    if (!$archiveUrl) {
+                                        return null;
+                                    }
+                                    return Html::a($archiveUrl, $archiveUrl, ['target'=>'_blank']);
+                                }
+                            ],
+                            [
                                 'label'=>'Integration Snippet',
                                 'format' => 'raw',
                                 'value' => function () use ($snippet) {
