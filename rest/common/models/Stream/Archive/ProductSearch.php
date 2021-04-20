@@ -45,8 +45,7 @@ class ProductSearch extends Product
      */
     public function getProductsId()
     {
-        $archive = $this->streamSession->archive;
-        if ($archive && $archive->externalId) {
+        if ($this->streamSession->sessionId) {
             return StreamSessionProductEvent::find()
                 ->select(['`productId`'])
                 ->byStreamSessionId($this->streamSession->id)
