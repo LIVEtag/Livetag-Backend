@@ -10,7 +10,7 @@ use yii\web\View;
 /* @var $model SaveAnnouncementForm */
 
 $this->title = Yii::t('app', 'Update'); //Update Stream Session: {nameAttribute}
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Stream Sessions'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->streamSession->id, 'url' => ['view', 'id' => $model->streamSession->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>

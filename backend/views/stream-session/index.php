@@ -30,6 +30,7 @@ $user = Yii::$app->user->identity ?? null;
                 <div class="box-header">
                     <?php if ($user && $user->isSeller) : ?>
                         <?= Html::a(Yii::t('app', 'Create show'), ['create'], ['class' => 'btn bg-black']) ?>
+                        <?= Html::a(Yii::t('app', 'Upload recorded show'), ['upload-recorded-show'], ['class' => 'btn btn-primary']) ?>
                     <?php endif; ?>
                 </div>
                 <!--/.box-header -->

@@ -26,7 +26,7 @@ use yii\widgets\DetailView;
 /* @var $isPosted bool */
 
 $this->title = 'Livestream details #' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestream'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 /** @var User $user */
@@ -191,6 +191,17 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'label' => 'Duration',
                                 'value' => function (StreamSession $model) {
                                     return $model->getActualDuration();
+                                }
+                            ],
+                            [
+                                'label' => 'Recorded video link',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    $archiveUrl = $model->archive ? $model->archive->getUrl() : null;
+                                    if (!$archiveUrl) {
+                                        return null;
+                                    }
+                                    return Html::a($archiveUrl, $archiveUrl, ['target'=>'_blank']);
                                 }
                             ],
                             [
