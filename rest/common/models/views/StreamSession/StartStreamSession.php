@@ -85,6 +85,10 @@ class StartStreamSession extends Model
             throw new BadRequestHttpException('This translation already started');
         }
 
+        if (StreamSession::getCurrent($this->streamSession->shopId)) {
+            throw new BadRequestHttpException(ErrorList::errorTextByCode(ErrorList::STREAM_IN_PROGRESS));
+        }
+
         if (!$this->isStartTimeCorrect()) {
             throw new BadRequestHttpException(ErrorList::errorTextByCode(ErrorList::START_WITH_FIFTEEN_MINUTES));
         }
