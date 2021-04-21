@@ -192,12 +192,11 @@ class SaveAnnouncementForm extends Model
             $this->addErrors($media->getErrors());
             return false;
         }
-
+        $this->streamSession->populateRelation(StreamSession::REL_STREAM_SESSION_COVER, $media);
         // delete old cover(if exist)
         if ($oldCover) {
             $oldCover->delete();
         }
-
 
         return true;
     }

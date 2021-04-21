@@ -295,10 +295,15 @@ class StreamSessionController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $transaction = Yii::$app->db->beginTransaction();
         if ($cover->delete() === false) {
             Yii::$app->session->setFlash('error', 'Failed to remove cover image.');
+            $transaction->rollBack();
             return $this->redirect(['view', 'id' => $model->id]);
         }
+        $model->populateRelation(StreamSession::REL_STREAM_SESSION_COVER, null);
+        $model->save(false, []);//update model to fire update event (after transaction commit)
+        $transaction->commit();
 
         Yii::$app->session->setFlash('success', Yii::t('app', 'The cover image was removed.'));
         return $this->redirect(['view', 'id' => $model->id]);
