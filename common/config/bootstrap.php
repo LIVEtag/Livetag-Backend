@@ -11,11 +11,16 @@ if (file_exists(__DIR__ . '/../../.env')) {
     $dotenv->load();
     //minimum project execution requirements
     $dotenv->required([
+        'ENV',
         'DB_HOST',
         'DB_NAME',
         'DB_USERNAME',
         'DB_PASSWORD',
-        'SUPPORT_EMAIL'//required for tests
+        'SUPPORT_EMAIL',//required for tests
+        'VONAGE_API_KEY',
+        'VONAGE_API_SECRET',
     ])
     ->notEmpty();
 }
+
+defined('ENV') or define('ENV', getenv('ENV'));
