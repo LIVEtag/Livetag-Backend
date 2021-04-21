@@ -52,5 +52,10 @@ return [
         'shopId' => ShopFixture::SHOP_2,
         'status' => StreamSession::STATUS_ARCHIVED,
         'isPublished' => true,
+        'createdAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT - 60 * 60,
+        'announcedAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT,
+        'duration' => StreamSession::DEFAULT_DURATION,
+        'startedAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT,
+        'stoppedAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT + 3 * 60 * 60,
     ],
 ];

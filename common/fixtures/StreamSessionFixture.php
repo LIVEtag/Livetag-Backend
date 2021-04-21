@@ -22,6 +22,8 @@ class StreamSessionFixture extends ActiveFixture
     const STREAM_SESSION_6_SHOP_2_NEW_UNPUBLISHED = 6;
     const STREAM_SESSION_7_SHOP_2_ARCHIVED = 7;
 
+    const STREAM_SESSION_7_STARTED_AT = 1618749368;
+
     public $modelClass = StreamSession::class;
 
     /**
