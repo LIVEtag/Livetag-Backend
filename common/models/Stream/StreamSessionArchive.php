@@ -37,7 +37,9 @@ use yii\web\UploadedFile;
  */
 class StreamSessionArchive extends ActiveRecord implements MediaInterface
 {
-    use MediaTrait;
+    use MediaTrait {
+        getUrl as protected traitGetUrl;
+    }
 
     /** @see getStreamSession() */
     const REL_STREAM_SESSION = 'streamSession';
@@ -241,5 +243,34 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
             return false;
         }
         return parent::beforeDelete();
+    }
+
+    /**
+     * Get url fo resource
+     * Note: for archive use EMPTY preffix
+     * @return string
+     */
+    public function getUrl(): ?string
+    {
+        if ($this->externalId) {
+            return self::getUrlWIthoutPrefix($this->getPath());
+        }
+        return $this->traitGetUrl();
+    }
+
+    /**
+     * Get url without prefix (store it in variable, get url and restore original prefix)
+     * @param string $path
+     * @return string
+     */
+    public static function getUrlWIthoutPrefix($path)
+    {
+        /** @var AbstractAdapter $adapter */
+        $adapter = Yii::$app->fs->getAdapter();
+        $prefix = Yii::$app->fs->prefix; //save
+        $adapter->setPathPrefix(""); //for vonage archive - no preffix (other folder)
+        $url = $adapter->getClient()->getObjectUrl(Yii::$app->fs->bucket, $adapter->applyPathPrefix($path));
+        $adapter->setPathPrefix($prefix); //restore
+        return $url;
     }
 }

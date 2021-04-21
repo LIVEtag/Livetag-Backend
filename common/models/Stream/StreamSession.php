@@ -46,6 +46,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
  * @todo: The class StreamSession has 21 public methods. Consider refactoring StreamSession to keep number of public methods under 20.
+ * @todo: Rename sessionId -> externalId
  *
  * @property integer $id
  * @property string $name

@@ -185,6 +185,10 @@ dev:review:
 
     - ./vendor/bin/dep gitlab:deploy
     - ./vendor/bin/dep deploy:fixtures
+
+    - echo "Run supervisor"
+    - supervisord -c /var/www/html/supervisord.conf
+
     - apache2-foreground
   except:
     - master
@@ -269,6 +273,10 @@ test:review:
 
     - ./vendor/bin/dep gitlab:deploy
     - ./vendor/bin/dep deploy:fixtures
+
+    - echo "Run supervisor"
+    - supervisord -c /var/www/html/supervisord.conf
+
     - apache2-foreground
   except:
     - master
@@ -352,6 +360,10 @@ live:review:
 
     - composer install --no-interaction --optimize-autoloader --no-progress --no-dev
     - ./vendor/bin/dep gitlab:deploy
+
+    - echo "Run supervisor"
+    - supervisord -c /var/www/html/supervisord.conf
+
     - apache2-foreground
   only:
     - master

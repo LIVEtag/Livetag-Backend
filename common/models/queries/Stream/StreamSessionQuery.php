@@ -36,6 +36,15 @@ class StreamSessionQuery extends ActiveQuery
     }
 
     /**
+     * @param string $externalId
+     * @return $this
+     */
+    public function byExternalId(string $externalId): self
+    {
+        return $this->andWhere([$this->getFieldName('sessionId') => $externalId]);
+    }
+
+    /**
      * Return session with active status
      *
      * @return $this

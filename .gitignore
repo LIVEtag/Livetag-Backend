@@ -39,3 +39,5 @@ npm-debug.log
 /.htaccess
 
 /.php_cs.cache
+
+/common/queue-general/
