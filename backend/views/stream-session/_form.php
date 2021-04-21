@@ -96,7 +96,7 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <div class="form-group">
-                        <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'btn bg-black']) ?>
+                        <?= Html::a(Yii::t('app', 'Cancel'), ['index'], ['class' => 'btn bg-black']) ?>
                         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>
