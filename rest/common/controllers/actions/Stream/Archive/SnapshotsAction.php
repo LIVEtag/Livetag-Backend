@@ -75,16 +75,17 @@ class SnapshotsAction extends Action
         /** @var StreamSessionProductEvent $event */
         foreach ($query->each() as $event) {
             $timestamp = $event->createdAt - $streamSession->startedAt;
-            $productsById[$event->productId] = [
-                'productId' => $event->productId,
-                'status' => $event->payload['status'] ?? null,
-            ];
+            if ($event->type !== StreamSessionProductEvent::TYPE_PRODUCT_DELETE) {
+                $productsById[$event->productId] = [
+                    'productId' => $event->productId,
+                    'status' => $event->payload['status'] ?? null,
+                ];
+            } elseif (!empty($productsById[$event->productId])) {
+                unset($productsById[$event->productId]);
+            }
 
             if (isset($snapshots[$i]['timestamp']) && ($snapshots[$i]['timestamp'] != $timestamp)) {
                 $i++;
-            }
-            if ($event->type === StreamSessionProductEvent::TYPE_PRODUCT_DELETE) {
-                unset($productsById[$event->productId]);
             }
 
             $snapshots[$i]['timestamp'] = $timestamp;
