@@ -51,8 +51,8 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(Shop::class, Shop::EVENT_BEFORE_DELETE, [Yii::createObject(DeleteShopObserver::class), 'execute']);
 
         # Stream Session Events
-        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
-        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
+        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
+        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_END_SOON, [Yii::createObject(EndSoonStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, [
             Yii::createObject(SubscriberTokenCreatedObserver::class),

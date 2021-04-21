@@ -10,6 +10,7 @@ namespace common\models\Stream;
 use common\components\behaviors\TimestampBehavior;
 use common\components\centrifugo\channels\ShopChannel;
 use common\components\centrifugo\Message;
+use common\components\db\BaseActiveRecord;
 use common\components\EventDispatcher;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
@@ -32,7 +33,6 @@ use OpenTok\Role;
 use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
@@ -74,13 +74,13 @@ use yii\web\UnprocessableEntityHttpException;
  * @property-read StreamSessionStatistic $streamSessionStatistic
  *
  * EVENTS:
- * - EVENT_AFTER_INSERT
- * - EVENT_AFTER_UPDATE
+ * - EVENT_AFTER_COMMIT_INSERT
+ * - EVENT_AFTER_COMMIT_UPDATE
  * - EVENT_END_SOON
  * - EVENT_SUBSCRIBER_TOKEN_CREATED
  * @see EventDispatcher
  */
-class StreamSession extends ActiveRecord implements StreamSessionInterface
+class StreamSession extends BaseActiveRecord implements StreamSessionInterface
 {
     /** @see getShop() */
     const REL_SHOP = 'shop';
