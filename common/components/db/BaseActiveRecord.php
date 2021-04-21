@@ -74,7 +74,7 @@ class BaseActiveRecord extends ActiveRecord
      */
     public function afterCommit($insert, $changedAttributes)
     {
-        $this->trigger($insert ? self::EVENT_COMMIT_AFTER_INSERT : self::EVENT_AFTER_COMMIT_UPDATE, new AfterCommitEvent([
+        $this->trigger($insert ? self::EVENT_AFTER_COMMIT_INSERT : self::EVENT_AFTER_COMMIT_UPDATE, new AfterCommitEvent([
             'changedAttributes' => $changedAttributes,
         ]));
     }
