@@ -22,20 +22,31 @@ $this->params['breadcrumbs'][] = $this->title;
 $js = /** @lang JavaScript */
     <<<SCRP
     $('#uploadrecordedshowform-type-link').on('click', function() {
-        if ($(this).is(':checked')) {
-            $('#uploadrecordedshowform-directurl').prop('disabled', false);
-            $('#uploadrecordedshowform-file').fileinput('lock').fileinput('refresh');
-        }
+        checkDirectUrl();
     });
 
     $('#uploadrecordedshowform-type-upload').on('click', function() {
-        if ($(this).is(':checked')) {
+        checkFileInput();
+    });
+    
+    function checkDirectUrl() {
+        if ($('#uploadrecordedshowform-type-link').is(':checked')) {
+            $('#uploadrecordedshowform-directurl').prop('disabled', false);
+            $('#uploadrecordedshowform-file').fileinput('lock').fileinput('refresh');
+        }
+    }
+    
+    function checkFileInput() {
+        if ($('#uploadrecordedshowform-type-upload').is(':checked')) {
             var directurlInput = $('#uploadrecordedshowform-directurl');
             directurlInput.val('');
             directurlInput.prop('disabled', true);
             $('#uploadrecordedshowform-file').fileinput('unlock').fileinput('refresh');
         }
-    });
+    }
+    
+    checkDirectUrl();
+    checkFileInput();
 SCRP;
 
 $this->registerJs($js);
