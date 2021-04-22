@@ -74,7 +74,7 @@ class UploadRecordedShowForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'productIds', 'shopId'], 'required'],
+            [['name', 'shopId'], 'required'],
             ['name', 'string', 'max' => StreamSession::MAX_NAME_LENGTH],
             ['uploadType', 'in', 'range' => self::UPLOAD_TYPES],
             [
