@@ -3,13 +3,13 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-
 use backend\assets\HighlightAsset;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
 use backend\models\Product\StreamSessionProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
+use common\models\Stream\StreamSessionArchive;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -48,13 +48,13 @@ if ($model->isPublished) {
     if ($model->isActive()) {
         $publishOptionsExtra = [
             'disabled' => 'disabled',
-            'title' =>  Yii::t('app', 'You cannot unpublish while Live Stream is active'),
+            'title' => Yii::t('app', 'You cannot unpublish while Live Stream is active'),
         ];
     }
     $publishOptions = array_merge([
         'id' => 'publication-link',
         'class' => 'btn btn-danger',
-    ], $publishOptionsExtra);
+        ], $publishOptionsExtra);
     $publishUrl = ['unpublish', 'id' => $model->id];
 }
 
@@ -85,19 +85,17 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
 ?>
 <section class="stream-session-view">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-7">
             <div class="box box-default">
                 <div class="box-header">
                     <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
                     <?php if ($user && $user->isSeller) : ?>
                         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-
                         <?= Html::a(
                             Yii::t('app', $model->isPublished ? 'Unpublish' : 'Publish'),
                             $publishUrl,
                             $publishOptions
                         ); ?>
-
                         <?php if ($model->isActive()) : ?>
                             <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
                                 'class' => 'btn btn-danger',
@@ -137,7 +135,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     $action = Url::to(['/stream-session/delete-cover-image', 'id' => $model->id]);
                                     return "<div class=\"shop-logo\">
                                                 <div class=\"shop-logo__trash\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default\" 
+                                                    <a type=\"button\" class=\"btn btn-sm btn-default\"
                                                         href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                         data-confirm=\"Are you sure to delete this item?\">
                                                         <i class=\"glyphicon glyphicon-trash\"></i>
@@ -194,18 +192,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 }
                             ],
                             [
-                                'label' => 'Recorded video link',
-                                'format' => 'raw',
-                                'value' => function ($model) {
-                                    $archiveUrl = $model->archive ? $model->archive->getUrl() : null;
-                                    if (!$archiveUrl) {
-                                        return null;
-                                    }
-                                    return Html::a($archiveUrl, $archiveUrl, ['target'=>'_blank']);
-                                }
-                            ],
-                            [
-                                'label'=>'Integration Snippet',
+                                'label' => 'Integration Snippet',
                                 'format' => 'raw',
                                 'value' => function () use ($snippet) {
                                     return '<pre><code class="language-html">' . $snippet . '</code></pre>';
@@ -213,6 +200,61 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             ]
                         ],
                     ]); ?>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer"></div>
+                <!--/.box-footer -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-5">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h4 class="box-title pull-right">Livestream record</h4>
+                </div>
+                <!--/.box-header -->
+                <div class="box-body">
+                    <?php if ($model->archive) : ?>
+                        <?= DetailView::widget([
+                            'model' => $model->archive,
+                            'attributes' => [
+                                'id',
+                                [
+                                    'attribute' => 'status',
+                                    'value' => function (StreamSessionArchive $model) {
+                                        return $model->getStatusName();
+                                    },
+                                ],
+                                'createdAt:datetime',
+                                'updatedAt:datetime',
+                                [
+                                    'label' => 'Recorded video link',
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        $url = $model->getUrl();
+                                        if (!$url) {
+                                            return null;
+                                        }
+                                        return Html::a($url, $url, ['target' => '_blank']);
+                                    }
+                                ],
+                                [
+                                    'label' => 'Playlist link',
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        $url = $model->getPlaylistUrl();
+                                        if (!$url) {
+                                            return null;
+                                        }
+                                        return Html::a($url, $url, ['target' => '_blank']);
+                                    }
+                                ]
+                            ],
+                        ]); ?>
+                    <?php else : ?>
+                        <p>Record not available</p>
+                    <?php endif; ?>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer"></div>
@@ -249,7 +291,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'commentModel' => $commentModel,
                         ]); ?>
                         <?php if ($model->isActive()) : ?>
-                        <!--Display comment form only for active session-->
+                            <!--Display comment form only for active session-->
                             <?= $this->render('comment-form', [
                                 'commentModel' => $commentModel,
                                 'streamSessionId' => $model->id,

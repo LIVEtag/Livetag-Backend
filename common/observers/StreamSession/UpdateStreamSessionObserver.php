@@ -11,12 +11,11 @@ use common\components\centrifugo\Message;
 use common\components\db\AfterCommitEvent;
 use common\models\Stream\StreamSession;
 use RuntimeException;
-use yii\base\Event;
 
 class UpdateStreamSessionObserver
 {
     /**
-     * @param Event $event
+     * @param AfterCommitEvent $event
      * @throws RuntimeException
      */
     public function execute(AfterCommitEvent $event)

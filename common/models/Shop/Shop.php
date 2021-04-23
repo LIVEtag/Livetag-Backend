@@ -11,6 +11,7 @@ use common\components\behaviors\TimestampBehavior;
 use common\components\EventDispatcher;
 use common\components\FileSystem\FileResourceInterface;
 use common\components\FileSystem\FileResourceTrait;
+use common\helpers\FileHelper;
 use common\models\Product\Product;
 use common\models\queries\Shop\ShopQuery;
 use common\models\Stream\StreamSession;
@@ -248,7 +249,7 @@ class Shop extends ActiveRecord implements FileResourceInterface
     public function afterSave($insert, $changedAttributes)
     {
         if (isset($changedAttributes['logo'])) {
-            self::deleteFileByPath($changedAttributes['logo']);
+            FileHelper::deleteFileByPath($changedAttributes['logo']);
         }
         parent::afterSave($insert, $changedAttributes);
     }

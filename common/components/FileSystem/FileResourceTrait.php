@@ -7,12 +7,9 @@ declare(strict_types=1);
 
 namespace common\components\FileSystem;
 
+use common\helpers\FileHelper;
 use common\helpers\LogHelper;
-use League\Flysystem\Adapter\AbstractAdapter;
-use League\Flysystem\FileNotFoundException;
 use Throwable;
-use Yii;
-use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -71,20 +68,14 @@ trait FileResourceTrait
             return false;
         }
 
-        $sourceExtension = self::prepareSourceExtension($file->getExtension(), $file->tempName);
-        $path = self::genUniqPath($this->getRelativePath(), $sourceExtension);
         try {
-            Yii::$app->fs->writeStream($path, $stream);
+            $path = FileHelper::uploadFileToPath($file->tempName, $this->getRelativePath());
             $this->setPath($path); //set successfully saved path to model
             return true;
         } catch (Throwable $ex) {
             $this->addError(self::getFileFieldName(), 'Failed to upload file:' . $ex->getMessage());
             LogHelper::error('Failed to upload file', 'file', LogHelper::extraForException($this, $ex));
             return false;
-        } finally {
-            if (is_resource($stream)) {
-                fclose($stream);
-            }
         }
     }
 
@@ -97,9 +88,7 @@ trait FileResourceTrait
         if (!$this->getPath()) {
             return null;
         }
-        /** @var AbstractAdapter $adapter */
-        $adapter = Yii::$app->fs->getAdapter();
-        return $adapter->getClient()->getObjectUrl(Yii::$app->fs->bucket, $adapter->applyPathPrefix($this->getPath()));
+        return FileHelper::getUrlByPath($this->getPath());
     }
 
     /**
@@ -111,7 +100,7 @@ trait FileResourceTrait
             $this->addError(self::getPathFieldName(), 'Failed to remove file');
             return false;
         }
-        if (!self::deleteFileByPath($this->getPath())) {
+        if (!FileHelper::deleteFileByPath($this->getPath())) {
             $this->addError(self::getPathFieldName(), 'Failed to remove file');
             return false;
         }
@@ -152,54 +141,5 @@ trait FileResourceTrait
     {
         $pathField = self::getPathFieldName();
         $this->$pathField = $value;
-    }
-
-    /**
-     * Delete file from s3 by path (todo: move to helper or other class)
-     * @param string $path
-     * @return bool
-     */
-    public static function deleteFileByPath($path): bool
-    {
-        try {
-            return Yii::$app->fs->delete($path);
-        } catch (FileNotFoundException $ex) {
-            LogHelper::warning('Failed to remove file (already removed)', 'file', ['error' => $ex->getMessage(), 'trace' => $ex->getTraceAsString()]);
-            return true; //file already not exist
-        } catch (Throwable $ex) {
-            LogHelper::error('Failed to remove file', 'file', ['error' => $ex->getMessage(), 'trace' => $ex->getTraceAsString()]);
-            return false;
-        }
-    }
-
-    /**
-     * Generate unique path in storage  (todo: move to helper or other class)
-     * @param string $relativePath
-     * @param string $extension
-     * @return string
-     */
-    public static function genUniqPath(string $relativePath, string $extension)
-    {
-        $uniqId = str_replace('.', '', uniqid('', true));
-        return "{$relativePath}/{$uniqId}.{$extension}";
-    }
-
-    /**
-     * Get file extention. If file do not have it -> extract from mime type (todo: move to helper or other class)
-     * @param string|null $extension
-     * @param string $sourcePath
-     * @return string|null
-     */
-    public static function prepareSourceExtension(?string $extension, $sourcePath)
-    {
-        $sourceExtension = $extension ?? pathinfo($sourcePath, PATHINFO_EXTENSION);
-        if (!$sourceExtension) {
-            $mimeType = FileHelper::getMimeType($sourcePath);
-            $extensions = FileHelper::getExtensionsByMimeType($mimeType);
-            if (!empty($extensions)) {
-                $sourceExtension = end($extensions);
-            }
-        }
-        return $sourceExtension;
     }
 }

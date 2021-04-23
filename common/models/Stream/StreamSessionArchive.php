@@ -3,19 +3,21 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace common\models\Stream;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\db\BaseActiveRecord;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
+use common\helpers\FileHelper;
 use common\models\queries\Stream\StreamSessionArchiveQuery;
 use League\Flysystem\Adapter\AbstractAdapter;
 use Yii;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -35,11 +37,14 @@ use yii\web\UploadedFile;
  *
  * @property-read StreamSession $streamSession
  */
-class StreamSessionArchive extends ActiveRecord implements MediaInterface
+class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
 {
-    use MediaTrait {
-        getUrl as protected traitGetUrl;
-    }
+    use MediaTrait;
+
+    const ATTR_EXTERNAL_ID = 'externalId';
+    const ATTR_PATH = 'path';
+    const ATTR_PLAYLIST = 'playlist';
+    const ATTR_STATUS = 'status';
 
     /** @see getStreamSession() */
     const REL_STREAM_SESSION = 'streamSession';
@@ -52,23 +57,29 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
     /**
      * The file is sent to create a playlist for playing
      */
-    const STATUS_PROCESSING = 2;
+    const STATUS_QUEUE = 2;
+
+    /**
+     * The file is processing now
+     */
+    const STATUS_PROCESSING = 3;
 
     /**
      * The file could not be processed for some reason
      */
-    const STATUS_FAILED = 3;
+    const STATUS_FAILED = 4;
 
     /**
      * Playlist available
      */
-    const STATUS_READY = 4;
+    const STATUS_READY = 5;
 
     /**
      * Status Names
      */
     const STATUSES = [
         self::STATUS_NEW => 'New',
+        self::STATUS_QUEUE => 'In the queue for processing',
         self::STATUS_PROCESSING => 'Processing',
         self::STATUS_FAILED => 'Failed',
         self::STATUS_READY => 'Ready',
@@ -104,7 +115,7 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
         return [
             [['streamSessionId', 'path', 'originName', 'size', 'type'], 'required'],
             [['streamSessionId', 'status'], 'integer'],
-            ['size',  'integer', 'min' => 0],
+            ['size', 'integer', 'min' => 0],
             ['type', 'in', 'range' => self::getMediaTypes()],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
@@ -186,8 +197,85 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
         /** @var AbstractAdapter $adapter */
         $adapter = Yii::$app->fs->getAdapter();
         return $adapter
-            ->getClient()
-            ->getObjectUrl(Yii::$app->fs->bucket, $adapter->applyPathPrefix($this->getPlaylist()));
+                ->getClient()
+                ->getObjectUrl(Yii::$app->fs->bucket, $adapter->applyPathPrefix($this->getPlaylist()));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status ? (int) $this->status : null;
+    }
+
+    /**
+     * Get status display name
+     * @return string|null
+     */
+    public function getStatusName(): ?string
+    {
+        return ArrayHelper::getValue(self::STATUSES, $this->getStatus());
+    }
+
+    /**
+     * Check current archive is new
+     * @return bool
+     */
+    public function isNew(): bool
+    {
+        return $this->getStatus() === self::STATUS_NEW;
+    }
+
+    /**
+     * Check current archive is send in queue for processing
+     * @return bool
+     */
+    public function isInQueue(): bool
+    {
+        return $this->getStatus() === self::STATUS_QUEUE;
+    }
+
+    /**
+     * Set archive status in queue for processing
+     */
+    public function setInQueue()
+    {
+        $this->setAttribute(self::ATTR_STATUS, self::STATUS_QUEUE);
+    }
+
+    /**
+     * Check current archive is processing
+     * @return bool
+     */
+    public function isProcessing(): bool
+    {
+        return $this->getStatus() === self::STATUS_PROCESSING;
+    }
+
+    /**
+     * Set archive status processing
+     */
+    public function setProcessing()
+    {
+        $this->setAttribute(self::ATTR_STATUS, self::STATUS_PROCESSING);
+    }
+
+    /**
+     * Check current archive is failed
+     * @return bool
+     */
+    public function isFailed(): bool
+    {
+        return $this->getStatus() === self::STATUS_FAILED;
+    }
+
+    /**
+     * Set archive status failed
+     */
+    public function setFailed()
+    {
+        $this->setAttribute(self::ATTR_STATUS, self::STATUS_FAILED);
     }
 
     /**
@@ -200,11 +288,11 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
     }
 
     /**
-     * @inheritdoc
+     * Set archive status ready
      */
-    public function getStatus(): ?int
+    public function setReady()
     {
-        return $this->status ? (int)$this->status : null;
+        $this->setAttribute(self::ATTR_STATUS, self::STATUS_READY);
     }
 
     /**
@@ -220,7 +308,7 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
      */
     public function getRelativePath(): string
     {
-        return 'stream-archive';
+        return 'stream-archive/' . ($this->streamSessionId ?: '0');
     }
 
     /**
@@ -239,38 +327,29 @@ class StreamSessionArchive extends ActiveRecord implements MediaInterface
      */
     public function beforeDelete()
     {
-        if (!$this->deleteFile()) {
+        if (!$this->deleteFile() || !$this->deletePlaylist()) {
             return false;
         }
         return parent::beforeDelete();
     }
 
     /**
-     * Get url fo resource
-     * Note: for archive use EMPTY preffix
-     * @return string
+     * All playlist files stored in separate folder
+     * Use `{id}-playlist` format
+     * For example `stream-archive/37/1-playlist/6082630a9b57c681084333.m3u8`
+     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
+     * @return bool
      */
-    public function getUrl(): ?string
+    public function deletePlaylist(): bool
     {
-        if ($this->externalId) {
-            return self::getUrlWIthoutPrefix($this->getPath());
+        if (!$this->playlist) {
+            return true;
         }
-        return $this->traitGetUrl();
-    }
-
-    /**
-     * Get url without prefix (store it in variable, get url and restore original prefix)
-     * @param string $path
-     * @return string
-     */
-    public static function getUrlWIthoutPrefix($path)
-    {
-        /** @var AbstractAdapter $adapter */
-        $adapter = Yii::$app->fs->getAdapter();
-        $prefix = Yii::$app->fs->prefix; //save
-        $adapter->setPathPrefix(""); //for vonage archive - no preffix (other folder)
-        $url = $adapter->getClient()->getObjectUrl(Yii::$app->fs->bucket, $adapter->applyPathPrefix($path));
-        $adapter->setPathPrefix($prefix); //restore
-        return $url;
+        $playlistDirectory = dirname($this->playlist) . '/';
+        if (!FileHelper::deleteDirByPath($playlistDirectory)) {
+            $this->addError(self::getPathFieldName(), 'Failed to remove playlist files');
+            return false;
+        }
+        return true;
     }
 }

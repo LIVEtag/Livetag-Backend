@@ -70,7 +70,7 @@ return [
             [
                 'class' => SqsQueue::class,
                 'url' => 'https://sqs.' . (getenv('AMAZON_SQS_REGION') ?: 'ap-southeast-1') . '.amazonaws.com/'
-                        . getenv('AMAZON_ACCOUNT') . '/' . ENV  . '-'. getenv('AMAZON_SQS_GENERAL') ?: 'general',
+                        . getenv('AMAZON_ACCOUNT') . '/' . ENV  . '-'. (getenv('AMAZON_SQS_GENERAL') ?: 'general'),
                 'key' => getenv('AMAZON_ACCESS_KEY') ?: '',
                 'secret' => getenv('AMAZON_SECRET_KEY') ?: '',
                 'region' => getenv('AMAZON_SQS_REGION') ?: 'ap-southeast-1',
