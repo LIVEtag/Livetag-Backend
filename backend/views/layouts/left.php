@@ -59,13 +59,6 @@ $user = Yii::$app->user->identity ?? null;
                     'url' => ['/site/login'],
                     'visible' => Yii::$app->user->isGuest
                 ],
-                [
-                    'label' => 'Logout',
-                    'icon' => 'sign-out',
-                    'url' => ['/site/logout'],
-                    'template' => '<a href="{url}" data-method="post">{icon} {label}</a>',
-                    'visible' => !Yii::$app->user->isGuest
-                ],
             ],
         ]); ?>
     </section>
