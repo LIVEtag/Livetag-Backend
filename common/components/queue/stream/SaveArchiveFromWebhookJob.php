@@ -1,12 +1,22 @@
 <?php
+/*
+ * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+declare(strict_types=1);
 
 namespace common\components\queue\stream;
 
 use common\components\FileSystem\media\MediaTypeEnum;
+use common\exception\FfmpegException;
 use common\exception\RetryJobException;
+use common\helpers\FileHelper;
 use common\helpers\LogHelper;
 use common\models\Stream\StreamSession;
 use common\models\Stream\StreamSessionArchive;
+use Exception;
+use League\Flysystem\Adapter\AbstractAdapter;
+use Throwable;
 use Yii;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
@@ -15,7 +25,8 @@ use yii\queue\JobInterface;
 use yii\queue\RetryableJobInterface;
 
 /**
- * Create Entity and generate psoter
+ * Save archive in database
+ * phpcs:disable PHPCS_SecurityAudit.BadFunctions
  * Class CreateVideoFromWebhookJob
  */
 class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, RetryableJobInterface
@@ -120,11 +131,11 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
 
         //4. Get file url/path
         // Note: Assumption that archive in same S3 bucket, as manualy uploaded files
-        $path = $this->getArchivePath($this->apiKey, $this->archiveId);
-        $url = StreamSessionArchive::getUrlWIthoutPrefix($path);
+        $originalPath = $this->getArchivePath($this->apiKey, $this->archiveId);
+        $url = FileHelper::getUrlWIthoutPrefix($originalPath);
         // in some cases, the video is not immediately accessible via the link (presumably does not have time to load from the toxbox to s3)
         // check video exist (if not - re-create job with delay)
-        if (!self::checkUrl($url)) {
+        if (!FileHelper::fileFromUrlExists($url)) {
             $message = 'Video file not exist';
             LogHelper::error(
                 $message,
@@ -135,11 +146,30 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
             throw new RetryJobException($message);
         }
 
-        // 5. Create entity and populate params
-        $archive = new StreamSessionArchive();
+        //5. Create entity (required to receive relative path)
+        $archive = new StreamSessionArchive(['streamSessionId' => $streamSession->getId()]);
+
+        //6. Move video to project folder and rotate if required
+        try {
+            $path = $this->moveAndRotateVideo($originalPath, $url, $streamSession->rotate, $archive->getRelativePath());
+        } catch (Throwable $ex) {
+            $extra = LogHelper::extraForException($streamSession, $ex);
+            if ($ex instanceof FfmpegException) {
+                $extra['command'] = $ex->getCommand();
+                $extra['ffmpegErrors'] = $ex->getFfmpegErros();
+            }
+            LogHelper::error(
+                'Failed to rotate video',
+                self::LOG_CATEGORY,
+                $extra,
+                [LogHelper::TAG_STREAM_SESSION_ID => $streamSession->id]
+            );
+            return;
+        }
+
+        // 7. Populate params
         $archive->setAttributes([
             'externalId' => $this->archiveId,
-            'streamSessionId' => $streamSession->getId(),
             'path' => $path,
             'type' => MediaTypeEnum::TYPE_VIDEO,
             'status' => StreamSessionArchive::STATUS_NEW,
@@ -147,7 +177,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
             'size' => $this->size,
         ]);
 
-        // 6. Try to save Archive entity
+        //8. Try to save Archive entity
         if (!$archive->save()) {
             LogHelper::error(
                 'Failed to save Archive',
@@ -169,8 +199,20 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
                 'model' => Json::encode($archive->toArray(), JSON_PRETTY_PRINT),
                 'webhook' => $this->data
             ],
-            [LogHelper::TAG_STREAM_SESSION_ID => $streamSession->id]
+            [
+                LogHelper::TAG_STREAM_SESSION_ID => $streamSession->id,
+                LogHelper::TAG_ARCHIVE_ID => $archive->id
+            ]
         );
+
+        //Create job to create platlist
+        $job = new CreatePlaylistJob();
+        $job->id = $archive->id;
+        Yii::$app->queue->push($job);
+
+        //set in queue
+        $archive->setInQueue();
+        $archive->save(false, ['status', 'updatedAt']);
     }
 
     /**
@@ -181,15 +223,6 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
     public function getArchivePath($projectId, $id)
     {
         return $projectId . '/' . $id . '/' . self::ARCHIVE_NAME;
-    }
-
-    /**
-     * Check S3 file status
-     */
-    public static function checkUrl($url)
-    {
-        $headers = get_headers($url);
-        return (substr($headers[0], 9, 3) === '200');
     }
 
     /**
@@ -215,12 +248,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
     {
         $this->size = ArrayHelper::getValue($this->data, self::WEBHOOK_FIELD_SIZE);
         if (!$this->size) {
-            LogHelper::error(
-                'Archive has zero size',
-                self::LOG_CATEGORY,
-                $this->data,
-                [LogHelper::TAG_STREAM_SESSION_ID => $this->streamSession->id]
-            );
+            LogHelper::error('Archive has zero size', self::LOG_CATEGORY, $this->data);
             return false;
         }
         return true;
@@ -258,5 +286,69 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
     {
         $this->vonageSessionId = ArrayHelper::getValue($this->data, self::WEBHOOK_FIELD_SESSION_ID);
         return !!$this->vonageSessionId;
+    }
+
+    /**
+     * Moove video to project preffix folder
+     * If rotation required - rotate and save new file. Remove old file.
+     *
+     *
+     * @param string $path s3 path of file
+     * @param string $url full url of video
+     * @param string $rotate rotation angle (clockwise)
+     * @param string $relativePath relative path to save rotated version of video
+     * @return string
+     * @throws FfmpegException
+     */
+    protected function moveAndRotateVideo($path, $url, $rotate, $relativePath): string
+    {
+        if ($rotate) {
+            $ffmpeg = Yii::$app->params['ffmpeg'];
+            $tmpVideoPath = Yii::getAlias('@runtime/' . uniqid() . '_' . time() . '.mp4');
+            $errors = [];
+            $cmd = $ffmpeg . ' -i ' . $url . ' -map_metadata 0 -metadata:s:v rotate="-' . $rotate . '" -threads 4 '
+                . '-codec copy -acodec copy ' . $tmpVideoPath . ' -hide_banner -loglevel error 2>&1';
+            exec($cmd, $errors);
+            //very simple check: if file created - operation successful
+            if (!is_file($tmpVideoPath)) {
+                throw new FfmpegException('Failed to create m3u8 file', $cmd, $errors);
+            }
+            try {
+                // Upload file to s3
+                $newPath = FileHelper::uploadFileToPath($tmpVideoPath, $relativePath, 'mp4');
+                // Remove archive
+                FileHelper::deleteFileByPath($path);
+                return $newPath;
+            } finally {
+                @unlink($tmpVideoPath); //Remove temp files after s3 upload (or fail)
+            }
+        }
+        //if rotate is zero - simple move file to new location
+        return self::moveFromTokboxPreffix($path, $relativePath, 'mp4');
+    }
+
+    /**
+     * Rename file (move to other relative path with random name)
+     * note: Vonage file outside default relative path
+     * @param string $path
+     * @param string $relativePath
+     * @param string $extention
+     * @return string
+     */
+    public static function moveFromTokboxPreffix(string $path, string $relativePath, string $extention): string
+    {
+        $newPath = FileHelper::genUniqPath($relativePath, $extention);
+        /** @var AbstractAdapter $adapter */
+        $adapter = Yii::$app->fs->getAdapter();
+        $prefix = Yii::$app->fs->prefix; //save
+        $adapter->setPathPrefix(""); //for vonage archive - no preffix (other folder)
+        try {
+            if (!Yii::$app->fs->rename($path, $prefix . '/' . $newPath)) {
+                throw new Exception('Failed to move file from path:' . $path);
+            }
+        } finally {
+            $adapter->setPathPrefix($prefix); //restore
+        }
+        return $newPath;
     }
 }

@@ -23,6 +23,15 @@ class StreamSessionArchiveQuery extends ActiveQuery
     }
 
     /**
+     * @param int|array $id
+     * @return $this
+     */
+    public function byId($id): self
+    {
+        return $this->andWhere([$this->getFieldName('id') => $id]);
+    }
+
+    /**
      * @param int|array $status
      * @return $this
      */
