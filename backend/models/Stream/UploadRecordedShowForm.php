@@ -41,23 +41,11 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
     /** @var string */
     public $uploadType;
 
-    /** @var string */
-    public $name;
-
-    /** @var int */
-    public $shopId;
-
     /** @var UploadedFile */
     public $videoFile;
 
     /** @var string|null */
     public $directUrl;
-
-    /** @var array */
-    public $productIds;
-
-    /** @var StreamSession */
-    public $streamSession;
 
     /**
      * @param StreamSession|null $streamSession
@@ -218,18 +206,6 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
             $transaction->rollBack();
             throw $ex;
         }
-    }
-
-    /**
-     * Upload image file to s3
-     * @return boolean
-     */
-    protected function uploadCover(): bool
-    {
-        if ($this->file instanceof UploadedFile && !$this->uploadFile($this->file)) {
-            return false;
-        }
-        return true;
     }
 
     /**
