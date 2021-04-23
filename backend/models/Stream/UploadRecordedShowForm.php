@@ -10,16 +10,16 @@ namespace backend\models\Stream;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
 use common\models\Stream\StreamSessionArchive;
+use common\models\Stream\StreamSessionCover;
 use Throwable;
 use Yii;
-use yii\base\Model;
 use yii\web\UploadedFile;
 
 /**
  * Class UploadRecordedShowForm
  * @package backend\models\Stream
  */
-class UploadRecordedShowForm extends Model
+class UploadRecordedShowForm extends SaveAnnouncementForm
 {
     /**
      * To add url link to the video
@@ -41,31 +41,20 @@ class UploadRecordedShowForm extends Model
     /** @var string */
     public $uploadType;
 
-    /** @var string */
-    public $name;
-
-    /** @var int */
-    public $shopId;
-
     /** @var UploadedFile */
-    public $file;
+    public $videoFile;
 
     /** @var string|null */
     public $directUrl;
 
-    /** @var array */
-    public $productIds;
-
-    /** @var StreamSession */
-    public $streamSession;
-
     /**
+     * @param StreamSession|null $streamSession
      * @param array $config
      */
-    public function __construct($config = array())
+    public function __construct(StreamSession $streamSession = null, $config = array())
     {
-        $this->streamSession = new StreamSession(['status' => StreamSession::STATUS_STOPPED]);
-        parent::__construct($config);
+        $this->streamSession = $streamSession ?: new StreamSession(['status' => StreamSession::STATUS_STOPPED]);
+        parent::__construct($this->streamSession, $config);
     }
 
     /**
@@ -89,14 +78,20 @@ class UploadRecordedShowForm extends Model
             }],
             ['directUrl', 'url', 'defaultScheme' => 'https'],
             ['directUrl', 'validateFileFromUrl'],
-            ['file', 'required', 'when' => function () {
+            ['videoFile', 'required', 'when' => function () {
                 return $this->isUpload();
             }],
             [
-                'file',
+                'videoFile',
                 'file',
                 'mimeTypes' => StreamSessionArchive::getMimeTypes(),
                 'maxSize' => Yii::$app->params['maxUploadVideoSize'],
+            ],
+            [
+                'file',
+                'file',
+                'mimeTypes' => StreamSessionCover::getMimeTypes(),
+                'maxSize' => Yii::$app->params['maxUploadImageSize'],
             ],
         ];
     }
@@ -144,9 +139,10 @@ class UploadRecordedShowForm extends Model
     {
         return [
             'name' => Yii::t('app', 'Name of livestream'),
-            'file' => Yii::t('app', 'File'),
+            'videoFile' => Yii::t('app', 'File'),
             'directUrl' => Yii::t('app', 'Direct URL link'),
             'productIds' => Yii::t('app', 'Products'),
+            'file' => Yii::t('app', 'Photo (cover image)'),
         ];
     }
 
@@ -192,10 +188,15 @@ class UploadRecordedShowForm extends Model
             if ($this->isLink()) {
                 $this->setFileFromUrl();
             }
-            if (!$this->uploadFile()) {
-                $attribute = $this->isLink() ? 'directUrl' : 'file';
+            if (!$this->uploadVideoFile()) {
+                $attribute = $this->isLink() ? 'directUrl' : 'videoFile';
                 $errorsList = Yii::createObject(ErrorListInterface::class);
                 $this->addError($attribute, $errorsList->createErrorMessage(ErrorList::FILE_INVALID));
+                $transaction->rollBack();
+                return false;
+            }
+
+            if (!$this->uploadCover()) {
                 $transaction->rollBack();
                 return false;
             }
@@ -210,7 +211,7 @@ class UploadRecordedShowForm extends Model
     /**
      * @return bool
      */
-    public function setFileFromUrl(): bool
+    protected function setFileFromUrl(): bool
     {
         // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $fileName = basename($this->directUrl);
@@ -228,7 +229,7 @@ class UploadRecordedShowForm extends Model
         // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         curl_close($ch);
 
-        $this->file = new UploadedFile([
+        $this->videoFile = new UploadedFile([
             'name' => $fileName,
             'tempName' => $metaData['uri'],
             // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
@@ -245,10 +246,10 @@ class UploadRecordedShowForm extends Model
      * @return bool
      * @throws Throwable
      */
-    private function uploadFile(): bool
+    protected function uploadVideoFile(): bool
     {
         $archive = new StreamSessionArchive();
-        $archive->setFile($this->file);
+        $archive->setFile($this->videoFile);
         if (!$archive->saveFile()) {
             return false;
         }

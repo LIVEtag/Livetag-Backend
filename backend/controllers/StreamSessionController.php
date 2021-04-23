@@ -172,6 +172,7 @@ class StreamSessionController extends Controller
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
         }
         if ($model->load($params)) {
+            $model->videoFile = UploadedFile::getInstance($model, 'videoFile');
             $model->file = UploadedFile::getInstance($model, 'file');
             if ($model->save()) {
                 return $this->redirect(['view', 'id' => $model->streamSession->id]);
