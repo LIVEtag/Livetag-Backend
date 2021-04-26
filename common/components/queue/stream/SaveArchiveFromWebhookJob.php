@@ -205,14 +205,18 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
             ]
         );
 
-        //Create job to create platlist
-        $job = new CreatePlaylistJob();
-        $job->id = $archive->id;
-        Yii::$app->queue->push($job);
-
-        //set in queue
-        $archive->setInQueue();
-        $archive->save(false, ['status', 'updatedAt']);
+        if (!$archive->sendToQueue()) {
+            LogHelper::error(
+                'Failed to send archive to processing queue',
+                self::LOG_CATEGORY,
+                [
+                    'model' => Json::encode($archive->toArray(), JSON_PRETTY_PRINT),
+                    'webhook' => $this->data
+                ],
+                [LogHelper::TAG_STREAM_SESSION_ID => $streamSession->id]
+            );
+            return;
+        }
     }
 
     /**
