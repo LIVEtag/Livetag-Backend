@@ -248,7 +248,11 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
             LogHelper::error('Body has missing elements: ' . implode(',', $missingFields), self::LOG_CATEGORY, $this->data);
             return false;
         }
-        return $this->extractApiKey() && $this->extractSize() && $this->extractDuration() && $this->extractArchiveId() && $this->extractVonageSessionId();
+        return $this->extractApiKey()
+            && $this->extractSize()
+            && $this->extractDuration()
+            && $this->extractArchiveId()
+            && $this->extractVonageSessionId();
     }
 
     /**

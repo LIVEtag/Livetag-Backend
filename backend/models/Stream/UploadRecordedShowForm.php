@@ -249,12 +249,14 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
         $archive = new StreamSessionArchive(['streamSessionId' => $this->streamSession->id]);
         $ffprobe = Yii::$app->params['ffprobe'];
         // Returns video duration string that contains seconds like '15.021667'
+        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
         $duration = exec(
             $ffprobe
             . ' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'
             . $this->videoFile->tempName
             . '"'
         );
+        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
         $archive->duration = (int)$duration;
         $archive->setFile($this->videoFile);
         if (!$archive->saveFile()) {
