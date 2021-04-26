@@ -6,7 +6,7 @@
 
 namespace rest\common\controllers;
 
-use rest\common\controllers\actions\Vonage\WebhookAction;
+use rest\common\controllers\actions\Vonage\ArchiveCallbackAction;
 use rest\components\api\Controller;
 use yii\helpers\ArrayHelper;
 
@@ -19,7 +19,7 @@ class VonageController extends Controller
      * Monitor vonage(tokbox) status and save it when it created
      * @see https://tokbox.com/developer/guides/archiving/#status
      */
-    const ACTION_WEBHOOK = 'webhook';
+    const ACTION_ARCHIVE_CALLBACK = 'archive-callback';
 
     /**
      * @inheritdoc
@@ -30,13 +30,13 @@ class VonageController extends Controller
             parent::behaviors(),
             [
                 'authenticator' => [
-                    'except' => [self::ACTION_WEBHOOK],
+                    'except' => [self::ACTION_ARCHIVE_CALLBACK],
                 ],
                 'access' => [
                     'rules' => [
                         [
                             'allow' => true,
-                            'actions' => [self::ACTION_WEBHOOK],
+                            'actions' => [self::ACTION_ARCHIVE_CALLBACK],
                             'roles' => ['?'],
                         ],
                     ],
@@ -51,7 +51,7 @@ class VonageController extends Controller
     public function actions()
     {
         return [
-            self::ACTION_WEBHOOK => ['class' => WebhookAction::class],
+            self::ACTION_ARCHIVE_CALLBACK => ['class' => ArchiveCallbackAction::class],
         ];
     }
 }

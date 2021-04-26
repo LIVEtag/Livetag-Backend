@@ -13,9 +13,9 @@ use yii\base\Action;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class WebhookAction.
+ * Class ArchiveCallbackAction.
  */
-class WebhookAction extends Action
+class ArchiveCallbackAction extends Action
 {
     /**
      * file uploaded to s3

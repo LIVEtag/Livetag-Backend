@@ -211,7 +211,16 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <div class="col-md-5">
             <div class="box box-default">
                 <div class="box-header">
-                    <h4 class="box-title pull-right">Livestream record</h4>
+                    <?php if ($model->archive) : ?>
+                        <?= Html::a(Yii::t('app', 'Delete record'), ['delete-record', 'id' => $model->id], [
+                            'class' => 'btn btn-danger',
+                            'data' => [
+                                'confirm' => Yii::t('app', 'Are you sure to delete this item?'),
+                                'method' => 'post',
+                            ],
+                        ]); ?>
+                    <?php endif; ?>
+                    <h4 class="box-title pull-right">Recorded video </h4>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">

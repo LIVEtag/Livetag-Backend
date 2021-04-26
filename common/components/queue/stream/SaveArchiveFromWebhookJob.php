@@ -317,7 +317,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
                 // Upload file to s3
                 $newPath = FileHelper::uploadFileToPath($tmpVideoPath, $relativePath, 'mp4');
                 // Remove archive
-                FileHelper::deleteFileByPath($path);
+                self::deleteArchive($path);
                 return $newPath;
             } finally {
                 @unlink($tmpVideoPath); //Remove temp files after s3 upload (or fail)
@@ -328,6 +328,22 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
     }
 
     /**
+     * Archive outside preffix, so need remove without it.
+     */
+    protected static function deleteArchive($path)
+    {
+        /** @var AbstractAdapter $adapter */
+        $adapter = Yii::$app->fs->getAdapter();
+        $prefix = Yii::$app->fs->prefix; //save
+        $adapter->setPathPrefix(""); //for vonage archive - no preffix (other folder)
+        try {
+            FileHelper::deleteFileByPath($path);
+        } finally {
+            $adapter->setPathPrefix($prefix); //restore
+        }
+    }
+
+    /**
      * Rename file (move to other relative path with random name)
      * note: Vonage file outside default relative path
      * @param string $path
@@ -335,7 +351,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
      * @param string $extention
      * @return string
      */
-    public static function moveFromTokboxPreffix(string $path, string $relativePath, string $extention): string
+    protected static function moveFromTokboxPreffix(string $path, string $relativePath, string $extention): string
     {
         $newPath = FileHelper::genUniqPath($relativePath, $extention);
         /** @var AbstractAdapter $adapter */

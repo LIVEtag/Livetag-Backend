@@ -18,7 +18,9 @@ use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
 use backend\models\Stream\UploadRecordedShowForm;
 use backend\models\User\User;
+use common\helpers\LogHelper;
 use common\models\forms\Comment\CommentForm;
+use common\models\Stream\StreamSessionArchive;
 use Exception;
 use kartik\grid\EditableColumnAction;
 use Throwable;
@@ -60,6 +62,7 @@ class StreamSessionController extends Controller
                                 'unpublish',
                                 'delete-cover-image',
                                 'upload-recorded-show',
+                                'delete-record',
                             ],
                             'allow' => true,
                             'roles' => [User::ROLE_SELLER],
@@ -186,6 +189,30 @@ class StreamSessionController extends Controller
     }
 
     /**
+     * Delete archive
+     * @param int $id
+     */
+    public function actionDeleteRecord(int $id)
+    {
+        $model = $this->findModel($id);
+        /** @var  StreamSessionArchive $archive */
+        $archive = $model->archive;
+
+        if (!$archive) {
+            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have recorded video.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        if ($archive->delete() === false) {
+            Yii::$app->session->setFlash('error', 'Failed to remove recorded video.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'Recorded video was removed.'));
+        return $this->redirect(['view', 'id' => $model->id]);
+    }
+
+    /**
      * Updates an existing StreamSession model. (only for seller)
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -281,10 +308,9 @@ class StreamSessionController extends Controller
     /**
      * Delete cover image from stream session
      * @param int $id
-     * @return \yii\web\Response
+     * @return mixed
      * @throws NotFoundHttpException
      * @throws Throwable
-     * @throws \yii\db\StaleObjectException
      */
     public function actionDeleteCoverImage(int $id)
     {
@@ -378,7 +404,7 @@ class StreamSessionController extends Controller
     /**
      * Publish an existing Stream
      * @param int $id
-     * @return \yii\web\Response
+     * @return mixed
      */
     public function actionPublish(int $id)
     {
@@ -396,7 +422,7 @@ class StreamSessionController extends Controller
     /**
      * Unpublish an existing Stream
      * @param int $id
-     * @return \yii\web\Response
+     * @return mixed
      */
     public function actionUnpublish(int $id)
     {
