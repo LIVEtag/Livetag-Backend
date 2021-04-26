@@ -54,6 +54,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
     public function __construct(StreamSession $streamSession = null, $config = array())
     {
         $this->streamSession = $streamSession ?: new StreamSession(['status' => StreamSession::STATUS_STOPPED]);
+        $this->streamSession->scenario = StreamSession::SCENARIO_UPLOAD_SHOW;
         parent::__construct($this->streamSession, $config);
     }
 
@@ -176,10 +177,6 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->streamSession->setAttributes($this->getAttributes());
-            $currentTime = time();
-            $this->streamSession->startedAt = $currentTime;
-            $this->streamSession->announcedAt = $currentTime;
-            $this->streamSession->stoppedAt = $currentTime + StreamSession::DEFAULT_DURATION;
             if (!$this->streamSession->save()) {
                 $this->addErrors($this->streamSession->getErrors());
                 $transaction->rollBack();
@@ -250,6 +247,15 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
     protected function uploadVideoFile(): bool
     {
         $archive = new StreamSessionArchive(['streamSessionId' => $this->streamSession->id]);
+        $ffprobe = Yii::$app->params['ffprobe'];
+        // Returns video duration string that contains seconds like '15.021667'
+        $duration = exec(
+            $ffprobe
+            . ' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'
+            . $this->videoFile->tempName
+            . '"'
+        );
+        $archive->duration = (int)$duration;
         $archive->setFile($this->videoFile);
         if (!$archive->saveFile()) {
             return false;

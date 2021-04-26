@@ -203,6 +203,11 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     ];
 
     /**
+     * Stream session with uploaded show will have empty announcedAt, startedAt and stoppedAt
+     */
+    const SCENARIO_UPLOAD_SHOW = 'upload-show';
+
+    /**
      * Array of Product ids to link
      *
      * null represent, that field not extracted and processed
@@ -258,7 +263,8 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     public function rules(): array
     {
         return [
-            [['shopId', 'announcedAt'], 'required'],
+            [['shopId'], 'required'],
+            [['announcedAt'], 'required', 'except' => self::SCENARIO_UPLOAD_SHOW],
             [['shopId', 'status', 'startedAt', 'stoppedAt', 'announcedAt'], 'integer'],
             ['sessionId', 'string', 'max' => 255],
             ['name', 'default', 'value' => ''],
@@ -291,14 +297,16 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
                 'required',
                 'when' => function (self $model) {
                     return $model->isActive();
-                }
+                },
+                'except' => self::SCENARIO_UPLOAD_SHOW,
             ],
             [
                 'stoppedAt',
                 'required',
                 'when' => function (self $model) {
                     return $model->isStopped();
-                }
+                },
+                'except' => self::SCENARIO_UPLOAD_SHOW,
             ],
             [
                 'productIds',

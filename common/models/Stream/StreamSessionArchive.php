@@ -32,6 +32,7 @@ use yii\web\UploadedFile;
  * @property string $originName
  * @property integer $size
  * @property string $type
+ * @property integer $duration
  * @property integer $status
  * @property integer $createdAt
  * @property integer $updatedAt
@@ -114,8 +115,8 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
     public function rules(): array
     {
         return [
-            [['streamSessionId', 'path', 'originName', 'size', 'type'], 'required'],
-            [['streamSessionId', 'status'], 'integer'],
+            [['streamSessionId', 'path', 'originName', 'size', 'type', 'duration'], 'required'],
+            [['streamSessionId', 'status', 'duration'], 'integer'],
             ['size', 'integer', 'min' => 0],
             ['type', 'in', 'range' => self::getMediaTypes()],
             ['status', 'default', 'value' => self::STATUS_NEW],
@@ -161,6 +162,7 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
             'originName' => Yii::t('app', 'Origin Name'),
             'size' => Yii::t('app', 'Size'),
             'type' => Yii::t('app', 'Type'),
+            'duration' => Yii::t('app', 'Duration'),
             'status' => Yii::t('app', 'Status'),
             'createdAt' => Yii::t('app', 'Created At'),
             'updatedAt' => Yii::t('app', 'Updated At'),
@@ -310,6 +312,14 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
     public function getRelativePath(): string
     {
         return 'stream-archive/' . ($this->streamSessionId ?: '0');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDuration(): int
+    {
+        return $this->duration;
     }
 
     /**
