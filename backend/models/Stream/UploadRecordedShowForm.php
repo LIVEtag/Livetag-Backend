@@ -201,6 +201,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
                 return false;
             }
             $transaction->commit();
+            $this->streamSession->archive->sendToQueue();//note - send outside transaction
             return true;
         } catch (Throwable $ex) {
             $transaction->rollBack();
@@ -216,7 +217,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
         // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $fileName = basename($this->directUrl);
         $tempFile = tmpfile();
-        
+
         $metaData = stream_get_meta_data($tempFile);
         if (!isset($metaData['uri'])) {
             return false;
@@ -248,16 +249,15 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
      */
     protected function uploadVideoFile(): bool
     {
-        $archive = new StreamSessionArchive();
+        $archive = new StreamSessionArchive(['streamSessionId' => $this->streamSession->id]);
         $archive->setFile($this->videoFile);
         if (!$archive->saveFile()) {
             return false;
         }
-        $archive->streamSessionId = $this->streamSession->id;
         if (!$archive->save()) {
             return false;
         }
-
+        $this->streamSession->populateRelation(StreamSession::REL_ARCHIVE, $archive);
         return true;
     }
 }

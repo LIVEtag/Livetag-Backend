@@ -12,6 +12,7 @@ use common\components\db\BaseActiveRecord;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
+use common\components\queue\stream\CreatePlaylistJob;
 use common\helpers\FileHelper;
 use common\models\queries\Stream\StreamSessionArchiveQuery;
 use League\Flysystem\Adapter\AbstractAdapter;
@@ -319,6 +320,27 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
         return [
             MediaTypeEnum::TYPE_VIDEO,
         ];
+    }
+
+    /**
+     * Send archive to queue for processing
+     * Allow only for status "new"
+     * @return bool
+     */
+    public function sendToQueue(): bool
+    {
+        if (!$this->isNew()) {
+            return false;
+        }
+
+        //Create job to create platlist
+        $job = new CreatePlaylistJob();
+        $job->id = $this->id;
+        Yii::$app->queue->push($job);
+
+        //set in queue
+        $this->setInQueue();
+        return $this->save(false, ['status', 'updatedAt']);
     }
 
     /**
