@@ -103,6 +103,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
 
     /**
      * Generate entity from webhook and return it
+     * @SuppressWarnings(PHPMD.NPathComplexity) | note: there is few operations with lot of logs records
      */
     public function saveArchiveFromWebhook()
     {

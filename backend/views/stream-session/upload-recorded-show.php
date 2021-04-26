@@ -19,6 +19,9 @@ $this->title = Yii::t('app', 'Upload recorded show');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+$maxVideoSizeInKB = Yii::$app->params['maxUploadVideoSize'] / 1024;
+$maxVideoSizeInGB = $maxVideoSizeInKB / 1024 / 1024;
+
 $js = /** @lang JavaScript */
     <<<SCRP
     $('#uploadrecordedshowform-type-link').on('click', function() {
@@ -86,6 +89,7 @@ $this->registerJs($js);
                             'label' => $model->getAttributeLabel('videoFile'),
                         ]); ?>
 
+                        <div id="kv-error-file-upload" style="margin:0;margin-bottom: 5px;display:none"></div>
                         <?= $form->field($model, 'videoFile')
                             ->hint(Yii::t('app', 'max size 5GB'))
                             ->widget(FileInput::class, [
@@ -100,7 +104,15 @@ $this->registerJs($js);
                                     'showRemove' => false,
                                     'browseLabel' => Yii::t('app', 'Upload'),
                                     // the maximum file size for upload in KB
-                                    'maxFileSize' => (Yii::$app->params['maxUploadVideoSize'] / 1024),
+                                    'maxFileSize' => $maxVideoSizeInKB,
+                                    'msgSizeTooLarge' => Yii::t(
+                                        'app',
+                                        'The file "{name}" is too big. Its size cannot exceed <b>{maxSize} GB</b>.',
+                                        [
+                                            'maxSize' => $maxVideoSizeInGB,
+                                        ]
+                                    ),
+                                    'elErrorContainer' => '#kv-error-file-upload',
                                 ],
                             ])->label(false); ?>
 
