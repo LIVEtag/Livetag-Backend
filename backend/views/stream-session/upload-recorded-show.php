@@ -106,7 +106,7 @@ $this->registerJs($js);
                                     // the maximum file size for upload in KB
                                     'maxFileSize' => $maxVideoSizeInKB,
                                     'msgSizeTooLarge' => Yii::t(
-                                            'app',
+                                        'app',
                                         'The file "{name}" is too big. Its size cannot exceed <b>{maxSize} GB</b>.',
                                         [
                                             'maxSize' => $maxVideoSizeInGB,
