@@ -105,7 +105,8 @@ $this->registerJs($js);
                                     'browseLabel' => Yii::t('app', 'Upload'),
                                     // the maximum file size for upload in KB
                                     'maxFileSize' => $maxVideoSizeInKB,
-                                    'msgSizeTooLarge' => Yii::t('app',
+                                    'msgSizeTooLarge' => Yii::t(
+                                            'app',
                                         'The file "{name}" is too big. Its size cannot exceed <b>{maxSize} GB</b>.',
                                         [
                                             'maxSize' => $maxVideoSizeInGB,
