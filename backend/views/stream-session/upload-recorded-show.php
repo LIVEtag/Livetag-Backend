@@ -35,7 +35,7 @@ $js = /** @lang JavaScript */
     function checkDirectUrl() {
         if ($('#uploadrecordedshowform-type-link').is(':checked')) {
             $('#uploadrecordedshowform-directurl').prop('disabled', false);
-            $('#uploadrecordedshowform-file').fileinput('lock').fileinput('refresh');
+            $('#uploadrecordedshowform-videofile').fileinput('lock').fileinput('refresh');
         }
     }
     
@@ -44,7 +44,7 @@ $js = /** @lang JavaScript */
             var directurlInput = $('#uploadrecordedshowform-directurl');
             directurlInput.val('');
             directurlInput.prop('disabled', true);
-            $('#uploadrecordedshowform-file').fileinput('unlock').fileinput('refresh');
+            $('#uploadrecordedshowform-videofile').fileinput('unlock').fileinput('refresh');
         }
     }
     
@@ -86,11 +86,11 @@ $this->registerJs($js);
                             'id' => 'uploadrecordedshowform-type-upload',
                             'value' => UploadRecordedShowForm::TYPE_UPLOAD,
                             'uncheck' => null,
-                            'label' => $model->getAttributeLabel('file'),
+                            'label' => $model->getAttributeLabel('videoFile'),
                         ]); ?>
 
                         <div id="kv-error-file-upload" style="margin:0;margin-bottom: 5px;display:none"></div>
-                        <?= $form->field($model, 'file')
+                        <?= $form->field($model, 'videoFile')
                             ->hint(Yii::t('app', 'max size 5GB'))
                             ->widget(FileInput::class, [
                                 'options' => [
@@ -115,6 +115,29 @@ $this->registerJs($js);
                                     'elErrorContainer' => '#kv-error-file-upload',
                                 ],
                             ])->label(false); ?>
+
+                        <?= $form->field($model, 'file')->widget(FileInput::class, [
+                            'options' => [
+                                'multiple' => false,
+                            ],
+                            'pluginOptions' => [
+                                'initialPreviewConfig' => [
+                                    [
+                                        'showRemove' => false,
+                                        'showZoom' => true,
+                                        'showDrag' => false,
+                                    ],
+                                ],
+                                'initialPreviewAsData' => true,
+                                'maxFileCount' => 1,
+                                'showUpload' => false,
+                                'showRemove' => false,
+                                'browseLabel' => Yii::t('app', 'Upload'),
+                                'msgPlaceholder' => Yii::t('app', 'Add image'),
+                                'maxFileSize' => (Yii::$app->params['maxUploadImageSize'] / 1024), // the maximum file size for upload in KB
+                            ],
+                        ]); ?>
+
 
                         <?= $form->field($model, 'productIds')->widget(Select2::class, [
                             'data' => $productIds,

@@ -27,7 +27,6 @@ $this->registerJs(
     });'
 );
 ?>
-<?php if ($streamSession->isActive()) : ?>
     <?php Pjax::begin(['id' => 'enabled_comment', 'enablePushState' => false]); ?>
     <?= Html::beginForm(['enable-comment', 'id' => $streamSession->id], 'post', ['data-pjax' => '', 'class' => 'form-inline']); ?>
     <?= Html::hiddenInput('commentsEnabled', !$isEnabled); ?>
@@ -59,4 +58,3 @@ $this->registerJs(
     ?>
     <?= Html::endForm() ?>
     <?php Pjax::end(); ?>
-<?php endif; ?>
