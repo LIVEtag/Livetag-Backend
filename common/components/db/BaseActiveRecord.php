@@ -27,6 +27,10 @@ class BaseActiveRecord extends ActiveRecord
      */
     const EVENT_AFTER_COMMIT_UPDATE = 'afterCommitUpdate';
 
+    /**
+     * @event Event an event that is triggered after a record is deleted and all transactions commited.
+     */
+    const EVENT_AFTER_COMMIT_DELETE = 'afterCommitDelete';
 
     /**
      * Needs to throw into afterCommit method
@@ -98,5 +102,33 @@ class BaseActiveRecord extends ActiveRecord
         $this->insert = null;
         $this->changedAttributes = null;
         return $params;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function delete()
+    {
+        $result = parent::delete();
+        if ($result === false) {
+            return false;
+        }
+        if (Yii::$app->db->transaction) {
+            Yii::$app->db->on(Connection::EVENT_COMMIT_TRANSACTION, function () {
+                Yii::$app->db->off(Connection::EVENT_COMMIT_TRANSACTION);
+                $this->afterDeleteCommit();
+            });
+        } else {
+            $this->afterDeleteCommit();
+        }
+        return $result;
+    }
+
+    /**
+     * Some logic that should be executed right after antity removed (and all transactions commit)
+     */
+    public function afterDeleteCommit()
+    {
+        $this->trigger(self::EVENT_AFTER_COMMIT_DELETE);
     }
 }

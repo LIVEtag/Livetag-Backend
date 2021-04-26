@@ -191,7 +191,7 @@ return [
                     'controller' => ['v1/vonage'],
                     'pluralize' => false,
                     'patterns' => [
-                        'POST archive-callback' => VonageController::ACTION_WEBHOOK,
+                        'POST archive-callback' => VonageController::ACTION_ARCHIVE_CALLBACK,
                     ],
                 ],
             ],

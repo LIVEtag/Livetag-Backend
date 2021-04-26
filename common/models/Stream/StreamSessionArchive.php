@@ -327,7 +327,7 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
      */
     public function beforeDelete()
     {
-        if (!$this->deleteFile() || !$this->deletePlaylist()) {
+        if (!$this->deletePlaylist() || !$this->deleteFile()) {
             return false;
         }
         return parent::beforeDelete();
@@ -335,7 +335,7 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
 
     /**
      * All playlist files stored in separate folder
-     * Use `{id}-playlist` format
+     * Used format: `{id}-playlist` format
      * For example `stream-archive/37/1-playlist/6082630a9b57c681084333.m3u8`
      * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @return bool
