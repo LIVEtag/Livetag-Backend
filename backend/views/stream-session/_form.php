@@ -92,6 +92,20 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                             'allowClear' => true,
                         ],
                     ]); ?>
+
+                    <?= $form->field($model, 'internalCart')
+                        ->hint(Yii::t('app', 'Please set the behavior of the system when the buyer clicks on a product in the product list (Shop) or on the product card in the video (presented now).'))
+                        ->widget(Select2::class, [
+                            'data' => StreamSession::INTERNAL_CART_OPTIONS,
+                            'options' => [
+                                'placeholder' => Yii::t('app', 'Select Product details view'),
+                                'multiple' => false,
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                            ],
+                        ]); ?>
+
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">

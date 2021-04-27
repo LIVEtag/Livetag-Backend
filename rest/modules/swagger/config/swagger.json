@@ -2169,6 +2169,10 @@
                         "type": "integer",
                         "example": 90
                     },
+                    "internalCart": {
+                        "type": "boolean",
+                        "example": true
+                    },
                     "archive": {
                         "type": "object",
                         "description": "Available via `expand`",

@@ -61,6 +61,11 @@ class SaveAnnouncementForm extends Model
     public $productIds;
 
     /**
+     * @var array|null
+     */
+    public $internalCart;
+
+    /**
      * @var StreamSession
      */
     public $streamSession;
@@ -90,7 +95,7 @@ class SaveAnnouncementForm extends Model
         return [
             [['name', 'shopId', 'announcedAtDatetime', 'duration'], 'required'],
             [
-                'productIds', //validate in main model. select2 do not return null on empty select
+                ['productIds', 'internalCart'], //validate in main model. select2 do not return null on empty select
                 'filter',
                 'filter' => function ($value) {
                     return $value == '' ? null : $value;
@@ -123,7 +128,8 @@ class SaveAnnouncementForm extends Model
             'name' => 'Name of livestream',
             'announcedAtDatetime' => 'Start At',
             'duration' => 'Maximum duration of this show',
-            'productIds' => 'Products'
+            'productIds' => 'Products',
+            'internalCart' => 'Product details view',
         ];
     }
 
