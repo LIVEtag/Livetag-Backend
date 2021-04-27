@@ -235,6 +235,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                         return $model->getStatusName();
                                     },
                                 ],
+                                [
+                                    'attribute' => 'duration',
+                                    'value' => function (StreamSessionArchive $model) {
+                                        return $model->getFormattedDuration();
+                                    }
+                                ],
                                 'createdAt:datetime',
                                 'updatedAt:datetime',
                                 [

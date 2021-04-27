@@ -37,6 +37,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
     const WEBHOOK_FIELD_PARTNER_ID = 'partnerId';
     const WEBHOOK_FIELD_NAME = 'name';
     const WEBHOOK_FIELD_SIZE = 'size';
+    const WEBHOOK_FIELD_DURATION = 'duration';
 
     /**
      * most important keys, that required in logic
@@ -46,6 +47,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
         self::WEBHOOK_FIELD_SESSION_ID,
         self::WEBHOOK_FIELD_PARTNER_ID,
         self::WEBHOOK_FIELD_SIZE,
+        self::WEBHOOK_FIELD_DURATION,
     ];
 
     /**
@@ -70,6 +72,9 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
 
     /** @var int */
     protected $size;
+
+    /** @var int */
+    protected $duration;
 
     /**
      * category for logs
@@ -176,6 +181,7 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
             'status' => StreamSessionArchive::STATUS_NEW,
             'originName' => ArrayHelper::getValue($this->data, self::WEBHOOK_FIELD_NAME) ?: self::ARCHIVE_NAME,
             'size' => $this->size,
+            'duration' => $this->duration,
         ]);
 
         //8. Try to save Archive entity
@@ -242,7 +248,11 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
             LogHelper::error('Body has missing elements: ' . implode(',', $missingFields), self::LOG_CATEGORY, $this->data);
             return false;
         }
-        return $this->extractApiKey() && $this->extractSize() && $this->extractArchiveId() && $this->extractVonageSessionId();
+        return $this->extractApiKey()
+            && $this->extractSize()
+            && $this->extractDuration()
+            && $this->extractArchiveId()
+            && $this->extractVonageSessionId();
     }
 
     /**
@@ -254,6 +264,20 @@ class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, Retr
         $this->size = ArrayHelper::getValue($this->data, self::WEBHOOK_FIELD_SIZE);
         if (!$this->size) {
             LogHelper::error('Archive has zero size', self::LOG_CATEGORY, $this->data);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Extract and check duration
+     * @return bool
+     */
+    protected function extractDuration(): bool
+    {
+        $this->duration = ArrayHelper::getValue($this->data, self::WEBHOOK_FIELD_DURATION);
+        if (!$this->duration) {
+            LogHelper::error('Archive has zero duration', self::LOG_CATEGORY, $this->data);
             return false;
         }
         return true;
