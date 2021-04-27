@@ -257,6 +257,11 @@ class UploadRecordedShowForm extends SaveAnnouncementForm
             . '"'
         );
         // phpcs:enable PHPCS_SecurityAudit.BadFunctions
+        // Can be 'N/A' for image, '' for wrong paths or for 0 secs video
+        if (!$duration || !(int)$duration) {
+            return false;
+        }
+
         $archive->duration = (int)$duration;
         $archive->setFile($this->videoFile);
         if (!$archive->saveFile()) {

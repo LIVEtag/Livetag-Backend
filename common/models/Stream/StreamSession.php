@@ -298,7 +298,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
                 'when' => function (self $model) {
                     return $model->isActive();
                 },
-                'except' => self::SCENARIO_UPLOAD_SHOW,
             ],
             [
                 'stoppedAt',

@@ -319,7 +319,15 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
      */
     public function getDuration(): int
     {
-        return $this->duration;
+        return (int)$this->duration;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedDuration(): string
+    {
+        return gmdate("H:i:s", $this->getDuration());
     }
 
     /**

@@ -238,13 +238,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 [
                                     'attribute' => 'duration',
                                     'value' => function (StreamSessionArchive $model) {
-                                        $duration = $model->getDuration();
-                                        return sprintf(
-                                            '%02d:%02d:%02d',
-                                            ($duration / 3600),
-                                            ($duration / 60 % 60),
-                                            ($duration % 60)
-                                        );
+                                        return $model->getFormattedDuration();
                                     }
                                 ],
                                 'createdAt:datetime',
