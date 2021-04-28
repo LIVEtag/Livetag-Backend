@@ -16,5 +16,6 @@ return [
         'originName' => $this->generator->word() . '.mp4',
         'size' => 158143,
         'status' => StreamSessionArchive::STATUS_NEW,
+        'duration' => 1,
     ],
 ];
