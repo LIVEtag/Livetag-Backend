@@ -34,6 +34,7 @@ use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -44,8 +45,10 @@ use yii\web\UnprocessableEntityHttpException;
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
  * @todo: The class StreamSession has 21 public methods. Consider refactoring StreamSession to keep number of public methods under 20.
+ * @todo: The class StreamSession has many lines of code. Current threshold is 1000. Avoid really long classes.
  * @todo: Rename sessionId -> externalId
  *
  * @property integer $id
@@ -61,6 +64,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $stoppedAt
  * @property boolean $isPublished
  * @property string $rotate
+ * @property boolean $internalCart
  *
  * @property-read Comment[] $comments
  * @property-read Shop $shop
@@ -203,6 +207,21 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     ];
 
     /**
+     * Redirect to the page with the product on your website.
+     */
+    const INTERNAL_CART_FALSE = 0;
+
+    /**
+     * Product details and the cart in the livestream
+     */
+    const INTERNAL_CART_TRUE = 1;
+
+    const INTERNAL_CART_OPTIONS = [
+        self::INTERNAL_CART_FALSE => 'Redirect to the page with the product on your website.',
+        self::INTERNAL_CART_TRUE => 'Product details and the cart in the livestream.',
+    ];
+
+    /**
      * Stream session with uploaded show will have empty announcedAt, startedAt and stoppedAt
      */
     const SCENARIO_UPLOAD_SHOW = 'upload-show';
@@ -271,7 +290,8 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             ['name', 'string', 'max' => self::MAX_NAME_LENGTH],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
             [['commentsEnabled', 'isPublished'], 'default', 'value' => true],
-            [['commentsEnabled', 'isPublished'], 'boolean'],
+            [['commentsEnabled', 'isPublished', 'internalCart'], 'boolean'],
+            [['internalCart'], 'default', 'value' => false],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             ['duration', 'default', 'value' => self::DEFAULT_DURATION],
@@ -428,6 +448,7 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             'stoppedAt' => Yii::t('app', 'Stopped At'),
             'isPublished' => Yii::t('app', 'Is Published'),
             'rotate' => Yii::t('app', 'Rotate'),
+            'internalCart' => Yii::t('app', 'Product details view'),
         ];
     }
 
@@ -469,6 +490,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             },
             'rotate' => function () {
                 return $this->getRotate();
+            },
+            'internalCart' => function () {
+                return $this->getInternalCart();
             }
         ];
     }
@@ -615,6 +639,23 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     public function getCommentsEnabled(): bool
     {
         return (bool) $this->commentsEnabled;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInternalCart(): bool
+    {
+        return (bool)$this->internalCart;
+    }
+
+    /**
+     * @return string|null
+     * @throws \Exception
+     */
+    public function getInternalCartText(): ?string
+    {
+        return ArrayHelper::getValue(self::INTERNAL_CART_OPTIONS, $this->internalCart);
     }
 
     /**

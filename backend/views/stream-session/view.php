@@ -192,6 +192,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 }
                             ],
                             [
+                                'attribute' => 'internalCart',
+                                'value' => function (StreamSession $model) {
+                                    return $model->getInternalCartText();
+                                }
+                            ],
+                            [
                                 'label' => 'Integration Snippet',
                                 'format' => 'raw',
                                 'value' => function () use ($snippet) {
