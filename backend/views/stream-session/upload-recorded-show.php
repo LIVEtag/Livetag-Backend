@@ -19,40 +19,6 @@ $this->title = Yii::t('app', 'Upload recorded show');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-$maxVideoSizeInKB = Yii::$app->params['maxUploadVideoSize'] / 1024;
-$maxVideoSizeInGB = $maxVideoSizeInKB / 1024 / 1024;
-
-$js = /** @lang JavaScript */
-    <<<SCRP
-    $('#uploadrecordedshowform-type-link').on('click', function() {
-        checkDirectUrl();
-    });
-
-    $('#uploadrecordedshowform-type-upload').on('click', function() {
-        checkFileInput();
-    });
-    
-    function checkDirectUrl() {
-        if ($('#uploadrecordedshowform-type-link').is(':checked')) {
-            $('#uploadrecordedshowform-directurl').prop('disabled', false);
-            $('#uploadrecordedshowform-videofile').fileinput('lock').fileinput('refresh');
-        }
-    }
-    
-    function checkFileInput() {
-        if ($('#uploadrecordedshowform-type-upload').is(':checked')) {
-            var directurlInput = $('#uploadrecordedshowform-directurl');
-            directurlInput.val('');
-            directurlInput.prop('disabled', true);
-            $('#uploadrecordedshowform-videofile').fileinput('unlock').fileinput('refresh');
-        }
-    }
-    
-    checkDirectUrl();
-    checkFileInput();
-SCRP;
-
-$this->registerJs($js);
 ?>
 
 <section class="recorded-show">
@@ -69,52 +35,7 @@ $this->registerJs($js);
                                 'maxlength' => true,
                             ]) ?>
 
-                        <?= $form->field($model, 'uploadType')->radio([
-                            'id' => 'uploadrecordedshowform-type-link',
-                            'value' => UploadRecordedShowForm::TYPE_LINK,
-                            'uncheck' => null,
-                            'label' => $model->getAttributeLabel('directUrl'),
-                            'checked' => 'checked',
-                        ]); ?>
-                        
-                        <?= $form->field($model, 'directUrl')
-                            ->textInput(['placeholder' => Yii::t('app', 'Please put the direct URL link to the file with the video')])
-                            ->label(false);
-                        ?>
-
-                        <?= $form->field($model, 'uploadType')->radio([
-                            'id' => 'uploadrecordedshowform-type-upload',
-                            'value' => UploadRecordedShowForm::TYPE_UPLOAD,
-                            'uncheck' => null,
-                            'label' => $model->getAttributeLabel('videoFile'),
-                        ]); ?>
-
-                        <div id="kv-error-file-upload" style="margin:0;margin-bottom: 5px;display:none"></div>
-                        <?= $form->field($model, 'videoFile')
-                            ->hint(Yii::t('app', 'max size 5GB'))
-                            ->widget(FileInput::class, [
-                                'options' => [
-                                    'multiple' => false,
-                                    'disabled' => true
-                                ],
-                                'pluginOptions' => [
-                                    'showPreview' => false,
-                                    'maxFileCount' => 1,
-                                    'showUpload' => false,
-                                    'showRemove' => false,
-                                    'browseLabel' => Yii::t('app', 'Upload'),
-                                    // the maximum file size for upload in KB
-                                    'maxFileSize' => $maxVideoSizeInKB,
-                                    'msgSizeTooLarge' => Yii::t(
-                                        'app',
-                                        'The file "{name}" is too big. Its size cannot exceed <b>{maxSize} GB</b>.',
-                                        [
-                                            'maxSize' => $maxVideoSizeInGB,
-                                        ]
-                                    ),
-                                    'elErrorContainer' => '#kv-error-file-upload',
-                                ],
-                            ])->label(false); ?>
+                        <?= $this->render('archive-form', ['form' => $form, 'model' => $model]); ?>
 
                         <?= $form->field($model, 'file')->widget(FileInput::class, [
                             'options' => [

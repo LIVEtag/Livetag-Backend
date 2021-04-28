@@ -94,6 +94,7 @@ class CreatePlaylistJob extends BaseObject implements JobInterface
         $archive->setReady();
         $archive->setAttribute('playlist', $playlist);
         if (!$archive->save(true, ['status', 'playlist', 'updatedAt'])) {
+            $archive->deletePlaylist();//in this case - remove all uploaded media
             LogHelper::error(
                 'Failed to save playlist',
                 self::LOG_CATEGORY,

@@ -21,6 +21,7 @@ use common\observers\Comment\CreateCommentObserver;
 use common\observers\Comment\DeleteCommentObserver;
 use common\observers\Comment\UpdateCommentObserver;
 use common\observers\Shop\DeleteShopObserver;
+use common\observers\StreamSession\CreateStreamSessionArchiveObserver;
 use common\observers\StreamSession\CreateStreamSessionObserver;
 use common\observers\StreamSession\DeleteStreamSessionArchiveObserver;
 use common\observers\StreamSession\EndSoonStreamSessionObserver;
@@ -63,6 +64,10 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         ]);
 
         # Stream Session Archive
+        Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_INSERT, [
+            Yii::createObject(CreateStreamSessionArchiveObserver::class),
+            'execute'
+        ]);
         Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_UPDATE, [
             Yii::createObject(UpdateStreamSessionArchiveObserver::class),
             'execute'
