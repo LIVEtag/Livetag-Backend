@@ -24,7 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-12">
                 <div class="box box-default">
                     <?php $form = ActiveForm::begin(); ?>
-                    <div class="box-header"></div>
+                    <div class="box-header">
+                        <h4 class="box-title">When you upload a new livestream video, the existing livestream video (if any) will be automatically deleted.</h4>
+                    </div>
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
                         <?= $this->render('archive-form', ['form' => $form, 'model' => $model]); ?>
