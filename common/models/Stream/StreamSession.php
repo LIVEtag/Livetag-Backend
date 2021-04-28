@@ -34,6 +34,7 @@ use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -47,6 +48,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
  * @todo: The class StreamSession has 21 public methods. Consider refactoring StreamSession to keep number of public methods under 20.
+ * @todo: The class StreamSession has many lines of code. Current threshold is 1000. Avoid really long classes.
  * @todo: Rename sessionId -> externalId
  *
  * @property integer $id
@@ -649,11 +651,11 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
 
     /**
      * @return string|null
+     * @throws \Exception
      */
     public function getInternalCartText(): ?string
     {
-        $options = self::INTERNAL_CART_OPTIONS;
-        return $options[$this->internalCart] ?? null;
+        return ArrayHelper::getValue(self::INTERNAL_CART_OPTIONS, $this->internalCart);
     }
 
     /**

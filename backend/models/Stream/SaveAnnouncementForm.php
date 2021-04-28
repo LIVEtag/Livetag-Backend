@@ -61,9 +61,9 @@ class SaveAnnouncementForm extends Model
     public $productIds;
 
     /**
-     * @var array|null
+     * @var bool
      */
-    public $internalCart;
+    public $internalCart = StreamSession::INTERNAL_CART_FALSE;
 
     /**
      * @var StreamSession
@@ -93,9 +93,10 @@ class SaveAnnouncementForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'shopId', 'announcedAtDatetime', 'duration'], 'required'],
+            [['name', 'shopId', 'announcedAtDatetime', 'duration', 'internalCart'], 'required'],
+            [['internalCart'], 'boolean'],
             [
-                ['productIds', 'internalCart'], //validate in main model. select2 do not return null on empty select
+                ['productIds'], //validate in main model. select2 do not return null on empty select
                 'filter',
                 'filter' => function ($value) {
                     return $value == '' ? null : $value;

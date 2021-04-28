@@ -99,10 +99,9 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                             'data' => StreamSession::INTERNAL_CART_OPTIONS,
                             'options' => [
                                 'placeholder' => Yii::t('app', 'Select Product details view'),
-                                'multiple' => false,
                             ],
                             'pluginOptions' => [
-                                'allowClear' => true,
+                                'allowClear' => false,
                             ],
                         ]); ?>
 

@@ -18,7 +18,7 @@ class M210427101300AddInternalCartToStreamSession extends Migration
         $this->addColumn(
             StreamSession::TABLE_NAME,
             'internalCart',
-            $this->boolean()->notNull()->defaultValue(false)
+            $this->boolean()->notNull()->defaultValue(false)->after('commentsEnabled')
         );
     }
 
