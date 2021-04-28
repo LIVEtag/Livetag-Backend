@@ -211,6 +211,9 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <div class="col-md-5">
             <div class="box box-default">
                 <div class="box-header">
+                    <?php if ($model->isStopped() || $model->isArchived()) : ?>
+                        <?= Html::a(Yii::t('app', 'Upload record'), ['upload-record', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?php endif; ?>
                     <?php if ($model->archive) : ?>
                         <?= Html::a(Yii::t('app', 'Delete record'), ['delete-record', 'id' => $model->id], [
                             'class' => 'btn btn-danger',

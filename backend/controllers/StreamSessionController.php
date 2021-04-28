@@ -17,6 +17,7 @@ use backend\models\Stream\SaveAnnouncementForm;
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
 use backend\models\Stream\UploadRecordedShowForm;
+use backend\models\Stream\UploadRecordForm;
 use backend\models\User\User;
 use common\helpers\LogHelper;
 use common\models\forms\Comment\CommentForm;
@@ -61,7 +62,8 @@ class StreamSessionController extends Controller
                                 'publish',
                                 'unpublish',
                                 'delete-cover-image',
-                                'upload-recorded-show',
+                                'upload-recorded-show', //create stream + archive
+                                'upload-record', // create archive inside stream
                                 'delete-record',
                             ],
                             'allow' => true,
@@ -154,8 +156,8 @@ class StreamSessionController extends Controller
             }
         }
         return $this->render('create', [
-            'model' => $model,
-            'productIds' => Product::getIndexedArray($user->shop->id)
+                'model' => $model,
+                'productIds' => Product::getIndexedArray($user->shop->id)
         ]);
     }
 
@@ -183,8 +185,65 @@ class StreamSessionController extends Controller
         }
 
         return $this->render('upload-recorded-show', [
+                'model' => $model,
+                'productIds' => Product::getIndexedArray($user->shop->id),
+        ]);
+    }
+
+    /**
+     * Updates an existing StreamSession model. (only for seller)
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate(int $id)
+    {
+        $streamSession = $this->findModel($id);
+        $user = Yii::$app->user->identity; //shop and seller checked before
+
+        $model = new SaveAnnouncementForm($streamSession);
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+        return $this->render('update', [
             'model' => $model,
-            'productIds' => Product::getIndexedArray($user->shop->id),
+            'productIds' => Product::getIndexedArray($user->shop->id)
+        ]);
+    }
+
+    /**
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionUploadRecord(int $id)
+    {
+        $streamSession = $this->findModel($id);
+        $user = Yii::$app->user->identity; //shop and seller checked before
+
+        $model = new UploadRecordForm($streamSession);
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->videoFile = UploadedFile::getInstance($model, 'videoFile');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+
+        return $this->render('upload-record', [
+            'model' => $model
         ]);
     }
 
@@ -211,36 +270,6 @@ class StreamSessionController extends Controller
         Yii::$app->session->setFlash('success', Yii::t('app', 'Recorded video was removed.'));
         return $this->redirect(['view', 'id' => $model->id]);
     }
-
-    /**
-     * Updates an existing StreamSession model. (only for seller)
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate(int $id)
-    {
-        $streamSession = $this->findModel($id);
-        $user = Yii::$app->user->identity;//shop and seller checked before
-
-        $model = new SaveAnnouncementForm($streamSession);
-        $params = Yii::$app->request->post();
-        if ($params) { //shop and seller checked before
-            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
-        }
-        if ($model->load($params)) {
-            $model->file = UploadedFile::getInstance($model, 'file');
-            if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->streamSession->id]);
-            }
-        }
-        return $this->render('update', [
-            'model' => $model,
-            'productIds' => Product::getIndexedArray($user->shop->id)
-        ]);
-    }
-
 
     /**
      * Displays a single StreamSession model.
@@ -329,7 +358,7 @@ class StreamSessionController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
         $model->populateRelation(StreamSession::REL_STREAM_SESSION_COVER, null);
-        $model->save(false, []);//update model to fire update event (after transaction commit)
+        $model->save(false, []); //update model to fire update event (after transaction commit)
         $transaction->commit();
 
         Yii::$app->session->setFlash('success', Yii::t('app', 'The cover image was removed.'));
@@ -374,13 +403,12 @@ class StreamSessionController extends Controller
     {
         /** @var StreamSession $model */
         $model = $this->findModel($id); //get entity and check access
-
         //quite fast solution without form
         $model->commentsEnabled = (bool) Yii::$app->request->post('commentsEnabled');
         $model->save(true, ['commentsEnabled']);
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('comment-enable-form', [
-            'streamSession' => $model,
+                'streamSession' => $model,
         ]);
     }
 
@@ -502,9 +530,9 @@ class StreamSessionController extends Controller
         $productDataProvider->pagination->route = '/stream-session/view';
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('product-index', [
-                'productSearchModel' => $productSearchModel,
-                'productDataProvider' => $productDataProvider,
-                'streamSessionId' => $streamSessionId,
+            'productSearchModel' => $productSearchModel,
+            'productDataProvider' => $productDataProvider,
+            'streamSessionId' => $streamSessionId,
         ]);
     }
 

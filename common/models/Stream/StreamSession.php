@@ -957,7 +957,8 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     public function beforeSave($insert)
     {
         // Create session with tokbox
-        if ($insert && !$this->sessionId) {
+        //Do not create session for scenario with archive creation
+        if ($insert && !$this->sessionId && $this->scenario != self::SCENARIO_UPLOAD_SHOW) {
             try {
                 $this->sessionId = Yii::$app->vonage->createSession();
             } catch (Throwable $ex) {
