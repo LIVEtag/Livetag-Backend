@@ -52,8 +52,10 @@ class SnapshotsAction extends Action
         }
 
         return [
-            'timestamp' => 0,
-            'products' => ArrayHelper::toArray($products),
+            [
+                'timestamp' => 0,
+                'products' => ArrayHelper::toArray($products),
+            ],
         ];
     }
 
