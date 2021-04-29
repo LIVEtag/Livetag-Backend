@@ -56,6 +56,10 @@
             "description": "Stream Comments"
         },
         {
+            "name": "Likes",
+            "description": "Stream Likes"
+        },
+        {
             "name": "Archives",
             "description": "Manage Archives in Stream Session"
         }
@@ -1350,6 +1354,132 @@
             }
         },
 
+        "/v1/stream-session/{streamSessionid}/like": {
+            "get": {
+                "tags": [
+                    "Likes",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get likes of selected archived Stream Session",
+                "operationId": "streamSessionLikes",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200DataProvider"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/likes"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Likes",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Create new like",
+                "operationId": "likeCreateNew",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-streamSessionLike"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status201"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "$ref": "#/components/schemas/streamSessionLike"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
         "/v1/stream-session/{streamSessionid}/archive": {
             "post": {
                 "tags": [
@@ -2246,6 +2376,25 @@
                     }
                 }
             },
+
+            "likes": {
+                "type": "object",
+                "required": [
+                    "timestamp",
+                    "count"
+                ],
+                "properties": {
+                    "timestamp": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                }
+            },
+
             "streamSessionCover": {
                 "type": "object",
                 "required": [
@@ -2283,6 +2432,31 @@
                     },
                     "message": {
                         "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/user"
+                    }
+                }
+            },
+
+            "streamSessionLike": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
                     },
                     "createdAt": {
                         "type": "integer"
@@ -2425,6 +2599,15 @@
                 }
             },
             "expand-comment": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```user```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-streamSessionLike": {
                 "in": "query",
                 "name": "expand",
                 "description": "Extra Fields (coma separated). Available values: ```user```",

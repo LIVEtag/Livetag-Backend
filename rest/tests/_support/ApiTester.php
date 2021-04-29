@@ -263,6 +263,17 @@ class ApiTester extends \Codeception\Actor
     /**
      * @return array
      */
+    public function getLikes(): array
+    {
+        return [
+            'timestamp' => 'integer',
+            'count' => 'integer',
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function getProductResponse(): array
     {
         return [
