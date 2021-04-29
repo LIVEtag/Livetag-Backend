@@ -46,7 +46,8 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
         $archiveRules = $this->getArchiveValidationRules();
         return ArrayHelper::merge(
             [
-                [['name', 'shopId'], 'required'],
+                [['name', 'shopId', 'internalCart'], 'required'],
+                [['internalCart'], 'boolean'],
                 ['name', 'string', 'max' => StreamSession::MAX_NAME_LENGTH],
                 [
                     'productIds', //validate in main model. select2 do not return null on empty select
@@ -77,6 +78,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
             'directUrl' => Yii::t('app', 'Direct URL link'),
             'productIds' => Yii::t('app', 'Products'),
             'file' => Yii::t('app', 'Photo (cover image)'),
+            'internalCart' => Yii::t('app', 'Product details view'),
         ];
     }
 
