@@ -76,6 +76,10 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
             Yii::createObject(DeleteStreamSessionArchiveObserver::class),
             'execute'
         ]);
+        Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_DELETE, [
+            Yii::createObject(DeleteStreamSessionArchiveObserver::class),
+            'execute'
+        ]);
 
         # Stream Session Product events
         Event::on(StreamSessionProduct::class, StreamSessionProduct::EVENT_AFTER_INSERT, [

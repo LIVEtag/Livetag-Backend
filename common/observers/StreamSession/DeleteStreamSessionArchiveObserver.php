@@ -28,6 +28,7 @@ class DeleteStreamSessionArchiveObserver
         }
         if ($streamSessionArchive->streamSession->isArchived()) {
             $streamSessionArchive->streamSession->status = StreamSession::STATUS_STOPPED;
+            $streamSessionArchive->streamSession->rotate = StreamSession::ROTATE_0;
             if (!$streamSessionArchive->streamSession->save()) {
                 LogHelper::error(
                     'Failed to save Stream Session',
