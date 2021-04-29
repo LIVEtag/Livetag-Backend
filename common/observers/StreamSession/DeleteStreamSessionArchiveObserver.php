@@ -26,7 +26,7 @@ class DeleteStreamSessionArchiveObserver
         if (!($streamSessionArchive instanceof StreamSessionArchive)) {
             throw new RuntimeException('Not StreamSessionArchive instance');
         }
-        if ($streamSessionArchive->streamSession->isArchived()) {
+        if ($streamSessionArchive->streamSession->isArchived() || $streamSessionArchive->streamSession->isStopped()) {
             $streamSessionArchive->streamSession->status = StreamSession::STATUS_STOPPED;
             $streamSessionArchive->streamSession->rotate = StreamSession::ROTATE_0;
             if (!$streamSessionArchive->streamSession->save()) {
