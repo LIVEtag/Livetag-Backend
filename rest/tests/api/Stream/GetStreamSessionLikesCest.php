@@ -46,7 +46,7 @@ class GetStreamSessionLikesCest extends ActionCest
         $I->amLoggedInApiAs(UserFixture::BUYER_2);
         $I->send($this->getMethod(), $this->getUrl($I));
         $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType([$I->getLikes()],'$.result');
+        $I->seeResponseMatchesJsonType([$I->getLikes()], '$.result');
     }
 
     /**
