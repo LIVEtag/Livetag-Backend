@@ -208,6 +208,16 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     const SCENARIO_UPLOAD_SHOW = 'upload-show';
 
     /**
+     * Steam session is starting
+     */
+    const SCENARIO_START = 'start';
+
+    /**
+     * Stream session is stopping
+     */
+    const SCENARIO_STOP = 'stop';
+
+    /**
      * Array of Product ids to link
      *
      * null represent, that field not extracted and processed
@@ -298,6 +308,7 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
                 'when' => function (self $model) {
                     return $model->isActive();
                 },
+                'on' => self::SCENARIO_START,
             ],
             [
                 'stoppedAt',
@@ -305,7 +316,7 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
                 'when' => function (self $model) {
                     return $model->isStopped();
                 },
-                'except' => self::SCENARIO_UPLOAD_SHOW,
+                'on' => self::SCENARIO_STOP,
             ],
             [
                 'productIds',
@@ -887,8 +898,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
         if (!$this->isActive()) {
             throw new BadRequestHttpException('You can only stop active translations');
         }
-        $this->status = self::STATUS_STOPPED;
+        $this->scenario = StreamSession::SCENARIO_STOP;
         $this->touch('stoppedAt');
+        $this->status = self::STATUS_STOPPED;
         return $this->save(true, ['status', 'stoppedAt']);
     }
 
