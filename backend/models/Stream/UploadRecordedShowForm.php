@@ -33,7 +33,12 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
      */
     public function __construct($config = array())
     {
-        $this->streamSession = new StreamSession(['status' => StreamSession::STATUS_STOPPED]);
+        // If the specified property is not set,
+        // the default value will be overwritten via setAttributes in the parent constructor
+        $this->streamSession = new StreamSession([
+            'status' => StreamSession::STATUS_STOPPED,
+            'internalCart' => StreamSession::INTERNAL_CART_FALSE,
+        ]);
         $this->streamSession->scenario = StreamSession::SCENARIO_UPLOAD_SHOW;
         parent::__construct($this->streamSession, $config);
     }

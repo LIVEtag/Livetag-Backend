@@ -171,7 +171,7 @@ class StreamSessionController extends Controller
         /** @var User $user */
         $user = $this->getAndCheckCurrentUser();
 
-        $model = new UploadRecordedShowForm(['internalCart' => StreamSession::INTERNAL_CART_FALSE]);
+        $model = new UploadRecordedShowForm();
         $params = Yii::$app->request->post();
         if ($params) { //shop and seller checked before
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
