@@ -46,13 +46,11 @@ class CreateStreamSessionLikeCest extends ActionCest
             $this->dataComment($I, $data);
             $I->amLoggedInApiAs($data['userId']);
             $this->streamSessionId = $data['streamSessionId'];
-            $expand = 'user';
             $I->send(
                 $this->getMethod(),
-                $this->getUrl($I) . "?expand=$expand"
+                $this->getUrl($I)
             );
             $I->seeResponseResultIsCreated();
-            $I->seeResponseMatchesJsonType($data['response'], '$.result');
         }
     }
 }

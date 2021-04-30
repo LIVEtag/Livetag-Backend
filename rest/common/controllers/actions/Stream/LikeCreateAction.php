@@ -24,6 +24,12 @@ class LikeCreateAction extends Action
     {
         /** @var StreamSession $streamSession */
         $streamSession = $this->findModel($id);
+        if ($this->checkAccess) {
+            // phpcs:disable
+            call_user_func($this->checkAccess, $this->id, $streamSession);
+            // phpcs:enable
+        }
+
         if (!$streamSession->isActive() && !$streamSession->isArchived()) {
             throw new NotFoundHttpException('Stream Session was not found.');
         }
@@ -33,10 +39,10 @@ class LikeCreateAction extends Action
         $streamSessionLike->userId = Yii::$app->user->identity->getId();
         $streamSessionLike->save();
 
-        if (!$streamSessionLike->hasErrors()) {
-            Yii::$app->response->setStatusCode(201);
+        if ($streamSessionLike->hasErrors()) {
+            return $streamSessionLike;
         }
 
-        return $streamSessionLike;
+        Yii::$app->response->setStatusCode(201);
     }
 }

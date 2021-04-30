@@ -116,19 +116,7 @@ class StreamSessionLike extends ActiveRecord
     public function fields(): array
     {
         return [
-            'id',
-            'userId',
             'createdAt',
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function extraFields(): array
-    {
-        return [
-            self::REL_USER,
         ];
     }
 
@@ -139,9 +127,9 @@ class StreamSessionLike extends ActiveRecord
     public function notify(string $actionType)
     {
         $streamSession = $this->streamSession;
-        if ($streamSession && ($streamSession->isActive() || $streamSession->isArchived())) {
+        if ($streamSession && $streamSession->isActive()) {
             $channel = new SessionChannel($this->streamSessionId);
-            $message = new Message($actionType, $this->toArray(['createdAt']));
+            $message = new Message($actionType, $this->toArray());
             if (!Yii::$app->centrifugo->publish($channel, $message)) {
                 LogHelper::error('Event Failed', self::LOG_CATEGORY, [
                     'channel' => $channel->getName(),

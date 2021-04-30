@@ -10,7 +10,7 @@ namespace rest\common\controllers\actions\Stream;
 use common\models\Stream\StreamSession;
 use common\models\Stream\StreamSessionLike;
 use yii\data\ArrayDataProvider;
-use yii\helpers\ArrayHelper;
+use yii\db\Expression;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 
@@ -25,12 +25,17 @@ class LikesAction extends Action
     {
         /** @var StreamSession $streamSession */
         $streamSession = $this->findModel($id);
+        if ($this->checkAccess) {
+            // phpcs:disable
+            call_user_func($this->checkAccess, $this->id, $streamSession);
+            // phpcs:enable
+        }
         if (!$streamSession->isArchived()) {
             throw new NotFoundHttpException('Archived Stream Session was not found.');
         }
 
         if (!$streamSession->startedAt || !$streamSession->stoppedAt) {
-            throw new NotFoundHttpException('Archived Stream Session with start and stop was not found.');
+            return [];
         }
 
         return $this->getLikes($streamSession);
@@ -43,7 +48,10 @@ class LikesAction extends Action
     private function getLikes(StreamSession $streamSession): array
     {
         $likes = StreamSessionLike::find()
-            ->select(["`createdAt` - {$streamSession->startedAt} as timestamp", 'COUNT(`id`) as count'])
+            ->select([
+                new Expression("`createdAt` - {$streamSession->startedAt} as timestamp"),
+                new Expression('COUNT(`id`) as count'),
+            ])
             ->byStreamSessionId($streamSession->id)
             ->betweenTimestamps($streamSession->startedAt, $streamSession->stoppedAt)
             ->orderBy(['`createdAt`' => SORT_ASC])
@@ -52,8 +60,7 @@ class LikesAction extends Action
             ->all();
 
         foreach ($likes as &$like) {
-            $like['timestamp'] = (int)$like['timestamp'];
-            $like['count'] = (int)$like['count'];
+            $like = array_map('intval', $like);
         }
 
         $provider = new ArrayDataProvider([

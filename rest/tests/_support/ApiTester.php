@@ -93,7 +93,7 @@ class ApiTester extends \Codeception\Actor
             [
                 'code' => 'integer:=201',
                 'status' => 'string:=success',
-                'result' => 'array'
+                'result' => 'array|null'
             ]
         );
     }
