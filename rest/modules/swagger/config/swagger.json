@@ -1441,7 +1441,7 @@
                 ],
                 "responses": {
                     "201": {
-                        "$ref": "#/components/responses/204"
+                        "$ref": "#/components/responses/201"
                     },
                     "401": {
                         "$ref": "#/components/responses/401"
