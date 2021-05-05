@@ -18,6 +18,8 @@ use rest\common\controllers\actions\Stream\CurrentAction;
 use rest\common\controllers\actions\Stream\EventAction;
 use rest\common\controllers\actions\Stream\IndexAction;
 use rest\common\controllers\actions\Stream\ProductEventAction;
+use rest\common\controllers\actions\Stream\LikeCreateAction;
+use rest\common\controllers\actions\Stream\LikesAction;
 use rest\common\controllers\actions\Stream\ProductsAction;
 use rest\common\controllers\actions\Stream\StartAction;
 use rest\common\controllers\actions\Stream\StopAction;
@@ -96,7 +98,17 @@ class StreamSessionController extends ActiveController
     const ACTION_COMMENT_CREATE = 'comment-create';
 
     /**
-     * Register session event (view)
+     * Get likes of selected session
+     */
+    const ACTION_LIKES = 'likes';
+
+    /**
+     * Create like to session
+     */
+    const ACTION_LIKE_CREATE = 'like-create';
+
+    /**
+     *  Register session event (view)
      */
     const ACTION_EVENT = 'event';
 
@@ -148,6 +160,8 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_ARCHIVE_PRODUCTS,
                                 self::ACTION_COMMENT_INDEX,
                                 self::ACTION_COMMENT_CREATE,
+                                self::ACTION_LIKE_CREATE,
+                                self::ACTION_LIKES,
                             ],
                             'roles' => [User::ROLE_SELLER, User::ROLE_BUYER]
                         ],
@@ -225,6 +239,18 @@ class StreamSessionController extends ActiveController
                 ],
                 self::ACTION_COMMENT_CREATE => [
                     'class' => CommentCreateAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_LIKE_CREATE => [
+                    'class' => LikeCreateAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_LIKES => [
+                    'class' => LikesAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],

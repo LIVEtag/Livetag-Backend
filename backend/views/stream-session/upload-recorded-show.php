@@ -4,6 +4,7 @@
  * See LICENSE.txt for license details.
  */
 
+use backend\models\Stream\StreamSession;
 use backend\models\Stream\UploadRecordedShowForm;
 use kartik\widgets\FileInput;
 use kartik\widgets\Select2;
@@ -70,6 +71,18 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'allowClear' => true,
                             ],
                         ]); ?>
+
+                        <?= $form->field($model, 'internalCart')
+                            ->hint(Yii::t('app', 'Please set the behavior of the system when the buyer clicks on a product in the product list (Shop) or on the product card in the video (presented now).'))
+                            ->widget(Select2::class, [
+                                'data' => StreamSession::INTERNAL_CART_OPTIONS,
+                                'options' => [
+                                    'placeholder' => Yii::t('app', 'Select Product details view'),
+                                ],
+                                'pluginOptions' => [
+                                    'allowClear' => false,
+                                ],
+                            ]); ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">

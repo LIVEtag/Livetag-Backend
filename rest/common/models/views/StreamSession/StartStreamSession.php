@@ -93,6 +93,7 @@ class StartStreamSession extends Model
             throw new BadRequestHttpException(ErrorList::errorTextByCode(ErrorList::START_WITH_FIFTEEN_MINUTES));
         }
 
+        $this->streamSession->scenario = StreamSession::SCENARIO_START;
         // 1. Touch startedAt to generate expired time for token
         $this->streamSession->touch('startedAt');
 
