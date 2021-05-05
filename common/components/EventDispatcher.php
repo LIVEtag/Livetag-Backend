@@ -25,7 +25,6 @@ use common\observers\StreamSession\CreateStreamSessionArchiveObserver;
 use common\observers\StreamSession\CreateStreamSessionObserver;
 use common\observers\StreamSession\DeleteStreamSessionArchiveObserver;
 use common\observers\StreamSession\EndSoonStreamSessionObserver;
-use common\observers\StreamSession\SubscriberTokenCreatedObserver;
 use common\observers\StreamSession\UpdateStreamSessionArchiveObserver;
 use common\observers\StreamSession\UpdateStreamSessionObserver;
 use common\observers\StreamSessionProduct\CreateStreamSessionProductObserver;
@@ -58,10 +57,6 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_END_SOON, [Yii::createObject(EndSoonStreamSessionObserver::class), 'execute']);
-        Event::on(StreamSession::class, StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, [
-            Yii::createObject(SubscriberTokenCreatedObserver::class),
-            'execute'
-        ]);
 
         # Stream Session Archive
         Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_INSERT, [

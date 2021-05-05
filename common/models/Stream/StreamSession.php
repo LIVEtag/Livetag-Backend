@@ -126,10 +126,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
      */
     const MAX_ANNOUNCED_AT_DAYS = 366;
 
-    /**
-     * Created vonage token for subscriber
-     */
-    const EVENT_SUBSCRIBER_TOKEN_CREATED = 'subscriberTokenCreated';
     const DURATION_30 = 1800;
     const DURATION_60 = 3600;
     const DURATION_90 = 5400;
@@ -804,7 +800,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             return $this->getPublisherToken();
         }
         $subscriberToken = $this->createSubscriberToken();
-        $this->trigger(StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, new StreamSessionSubscriberTokenCreatedEvent($user));
         return $subscriberToken;
     }
 

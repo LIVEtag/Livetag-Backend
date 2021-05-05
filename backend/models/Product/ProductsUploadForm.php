@@ -124,7 +124,6 @@ class ProductsUploadForm extends Model
     /**
      * Read CSV, extract and validate header and transform to array
      * populate `products` property
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      */
     public function populateProducts(): bool
     {

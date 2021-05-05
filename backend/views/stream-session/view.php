@@ -85,7 +85,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
 ?>
 <section class="stream-session-view">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="box box-default">
                 <div class="box-header">
                     <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
@@ -106,6 +106,10 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             ]); ?>
                         <?php endif; ?>
                     <?php endif; ?>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    <h4 class="box-title pull-right">Livestream details</h4>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -172,20 +176,6 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'startedAt:datetime',
                             'stoppedAt:datetime',
                             [
-                                'label' => 'Number of views',
-                                'attribute' => 'streamSessionStatistic.viewsCount',
-                            ],
-                            [
-                                'label' => '“Add to cart” clicks',
-                                'attribute' => 'streamSessionStatistic.addToCartCount',
-                            ],
-                            [
-                                'label' => '“Add to cart” rate',
-                                'value' => function (StreamSession $model) {
-                                    return $model->getAddToCartRate();
-                                }
-                            ],
-                            [
                                 'label' => 'Duration',
                                 'value' => function (StreamSession $model) {
                                     return $model->getActualDuration();
@@ -214,7 +204,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
             <!-- /.box -->
         </div>
         <!-- /.col -->
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="box box-default">
                 <div class="box-header">
                     <?php if ($model->isStopped() || $model->isArchived()) : ?>
@@ -229,7 +219,10 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             ],
                         ]); ?>
                     <?php endif; ?>
-                    <h4 class="box-title pull-right">Recorded video </h4>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    <h4 class="box-title pull-right">Recorded video</h4>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -289,6 +282,70 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <!-- /.col -->
     </div>
     <!-- /.row -->
+
+    <?php if ($model->streamSessionStatistic) : ?>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-default">
+                    <div class="box-header">
+                        <h4 class="box-title">Livestream statistic</h4>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <!--/.box-header -->
+                    <div class="box-body">
+                        <?=
+                        DetailView::widget([
+                            'model' => $model->streamSessionStatistic,
+                            'attributes' => [
+                                'streamViewCount',
+                                'streamAddToCartCount',
+                                'streamAddToCartRate',
+                            ],
+                        ]);
+                        ?>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer"></div>
+                    <!--/.box-footer -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+
+            <?php if ($model->archive) : ?>
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header">
+                            <h4 class="box-title">Recorded video statistic</h4>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <!--/.box-header -->
+                        <div class="box-body">
+                            <?=
+                            DetailView::widget([
+                                'model' => $model->streamSessionStatistic,
+                                'attributes' => [
+                                    'archiveViewCount',
+                                    'archiveAddToCartCount',
+                                    'archiveAddToCartRate',
+                                ],
+                            ]);
+                            ?>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer"></div>
+                        <!--/.box-footer -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
     <div class="row">
         <div class="col-md-12">

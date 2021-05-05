@@ -58,6 +58,10 @@
         {
             "name": "Archives",
             "description": "Manage Archives in Stream Session"
+        },
+        {
+            "name": "Analytics",
+            "description": "Collect Events for Analytics"
         }
     ],
     "paths": {
@@ -1019,7 +1023,6 @@
             }
         },
 
-
         "/v1/stream-session/{streamSessionid}/archive/product": {
             "get": {
                 "tags": [
@@ -1089,6 +1092,75 @@
             }
         },
 
+        "/v1/stream-session/{streamSessionid}/event": {
+            "post": {
+                "security": [
+                    {
+                        "Basic": []
+                    }
+                ],
+                "tags": [
+                    "Stream Session",
+                    "Analytics",
+                    "Buyer"
+                ],
+                "summary": "Events with Stream Session",
+                "operationId": "streamSessionEvent",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "example": 4,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "type",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "view"
+                                        ],
+                                        "example": "view"
+                                    },
+                                    "payload": {
+                                        "type": "string",
+                                        "example": null,
+                                        "description": "Any payload to save (JSON)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
         "/v1/stream-session/{streamSessionid}/product/{productId}/event": {
             "post": {
                 "security": [
@@ -1099,6 +1171,7 @@
                 "tags": [
                     "Stream Session",
                     "Product",
+                    "Analytics",
                     "Buyer"
                 ],
                 "summary": "Events with Stream Session Products",

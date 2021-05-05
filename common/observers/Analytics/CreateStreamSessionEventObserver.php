@@ -9,6 +9,7 @@ namespace common\observers\Analytics;
 
 use common\models\Analytics\StreamSessionEvent;
 use common\models\Analytics\StreamSessionStatistic;
+use LogicException;
 use RuntimeException;
 use yii\base\Event;
 
@@ -28,7 +29,14 @@ class CreateStreamSessionEventObserver
         }
         switch ($streamEvent->type) {
             case StreamSessionEvent::TYPE_VIEW:
-                StreamSessionStatistic::recalculate($streamEvent->getStreamSessionId(), StreamSessionStatistic::ATTR_VIEWS_COUNT);
+                $streamSession = $streamEvent->streamSession;
+                if ($streamSession->isNew()) {
+                    throw new LogicException('No event type for new session');
+                }
+                $event = $streamSession->isActive() ?
+                    StreamSessionStatistic::ATTR_STREAM_VIEWS_COUNT :
+                    StreamSessionStatistic::ATTR_ARCHIVE_VIEWS_COUNT;
+                StreamSessionStatistic::recalculate($streamSession->getId(), $event);
                 break;
         }
     }

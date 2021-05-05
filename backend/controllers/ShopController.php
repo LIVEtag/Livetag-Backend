@@ -111,7 +111,6 @@ class ShopController extends Controller
 
     /**
      * Display seller shop details (curent shop)
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */

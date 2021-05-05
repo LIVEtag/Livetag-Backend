@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2019 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 use common\fixtures\ProductFixture;
