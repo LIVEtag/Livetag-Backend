@@ -29,6 +29,8 @@ class Message extends BaseObject implements MessageInterface
     const ACTION_COMMENT_CREATE = 'commentCreate';
     const ACTION_COMMENT_UPDATE = 'commentUpdate';
     const ACTION_COMMENT_DELETE = 'commentDelete';
+    //Like
+    const ACTION_LIKE_CREATE = 'likeCreate';
 
     /**
      * Allowed actions by type
@@ -43,6 +45,7 @@ class Message extends BaseObject implements MessageInterface
         self::ACTION_COMMENT_CREATE,
         self::ACTION_COMMENT_UPDATE,
         self::ACTION_COMMENT_DELETE,
+        self::ACTION_LIKE_CREATE,
     ];
 
     /** @var string */

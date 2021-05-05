@@ -14,6 +14,7 @@ use common\models\Product\StreamSessionProduct;
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
 use common\models\Stream\StreamSessionArchive;
+use common\models\Stream\StreamSessionLike;
 use common\models\User;
 use common\observers\Analytics\CreateStreamSessionEventObserver;
 use common\observers\Analytics\CreateStreamSessionProductEventObserver;
@@ -22,6 +23,7 @@ use common\observers\Comment\DeleteCommentObserver;
 use common\observers\Comment\UpdateCommentObserver;
 use common\observers\Shop\DeleteShopObserver;
 use common\observers\StreamSession\CreateStreamSessionArchiveObserver;
+use common\observers\StreamSession\CreateStreamSessionLikeObserver;
 use common\observers\StreamSession\CreateStreamSessionObserver;
 use common\observers\StreamSession\DeleteStreamSessionArchiveObserver;
 use common\observers\StreamSession\EndSoonStreamSessionObserver;
@@ -89,6 +91,12 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(StreamSessionProduct::class, StreamSessionProduct::EVENT_AFTER_DELETE, [
             Yii::createObject(DeleteStreamSessionProductObserver::class),
             'execute'
+        ]);
+
+        # Stream Session Like events
+        Event::on(StreamSessionLike::class, StreamSessionLike::EVENT_AFTER_INSERT, [
+            Yii::createObject(CreateStreamSessionLikeObserver::class),
+            'execute',
         ]);
 
         # Chat events
