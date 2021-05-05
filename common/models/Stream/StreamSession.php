@@ -26,6 +26,7 @@ use common\models\queries\Analytics\StreamSessionStatisticQuery;
 use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Product\ProductQuery;
 use common\models\queries\Product\StreamSessionProductQuery;
+use common\models\queries\Stream\StreamSessionLikeQuery;
 use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Shop\Shop;
 use common\models\User;
@@ -115,6 +116,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
 
     /** @see getStreamSessionStatistic() */
     const REL_STREAM_SESSION_STATISTIC = 'streamSessionStatistic';
+
+    /** @see getStreamSessionLikes() */
+    const REL_STREAM_SESSION_LIKE = 'streamSessionLikes';
 
     /**
      * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
@@ -565,6 +569,14 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @return StreamSessionLikeQuery
+     */
+    public function getStreamSessionLikes(): StreamSessionLikeQuery
+    {
+        return $this->hasMany(StreamSessionLike::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
      * @return ProductQuery
      */
     public function getProducts(): ProductQuery
@@ -861,6 +873,56 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             'token' => $token,
             'expiredAt' => $this->getExpiredAt(),
         ]);
+    }
+
+    /**
+     * Get number of unique buyers' likes for active period of current stream session
+     *
+     * @return int
+     */
+    public function getActiveLikes(): int
+    {
+        if (!$this->startedAt) {
+            return 0;
+        }
+
+        $query = self::find()
+            ->joinWith([
+                self::REL_STREAM_SESSION_LIKE => function (StreamSessionLikeQuery $query) {
+                    $stoppedAt = $this->stoppedAt ?: time();
+                    return $query
+                        ->betweenTimestamps($this->startedAt, $stoppedAt)
+                        ->joinWith(StreamSessionLike::REL_BUYER);
+                }
+            ])
+            ->byId($this->id);
+
+        return (int)$query->count('DISTINCT(' . User::tableName() . '.id)');
+    }
+
+    /**
+     * Get number of unique buyers' likes for current archived stream session
+     *
+     * @return int
+     */
+    public function getArchivedLikes(): int
+    {
+        if (!$this->isArchived()) {
+            return 0;
+        }
+
+        $query = self::find()
+            ->joinWith([
+                self::REL_STREAM_SESSION_LIKE => function (StreamSessionLikeQuery $query) {
+                    return $query
+                        ->afterTimestamp($this->archive->createdAt)
+                        ->joinWith(StreamSessionLike::REL_BUYER);
+                }
+            ])
+            ->byId($this->id)
+            ->archived();
+
+        return (int)$query->count('DISTINCT(' . User::tableName() . '.id)');
     }
 
     /**

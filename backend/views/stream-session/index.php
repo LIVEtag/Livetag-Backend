@@ -125,6 +125,14 @@ $user = Yii::$app->user->identity ?? null;
                                 'hAlign' => GridView::ALIGN_LEFT,
                             ],
                             [
+                                'label' => 'Likes',
+                                'attribute' => 'likes',
+                                'headerOptions' => ['width' => '80'],
+                                'mergeHeader' => true,
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'hAlign' => GridView::ALIGN_LEFT,
+                            ],
+                            [
                                 'attribute' => 'status',
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,

@@ -186,6 +186,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 }
                             ],
                             [
+                                'label' => 'Likes of the livestream',
+                                'value' => function (StreamSession $model) {
+                                    return $model->getActiveLikes();
+                                }
+                            ],
+                            [
                                 'label' => 'Duration',
                                 'value' => function (StreamSession $model) {
                                     return $model->getActualDuration();
@@ -273,7 +279,13 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                         }
                                         return Html::a($url, $url, ['target' => '_blank']);
                                     }
-                                ]
+                                ],
+                                [
+                                    'label' => 'Likes of the archive',
+                                    'value' => function (StreamSessionArchive $model) {
+                                        return $model->streamSession->getArchivedLikes();
+                                    }
+                                ],
                             ],
                         ]); ?>
                     <?php else : ?>
