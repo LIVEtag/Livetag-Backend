@@ -69,6 +69,18 @@ class UploadRecordForm extends Model implements UploadArchiveInterface
         if (!$this->validate()) {
             return false;
         }
-        return $this->saveArchive();
+        // Transaction is needed, because when saving the archive, the video rotation is determined and the session is saved there.
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if (!$this->saveArchive()) {
+                $transaction->rollBack();
+                return false;
+            }
+            $transaction->commit();
+            return true;
+        } catch (Throwable $ex) {
+            $transaction->rollBack();
+            throw $ex;
+        }
     }
 }

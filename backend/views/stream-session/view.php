@@ -155,6 +155,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     return $model->getStatusName();
                                 },
                             ],
+                            'rotate',
                             [
                                 'attribute' => 'shopId',
                                 'label' => 'Shop',
