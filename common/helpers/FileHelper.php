@@ -161,4 +161,52 @@ class FileHelper extends BaseFileHelper
         }
         return $sourceExtension;
     }
+
+    /**
+     * Get duration of file
+     * @param string $path
+     * @return int
+     */
+    public static function getVideoDuration($path): int
+    {
+        $ffprobe = Yii::$app->params['ffprobe'];
+        // Returns video duration string that contains seconds like '15.021667'
+        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
+        $duration = exec(
+            $ffprobe
+            . ' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'
+            . $path
+            . '"'
+        );
+        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
+        // Can be 'N/A' for image, '' for wrong paths or for 0 secs video
+        if (!$duration || !(int) $duration) {
+            return 0;
+        }
+        return $duration;
+    }
+
+    /**
+     * Get rotation of video.
+     * Return 0 if can't detect
+     * @link https://superuser.com/a/1344486
+     * @param string $path
+     * @return int
+     */
+    public static function getVideoRotate($path): int
+    {
+        $ffprobe = Yii::$app->params['ffprobe'];
+        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
+        $rotate = exec(
+            $ffprobe
+            . ' -loglevel error -select_streams v:0 -show_entries stream_tags=rotate -of default=nw=1:nk=1 -i "'
+            . $path
+            . '"'
+        );
+        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
+        if (!$rotate || !(int) $rotate) {
+            return 0;
+        }
+        return $rotate;
+    }
 }
