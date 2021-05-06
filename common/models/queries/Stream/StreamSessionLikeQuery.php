@@ -29,4 +29,22 @@ class StreamSessionLikeQuery extends ActiveQuery
     {
         return $this->andWhere(['between', $this->getFieldName('createdAt'), $from, $to]);
     }
+
+    /**
+     * @param int $from
+     * @return StreamSessionLikeQuery
+     */
+    public function afterTimestamp(int $from)
+    {
+        return $this->andWhere(['>', $this->getFieldName('createdAt'), $from]);
+    }
+
+    /**
+     * @param int $to
+     * @return StreamSessionLikeQuery
+     */
+    public function beforeTimestamp(int $to)
+    {
+        return $this->andWhere(['<=', $this->getFieldName('createdAt'), $to]);
+    }
 }

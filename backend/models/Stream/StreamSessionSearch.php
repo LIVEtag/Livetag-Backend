@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace backend\models\Stream;
 
-use backend\models\Stream\StreamSession;
 use common\models\Analytics\StreamSessionStatistic;
+use common\models\Stream\StreamSessionLike;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -38,13 +38,16 @@ class StreamSessionSearch extends StreamSession
      */
     public $actualDuration;
 
+    /** @var int */
+    public $likes;
+
     /**
      * @inheritdoc
      */
     public function rules(): array
     {
         return [
-            [['id', 'shopId', 'status', 'totalViewCount', 'totalAddToCartCount', 'duration'], 'integer'],
+            [['id', 'shopId', 'status', 'totalViewCount', 'totalAddToCartCount', 'duration', 'likes'], 'integer'],
             ['totalAddToCartRate', 'number'],
             [['sessionId', 'name'], 'string'],
         ];
@@ -75,13 +78,22 @@ class StreamSessionSearch extends StreamSession
                 ELSE NULL
             END AS actualDuration');
 
+        $likeSubQuery = StreamSessionLike::find()
+            ->select([
+                'streamSessionId',
+                new Expression('COUNT(DISTINCT(' . StreamSessionLike::tableName() . '.`userId`)) as likes'),
+            ])
+            ->groupBy(['streamSessionId']);
+
         $query = self::find()
             ->joinWith(self::REL_STREAM_SESSION_STATISTIC)
+            ->leftJoin(['l' => $likeSubQuery], self::tableName() . '.`id` = `l`.`streamSessionId`')
             ->select([self::tableName() . '.*',
                 StreamSessionStatistic::tableName() . '.totalAddToCartCount',
                 StreamSessionStatistic::tableName() . '.totalViewCount',
                 StreamSessionStatistic::tableName() . '.totalAddToCartRate',
-                $actualDurationExpression
+                $actualDurationExpression,
+                'likes',
             ]);
 
         $dataProvider = new ActiveDataProvider([
@@ -116,6 +128,10 @@ class StreamSessionSearch extends StreamSession
         $dataProvider->sort->attributes['actualDuration'] = [
             'asc' => ['actualDuration' => SORT_ASC],
             'desc' => ['actualDuration' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['likes'] = [
+            'asc' => ['likes' => SORT_ASC],
+            'desc' => ['likes' => SORT_DESC],
         ];
 
         // grid filtering conditions

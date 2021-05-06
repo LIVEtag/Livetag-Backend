@@ -26,6 +26,7 @@ use common\models\queries\Analytics\StreamSessionStatisticQuery;
 use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Product\ProductQuery;
 use common\models\queries\Product\StreamSessionProductQuery;
+use common\models\queries\Stream\StreamSessionLikeQuery;
 use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Shop\Shop;
 use common\models\User;
@@ -115,6 +116,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
 
     /** @see getStreamSessionStatistic() */
     const REL_STREAM_SESSION_STATISTIC = 'streamSessionStatistic';
+
+    /** @see getStreamSessionLikes() */
+    const REL_STREAM_SESSION_LIKE = 'streamSessionLikes';
 
     /**
      * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
@@ -572,6 +576,14 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @return StreamSessionLikeQuery
+     */
+    public function getStreamSessionLikes(): StreamSessionLikeQuery
+    {
+        return $this->hasMany(StreamSessionLike::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
      * @return ProductQuery
      */
     public function getProducts(): ProductQuery
@@ -867,6 +879,42 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             'token' => $token,
             'expiredAt' => $this->getExpiredAt(),
         ]);
+    }
+
+    /**
+     * Get number of unique likes for active period of current stream session
+     *
+     * @return int
+     */
+    public function getActiveLikes(): int
+    {
+        if (!$this->startedAt) {
+            return 0;
+        }
+
+        $query = $this->getStreamSessionLikes();
+        if ($this->stoppedAt) {
+            $query->beforeTimestamp($this->stoppedAt);
+        }
+
+        return (int)$query->select('userId')->distinct()->count();
+    }
+
+    /**
+     * Get number of unique likes for current archived stream session
+     *
+     * @return int
+     */
+    public function getArchivedLikes(): int
+    {
+        $query = $this->getStreamSessionLikes();
+        if ($this->stoppedAt) {
+            $query->afterTimestamp($this->stoppedAt);
+        } elseif ($this->startedAt) {
+            return 0;
+        }
+
+        return (int)$query->select('userId')->distinct()->count();
     }
 
     /**
