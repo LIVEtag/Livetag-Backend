@@ -900,7 +900,10 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
         }
         $this->scenario = StreamSession::SCENARIO_STOP;
         $this->touch('stoppedAt');
-        $this->status = self::STATUS_STOPPED;
+        //In some rare cases, the archive may appear before the broadcast ends (if the broadcast has stopped, and the session is not).
+        //In this case, when the session is stopped, we need to check the presence of an archive.
+        //If the archive exists and it is ready - to set the session immediately to archive status.
+        $this->status = ($this->archive && $this->archive->isReady()) ? self::STATUS_ARCHIVED : self::STATUS_STOPPED;
         return $this->save(true, ['status', 'stoppedAt']);
     }
 
