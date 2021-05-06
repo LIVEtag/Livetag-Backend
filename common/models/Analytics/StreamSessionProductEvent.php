@@ -261,7 +261,7 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
      */
     public static function getActiveEventsQuery(StreamSession $streamSession): StreamSessionProductEventQuery
     {
-        $query = self::find()->byStreamSessionId($this->streamSessionId);
+        $query = self::find()->byStreamSessionId($streamSession->id);
         //For active stream - calculate all events. For stopped and archived - only events before stream stop
         if (!$streamSession->isActive()) {
             $query->andWhere(['<=', 'createdAt', $streamSession->getStoppedAt()]);
