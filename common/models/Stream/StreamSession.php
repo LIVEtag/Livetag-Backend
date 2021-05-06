@@ -130,10 +130,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
      */
     const MAX_ANNOUNCED_AT_DAYS = 366;
 
-    /**
-     * Created vonage token for subscriber
-     */
-    const EVENT_SUBSCRIBER_TOKEN_CREATED = 'subscriberTokenCreated';
     const DURATION_30 = 1800;
     const DURATION_60 = 3600;
     const DURATION_90 = 5400;
@@ -231,6 +227,16 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     const SCENARIO_UPLOAD_SHOW = 'upload-show';
 
     /**
+     * Steam session is starting
+     */
+    const SCENARIO_START = 'start';
+
+    /**
+     * Stream session is stopping
+     */
+    const SCENARIO_STOP = 'stop';
+
+    /**
      * Array of Product ids to link
      *
      * null represent, that field not extracted and processed
@@ -322,6 +328,7 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
                 'when' => function (self $model) {
                     return $model->isActive();
                 },
+                'on' => self::SCENARIO_START,
             ],
             [
                 'stoppedAt',
@@ -329,7 +336,7 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
                 'when' => function (self $model) {
                     return $model->isStopped();
                 },
-                'except' => self::SCENARIO_UPLOAD_SHOW,
+                'on' => self::SCENARIO_STOP,
             ],
             [
                 'productIds',
@@ -816,7 +823,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             return $this->getPublisherToken();
         }
         $subscriberToken = $this->createSubscriberToken();
-        $this->trigger(StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, new StreamSessionSubscriberTokenCreatedEvent($user));
         return $subscriberToken;
     }
 
@@ -990,8 +996,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
         if (!$this->isActive()) {
             throw new BadRequestHttpException('You can only stop active translations');
         }
-        $this->status = self::STATUS_STOPPED;
+        $this->scenario = StreamSession::SCENARIO_STOP;
         $this->touch('stoppedAt');
+        $this->status = self::STATUS_STOPPED;
         return $this->save(true, ['status', 'stoppedAt']);
     }
 

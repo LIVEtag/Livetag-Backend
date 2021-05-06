@@ -26,7 +26,6 @@ use yii\queue\RetryableJobInterface;
 
 /**
  * Save archive in database
- * phpcs:disable PHPCS_SecurityAudit.BadFunctions
  * Class CreateVideoFromWebhookJob
  */
 class SaveArchiveFromWebhookJob extends BaseObject implements JobInterface, RetryableJobInterface

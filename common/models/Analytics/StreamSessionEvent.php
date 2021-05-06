@@ -205,4 +205,32 @@ class StreamSessionEvent extends ActiveRecord implements StreamSessionEventInter
     {
         return $this->createdAt ? (int) $this->createdAt : null;
     }
+
+    /**
+     * @param StreamSession $streamSession
+     * @return StreamSessionEventQuery
+     */
+    public static function getActiveEventsQuery(StreamSession $streamSession): StreamSessionEventQuery
+    {
+        $query = self::find()->byStreamSessionId($streamSession->id);
+        //For active stream - calculate all events. For stopped and archived - only events before stream stop
+        if (!$streamSession->isActive()) {
+            $query->andWhere(['<=', 'createdAt', $streamSession->getStoppedAt()]);
+        }
+        return $query;
+    }
+
+    /**
+     * @param StreamSession $streamSession
+     * @return StreamSessionEventQuery
+     */
+    public static function getArchivedEventsQuery(StreamSession $streamSession): StreamSessionEventQuery
+    {
+        $query = self::find()->byStreamSessionId($streamSession->id);
+        //If session as stopped timestamp - calclulate all events after it
+        if ($streamSession->getStoppedAt()) {
+            $query->andWhere(['>', 'createdAt', $streamSession->getStoppedAt()]);
+        }
+        return $query;
+    }
 }

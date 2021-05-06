@@ -1,12 +1,12 @@
 <?php
 
-namespace rest\tests\api\Product;
+namespace rest\tests\api\Analytics;
 
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
 use rest\tests\ProviderDataTrait;
 
-class ProductEventCest extends ActionCest
+class StreamSessionProductEventCest extends ActionCest
 {
     use ProviderDataTrait;
     /** @var int */

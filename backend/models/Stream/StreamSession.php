@@ -31,18 +31,6 @@ class StreamSession extends BaseModel
     }
 
     /**
-     * Displate Add to cart rate
-     * @return float|null
-     */
-    public function getAddToCartRate()
-    {
-        if (!$this->streamSessionStatistic || !$this->streamSessionStatistic->viewsCount) {
-            return null;
-        }
-        return round($this->streamSessionStatistic->addToCartCount / $this->streamSessionStatistic->viewsCount, 4);
-    }
-
-    /**
      * Get all entities as indexed array
      * @return array [id=>key] array of entities
      */

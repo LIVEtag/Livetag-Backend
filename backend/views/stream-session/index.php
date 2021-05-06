@@ -63,24 +63,6 @@ $user = Yii::$app->user->identity ?? null;
                                 },
                                 'visible' => $user && $user->isAdmin,
                             ],
-//                            [
-//                                'attribute' => 'announcedAt',
-//                                'format' => 'datetime',
-//                                'mergeHeader' => true,
-//                                'vAlign' => GridView::ALIGN_TOP,
-//                                'hAlign' => GridView::ALIGN_LEFT,
-//                                'headerOptions' => ['width' => '180'],
-//                                'filter' => false
-//                            ],
-//                            [
-//                                'attribute' => 'duration',
-//                                'label' => 'Duration',
-//                                'headerOptions' => ['width' => '80'],
-//                                'filter' => Html::activeDropDownList($searchModel, 'duration', StreamSession::DURATIONS, ['class' => 'form-control', 'prompt' => '']),
-//                                'value' => function (StreamSession $model) {
-//                                    return $model->getMaximumDuration();
-//                                }
-//                            ],
                             [
                                 'attribute' => 'startedAt',
                                 'label' => 'Date and time',
@@ -104,23 +86,22 @@ $user = Yii::$app->user->identity ?? null;
                             ],
                             [
                                 'label' => 'Number of views',
-                                'attribute' => 'viewsCount',
+                                'attribute' => 'totalViewCount',
                                 'headerOptions' => ['width' => '150'],
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
                             ],
                             [
                                 'label' => '“Add to cart” clicks',
-                                'attribute' => 'addToCartCount',
+                                'attribute' => 'totalAddToCartCount',
                                 'headerOptions' => ['width' => '150'],
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
                             ],
                             [
                                 'label' => '“Add to cart” rate',
-                                'attribute' => 'addToCartRate',
+                                'attribute' => 'totalAddToCartRate',
                                 'headerOptions' => ['width' => '150'],
-                                'mergeHeader' => true,
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
                             ],

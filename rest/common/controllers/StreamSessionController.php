@@ -7,16 +7,17 @@
 namespace rest\common\controllers;
 
 use common\models\Stream\StreamSession;
-use rest\common\controllers\actions\Stream\Archive\StartAction as ArchiveStartAction;
-use rest\common\controllers\actions\Stream\Archive\StopAction as ArchiveStopAction;
 use rest\common\controllers\actions\Stream\Archive\ProductsAction as ArchiveProductsAction;
 use rest\common\controllers\actions\Stream\Archive\SnapshotsAction;
+use rest\common\controllers\actions\Stream\Archive\StartAction as ArchiveStartAction;
+use rest\common\controllers\actions\Stream\Archive\StopAction as ArchiveStopAction;
 use rest\common\controllers\actions\Stream\CommentCreateAction;
 use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
 use rest\common\controllers\actions\Stream\CurrentAction;
 use rest\common\controllers\actions\Stream\EventAction;
 use rest\common\controllers\actions\Stream\IndexAction;
+use rest\common\controllers\actions\Stream\ProductEventAction;
 use rest\common\controllers\actions\Stream\LikeCreateAction;
 use rest\common\controllers\actions\Stream\LikesAction;
 use rest\common\controllers\actions\Stream\ProductsAction;
@@ -107,9 +108,14 @@ class StreamSessionController extends ActiveController
     const ACTION_LIKE_CREATE = 'like-create';
 
     /**
-     * Add to cart click event
+     *  Register session event (view)
      */
     const ACTION_EVENT = 'event';
+
+    /**
+     * Register product event (Add to cart click)
+     */
+    const ACTION_PRODUCT_EVENT = 'product-event';
 
     /**
      * Start archiving
@@ -163,6 +169,7 @@ class StreamSessionController extends ActiveController
                             'allow' => true,
                             'actions' => [
                                 self::ACTION_EVENT,
+                                self::ACTION_PRODUCT_EVENT,
                             ],
                             'roles' => [User::ROLE_BUYER]
                         ],
@@ -250,6 +257,12 @@ class StreamSessionController extends ActiveController
                 ],
                 self::ACTION_EVENT => [
                     'class' => EventAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_PRODUCT_EVENT => [
+                    'class' => ProductEventAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],
