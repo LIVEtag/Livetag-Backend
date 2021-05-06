@@ -178,7 +178,7 @@ trait UploadArchiveTrait
         }
 
         $rotate = FileHelper::getVideoRotate($this->videoFile->tempName);
-        if ($rotate) {
+        if ($rotate != $this->getStreamSession()->getAttribute('rotate')) {
             $this->getStreamSession()->setAttribute('rotate', $rotate);
             if (!$this->getStreamSession()->save(true, ['rotate'])) {
                 LogHelper::error('Failed to save rotation', StreamSession::LOG_CATEGORY, LogHelper::extraForModelError($this->getStreamSession()));
