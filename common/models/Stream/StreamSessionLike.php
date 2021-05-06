@@ -28,7 +28,6 @@ use yii\helpers\Json;
  *
  * @property-read StreamSession $streamSession
  * @property-read User $user
- * @property-read User $buyer
  */
 class StreamSessionLike extends ActiveRecord
 {
