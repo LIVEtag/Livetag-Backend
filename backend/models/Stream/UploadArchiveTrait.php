@@ -9,6 +9,8 @@ namespace backend\models\Stream;
 
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
+use common\helpers\FileHelper;
+use common\helpers\LogHelper;
 use common\models\Stream\StreamSessionArchive;
 use Throwable;
 use Yii;
@@ -178,19 +180,18 @@ trait UploadArchiveTrait
      */
     protected function uploadVideoFile(): bool
     {
-        $ffprobe = Yii::$app->params['ffprobe'];
-        // Returns video duration string that contains seconds like '15.021667'
-        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
-        $duration = exec(
-            $ffprobe
-            . ' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'
-            . $this->videoFile->tempName
-            . '"'
-        );
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
-        // Can be 'N/A' for image, '' for wrong paths or for 0 secs video
-        if (!$duration || !(int) $duration) {
+        $duration = FileHelper::getVideoDuration($this->videoFile->tempName);
+        if (!$duration) {
             return false;
+        }
+
+        $rotate = FileHelper::getVideoRotate($this->videoFile->tempName);
+        if ($rotate) {
+            $this->getStreamSession()->setAttribute('rotate', $rotate);
+            if (!$this->getStreamSession()->save(true, ['rotate'])) {
+                LogHelper::error('Failed to save rotation', StreamSession::LOG_CATEGORY, LogHelper::extraForModelError($this->getStreamSession()));
+                return false;
+            }
         }
 
         $oldArchive = $this->getStreamSession()->archive;

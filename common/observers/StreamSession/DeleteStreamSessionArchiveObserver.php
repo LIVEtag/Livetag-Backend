@@ -27,24 +27,16 @@ class DeleteStreamSessionArchiveObserver
             throw new RuntimeException('Not StreamSessionArchive instance');
         }
 
-        if ($streamSessionArchive->streamSession->isArchived()
-            || ($streamSessionArchive->streamSession->rotate !== StreamSession::ROTATE_0)
-        ) {
-            if ($streamSessionArchive->streamSession->isArchived()) {
-                $streamSessionArchive->streamSession->status = StreamSession::STATUS_STOPPED;
-            }
+        if ($streamSessionArchive->streamSession->isArchived()) {
+            $streamSessionArchive->streamSession->status = StreamSession::STATUS_STOPPED;
+        }
 
-            if ($streamSessionArchive->streamSession->rotate !== StreamSession::ROTATE_0) {
-                $streamSessionArchive->streamSession->rotate = StreamSession::ROTATE_0;
-            }
-
-            if (!$streamSessionArchive->streamSession->save()) {
-                LogHelper::error(
-                    'Failed to save Stream Session',
-                    StreamSession::LOG_CATEGORY,
-                    LogHelper::extraForModelError($streamSessionArchive->streamSession)
-                );
-            }
+        if (!$streamSessionArchive->streamSession->save()) {
+            LogHelper::error(
+                'Failed to save Stream Session',
+                StreamSession::LOG_CATEGORY,
+                LogHelper::extraForModelError($streamSessionArchive->streamSession)
+            );
         }
     }
 }
