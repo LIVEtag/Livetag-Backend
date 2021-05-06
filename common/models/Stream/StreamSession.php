@@ -882,7 +882,7 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     }
 
     /**
-     * Get number of unique buyers' likes for active period of current stream session
+     * Get number of unique likes for active period of current stream session
      *
      * @return int
      */
@@ -892,43 +892,29 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             return 0;
         }
 
-        $query = self::find()
-            ->joinWith([
-                self::REL_STREAM_SESSION_LIKE => function (StreamSessionLikeQuery $query) {
-                    $stoppedAt = $this->stoppedAt ?: time();
-                    return $query
-                        ->betweenTimestamps($this->startedAt, $stoppedAt)
-                        ->joinWith(StreamSessionLike::REL_BUYER);
-                }
-            ])
-            ->byId($this->id);
+        $query = $this->getStreamSessionLikes();
+        if ($this->stoppedAt) {
+            $query->beforeTimestamp($this->stoppedAt);
+        }
 
-        return (int)$query->count('DISTINCT(' . User::tableName() . '.id)');
+        return (int)$query->select('userId')->distinct()->count();
     }
 
     /**
-     * Get number of unique buyers' likes for current archived stream session
+     * Get number of unique likes for current archived stream session
      *
      * @return int
      */
     public function getArchivedLikes(): int
     {
-        if (!$this->isArchived()) {
+        $query = $this->getStreamSessionLikes();
+        if ($this->stoppedAt) {
+            $query->afterTimestamp($this->stoppedAt);
+        } elseif ($this->startedAt) {
             return 0;
         }
 
-        $query = self::find()
-            ->joinWith([
-                self::REL_STREAM_SESSION_LIKE => function (StreamSessionLikeQuery $query) {
-                    return $query
-                        ->afterTimestamp($this->archive->createdAt)
-                        ->joinWith(StreamSessionLike::REL_BUYER);
-                }
-            ])
-            ->byId($this->id)
-            ->archived();
-
-        return (int)$query->count('DISTINCT(' . User::tableName() . '.id)');
+        return (int)$query->select('userId')->distinct()->count();
     }
 
     /**

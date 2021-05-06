@@ -38,4 +38,13 @@ class StreamSessionLikeQuery extends ActiveQuery
     {
         return $this->andWhere(['>', $this->getFieldName('createdAt'), $from]);
     }
+
+    /**
+     * @param int $to
+     * @return StreamSessionLikeQuery
+     */
+    public function beforeTimestamp(int $to)
+    {
+        return $this->andWhere(['<=', $this->getFieldName('createdAt'), $to]);
+    }
 }

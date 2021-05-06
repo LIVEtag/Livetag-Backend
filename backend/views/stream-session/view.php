@@ -9,6 +9,7 @@ use backend\models\Comment\CommentSearch;
 use backend\models\Product\StreamSessionProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
+use common\models\Analytics\StreamSessionStatistic;
 use common\models\Stream\StreamSessionArchive;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -302,6 +303,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'streamViewCount',
                                 'streamAddToCartCount',
                                 'streamAddToCartRate',
+                                [
+                                    'label' => 'Likes of the livestream',
+                                    'value' => function (StreamSessionStatistic $model) {
+                                        return $model->streamSession->getActiveLikes();
+                                    },
+                                ],
                             ],
                         ]);
                         ?>
@@ -332,6 +339,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     'archiveViewCount',
                                     'archiveAddToCartCount',
                                     'archiveAddToCartRate',
+                                    [
+                                        'label' => 'Likes of the archive',
+                                        'value' => function (StreamSessionStatistic $model) {
+                                            return $model->streamSession->getArchivedLikes();
+                                        },
+                                    ],
                                 ],
                             ]);
                             ?>

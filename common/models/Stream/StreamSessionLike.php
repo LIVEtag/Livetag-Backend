@@ -38,9 +38,6 @@ class StreamSessionLike extends ActiveRecord
     /** @see getUser() */
     const REL_USER = 'user';
 
-    /** @see getBuyer() */
-    const REL_BUYER = 'buyer';
-
     /**
      * Category for logs
      */
@@ -159,13 +156,5 @@ class StreamSessionLike extends ActiveRecord
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId']);
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getBuyer()
-    {
-        return $this->getUser()->andOnCondition(['role' => User::ROLE_BUYER]);
     }
 }
