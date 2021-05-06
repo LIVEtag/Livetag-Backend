@@ -8,18 +8,21 @@ declare(strict_types=1);
 namespace rest\common\controllers\actions\Stream;
 
 use common\models\Stream\StreamSession;
-use rest\common\models\Analytics\EventForm;
+use rest\common\models\Analytics\ProductEventForm;
+use rest\common\models\Product\Product;
 use Yii;
 use yii\rest\Action;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 
-class EventAction extends Action
+class ProductEventAction extends Action
 {
 
     /**
      * @param int $id
      * @param int $productId
      */
-    public function run(int $id)
+    public function run(int $id, int $productId)
     {
         /** @var StreamSession $streamSession */
         $streamSession = $this->findModel($id);
@@ -28,8 +31,17 @@ class EventAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
+        $product = Product::findOne($productId);
+        if (!$product) {
+            throw NotFoundHttpException("Product not found: $productId");
+        }
 
-        $form = new EventForm($streamSession, Yii::$app->user->identity);
+        //check that session and product belongs to one shop
+        if ($product->shopId !== $streamSession->shopId) {
+            throw new ForbiddenHttpException('You cannot perform this action');
+        }
+
+        $form = new ProductEventForm($streamSession, $product, Yii::$app->user->identity);
         $form->setAttributes(Yii::$app->request->getBodyParams());
         $event = $form->create();
         if ($event->hasErrors()) {

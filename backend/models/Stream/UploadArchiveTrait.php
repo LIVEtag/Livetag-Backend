@@ -71,9 +71,7 @@ trait UploadArchiveTrait
     {
         $ch = curl_init($this->$attribute);
         curl_setopt($ch, CURLOPT_NOBODY, true);
-        // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         curl_exec($ch);
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $info = curl_getinfo($ch);
         curl_close($ch);
 
@@ -88,13 +86,11 @@ trait UploadArchiveTrait
                     ->setParams(['mimeTypes' => implode(', ', StreamSessionArchive::getMimeTypes())]));
         }
         if (!isset($info['download_content_length']) || ($info['download_content_length'] > Yii::$app->params['maxUploadVideoSize'])) {
-            // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
             $this->addError($attribute, $errorsList->createErrorMessage(ErrorList::FILE_TOO_BIG)
                 ->setParams([
                         'file' => basename($this->$attribute),
                         'formattedLimit' => Yii::$app->params['maxUploadVideoSize'],
                     ]));
-            // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         }
     }
 
@@ -143,7 +139,6 @@ trait UploadArchiveTrait
      */
     protected function setFileFromUrl(): bool
     {
-        // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         $fileName = basename($this->directUrl);
         $tempFile = tmpfile();
 
@@ -156,16 +151,13 @@ trait UploadArchiveTrait
         $ch = curl_init($this->directUrl);
         curl_setopt($ch, CURLOPT_FILE, $fp);
         curl_exec($ch);
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
         curl_close($ch);
 
         $this->videoFile = new UploadedFile([
             'name' => $fileName,
             'tempName' => $metaData['uri'],
-            // phpcs:disable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
             'size' => filesize($metaData['uri']),
             'type' => mime_content_type($metaData['uri']),
-            // phpcs:enable PHPCS_SecurityAudit.BadFunctions.FilesystemFunctions
             'tempResource' => $tempFile,
         ]);
         return true;
@@ -180,14 +172,12 @@ trait UploadArchiveTrait
     {
         $ffprobe = Yii::$app->params['ffprobe'];
         // Returns video duration string that contains seconds like '15.021667'
-        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
         $duration = exec(
             $ffprobe
             . ' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'
             . $this->videoFile->tempName
             . '"'
         );
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
         // Can be 'N/A' for image, '' for wrong paths or for 0 secs video
         if (!$duration || !(int) $duration) {
             return false;

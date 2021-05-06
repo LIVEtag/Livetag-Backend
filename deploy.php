@@ -204,27 +204,6 @@ task('tests:php_cs', function ()  use ($testPaths) {
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
 })->desc('PHP CS static tests');
 
-task('tests:php_sa', function ()  use ($testPaths) {
-    // solution until PHPCS_SecurityAudit rule exclude-pattern will be fixed
-    // https://github.com/FloeDesignTechnologies/phpcs-security-audit/issues/45
-    run('if [ ! -d "'.
-        YII_PROJECT_ROOT .'/vendor/squizlabs/php_codesniffer/src/Standards/PHPCS_SecurityAudit" ]; then
-        if [ -d "'. YII_PROJECT_ROOT .'/vendor/pheromone" ]; then
-            ln -s '. YII_PROJECT_ROOT .'/vendor/pheromone/phpcs-security-audit/Security '
-        . YII_PROJECT_ROOT .'/vendor/squizlabs/php_codesniffer/src/Standards/PHPCS_SecurityAudit
-        fi
-    fi
-    ');
-
-    $params = [
-        '--standard='. YII_PROJECT_ROOT .'/dev/etc/phpcs/standard/security.xml',
-        '--extensions=php',
-        '--ignore='.YII_PROJECT_ROOT.'/rest/tests/*',
-        implode(' ', $testPaths),
-    ];
-    run('php '. YII_PROJECT_ROOT .'/vendor/bin/phpcs ' . implode(' ', $params));
-})->desc('PHP CS security audit tests');
-
 task('tests:codeception', function () {
     run('php '. YII_PROJECT_ROOT .'/vendor/bin/codecept run');
 })->desc('Codeception tests');
@@ -233,7 +212,6 @@ task('tests', function() {
     invoke('tests:php_md');
     invoke('tests:php_cpd');
     invoke('tests:php_cs');
-    invoke('tests:php_sa');
 });
 
 task('deploy', function () {

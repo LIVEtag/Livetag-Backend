@@ -9,9 +9,6 @@ use Throwable;
 use Yii;
 use yii\helpers\FileHelper as BaseFileHelper;
 
-/**
- * phpcs:disable PHPCS_SecurityAudit.BadFunctions
- */
 class FileHelper extends BaseFileHelper
 {
 

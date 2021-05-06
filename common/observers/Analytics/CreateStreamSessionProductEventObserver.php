@@ -9,6 +9,7 @@ namespace common\observers\Analytics;
 
 use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Analytics\StreamSessionStatistic;
+use LogicException;
 use RuntimeException;
 use yii\base\Event;
 
@@ -28,7 +29,14 @@ class CreateStreamSessionProductEventObserver
         }
         switch ($productEvent->type) {
             case StreamSessionProductEvent::TYPE_ADD_TO_CART:
-                StreamSessionStatistic::recalculate($productEvent->getStreamSessionId(), StreamSessionStatistic::ATTR_ADD_TO_CART_COUNT);
+                $streamSession = $productEvent->streamSession;
+                if ($streamSession->isNew()) {
+                    throw new LogicException('No event type for new session');
+                }
+                $event = $streamSession->isActive() ?
+                    StreamSessionStatistic::ATTR_STREAM_ADD_TO_CART_COUNT :
+                    StreamSessionStatistic::ATTR_ARCHIVE_ADD_TO_CART_COUNT;
+                StreamSessionStatistic::recalculate($productEvent->getStreamSessionId(), $event);
                 break;
         }
     }

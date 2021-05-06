@@ -83,7 +83,6 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
         self::TYPE_PRODUCT_UPDATE => 'Update product',
         self::TYPE_PRODUCT_DELETE => 'Delete product'
     ];
-
     const SCENARIO_USER = 'user';
 
     /**
@@ -254,5 +253,34 @@ class StreamSessionProductEvent extends ActiveRecord implements StreamSessionPro
     public function getCreatedAt(): ?int
     {
         return $this->createdAt ? (int) $this->createdAt : null;
+    }
+
+    /**
+     * @param StreamSession $streamSession
+     * @return StreamSessionProductEventQuery
+     */
+    public static function getActiveEventsQuery(StreamSession $streamSession): StreamSessionProductEventQuery
+    {
+        $query = self::find()->byStreamSessionId($streamSession->id);
+        //For active stream - calculate all events. For stopped and archived - only events before stream stop
+        if (!$streamSession->isActive()) {
+            $query->andWhere(['<=', 'createdAt', $streamSession->getStoppedAt()]);
+        }
+        return $query;
+    }
+
+    /**
+     * @param StreamSession $streamSession
+     * @return StreamSessionProductEventQuery
+     */
+    public static function getArchivedEventsQuery(StreamSession $streamSession): StreamSessionProductEventQuery
+    {
+        $query = self::find()->byStreamSessionId($streamSession->id);
+
+        //If session as stopped timestamp - calclulate all events after it
+        if ($streamSession->getStoppedAt()) {
+            $query->andWhere(['>', 'createdAt', $streamSession->getStoppedAt()]);
+        }
+        return $query;
     }
 }

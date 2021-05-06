@@ -19,7 +19,6 @@ use yii\queue\JobInterface;
 
 /**
  * Create Entity and generate psoter
- * phpcs:disable PHPCS_SecurityAudit.BadFunctions
  * Class CreatePlaylistJob
  */
 class CreatePlaylistJob extends BaseObject implements JobInterface

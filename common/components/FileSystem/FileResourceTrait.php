@@ -14,7 +14,6 @@ use yii\web\UploadedFile;
 
 /**
  * Trait FileResourceTrait, implements FileResourceInterface.
- * phpcs:disable PHPCS_SecurityAudit.BadFunctions
  * @see FileResourceInterface
  */
 trait FileResourceTrait

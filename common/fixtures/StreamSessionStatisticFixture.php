@@ -29,9 +29,21 @@ class StreamSessionStatisticFixture extends ActiveFixture
      */
     protected function getTemplate(): array
     {
+        $streamAddToCartCount =  $this->generator->randomNumber(2);
+        $streamViewCount =  $this->generator->randomNumber(2);
+        $archiveAddToCartCount =  $this->generator->randomNumber(2);
+        $archiveViewCount = $this->generator->randomNumber(2);
+
         return [
-            'viewsCount' => $this->generator->randomNumber(2),
-            'addToCartCount' => $this->generator->randomNumber(2),
+            'streamAddToCartCount' => $streamAddToCartCount,
+            'streamViewCount' => $streamViewCount,
+            'streamAddToCartRate' => $streamViewCount ? $streamAddToCartCount / $streamViewCount : 0,
+            'archiveAddToCartCount' => $archiveAddToCartCount,
+            'archiveViewCount' => $archiveViewCount,
+            'archiveAddToCartRate' => $archiveViewCount ? $archiveAddToCartCount / $archiveViewCount : 0,
+            'totalAddToCartCount' => $streamAddToCartCount + $archiveAddToCartCount,
+            'totalViewCount' => $streamViewCount + $archiveViewCount,
+            'totalAddToCartRate' => ($streamAddToCartCount + $archiveAddToCartCount)/($streamViewCount + $archiveViewCount),
         ];
     }
 }

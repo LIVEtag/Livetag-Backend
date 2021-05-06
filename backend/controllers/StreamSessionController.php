@@ -273,7 +273,6 @@ class StreamSessionController extends Controller
 
     /**
      * Displays a single StreamSession model.
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
