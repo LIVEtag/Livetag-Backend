@@ -17,20 +17,25 @@ use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "product".
- * @property int $id             [int(10) unsigned]
- * @property string $externalId  [varchar(255)]
- * @property int $shopId         [int(11) unsigned]
- * @property string $title       [varchar(255)]
+ * @property int $id         [int(10) unsigned]
+ * @property string $externalId     [varchar(255)]
+ * @property int $shopId     [int(11) unsigned]
+ * @property string $title      [varchar(255)]
  * @property string $description [varchar(255)]
- * @property array $options      [json]
- * @property string $photo       [varchar(255)]
- * @property string $link        [varchar(255)]
- * @property int $status         [tinyint(3)]
- * @property int $createdAt      [int(11) unsigned]
- * @property int $updatedAt      [int(11) unsigned]
+ * @property array $options    [json]
+ * @property string $photo      [varchar(255)]
+ * @property string $link       [varchar(255)]
+ * @property int $status     [tinyint(3)]
+ * @property int $createdAt  [int(11) unsigned]
+ * @property int $updatedAt  [int(11) unsigned]
+ *
+ * @property-read ProductMedia[] $productMedias
  */
 class Product extends ActiveRecord implements ProductInterface
 {
+    /** @see getProductMedias() */
+    const REL_PRODUCT_MEDIA = 'productMedias';
+
     /**
      * Removed product. required for analytics
      */
@@ -177,6 +182,14 @@ class Product extends ActiveRecord implements ProductInterface
     public function getShop(): ActiveQuery
     {
         return $this->hasOne(Shop::class, ['id' => 'shopId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProductMedias(): ActiveQuery
+    {
+        return $this->hasMany(ProductMedia::class, ['productId' => 'id']);
     }
 
     /**
