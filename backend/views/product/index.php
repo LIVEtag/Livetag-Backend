@@ -7,6 +7,7 @@
 use backend\models\Product\Product;
 use common\models\forms\Product\ProductsUploadForm;
 use backend\models\Product\ProductSearch;
+use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -111,7 +112,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'link',
                                 'headerOptions' => ['width' => '120'],
                                 'format' => ['url', ['target' => '_blank']]
-                            ]
+                            ],
+                            [
+                                'class' => ActionColumn::class,
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'template' => '{delete}',
+                                'buttons' => [
+                                    'deleteOptions' => [
+                                        'data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?')
+                                    ],
+                                ],
+                            ],
                         ],
                     ]); ?>
                 </div>
