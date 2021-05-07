@@ -269,12 +269,19 @@ class Product extends ActiveRecord implements ProductInterface
 
     /**
      * Fake delete
-     * @todo: add delete logic
      */
     public function delete()
     {
         $this->status = self::STATUS_DELETED;
         return $this->save(true, ['status']);
+    }
+
+    /**
+     * Operation required ONLY when shop deleted.
+     */
+    public function hardDelete()
+    {
+        return parent::delete();
     }
 
     /**

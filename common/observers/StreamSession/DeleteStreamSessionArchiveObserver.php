@@ -31,6 +31,9 @@ class DeleteStreamSessionArchiveObserver
         }
 
         $streamSession = $streamSessionArchive->streamSession;
+        if (!$streamSession) {
+            return; //if session already deleted (beforeDelete event)
+        }
         if ($streamSession->isArchived()) {
             $streamSession->status = StreamSession::STATUS_STOPPED;
             if (!$streamSession->save()) {
