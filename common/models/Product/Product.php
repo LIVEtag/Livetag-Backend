@@ -11,6 +11,7 @@ use common\components\behaviors\TimestampBehavior;
 use common\components\validation\validators\OptionValidator;
 use common\models\queries\Product\ProductQuery;
 use common\models\Shop\Shop;
+use common\models\Stream\ProductMedia;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -27,9 +28,14 @@ use yii\db\ActiveRecord;
  * @property int $status     [tinyint(3)]
  * @property int $createdAt  [int(11) unsigned]
  * @property int $updatedAt  [int(11) unsigned]
+ *
+ * @property-read ProductMedia[] $productMedias
  */
 class Product extends ActiveRecord implements ProductInterface
 {
+    /** @see getProductMedias() */
+    const REL_PRODUCT_MEDIA = 'productMedias';
+
     /**
      * Removed product. required for analytics
      */
@@ -171,6 +177,14 @@ class Product extends ActiveRecord implements ProductInterface
     public function getShop(): ActiveQuery
     {
         return $this->hasOne(Shop::class, ['id' => 'shopId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProductMedias(): ActiveQuery
+    {
+        return $this->hasMany(ProductMedia::class, ['productId' => 'id']);
     }
 
     /**
