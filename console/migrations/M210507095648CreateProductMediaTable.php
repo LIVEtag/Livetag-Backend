@@ -25,7 +25,7 @@ class M210507095648CreateProductMediaTable extends Migration
                 'path' => $this->string(255)->notNull(),
                 'originName' => $this->string(255)->notNull(),
                 'size' => $this->integer()->unsigned()->notNull(),
-                'formatted' => $this->json()->notNull(),
+                'formatted' => $this->json(),
                 'type' => $this->enum(["image"])->notNull(),
                 'createdAt' => $this->unixTimestamp(),
             ]

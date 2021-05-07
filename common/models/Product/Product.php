@@ -11,7 +11,6 @@ use common\components\behaviors\TimestampBehavior;
 use common\components\validation\validators\OptionValidator;
 use common\models\queries\Product\ProductQuery;
 use common\models\Shop\Shop;
-use common\models\Stream\ProductMedia;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;

@@ -5,14 +5,13 @@
  */
 declare(strict_types = 1);
 
-namespace common\models\Stream;
+namespace common\models\Product;
 
 use common\components\behaviors\TimestampBehavior;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
 use common\components\validation\validators\ArrayValidator;
-use common\models\Product\Product;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -52,7 +51,7 @@ class ProductMedia extends ActiveRecord implements MediaInterface
     public function rules(): array
     {
         return [
-            [['productId', 'formatted', 'type', 'path', 'originName', 'size'], 'required'],
+            [['productId', 'type', 'path', 'originName', 'size'], 'required'],
             [['productId'], 'integer'],
             ['formatted', ArrayValidator::class],
             ['size',  'integer', 'min' => 0],
