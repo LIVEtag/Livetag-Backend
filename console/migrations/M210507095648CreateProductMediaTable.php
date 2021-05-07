@@ -31,7 +31,7 @@ class M210507095648CreateProductMediaTable extends Migration
             ]
         );
 
-        $this->addFK(self::TABLE_NAME, 'productId', Product::TABLE_NAME, 'id', 'CASCADE');
+        $this->addFK(self::TABLE_NAME, 'productId', Product::TABLE_NAME, 'id');
     }
 
     /**
