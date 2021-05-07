@@ -20,6 +20,11 @@ interface StreamSessionInterface
     public function getId(): ?int;
 
     /**
+     * @return string
+     */
+    public function getName(): string;
+
+    /**
      * @return int|null
      */
     public function getShopId(): ?int;
@@ -48,6 +53,16 @@ interface StreamSessionInterface
      * @return int|null
      */
     public function getCreatedAt(): ?int;
+
+    /**
+     * @return int|null
+     */
+    public function getAnnouncedAt(): ?int;
+
+    /**
+     * @return int|null
+     */
+    public function getDuration(): ?int;
 
     /**
      * @return int|null

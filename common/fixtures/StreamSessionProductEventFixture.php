@@ -28,6 +28,9 @@ class StreamSessionProductEventFixture extends ActiveFixture
     //Active Session of Shop2
     const EVENT_10_SESSION_4 = 10;
     const EVENT_11_SESSION_4 = 11;
+    //Archived Session of Shop2
+    const EVENT_12_SESSION_7 = 12;
+    const EVENT_13_SESSION_8 = 13;
 
     public $modelClass = StreamSessionProductEvent::class;
     public $depends = [

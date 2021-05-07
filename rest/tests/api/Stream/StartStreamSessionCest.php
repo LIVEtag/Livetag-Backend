@@ -12,6 +12,7 @@ use common\fixtures\UserFixture;
 use rest\tests\AccessTestTrait;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
+use rest\tests\ProviderDataTrait;
 
 /**
  * @group Stream
@@ -19,6 +20,8 @@ use rest\tests\ApiTester;
 class StartStreamSessionCest extends ActionCest
 {
     use AccessTestTrait;
+    use ProviderDataTrait;
+
     /** @var int */
     protected $streamSessionId = StreamSessionFixture::STREAM_SESSION_3_SHOP_1_NEW;
 
@@ -41,13 +44,17 @@ class StartStreamSessionCest extends ActionCest
 
     /**
      * @param ApiTester $I
+     * @throws \ReflectionException
      */
     public function start(ApiTester $I)
     {
         $I->amLoggedInApiAs(UserFixture::SELLER_1);
         $I->wantToTest('Start Stream Session');
-        $I->send($this->getMethod(), $this->getUrl($I));
-        $I->seeResponseResultIsOk();
-        $I->seeResponseMatchesJsonType($I->getStreamSessionTokenResponse(), '$.result');
+        foreach ($this->getProviderData($I, 'start-with-rotate') as $data) {
+            $this->dataComment($I, $data);
+            $I->send($this->getMethod(), $this->getUrl($I), $data['request']);
+            $I->seeResponseResultIsOk();
+            $I->seeResponseMatchesJsonType($I->getStreamSessionTokenResponse(), '$.result');
+        }
     }
 }

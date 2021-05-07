@@ -10,12 +10,19 @@ namespace backend\controllers;
 use backend\components\Controller;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
+use backend\models\Product\Product;
 use backend\models\Product\StreamSessionProduct;
 use backend\models\Product\StreamSessionProductSearch;
+use backend\models\Stream\SaveAnnouncementForm;
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\StreamSessionSearch;
+use backend\models\Stream\UploadRecordedShowForm;
+use backend\models\Stream\UploadRecordForm;
 use backend\models\User\User;
+use common\helpers\LogHelper;
 use common\models\forms\Comment\CommentForm;
+use common\models\Stream\StreamSessionArchive;
+use Exception;
 use kartik\grid\EditableColumnAction;
 use Throwable;
 use Yii;
@@ -23,10 +30,13 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * StreamSessionController implements the CRUD actions for StreamSession model.
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class StreamSessionController extends Controller
 {
@@ -46,6 +56,30 @@ class StreamSessionController extends Controller
                 'access' => [
                     'rules' => [
                         [
+                            'actions' => [
+                                'create',
+                                'update',
+                                'publish',
+                                'unpublish',
+                                'delete-cover-image',
+                                'upload-recorded-show', //create stream + archive
+                                'upload-record', // create archive inside stream
+                                'delete-record',
+                            ],
+                            'allow' => true,
+                            'roles' => [User::ROLE_SELLER],
+                        ],
+                        [
+                            'actions' => [
+                                'index',
+                                'view',
+                                self::ACTION_EDITABLE_PRODUCT,
+                                'create-comment',
+                                'delete-comment',
+                                'delete-product',
+                                'enable-comment',
+                                'stop'
+                            ],
                             'allow' => true,
                             'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER], //todo: add RBAC with check access
                         ],
@@ -56,6 +90,7 @@ class StreamSessionController extends Controller
                     'actions' => [
                         'stop' => ['POST'],
                         'delete' => ['POST'],
+                        'delete-cover-image' => ['POST'],
                     ],
                 ]
             ]
@@ -84,10 +119,7 @@ class StreamSessionController extends Controller
     public function actionIndex()
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
 
         $searchModel = new StreamSessionSearch();
         $params = Yii::$app->request->queryParams;
@@ -103,7 +135,145 @@ class StreamSessionController extends Controller
     }
 
     /**
+     * Creates a new StreamSession model. (only for seller)
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        /** @var User $user */
+        $user = $this->getAndCheckCurrentUser();
+
+        $model = new SaveAnnouncementForm();
+        $params = Yii::$app->request->post();
+        if ($params) {
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+        return $this->render('create', [
+                'model' => $model,
+                'productIds' => Product::getIndexedArray($user->shop->id)
+        ]);
+    }
+
+    /**
+     * @return string
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionUploadRecordedShow()
+    {
+        /** @var User $user */
+        $user = $this->getAndCheckCurrentUser();
+
+        $model = new UploadRecordedShowForm();
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->videoFile = UploadedFile::getInstance($model, 'videoFile');
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+
+        return $this->render('upload-recorded-show', [
+                'model' => $model,
+                'productIds' => Product::getIndexedArray($user->shop->id),
+        ]);
+    }
+
+    /**
+     * Updates an existing StreamSession model. (only for seller)
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate(int $id)
+    {
+        $streamSession = $this->findModel($id);
+        $user = Yii::$app->user->identity; //shop and seller checked before
+
+        $model = new SaveAnnouncementForm($streamSession);
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+        return $this->render('update', [
+            'model' => $model,
+            'productIds' => Product::getIndexedArray($user->shop->id)
+        ]);
+    }
+
+    /**
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionUploadRecord(int $id)
+    {
+        $streamSession = $this->findModel($id);
+        $user = Yii::$app->user->identity; //shop and seller checked before
+
+        $model = new UploadRecordForm($streamSession);
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->videoFile = UploadedFile::getInstance($model, 'videoFile');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->streamSession->id]);
+            }
+        }
+
+        return $this->render('upload-record', [
+            'model' => $model
+        ]);
+    }
+
+    /**
+     * Delete archive
+     * @param int $id
+     */
+    public function actionDeleteRecord(int $id)
+    {
+        $model = $this->findModel($id);
+        /** @var  StreamSessionArchive $archive */
+        $archive = $model->archive;
+
+        if (!$archive) {
+            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have recorded video.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        if ($archive->delete() === false) {
+            Yii::$app->session->setFlash('error', 'Failed to remove recorded video.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'Recorded video was removed.'));
+        return $this->redirect(['view', 'id' => $model->id]);
+    }
+
+    /**
      * Displays a single StreamSession model.
+     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -111,10 +281,7 @@ class StreamSessionController extends Controller
     public function actionView(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
 
         $model = $this->findModel($id);
 
@@ -143,6 +310,18 @@ class StreamSessionController extends Controller
             $commentModel->userId = $user->id;
         }
 
+        try {
+            $url = Yii::$app->urlManagerSDK->createAbsoluteUrl('/lib/watch-session.txt');
+            $snippet = htmlentities(Yii::t('app', file_get_contents($url), ['sessionId' => $id])); //todo: cache it
+        } catch (Throwable $ex) {
+            $snippet = null;
+            LogHelper::error(
+                'Failed to get snippet',
+                'sdk',
+                LogHelper::extraForException($user->shop, $ex)
+            );
+        }
+
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('view', [
                 'model' => $model,
@@ -151,7 +330,39 @@ class StreamSessionController extends Controller
                 'commentSearchModel' => $commentSearchModel,
                 'commentDataProvider' => $commentDataProvider,
                 'commentModel' => $commentModel,
+                'snippet' => $snippet
         ]);
+    }
+
+    /**
+     * Delete cover image from stream session
+     * @param int $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionDeleteCoverImage(int $id)
+    {
+        $model = $this->findModel($id);
+        $cover = $model->streamSessionCover;
+
+        if (!$cover) {
+            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have cover image.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        if ($cover->delete() === false) {
+            Yii::$app->session->setFlash('error', 'Failed to remove cover image.');
+            $transaction->rollBack();
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+        $model->populateRelation(StreamSession::REL_STREAM_SESSION_COVER, null);
+        $model->save(false, []); //update model to fire update event (after transaction commit)
+        $transaction->commit();
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The cover image was removed.'));
+        return $this->redirect(['view', 'id' => $model->id]);
     }
 
     /**
@@ -162,10 +373,7 @@ class StreamSessionController extends Controller
     public function actionCreateComment(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         /** @var StreamSession $model */
         $model = $this->findModel($id); //get entity and check access
         $commentModel = new CommentForm(['streamSessionId' => $id]);
@@ -177,7 +385,7 @@ class StreamSessionController extends Controller
                     $commentModel = new CommentForm(['streamSessionId' => $id]); //reset form
                 }
             }
-        } catch (\yii\web\ForbiddenHttpException $ex) {
+        } catch (ForbiddenHttpException $ex) {
             $commentModel->addError('message', $ex->getMessage());
         }
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
@@ -195,13 +403,12 @@ class StreamSessionController extends Controller
     {
         /** @var StreamSession $model */
         $model = $this->findModel($id); //get entity and check access
-
         //quite fast solution without form
         $model->commentsEnabled = (bool) Yii::$app->request->post('commentsEnabled');
         $model->save(true, ['commentsEnabled']);
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('comment-enable-form', [
-            'streamSession' => $model,
+                'streamSession' => $model,
         ]);
     }
 
@@ -223,7 +430,46 @@ class StreamSessionController extends Controller
     }
 
     /**
-     * Deletes aProduct from Session.
+     * Publish an existing Stream
+     * @param int $id
+     * @return mixed
+     */
+    public function actionPublish(int $id)
+    {
+        try {
+            if (!$this->findModel($id)->publish()) {
+                throw new Exception('Live stream publication status was not updated.');
+            }
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Live stream was published.'));
+        } catch (Throwable $ex) {
+            Yii::$app->session->setFlash('error', $ex->getMessage());
+        }
+        return $this->redirect(Yii::$app->request->referrer ?: ['index']);
+    }
+
+    /**
+     * Unpublish an existing Stream
+     * @param int $id
+     * @return mixed
+     */
+    public function actionUnpublish(int $id)
+    {
+        try {
+            if (!$this->findModel($id)->unpublish()) {
+                throw new Exception('Live stream publication status was not updated.');
+            }
+            Yii::$app->session->setFlash(
+                'success',
+                Yii::t('app', 'Live stream was unpublished.')
+            );
+        } catch (Throwable $ex) {
+            Yii::$app->session->setFlash('error', $ex->getMessage());
+        }
+        return $this->redirect(Yii::$app->request->referrer ?: ['index']);
+    }
+
+    /**
+     * Deletes a Product from Session.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -284,9 +530,9 @@ class StreamSessionController extends Controller
         $productDataProvider->pagination->route = '/stream-session/view';
         $method = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
         return $this->$method('product-index', [
-                'productSearchModel' => $productSearchModel,
-                'productDataProvider' => $productDataProvider,
-                'streamSessionId' => $streamSessionId,
+            'productSearchModel' => $productSearchModel,
+            'productDataProvider' => $productDataProvider,
+            'streamSessionId' => $streamSessionId,
         ]);
     }
 
@@ -334,10 +580,7 @@ class StreamSessionController extends Controller
     protected function findProductModel(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         $model = StreamSessionProduct::findOne($id);
         if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
@@ -357,10 +600,7 @@ class StreamSessionController extends Controller
     protected function findCommentModel(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         $model = Comment::findOne($id);
         if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
@@ -378,14 +618,26 @@ class StreamSessionController extends Controller
     protected function findModel(int $id)
     {
         /** @var User $user */
-        $user = Yii::$app->user->identity ?? null;
-        if (!$user || ($user->isSeller && !$user->shop)) {
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
+        $user = $this->getAndCheckCurrentUser();
         $model = StreamSession::findOne($id);
         if (!$model || ($user->isSeller && $user->shop->id != $model->shopId)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
         return $model;
+    }
+
+    /**
+     * Get user. Check shop exist for seller
+     * @return User
+     * @throws NotFoundHttpException
+     */
+    protected function getAndCheckCurrentUser()
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && !$user->shop)) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        return $user;
     }
 }

@@ -14,6 +14,12 @@ use kartik\popover\PopoverX;
 use yii\helpers\Html;
 use yii\web\View;
 
+$editabletemplateBefore = <<< HTML
+<div class="kv-editable-form-inline">
+    <div class="form-group">
+    </div>
+HTML
+
 /* @var $this View */
 ?>
 
@@ -68,13 +74,18 @@ GridView::widget([
                 return $model->getStatusName();
             },
             'refreshGrid' => true,
-            'editableOptions' => function (StreamSessionProduct $model) {
+            'editableOptions' => function (StreamSessionProduct $model) use ($editabletemplateBefore) {
                 return [
                     'name' => 'status',
                     'value' => $model->getStatusName(),
                     'format' => Editable::FORMAT_LINK,
                     'inputType' => Editable::INPUT_SELECT2,
                     'placement' => PopoverX::ALIGN_LEFT,
+                    'asPopover' => false,
+                    'buttonsTemplate' => '{submit}',
+                    'inlineSettings' => [
+                        'templateBefore' => $editabletemplateBefore
+                    ],
                     'options' => [
                         'class' => 'form-control',
                         'data' => StreamSessionProduct::STATUSES,
@@ -82,7 +93,7 @@ GridView::widget([
                     'formOptions' => ['action' => ['stream-session/' . StreamSessionController::ACTION_EDITABLE_PRODUCT]]
                 ];
             },
-            'headerOptions' => ['width' => '75'],
+            'headerOptions' => ['width' => '190'],
         ],
         [
             'attribute' => 'photo',
@@ -90,7 +101,7 @@ GridView::widget([
             'format' => ['image', ['width' => '75']],
             'vAlign' => GridView::ALIGN_TOP,
             'hAlign' => GridView::ALIGN_LEFT,
-            'headerOptions' => ['width' => '100'],
+            'headerOptions' => ['width' => '75'],
             'mergeHeader' => true,
         ],
         [

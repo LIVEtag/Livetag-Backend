@@ -18,25 +18,6 @@ $user = Yii::$app->user->identity ?? null;
                     'options' => ['class' => 'header']
                 ],
                 [
-                    'label' => 'About',
-                    'icon' => 'info-circle',
-                    'url' => ['/shop/my'],
-                    'visible' => $user && $user->isSeller
-                ],
-                [
-                    'label' => 'Products',
-                    'icon' => 'cubes',
-                    'url' => ['/product/index'],
-                    'visible' => $user && $user->isSeller
-                ],
-                [
-                    'label' => 'Livestreams',
-                    'icon' => 'video-camera',
-                    'url' => ['/stream-session/index'],
-                    'active' => Yii::$app->controller->id == 'stream-session',
-                    'visible' => $user && $user->isSeller
-                ],
-                [
                     'label' => 'Shops',
                     'icon' => 'shopping-bag',
                     'url' => ['/shop/index'],
@@ -51,19 +32,32 @@ $user = Yii::$app->user->identity ?? null;
                     'visible' => $user && $user->isAdmin
                 ],
                 [
+                    'label' => 'About',
+                    'icon' => 'info-circle',
+                    'url' => ['/shop/my'],
+                    'visible' => $user && $user->isSeller,
+                    'active' => Yii::$app->controller->id == 'shop' && in_array(Yii::$app->controller->action->id, ['my', 'update-my']),
+                ],
+                [
+                    'label' => 'Products',
+                    'icon' => 'cubes',
+                    'url' => ['/product/index'],
+                    'visible' => $user && $user->isSeller
+                ],
+                [
+                    'label' => 'Livestreams',
+                    'icon' => 'video-camera',
+                    'url' => ['/stream-session/index'],
+                    'active' => Yii::$app->controller->id == 'stream-session',
+                    'visible' => $user && ($user->isSeller || $user->isAdmin)
+                ],
+                [
                     'options' => ['class' => 'header']
                 ],
                 [
                     'label' => 'Login',
                     'url' => ['/site/login'],
                     'visible' => Yii::$app->user->isGuest
-                ],
-                [
-                    'label' => 'Logout',
-                    'icon' => 'sign-out',
-                    'url' => ['/site/logout'],
-                    'template' => '<a href="{url}" data-method="post">{icon} {label}</a>',
-                    'visible' => !Yii::$app->user->isGuest
                 ],
             ],
         ]); ?>

@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace common\observers\StreamSession;
 
 use common\components\centrifugo\Message;
+use common\components\db\AfterCommitEvent;
 use common\models\Stream\StreamSession;
 use RuntimeException;
 use yii\base\Event;
@@ -18,7 +19,7 @@ class CreateStreamSessionObserver
      * @param Event $event
      * @throws RuntimeException
      */
-    public function execute(Event $event)
+    public function execute(AfterCommitEvent $event)
     {
         /** @var StreamSession $streamSession */
         $streamSession = $event->sender;
@@ -27,7 +28,5 @@ class CreateStreamSessionObserver
         }
         //Notify about create
         $streamSession->notify(Message::ACTION_STREAM_SESSION_CREATE);
-        //Link all existing products
-        $streamSession->linkProducts();
     }
 }

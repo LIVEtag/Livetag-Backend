@@ -20,6 +20,8 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\web\UploadedFile;
 
 /**
  * ShopController implements the CRUD actions for Shop model.
@@ -38,18 +40,19 @@ class ShopController extends Controller
                 'access' => [
                     'rules' => [
                         [
-                            'allow' => true,
-                            'roles' => [User::ROLE_ADMIN],
-                        ],
-                        [
                             'actions' => ['index', 'view', 'create', 'update', 'delete'],
                             'allow' => true,
                             'roles' => [User::ROLE_ADMIN],
                         ],
                         [
-                            'actions' => ['my'],
+                            'actions' => ['my', 'update-my'],
                             'allow' => true,
                             'roles' => [User::ROLE_SELLER],
+                        ],
+                        [
+                            'actions' => ['delete-logo'],
+                            'allow' => true,
+                            'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
                         ],
                     ],
                 ],
@@ -57,6 +60,7 @@ class ShopController extends Controller
                     'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                        'delete-logo' => ['POST'],
                     ],
                 ]
             ]
@@ -147,9 +151,12 @@ class ShopController extends Controller
     {
         $model = new Shop();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'The shop has been successfully created.');
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'The shop has been successfully created.');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -167,14 +174,76 @@ class ShopController extends Controller
     public function actionUpdate(int $id)
     {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
-
         return $this->render('update', [
                 'model' => $model,
         ]);
+    }
+
+    /**
+     * Display seller shop details (curent shop)
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdateMy()
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || !$user->isSeller || !$user->shop) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        $model = $this->findModel($user->shop->id);
+        $model->setScenario(Shop::SCENARIO_SELLER);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->save()) {
+                return $this->redirect(['my']);
+            }
+        }
+        return $this->render('update-my', [
+                'model' => $model,
+        ]);
+    }
+
+    /**
+     * Remove logo for specified shop
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDeleteLogo(int $id)
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || ($user->isSeller && (!$user->shop || $user->shop->id != $id))) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $model = $this->findModel($id);
+        if (!$model->deleteFile()) {
+            Yii::$app->session->setFlash(
+                'error',
+                'Failed to remove logo: ' . implode(', ', $model->getFirstErrors())
+            );
+            return $this->redirect([$user->isSeller ? 'my' : 'view', 'id' => $model->id]);
+        }
+        $model->logo = null;
+        if (!$model->save()) {
+            Yii::$app->session->setFlash(
+                'error',
+                'Failed to remove logo: ' . implode(', ', $model->getFirstErrors())
+            );
+            return $this->redirect([$user->isSeller ? 'my' : 'view', 'id' => $model->id]);
+        }
+
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The logo was removed.'));
+        return $this->redirect([$user->isSeller ? 'my' : 'view', 'id' => $model->id]);
     }
 
     /**

@@ -27,7 +27,12 @@ $user = Yii::$app->user->identity ?? null;
     <div class="row">
         <div class="col-md-12">
             <div class="box box-default">
-                <div class="box-header"></div>
+                <div class="box-header">
+                    <?php if ($user && $user->isSeller) : ?>
+                        <?= Html::a(Yii::t('app', 'Create show'), ['create'], ['class' => 'btn bg-black']) ?>
+                        <?= Html::a(Yii::t('app', 'Upload recorded show'), ['upload-recorded-show'], ['class' => 'btn btn-primary']) ?>
+                    <?php endif; ?>
+                </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
                     <?= GridView::widget([
@@ -41,7 +46,12 @@ $user = Yii::$app->user->identity ?? null;
                             [
                                 'attribute' => 'id',
                                 'hAlign' => GridView::ALIGN_LEFT,
+                                'vAlign' => GridView::ALIGN_TOP,
                                 'headerOptions' => ['width' => '80'],
+                            ],
+                            [
+                                'attribute' => 'name',
+                                'vAlign' => GridView::ALIGN_TOP,
                             ],
                             [
                                 'attribute' => 'shopId',
@@ -53,6 +63,24 @@ $user = Yii::$app->user->identity ?? null;
                                 },
                                 'visible' => $user && $user->isAdmin,
                             ],
+//                            [
+//                                'attribute' => 'announcedAt',
+//                                'format' => 'datetime',
+//                                'mergeHeader' => true,
+//                                'vAlign' => GridView::ALIGN_TOP,
+//                                'hAlign' => GridView::ALIGN_LEFT,
+//                                'headerOptions' => ['width' => '180'],
+//                                'filter' => false
+//                            ],
+//                            [
+//                                'attribute' => 'duration',
+//                                'label' => 'Duration',
+//                                'headerOptions' => ['width' => '80'],
+//                                'filter' => Html::activeDropDownList($searchModel, 'duration', StreamSession::DURATIONS, ['class' => 'form-control', 'prompt' => '']),
+//                                'value' => function (StreamSession $model) {
+//                                    return $model->getMaximumDuration();
+//                                }
+//                            ],
                             [
                                 'attribute' => 'startedAt',
                                 'label' => 'Date and time',
@@ -64,14 +92,14 @@ $user = Yii::$app->user->identity ?? null;
                                 'filter' => false
                             ],
                             [
-                                'attribute' => 'duration',
+                                'attribute' => 'actualDuration',
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '100'],
                                 'mergeHeader' => true,
                                 'filter' => false,
                                 'value' => function (StreamSessionSearch $model) {
-                                    return $model->getDuration();
+                                    return $model->getActualDuration();
                                 }
                             ],
                             [
@@ -109,7 +137,15 @@ $user = Yii::$app->user->identity ?? null;
                             [
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'template' => '{view}'
+                                'template' => '{update} {view}',
+                                'visibleButtons' => [
+                                    'update' => function () use ($user) {
+                                        return $user && $user->isSeller;
+                                    },
+                                    'delete' => function () use ($user) {
+                                        return $user && $user->isSeller;
+                                    }
+                                ],
                             ],
                         ],
                     ]); ?>

@@ -10,10 +10,14 @@ use common\components\streaming\Vonage;
 use common\components\validation\ErrorList;
 use common\components\validation\ErrorListInterface;
 use common\components\validation\validators as RestValidators;
+use creocoder\flysystem\AwsS3Filesystem;
 use notamedia\sentry\SentryTarget;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\log\FileTarget;
+use yii\queue\file\Queue as FileQueue;
+use yii\queue\LogBehavior;
+use yii\queue\sqs\Queue as SqsQueue;
 use yii\swiftmailer\Mailer;
 use yii\validators\BooleanValidator;
 use yii\validators\CompareValidator;
@@ -47,6 +51,7 @@ return [
     'timeZone' => 'UTC',
     'bootstrap' => [
         'log',
+        'queue',
         EventDispatcher::class,
     ],
     'components' => [
@@ -56,12 +61,36 @@ return [
             'datetimeFormat' => 'dd/MM/yyyy, HH:mm:ss',
             'timeZone' => 'Singapore',
         ],
+        'queue' => getenv('USE_FILE_QUEUE') ?
+            [
+                'class' => FileQueue::class,
+                'path' => '@common/queue-' . getenv('AMAZON_SQS_GENERAL') ?: 'general',
+                'as log' => LogBehavior::class
+            ] :
+            [
+                'class' => SqsQueue::class,
+                'url' => 'https://sqs.' . (getenv('AMAZON_SQS_REGION') ?: 'ap-southeast-1') . '.amazonaws.com/'
+                        . getenv('AMAZON_ACCOUNT') . '/' . ENV  . '-'. (getenv('AMAZON_SQS_GENERAL') ?: 'general'),
+                'key' => getenv('AMAZON_ACCESS_KEY') ?: '',
+                'secret' => getenv('AMAZON_SECRET_KEY') ?: '',
+                'region' => getenv('AMAZON_SQS_REGION') ?: 'ap-southeast-1',
+                'as log' => LogBehavior::class
+            ],
         'db' => [
             'class' => Connection::class,
             'dsn' => 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';port=' . getenv('DB_PORT') . '',
             'username' => getenv('DB_USERNAME'),
             'password' => getenv('DB_PASSWORD'),
             'charset' => 'utf8mb4',
+        ],
+        'fs' => [
+            'class' => AwsS3Filesystem::class,
+            'key' => getenv('AMAZON_ACCESS_KEY'),
+            'secret' => getenv('AMAZON_SECRET_KEY'),
+            'bucket' => getenv('AMAZON_S3_BUCKET'),
+            'region' => getenv('AMAZON_S3_REGION'),
+            'prefix' => getenv('AMAZON_S3_PREFIX'),
+            'options' => ['ACL' => 'public-read'],
         ],
         'mailer' => [
             'class' => Mailer::class,
@@ -88,8 +117,9 @@ return [
                     'class' => SentryTarget::class,
                     'dsn' => getenv('SENTRY_DSN'),
                     'enabled' => filter_var(getenv('SENTRY_LOG_ENABLED'), FILTER_VALIDATE_BOOLEAN),
-                    'levels' => ['error', 'warning'],
+                    'levels' => YII_DEBUG ? ['error', 'warning', 'info'] : ['error', 'warning'],
                     'except' => [
+                        'yii\db\*',
                         'yii\web\HttpException:4**',
                     ],
                     // Write the context information (the default is true):

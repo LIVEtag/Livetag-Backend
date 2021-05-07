@@ -238,6 +238,19 @@ class ApiTester extends \Codeception\Actor
     /**
      * @return array
      */
+    public function getStreamSessionSnapshotResponse(): array
+    {
+        $product = $this->getStreamSessionProductResponse();
+        unset($product['product']);
+        return [
+            'timestamp' => 'integer',
+            'products' => [$product],
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function getStreamSessionCommentResponse(): array
     {
         return [
@@ -271,6 +284,7 @@ class ApiTester extends \Codeception\Actor
             'uri' => 'string',
             'name' => 'string',
             'website' => 'string',
+            'logo' => 'string|null',
         ];
     }
 

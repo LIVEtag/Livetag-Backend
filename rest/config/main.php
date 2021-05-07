@@ -12,8 +12,8 @@ use rest\components\api\UrlRule;
 use rest\modules\swagger\Module as SwaggerModule;
 use rest\modules\v1\controllers\CentrifugoController;
 use rest\modules\v1\controllers\ConfigController;
-use rest\modules\v1\controllers\ProductController;
 use rest\modules\v1\controllers\StreamSessionController;
+use rest\modules\v1\controllers\VonageController;
 use rest\modules\v1\Module as V1Module;
 use yii\data\Pagination;
 use yii\web\JsonParser;
@@ -113,15 +113,6 @@ return [
                 ],
                 [
                     'class' => UrlRule::class,
-                    'controller' => [
-                        'v1/pages' => 'v1/pages'
-                    ],
-                    'extraPatterns' => [
-                        'GET <slug>' => 'view',
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
                     'controller' => ['v1/config'],
                     'pluralize' => false,
                     'only' => [
@@ -146,11 +137,18 @@ return [
                         'OPTIONS {id}/token' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/product' => StreamSessionController::ACTION_PRODUCTS,
                         'OPTIONS {id}/product' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}/archive/snapshot' => StreamSessionController::ACTION_ARCHIVE_SNAPSHOTS,
+                        'OPTIONS {id}/archive/snapshot' => StreamSessionController::ACTION_OPTIONS,
+                        'GET {id}/archive/product' => StreamSessionController::ACTION_ARCHIVE_PRODUCTS,
+                        'OPTIONS {id}/archive/product' => StreamSessionController::ACTION_OPTIONS,
                         'POST {id}/product/{productId}/event' => StreamSessionController::ACTION_EVENT,
                         'OPTIONS {id}/product/{productId}/event' => StreamSessionController::ACTION_OPTIONS,
                         'GET {id}/comment' => StreamSessionController::ACTION_COMMENT_INDEX,
                         'POST {id}/comment' => StreamSessionController::ACTION_COMMENT_CREATE,
                         'OPTIONS {id}/comment' => StreamSessionController::ACTION_OPTIONS,
+                        'POST {id}/archive' => StreamSessionController::ACTION_ARCHIVE_START,
+                        'DELETE {id}/archive' => StreamSessionController::ACTION_ARCHIVE_STOP,
+                        'OPTIONS {id}/archive' => StreamSessionController::ACTION_OPTIONS,
                     ]
                 ],
                 [
@@ -160,7 +158,9 @@ return [
                     ],
                     'pluralize' => false,
                     'patterns' => [
+                        'GET {slug}/stream-session' => StreamSessionController::ACTION_INDEX,
                         'GET {slug}/stream-session/current' => StreamSessionController::ACTION_CURRENT,
+                        'OPTIONS {slug}/stream-session' => StreamSessionController::ACTION_OPTIONS,
                         'OPTIONS {slug}/stream-session/current' => StreamSessionController::ACTION_OPTIONS,
                     ],
                 ],
@@ -184,6 +184,14 @@ return [
                         'OPTIONS <id:\w+>' => ShopController::ACTION_OPTIONS,
                         'GET {slug}/product' => ShopController::ACTION_PRODUCTS,
                         'OPTIONS {slug}/product' => ShopController::ACTION_OPTIONS,
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => ['v1/vonage'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST archive-callback' => VonageController::ACTION_ARCHIVE_CALLBACK,
                     ],
                 ],
             ],

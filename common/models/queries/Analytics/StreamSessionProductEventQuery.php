@@ -44,12 +44,25 @@ class StreamSessionProductEventQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('userId') => $id]);
     }
+
     /**
-     * @param string $type
+     * @param string|array $type
      * @return $this
      */
-    public function byType(string $type): self
+    public function byType($type): self
     {
         return $this->andWhere([$this->getFieldName('type') => $type]);
+    }
+
+    /**
+     * @return $this
+     */
+    public function byProductTypes()
+    {
+        return $this->byType([
+            StreamSessionProductEvent::TYPE_PRODUCT_CREATE,
+            StreamSessionProductEvent::TYPE_PRODUCT_UPDATE,
+            StreamSessionProductEvent::TYPE_PRODUCT_DELETE,
+        ]);
     }
 }

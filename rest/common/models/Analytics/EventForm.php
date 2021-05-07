@@ -78,6 +78,7 @@ class EventForm extends Model
 
         /** @var StreamSessionProductEvent $event */
         $event = new StreamSessionProductEvent();
+        $event->scenario = StreamSessionProductEvent::SCENARIO_USER;
         $event->userId = $this->user->getId();
         $event->streamSessionId = $this->streamSession->getId();
         $event->productId = $this->product->getId();

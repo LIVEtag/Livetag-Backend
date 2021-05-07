@@ -9,6 +9,9 @@ use yii\helpers\Json;
 
 class LogHelper
 {
+    const TAG_STREAM_SESSION_ID = 'streamSessionId';
+    const TAG_ARCHIVE_ID = 'archiveId';
+
     /**
      * log error in sentry format
      * @param string $message

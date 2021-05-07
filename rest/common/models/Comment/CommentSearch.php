@@ -30,12 +30,22 @@ class CommentSearch extends Comment
     public $lastId;
 
     /**
+     * @var integer
+     */
+    public $createdAtFrom;
+
+    /**
+     * @var integer
+     */
+    public $createdAtTo;
+
+    /**
      * @inheritdoc
      */
     public function rules(): array
     {
         return [
-            [['userId', 'lastId'], 'integer'],
+            [['userId', 'lastId', 'createdAtFrom', 'createdAtTo'], 'integer'],
         ];
     }
 
@@ -72,8 +82,7 @@ class CommentSearch extends Comment
             return $this; //return errors when validation fails
         }
 
-        $query = $this->streamSession->getComments()
-            ->orderBy(['id' => SORT_DESC]);
+        $query = $this->streamSession->getComments();
 
         //join need only when expand required
         if (ArrayHelper::isIn(self::REL_USER, ExpandHelper::getExpand($params))) {
@@ -85,11 +94,16 @@ class CommentSearch extends Comment
         ]);
 
         // grid filtering conditions
-        $query->andFilterWhere([self::tableName() . '.userId' => $this->userId]);
-
+        $query
+            ->andFilterWhere([self::tableName() . '.userId' => $this->userId])
+            ->andFilterWhere(['<=', self::tableName() . '.createdAt', $this->createdAtTo])
+            ->andFilterWhere(['>=', self::tableName() . '.createdAt', $this->createdAtFrom]);
 
         if ($this->lastId) {
-            $query->andWhere(['<', $query->getFieldName('id'), $this->lastId]);
+            $dataProvider->sort = false;
+            $query
+                ->andWhere(['<', $query->getFieldName('id'), $this->lastId])
+                ->orderBy(['id' => SORT_DESC]);
         }
 
         return $dataProvider;

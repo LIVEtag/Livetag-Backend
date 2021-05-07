@@ -5,6 +5,8 @@
  */
 use backend\assets\HighlightAsset;
 use backend\models\Shop\Shop;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\DetailView;
 
@@ -13,7 +15,6 @@ use yii\widgets\DetailView;
 
 $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;
-
 
 HighlightAsset::register($this);
 
@@ -25,12 +26,36 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
     <div class="row">
         <div class="col-md-12">
             <div class="box box-default">
-                <div class="box-header"></div>
+                <div class="box-header">
+                    <?= Html::a(Yii::t('app', 'Update'), ['update-my'], ['class' => 'btn btn-primary']) ?>
+                </div>
                 <!--/.box-header -->
                 <div class="box-body">
                     <?= DetailView::widget([
                         'model' => $model,
                         'attributes' => [
+                            [
+                                'attribute' => 'logo',
+                                'format' => 'raw',
+                                'value' => function (Shop $model) {
+                                    $imageUrl = $model->getUrl();
+                                    if (!$imageUrl) {
+                                        return null;
+                                    }
+
+                                    $action = Url::to(['/shop/delete-logo', 'id' => $model->id]);
+                                    return "<div class=\"shop-logo\">
+                                                <div class=\"shop-logo__trash\">
+                                                    <a type=\"button\" class=\"btn btn-sm btn-default\" 
+                                                        href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
+                                                        data-confirm=\"Are you sure to delete this item?\">
+                                                        <i class=\"glyphicon glyphicon-trash\"></i>
+                                                    </a>
+                                                </div>
+                                                <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
+                                            </div>";
+                                }
+                            ],
                             'name',
                             'uri',
                             [

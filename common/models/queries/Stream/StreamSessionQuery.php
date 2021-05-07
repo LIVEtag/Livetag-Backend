@@ -17,6 +17,14 @@ use common\components\db\ActiveQuery;
  */
 class StreamSessionQuery extends ActiveQuery
 {
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function byId(int $id): self
+    {
+        return $this->andWhere([$this->getFieldName('id') => $id]);
+    }
 
     /**
      * @param int $shopId
@@ -28,20 +36,32 @@ class StreamSessionQuery extends ActiveQuery
     }
 
     /**
-     * Return session with active status, and not expired token
-     * For first release current is session with statuses ACTIVE and NEW (as we have only one active session)
+     * @param string $externalId
+     * @return $this
+     */
+    public function byExternalId(string $externalId): self
+    {
+        return $this->andWhere([$this->getFieldName('sessionId') => $externalId]);
+    }
+
+    /**
+     * Return session with active status
      *
      * @return $this
      */
     public function active()
     {
-        return $this->andWhere(['OR',
-                ['AND',
-                    [$this->getFieldName('status') => StreamSession::STATUS_ACTIVE],
-                    ['>', $this->getFieldName('startedAt'), time() - StreamSession::DEFAULT_DURATION],
-                ],
-                [$this->getFieldName('status') => StreamSession::STATUS_NEW]
-        ]);
+        return $this->byStatus(StreamSession::STATUS_ACTIVE);
+    }
+
+    /**
+     * Return session with archived status
+     *
+     * @return $this
+     */
+    public function archived()
+    {
+        return $this->byStatus(StreamSession::STATUS_ARCHIVED);
     }
 
     /**
@@ -68,5 +88,14 @@ class StreamSessionQuery extends ActiveQuery
     public function orderByLatest()
     {
         return $this->orderBy([$this->getFieldName('createdAt') => SORT_DESC]);
+    }
+
+    /**
+     * Return published session
+     * @return $this
+     */
+    public function published()
+    {
+        return $this->andWhere([$this->getFieldName('isPublished') => true]);
     }
 }

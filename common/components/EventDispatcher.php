@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2020 GBKSOFT. Web and Mobile Software Development.
+ * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
 declare(strict_types=1);
@@ -13,6 +13,7 @@ use common\models\Comment\Comment;
 use common\models\Product\StreamSessionProduct;
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
+use common\models\Stream\StreamSessionArchive;
 use common\models\User;
 use common\observers\Analytics\CreateStreamSessionEventObserver;
 use common\observers\Analytics\CreateStreamSessionProductEventObserver;
@@ -20,9 +21,12 @@ use common\observers\Comment\CreateCommentObserver;
 use common\observers\Comment\DeleteCommentObserver;
 use common\observers\Comment\UpdateCommentObserver;
 use common\observers\Shop\DeleteShopObserver;
+use common\observers\StreamSession\CreateStreamSessionArchiveObserver;
 use common\observers\StreamSession\CreateStreamSessionObserver;
+use common\observers\StreamSession\DeleteStreamSessionArchiveObserver;
 use common\observers\StreamSession\EndSoonStreamSessionObserver;
 use common\observers\StreamSession\SubscriberTokenCreatedObserver;
+use common\observers\StreamSession\UpdateStreamSessionArchiveObserver;
 use common\observers\StreamSession\UpdateStreamSessionObserver;
 use common\observers\StreamSessionProduct\CreateStreamSessionProductObserver;
 use common\observers\StreamSessionProduct\DeleteStreamSessionProductObserver;
@@ -51,11 +55,25 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(Shop::class, Shop::EVENT_BEFORE_DELETE, [Yii::createObject(DeleteShopObserver::class), 'execute']);
 
         # Stream Session Events
-        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
-        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
+        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
+        Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_END_SOON, [Yii::createObject(EndSoonStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, [
             Yii::createObject(SubscriberTokenCreatedObserver::class),
+            'execute'
+        ]);
+
+        # Stream Session Archive
+        Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_INSERT, [
+            Yii::createObject(CreateStreamSessionArchiveObserver::class),
+            'execute'
+        ]);
+        Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_UPDATE, [
+            Yii::createObject(UpdateStreamSessionArchiveObserver::class),
+            'execute'
+        ]);
+        Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_DELETE, [
+            Yii::createObject(DeleteStreamSessionArchiveObserver::class),
             'execute'
         ]);
 

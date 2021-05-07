@@ -3,6 +3,8 @@ use common\fixtures\ProductFixture;
 use common\fixtures\StreamSessionFixture;
 use common\fixtures\StreamSessionProductEventFixture;
 use common\fixtures\UserFixture;
+use common\models\Analytics\StreamSessionProductEvent;
+use common\models\Product\StreamSessionProduct;
 
 return [
     //Expired Session of Shop1
@@ -122,5 +124,28 @@ return [
             'price' => 229.99,
             'version' => '6/64G Tropical Green',
         ],
+    ],
+    //Archived Session of Shop2
+    StreamSessionProductEventFixture::EVENT_12_SESSION_7 => [
+        'id' => StreamSessionProductEventFixture::EVENT_12_SESSION_7,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_7_SHOP_2_ARCHIVED,
+        'productId' => ProductFixture::PRODUCT_9_SHOP_2,
+        'type' => StreamSessionProductEvent::TYPE_PRODUCT_CREATE,
+        'userId' => null,
+        'payload' => [
+            'status' => StreamSessionProduct::STATUS_DISPLAYED,
+        ],
+        'createdAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT,
+    ],
+    StreamSessionProductEventFixture::EVENT_13_SESSION_8 => [
+        'id' => StreamSessionProductEventFixture::EVENT_13_SESSION_8,
+        'streamSessionId' => StreamSessionFixture::STREAM_SESSION_7_SHOP_2_ARCHIVED,
+        'productId' => ProductFixture::PRODUCT_10_SHOP_2,
+        'type' => StreamSessionProductEvent::TYPE_PRODUCT_CREATE,
+        'userId' => null,
+        'payload' => [
+            'status' => StreamSessionProduct::STATUS_DISPLAYED,
+        ],
+        'createdAt' => StreamSessionFixture::STREAM_SESSION_7_STARTED_AT,
     ],
 ];
