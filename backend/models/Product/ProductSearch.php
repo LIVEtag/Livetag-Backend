@@ -19,7 +19,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'shopId', 'status'], 'integer'],
-            [['externalId', 'title', 'link'], 'safe'],
+            [['externalId', 'title', 'description', 'link'], 'safe'],
         ];
     }
 

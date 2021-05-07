@@ -7,6 +7,7 @@
 use backend\models\Product\Product;
 use common\models\forms\Product\ProductsUploadForm;
 use backend\models\Product\ProductSearch;
+use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -90,6 +91,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'hAlign' => GridView::ALIGN_LEFT,
                             ],
                             [
+                                'attribute' => 'description',
+                                'hAlign' => GridView::ALIGN_LEFT,
+                            ],
+                            [
                                 'label' => 'Price and Options',
                                 'attribute' => 'options',
                                 'format' => 'raw',
@@ -111,7 +116,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'link',
                                 'headerOptions' => ['width' => '120'],
                                 'format' => ['url', ['target' => '_blank']]
-                            ]
+                            ],
+                            [
+                                'class' => ActionColumn::class,
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'template' => '{delete}',
+                            ],
                         ],
                     ]); ?>
                 </div>

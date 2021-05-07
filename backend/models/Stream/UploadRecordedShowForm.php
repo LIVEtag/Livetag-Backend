@@ -79,7 +79,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
     {
         return [
             'name' => Yii::t('app', 'Name of livestream'),
-            'videoFile' => Yii::t('app', 'File'),
+            'videoFile' => Yii::t('app', 'Upload File'),
             'directUrl' => Yii::t('app', 'Direct URL link'),
             'productIds' => Yii::t('app', 'Products'),
             'file' => Yii::t('app', 'Photo (cover image)'),
