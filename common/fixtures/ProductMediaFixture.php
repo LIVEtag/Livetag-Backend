@@ -70,8 +70,8 @@ class ProductMediaFixture extends ActiveFixture
     public function generateImage(string $imageName): string
     {
         // phpcs:disable
-        $temp = tempnam(null, null) . '.jpg';
-        copy(__DIR__ . "/data/productMedia/$imageName.jpg", $temp);
+        $temp = tempnam(null, null) . '.png';
+        copy(__DIR__ . "/data/productMedia/$imageName.png", $temp);
         // phpcs:enable
         return $this->createS3UploadedData(
             (new ProductMedia())->getRelativePath(),
