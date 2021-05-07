@@ -81,8 +81,8 @@ use yii\web\UnprocessableEntityHttpException;
  * EVENTS:
  * - EVENT_AFTER_COMMIT_INSERT
  * - EVENT_AFTER_COMMIT_UPDATE
+ * - EVENT_BEFORE_DELETE
  * - EVENT_END_SOON
- * - EVENT_SUBSCRIBER_TOKEN_CREATED
  * @see EventDispatcher
  */
 class StreamSession extends BaseActiveRecord implements StreamSessionInterface
