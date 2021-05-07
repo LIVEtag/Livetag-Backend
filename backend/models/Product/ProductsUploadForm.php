@@ -35,6 +35,7 @@ class ProductsUploadForm extends Model
         Product::EXTERNAL_ID, //@see HEADER_MAPPING
         Product::SKU,
         Product::TITLE,
+        Product::DESCRIPTION,
         Product::PHOTO,
         Product::LINK,
         Product::PRICE,
