@@ -51,7 +51,6 @@ class DeleteStreamSessionArchiveObserver
                 $archivedEvent->delete();
             }
             StreamSessionStatistic::recalculate($streamSession->getId(), StreamSessionStatistic::ATTR_ARCHIVE_VIEWS_COUNT);
-            StreamSessionStatistic::recalculate($streamSession->getId(), StreamSessionStatistic::ATTR_TOTAL_VIEWS_COUNT);
         }
         // Remove archived likes
         $deleteLikeQuery = StreamSessionLike::find()
