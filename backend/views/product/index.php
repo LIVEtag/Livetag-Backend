@@ -117,11 +117,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,
                                 'template' => '{delete}',
-                                'buttons' => [
-                                    'deleteOptions' => [
-                                        'data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?')
-                                    ],
-                                ],
                             ],
                         ],
                     ]); ?>
