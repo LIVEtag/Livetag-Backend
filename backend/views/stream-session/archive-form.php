@@ -69,7 +69,6 @@ $form->field($model, UploadArchiveInterface::FIELD_UPLOAD_TYPE)->radio([
             'maxFileCount' => 1,
             'showUpload' => false,
             'showRemove' => false,
-            'browseLabel' => Yii::t('app', 'Upload'),
             // the maximum file size for upload in KB
             'maxFileSize' => $maxVideoSizeInKB,
             'msgSizeTooLarge' => Yii::t(
