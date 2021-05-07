@@ -280,6 +280,7 @@ class ApiTester extends \Codeception\Actor
             'id' => 'integer',
             'externalId' => 'string',
             'title' => 'string',
+            'description' => 'string|null',
             'photo' => 'string',
             'link' => 'string',
             'options' => 'array'

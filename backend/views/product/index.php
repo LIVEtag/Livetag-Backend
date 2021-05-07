@@ -90,6 +90,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'hAlign' => GridView::ALIGN_LEFT,
                             ],
                             [
+                                'attribute' => 'description',
+                                'hAlign' => GridView::ALIGN_LEFT,
+                            ],
+                            [
                                 'label' => 'Price and Options',
                                 'attribute' => 'options',
                                 'format' => 'raw',

@@ -17,16 +17,17 @@ use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "product".
- * @property int $id         [int(10) unsigned]
- * @property string $externalId     [varchar(255)]
- * @property int $shopId     [int(11) unsigned]
- * @property string $title      [varchar(255)]
- * @property array $options    [json]
- * @property string $photo      [varchar(255)]
- * @property string $link       [varchar(255)]
- * @property int $status     [tinyint(3)]
- * @property int $createdAt  [int(11) unsigned]
- * @property int $updatedAt  [int(11) unsigned]
+ * @property int $id             [int(10) unsigned]
+ * @property string $externalId  [varchar(255)]
+ * @property int $shopId         [int(11) unsigned]
+ * @property string $title       [varchar(255)]
+ * @property string $description [varchar(255)]
+ * @property array $options      [json]
+ * @property string $photo       [varchar(255)]
+ * @property string $link        [varchar(255)]
+ * @property int $status         [tinyint(3)]
+ * @property int $createdAt      [int(11) unsigned]
+ * @property int $updatedAt      [int(11) unsigned]
  */
 class Product extends ActiveRecord implements ProductInterface
 {
@@ -64,6 +65,7 @@ class Product extends ActiveRecord implements ProductInterface
     const EXTERNAL_ID = 'externalId';
 
     const TITLE = 'title';
+    const DESCRIPTION = 'description';
     const PHOTO = 'photo';
     const LINK = 'link';
 
@@ -111,7 +113,7 @@ class Product extends ActiveRecord implements ProductInterface
             [['externalId', 'shopId', 'title', 'photo', 'link'], 'required'],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
-            [['externalId', 'title', 'link', 'photo'], 'string', 'max' => 255],
+            [['externalId', 'title', 'link', 'photo', 'description'], 'string', 'max' => 255],
             [['link', 'photo'], 'url', 'defaultScheme' => 'https'],
             [['externalId', 'shopId'], 'unique', 'targetAttribute' => ['externalId', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
@@ -130,6 +132,7 @@ class Product extends ActiveRecord implements ProductInterface
             'externalId' => Yii::t('app', 'External ID'),
             'shopId' => Yii::t('app', 'Shop Id'),
             'title' => Yii::t('app', 'Title'),
+            'description' => Yii::t('app', 'Description'),
             'price' => Yii::t('app', 'Price'),
             'photo' => Yii::t('app', 'Photo'),
             'status' => Yii::t('app', 'Status'),
@@ -152,6 +155,9 @@ class Product extends ActiveRecord implements ProductInterface
             },
             'title' => function () {
                 return $this->getTitle();
+            },
+            'description' => function () {
+                return $this->getDescription();
             },
             'photo' => function () {
                 return $this->getPhoto();
@@ -203,6 +209,14 @@ class Product extends ActiveRecord implements ProductInterface
     public function getTitle(): ?string
     {
         return $this->title ?: null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description ?: null;
     }
 
     /**
