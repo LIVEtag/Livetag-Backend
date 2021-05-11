@@ -32,6 +32,9 @@ class CreateUserForm extends Model
     public $email;
 
     /** @var string */
+    public $name;
+
+    /** @var string */
     public $shopId;
 
     /** @var string */
@@ -46,6 +49,7 @@ class CreateUserForm extends Model
             [['email', 'shopId'], 'required'],
             ['email', 'filter', 'filter' => 'trim', 'skipOnEmpty' => true],
             ['email', 'email'],
+            ['name', 'string', 'max' => User::NAME_MAX_LENGTH],
             ['email', 'string', 'max' => self::STRING_MAX_LENGTH],
             [
                 'email',
@@ -63,7 +67,8 @@ class CreateUserForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'shopId' => 'Shop'
+            'shopId' => 'Shop',
+            'name' => 'Seller Name',
         ];
     }
 
@@ -80,6 +85,7 @@ class CreateUserForm extends Model
 
         $user = new User();
         $user->email = $this->email;
+        $user->name = $this->name;
         $user->setPassword($this->getPassword());
         $user->generateAuthKey();
         $user->role = User::ROLE_SELLER;

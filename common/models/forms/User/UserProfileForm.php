@@ -34,10 +34,17 @@ class UserProfileForm extends Model
     {
         return [
             [['name'], 'required'],
-            [['name'], 'string', 'max' => 255],
+            [['name'], 'string', 'max' => User::NAME_MAX_LENGTH],
         ];
     }
-    
+
+    public function attributeLabels()
+    {
+        return [
+            'name' => Yii::t('app', 'Seller Name'),
+        ];
+    }
+
     public function save()
     {
         if (!$this->validate()) {

@@ -39,31 +39,48 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-                                <p>
+                                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image" style="margin:7px;"/>
+                                <?php if ($user->name): ?>
+                                    <p style="margin:0;">
+                                        <?= $user->name; ?>
+                                    </p>
+                                <?php endif; ?>
+                                <p style="margin:0">
                                     <?= $user->email ?>
-                                    <small>Member since <?= Yii::$app->formatter->asDate($user->createdAt) ?></small>
                                 </p>
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
-                                <div class="pull-left">
-                                    <?=
-                                    Html::a(
-                                        'Change Password',
-                                        ['/user/change-password'],
-                                        ['class' => 'btn btn-default btn-flat']
-                                    )
-                                    ?>
-                                </div>
-                                <div class="pull-right">
-                                    <?=
-                                    Html::a(
-                                        'Sign out',
-                                        ['/site/logout'],
-                                        ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
-                                    )
-                                    ?>
+                                <div class="user-footer-row">
+                                    <div class="pull-left">
+                                        <?=
+                                        Html::a(
+                                            'Change Password',
+                                            ['/user/change-password'],
+                                            ['class' => 'btn btn-default btn-flat']
+                                        )
+                                        ?>
+                                    </div>
+
+                                    <div class="pull-right">
+                                        <?=
+                                        Html::a(
+                                            'Change Name',
+                                            ['/user/change-name'],
+                                            ['class' => 'btn btn-default btn-flat']
+                                        )
+                                        ?>
+                                    </div>
+                                    <div>
+                                        <?= Html::a(
+                                            'Sign out',
+                                            ['/site/logout'],
+                                            [
+                                                'data-method' => 'post',
+                                                'class' => 'btn btn-default btn-flat sign-out',
+                                            ],
+                                            ); ?>
+                                    </div>
                                 </div>
                             </li>
                         </ul>

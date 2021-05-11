@@ -39,6 +39,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    /** @var int Max length of user name */
+    const NAME_MAX_LENGTH = 40;
+
     /**
      * When user restore his own password
      */
@@ -125,7 +128,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules(): array
     {
         return [
-            [['name'], 'string', 'max' => 40],
+            [['name'], 'string', 'max' => self::NAME_MAX_LENGTH],
             ['role', 'default', 'value' => self::ROLE_SELLER],
             ['role', 'in', 'range' => array_keys(self::ROLES)],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],

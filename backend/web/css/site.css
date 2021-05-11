@@ -144,3 +144,8 @@ a.desc:after {
 .stream-session-view .shop-logo__image {
     width: 200px;
 }
+
+.sign-out {
+    width: 100%;
+    margin-top: 2px;
+}

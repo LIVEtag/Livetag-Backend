@@ -31,7 +31,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'status', 'shopId'], 'integer'],
-            [['role', 'email', 'shopName'], 'safe'],
+            [['role', 'email', 'shopName', 'name'], 'safe'],
         ];
     }
 
@@ -89,6 +89,7 @@ class UserSearch extends User
 
         $query->andFilterWhere(['like', self::tableName() . '.email', $this->email]);
         $query->andFilterWhere(['like', Shop::tableName() . '.name', $this->shopName]);
+        $query->andFilterWhere(['like', self::tableName() . '.name', $this->name]);
 
         return $dataProvider;
     }
