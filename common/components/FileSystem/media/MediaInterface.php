@@ -23,7 +23,6 @@ interface MediaInterface extends FileResourceInterface
     const IMAGE_MIME_TYPES = [
         'image/jpeg',
         'image/png',
-        'image/gif',
     ];
 
     /**

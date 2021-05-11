@@ -83,6 +83,16 @@ class Product extends ActiveRecord implements ProductInterface
     ];
 
     /**
+     * Max number of media files
+     */
+    const MAX_NUMBER_OF_IMAGES = 5;
+
+    /**
+     * When seller creates product manually
+     */
+    const SCENARIO_MANUALLY = 'manually';
+
+    /**
      * @inheritdoc
      */
     public static function tableName(): string
@@ -115,11 +125,13 @@ class Product extends ActiveRecord implements ProductInterface
     public function rules(): array
     {
         return [
-            [['externalId', 'shopId', 'title', 'photo', 'link'], 'required'],
+            [['externalId', 'shopId', 'title', 'link'], 'required'],
+            [['photo'], 'required', 'except' => self::SCENARIO_MANUALLY],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],
             [['externalId', 'title', 'link', 'photo', 'description'], 'string', 'max' => 255],
             [['link', 'photo'], 'url', 'defaultScheme' => 'https'],
+            // externalId and shopId need to be unique together, and they both will receive error message
             [['externalId', 'shopId'], 'unique', 'targetAttribute' => ['externalId', 'shopId']],
             ['options', 'each', 'rule' => [OptionValidator::class]],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
