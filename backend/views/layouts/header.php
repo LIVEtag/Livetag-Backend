@@ -40,7 +40,7 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
                             <!-- User image -->
                             <li class="user-header">
                                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image" style="margin:7px;"/>
-                                <?php if ($user->name): ?>
+                                <?php if ($user->name) : ?>
                                     <p style="margin:0;">
                                         <?= $user->name; ?>
                                     </p>
@@ -79,7 +79,7 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
                                                 'data-method' => 'post',
                                                 'class' => 'btn btn-default btn-flat sign-out',
                                             ],
-                                            ); ?>
+                                        ); ?>
                                     </div>
                                 </div>
                             </li>
