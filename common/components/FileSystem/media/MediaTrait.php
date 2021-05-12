@@ -138,6 +138,18 @@ trait MediaTrait
     }
 
     /**
+     * @return array
+     */
+    public static function getExtensions(): array
+    {
+        $extensions = [];
+        foreach (self::getMediaTypes() as $mediaType) {
+            $extensions = ArrayHelper::merge($extensions, ArrayHelper::getValue(MediaInterface::EXTENSIONS, $mediaType));
+        }
+        return $extensions;
+    }
+
+    /**
      * @return string
      */
     public function getType(): ?string

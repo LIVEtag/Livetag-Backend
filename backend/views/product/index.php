@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
+                    <?= Html::a(Yii::t('app', 'Add a product through the form'), ['create'], ['class' => 'btn bg-black']) ?>
                     <button
                         type="button"
                         class="btn btn-primary bg-black"
@@ -120,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,
-                                'template' => '{delete}',
+                                'template' => '{update} {view} {delete}',
                             ],
                         ],
                     ]); ?>

@@ -23,7 +23,6 @@ interface MediaInterface extends FileResourceInterface
     const IMAGE_MIME_TYPES = [
         'image/jpeg',
         'image/png',
-        'image/gif',
     ];
 
     /**
@@ -42,6 +41,22 @@ interface MediaInterface extends FileResourceInterface
     ];
 
     /**
+     * Available Image Extensions
+     */
+    const IMAGE_EXTENSIONS = [
+        'png',
+        'jpg',
+        'jpeg',
+    ];
+
+    /**
+     * extensions by content type
+     */
+    const EXTENSIONS = [
+        MediaTypeEnum::TYPE_IMAGE => self::IMAGE_EXTENSIONS,
+    ];
+
+    /**
      * Return array of MediaTypeEnum constatns, that match content type
      * For example
      * `
@@ -55,6 +70,11 @@ interface MediaInterface extends FileResourceInterface
      * @return array
      */
     public static function getMimeTypes(): array;
+
+    /**
+     * @return array
+     */
+    public static function getExtensions(): array;
 
     /**
      * Get name of field, that used detecting media type (required)
