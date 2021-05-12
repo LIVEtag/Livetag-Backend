@@ -41,6 +41,15 @@ interface MediaInterface extends FileResourceInterface
     ];
 
     /**
+     * Available Image Extensions
+     */
+    const IMAGE_EXTENSIONS = [
+        'png',
+        'jpg',
+        'jpeg',
+    ];
+
+    /**
      * Return array of MediaTypeEnum constatns, that match content type
      * For example
      * `
