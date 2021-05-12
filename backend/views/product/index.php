@@ -5,8 +5,8 @@
  */
 
 use backend\models\Product\Product;
-use common\models\forms\Product\ProductsUploadForm;
 use backend\models\Product\ProductSearch;
+use backend\models\Product\ProductsUploadForm;
 use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
 use yii\helpers\Html;
@@ -52,15 +52,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Refresh products list</h4>
+                                    <h4 class="modal-title">Upload products</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Do you want to refresh your product list?</p>
                                     <?= $form->field($model, 'file')->fileInput()->label(false) ?>
+
+                                    <?php if ($dataProvider->getTotalCount()): ?>
+                                        <?= $form->field($model, 'type', ['enableClientValidation' => false])
+                                            ->radioList(ProductsUploadForm::TYPES)
+                                            ->label(false);
+                                        ?>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
-                                    <?= Html::submitButton('Refresh', ['class' => 'btn btn-success']) ?>
+                                    <?= Html::submitButton('Upload', ['class' => 'btn btn-success']) ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
                             </div><!-- /.modal-content -->
