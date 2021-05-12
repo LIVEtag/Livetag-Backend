@@ -22,7 +22,7 @@ $this->title = Yii::t('app', 'Change Name');
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
                         <?= $form->field($model, 'name')->textInput([
-                            'placeholder' => Yii::t('app', 'Current name of the seller'),
+                            'placeholder' => Yii::t('app', 'Current name'),
                             'maxlength' => true,
                         ]) ?>
                     </div>

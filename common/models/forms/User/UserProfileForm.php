@@ -38,13 +38,6 @@ class UserProfileForm extends Model
         ];
     }
 
-    public function attributeLabels()
-    {
-        return [
-            'name' => Yii::t('app', 'Seller Name'),
-        ];
-    }
-
     public function save()
     {
         if (!$this->validate()) {

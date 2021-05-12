@@ -68,7 +68,7 @@ class CreateUserForm extends Model
     {
         return [
             'shopId' => 'Shop',
-            'name' => 'Seller Name',
+            'name' => 'Name',
         ];
     }
 
