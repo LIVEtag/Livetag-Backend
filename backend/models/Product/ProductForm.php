@@ -6,7 +6,6 @@
 
 namespace backend\models\Product;
 
-use common\components\FileSystem\media\MediaInterface;
 use common\models\Product\ProductMedia;
 use Throwable;
 use Yii;
@@ -74,7 +73,7 @@ class ProductForm extends Model
                 'rule' => [
                     'image',
                     'mimeTypes' => ProductMedia::getMimeTypes(),
-                    'extensions' => MediaInterface::IMAGE_EXTENSIONS,
+                    'extensions' => ProductMedia::getExtensions(),
                     'maxSize' => Yii::$app->params['maxUploadImageSize'],
                 ]
             ],

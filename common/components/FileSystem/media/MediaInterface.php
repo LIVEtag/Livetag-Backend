@@ -50,6 +50,13 @@ interface MediaInterface extends FileResourceInterface
     ];
 
     /**
+     * extensions by content type
+     */
+    const EXTENSIONS = [
+        MediaTypeEnum::TYPE_IMAGE => self::IMAGE_EXTENSIONS,
+    ];
+
+    /**
      * Return array of MediaTypeEnum constatns, that match content type
      * For example
      * `
@@ -63,6 +70,11 @@ interface MediaInterface extends FileResourceInterface
      * @return array
      */
     public static function getMimeTypes(): array;
+
+    /**
+     * @return array
+     */
+    public static function getExtensions(): array;
 
     /**
      * Get name of field, that used detecting media type (required)
