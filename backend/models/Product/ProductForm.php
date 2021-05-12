@@ -38,7 +38,7 @@ class ProductForm extends Model
     public $product;
 
     /** @var array */
-    protected $medias;
+    protected $medias = [];
 
     /**
      * ProductForm constructor.
@@ -189,7 +189,7 @@ class ProductForm extends Model
     /**
      * @return array
      */
-    protected function getMedias()
+    protected function getMedias(): array
     {
         return $this->medias;
     }
