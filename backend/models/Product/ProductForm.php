@@ -37,6 +37,9 @@ class ProductForm extends Model
     /** @var Product */
     public $product;
 
+    /** @var array */
+    protected $medias;
+
     /**
      * ProductForm constructor.
      * @param Product|null $product
@@ -142,6 +145,7 @@ class ProductForm extends Model
 
         // Remove old files only if we upload new files
         if (!empty($this->files)) {
+            $this->product->populateRelation(Product::REL_PRODUCT_MEDIA, $this->getMedias());
             foreach ($oldMedias as $oldMedia) {
                 $oldMedia->delete();
             }
@@ -169,8 +173,24 @@ class ProductForm extends Model
             $this->addErrors($media->getErrors());
             return false;
         }
-        $this->product->populateRelation(Product::REL_PRODUCT_MEDIA, $media);
+        $this->setMedias($media);
 
         return true;
+    }
+
+    /**
+     * @param ProductMedia $media
+     */
+    protected function setMedias(ProductMedia $media)
+    {
+        $this->medias[] = $media;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getMedias()
+    {
+        return $this->medias;
     }
 }
