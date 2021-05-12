@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="modal-body">
                                     <?= $form->field($model, 'file')->fileInput()->label(false) ?>
 
-                                    <?php if ($dataProvider->getTotalCount()): ?>
+                                    <?php if ($dataProvider->getTotalCount()) : ?>
                                         <?= $form->field($model, 'type', ['enableClientValidation' => false])
                                             ->radioList(ProductsUploadForm::TYPES)
                                             ->label(false);
