@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '80'],
                             ],
+                            'name',
                             'email:email',
                             [
                                 'attribute' => 'shopName',

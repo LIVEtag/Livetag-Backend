@@ -31,6 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <?= $form->field($model, 'email')->textInput() ?>
 
+                        <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
                         <?= $form->field($model, 'shopId')->widget(Select2::class, [
                             'data' => Shop::getIndexedArray(),
                             'options' => [
