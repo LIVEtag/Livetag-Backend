@@ -153,7 +153,7 @@ class ProductController extends Controller
             $model->files = UploadedFile::getInstances($model, 'files');
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Product is updated.');
-                return $this->redirect(['index']);
+                return $this->redirect(['view', 'id' => $product->id]);
             }
         }
 

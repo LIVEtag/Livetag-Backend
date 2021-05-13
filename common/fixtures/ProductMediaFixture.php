@@ -72,7 +72,7 @@ class ProductMediaFixture extends ActiveFixture
         return [
             'type' => MediaTypeEnum::TYPE_IMAGE,
             'createdAt' => $this->generator->incrementalTime,
-            'originName' => $name . 'png',
+            'originName' => $name . '.png',
             'path' => $largeImage,
             'size' => $this->generator->randomNumber(5),
             'formatted' => [
