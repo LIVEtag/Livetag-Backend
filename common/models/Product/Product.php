@@ -93,6 +93,11 @@ class Product extends ActiveRecord implements ProductInterface
     const SCENARIO_MANUALLY = 'manually';
 
     /**
+     * media expand
+     */
+    const EXPAND_MEDIA = 'media';
+
+    /**
      * @inheritdoc
      */
     public static function tableName(): string
@@ -185,6 +190,16 @@ class Product extends ActiveRecord implements ProductInterface
             'options' => function () {
                 return $this->getOptions();
             },
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function extraFields(): array
+    {
+        return [
+            self::EXPAND_MEDIA => 'productMedias'
         ];
     }
 
