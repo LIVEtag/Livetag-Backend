@@ -1,6 +1,8 @@
 <?php
 
 use backend\models\Product\Product;
+use common\components\FileSystem\format\FormatEnum;
+use dosamigos\gallery\Gallery;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\DetailView;
@@ -39,7 +41,35 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             'title',
                             'description',
-                            //todo photo and options
+                            [
+                                'label' => 'SKU, Price and Options',
+                                'attribute' => 'options',
+                                'format' => 'raw',
+                                'mergeHeader' => true,
+                                'value' => function (Product $model) {
+                                    return $model->getProductOptionsInHTML();
+                                },
+                            ],
+                            [
+                                'label' => 'Photo',
+                                'format' => 'raw',
+                                'value' => function (Product $model) {
+                                    $items = [];
+                                    foreach ($model->productMedias as $media) {
+                                        $items[] = [
+                                            'url' => $media->getFormattedUrlByName(FormatEnum::LARGE),
+                                            'src' => $media->getFormattedUrlByName(FormatEnum::SMALL),
+                                            'options' => [
+                                                'title' => $media->getOriginName(),
+                                            ]
+                                        ];
+                                    }
+                                    if (empty($items)) {
+                                        return null;
+                                    }
+                                    return Gallery::widget(['items' => $items]);
+                                }
+                            ],
                             [
                                 'attribute' => 'link',
                                 'format' => ['url', ['target' => '_blank']]

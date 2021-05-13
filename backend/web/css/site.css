@@ -149,3 +149,8 @@ a.desc:after {
     width: 100%;
     margin-top: 2px;
 }
+
+.gallery-item img {
+    margin: 2px 0;
+    height: 200px;
+}
