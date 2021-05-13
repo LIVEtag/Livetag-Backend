@@ -61,7 +61,7 @@ class StreamSessionController extends Controller
                                 'update',
                                 'publish',
                                 'unpublish',
-                                'delete-cover-image',
+                                'delete-cover-file',
                                 'upload-recorded-show', //create stream + archive
                                 'upload-record', // create archive inside stream
                                 'delete-record',
@@ -90,7 +90,7 @@ class StreamSessionController extends Controller
                     'actions' => [
                         'stop' => ['POST'],
                         'delete' => ['POST'],
-                        'delete-cover-image' => ['POST'],
+                        'delete-cover-file' => ['POST'],
                     ],
                 ]
             ]
@@ -185,8 +185,8 @@ class StreamSessionController extends Controller
         }
 
         return $this->render('upload-recorded-show', [
-                'model' => $model,
-                'productIds' => Product::getIndexedArray($user->shop->id),
+            'model' => $model,
+            'productIds' => Product::getIndexedArray($user->shop->id),
         ]);
     }
 
@@ -340,19 +340,19 @@ class StreamSessionController extends Controller
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    public function actionDeleteCoverImage(int $id)
+    public function actionDeleteCoverFile(int $id)
     {
         $model = $this->findModel($id);
         $cover = $model->streamSessionCover;
 
         if (!$cover) {
-            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have cover image.');
+            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have cover.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         if ($cover->delete() === false) {
-            Yii::$app->session->setFlash('error', 'Failed to remove cover image.');
+            Yii::$app->session->setFlash('error', 'Failed to remove stream session cover.');
             $transaction->rollBack();
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -360,7 +360,7 @@ class StreamSessionController extends Controller
         $model->save(false, []); //update model to fire update event (after transaction commit)
         $transaction->commit();
 
-        Yii::$app->session->setFlash('success', Yii::t('app', 'The cover image was removed.'));
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The stream session cover was removed.'));
         return $this->redirect(['view', 'id' => $model->id]);
     }
 

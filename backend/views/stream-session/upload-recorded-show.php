@@ -6,6 +6,7 @@
 
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\UploadRecordedShowForm;
+use common\components\FileSystem\media\MediaInterface;
 use kartik\widgets\FileInput;
 use kartik\widgets\Select2;
 use yii\helpers\Html;
@@ -20,6 +21,7 @@ $this->title = Yii::t('app', 'Upload recorded show');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+$coverFile = $model->streamSession->streamSessionCover ?? null;
 ?>
 
 <section class="recorded-show">
@@ -43,20 +45,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'multiple' => false,
                             ],
                             'pluginOptions' => [
+                                'initialPreview' => $coverFile ? [$coverFile->getUrl()] : [],
                                 'initialPreviewConfig' => [
                                     [
+                                        'filetype' => ($coverFile && $coverFile->isVideo()) ? MediaInterface::VIDEO_MIME_TYPES : MediaInterface::IMAGE_MIME_TYPES,
+                                        'caption' => $coverFile ? $coverFile->getOriginName() : null,
+                                        'size' => $coverFile ? $coverFile->getSize() : null,
                                         'showRemove' => false,
                                         'showZoom' => true,
                                         'showDrag' => false,
                                     ],
                                 ],
                                 'initialPreviewAsData' => true,
+                                'initialPreviewFileType'=> $coverFile ? $coverFile->getType() : null,
                                 'maxFileCount' => 1,
                                 'showUpload' => false,
                                 'showRemove' => false,
                                 'browseLabel' => Yii::t('app', 'Upload'),
-                                'msgPlaceholder' => Yii::t('app', 'Add image'),
-                                'maxFileSize' => (Yii::$app->params['maxUploadImageSize'] / 1024), // the maximum file size for upload in KB
+                                'msgPlaceholder' => Yii::t('app', 'Add file'),
+                                'maxFileSize' => (Yii::$app->params['maxUploadCoverSize'] / 1024), // the maximum file size for upload in KB
                             ],
                         ]); ?>
 

@@ -65,7 +65,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
                     'file',
                     'file',
                     'mimeTypes' => StreamSessionCover::getMimeTypes(),
-                    'maxSize' => Yii::$app->params['maxUploadImageSize'],
+                    'maxSize' => Yii::$app->params['maxUploadCoverSize'],
                 ],
             ],
             $archiveRules
@@ -82,7 +82,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
             'videoFile' => Yii::t('app', 'Upload File'),
             'directUrl' => Yii::t('app', 'Direct URL link'),
             'productIds' => Yii::t('app', 'Products'),
-            'file' => Yii::t('app', 'Photo (cover image)'),
+            'file' => Yii::t('app', 'Cover (can be image or video)'),
             'internalCart' => Yii::t('app', 'Product details view'),
         ];
     }

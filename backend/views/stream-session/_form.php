@@ -6,6 +6,7 @@
 use backend\models\Stream\SaveAnnouncementForm;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
+use common\components\FileSystem\media\MediaInterface;
 use kartik\widgets\DateTimePicker;
 use kartik\widgets\FileInput;
 use kartik\widgets\Select2;
@@ -66,6 +67,7 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                             'initialPreview' => $coverFile ? [$coverFile->getUrl()] : [],
                             'initialPreviewConfig' => [
                                 [
+                                    'filetype' => ($coverFile && $coverFile->isVideo()) ? MediaInterface::VIDEO_MIME_TYPES : MediaInterface::IMAGE_MIME_TYPES,
                                     'caption' => $coverFile ? $coverFile->getOriginName() : null,
                                     'size' => $coverFile ? $coverFile->getSize() : null,
                                     'showRemove' => false,
@@ -74,13 +76,14 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                                 ],
                             ],
                             'initialPreviewAsData' => true,
+                            'initialPreviewFileType'=> $coverFile ? $coverFile->getType() : null,
                             'maxFileCount' => 1,
                             'showUpload' => false,
                             'showRemove' => false,
-                            'msgPlaceholder' => 'Add image',
-                            'maxFileSize' => (Yii::$app->params['maxUploadImageSize'] / 1024), // the maximum file size for upload in KB
+                            'msgPlaceholder' => 'Add file',
+                            'maxFileSize' => (Yii::$app->params['maxUploadCoverSize'] / 1024), // the maximum file size for upload in KB
                         ],
-                    ])->label('Photo (cover image)'); ?>
+                    ])->label('Cover (can be image or video)'); ?>
 
                     <?= $form->field($model, 'productIds')->widget(Select2::class, [
                         'data' => $productIds,
