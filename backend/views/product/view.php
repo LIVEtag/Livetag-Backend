@@ -2,6 +2,7 @@
 
 use backend\models\Product\Product;
 use common\components\FileSystem\format\FormatEnum;
+use dosamigos\gallery\Gallery;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\DetailView;
@@ -66,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     if (empty($items)) {
                                         return null;
                                     }
-                                    return dosamigos\gallery\Gallery::widget(['items' => $items]);
+                                    return Gallery::widget(['items' => $items]);
                                 }
                             ],
                             [
