@@ -66,7 +66,7 @@ class OptionValidator extends BaseValidator
     {
         //Price cannot be blank.
         $validationModel = new DynamicModel([$optionKey]);
-        $validationModel->addRule($optionKey, 'string', ['max' => 255]);
+        $validationModel->addRule($optionKey, 'string', ['max' => 255, 'strict' => false]);
         //Validate required fields
         if (in_array($optionKey, Product::OPTION_REQUIRED)) {
             $validationModel->addRule($optionKey, 'required');

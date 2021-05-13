@@ -8,6 +8,10 @@ declare(strict_types = 1);
 namespace common\models\Product;
 
 use common\components\behaviors\TimestampBehavior;
+use common\components\FileSystem\format\FileFormatInterface;
+use common\components\FileSystem\format\FileFormatTrait;
+use common\components\FileSystem\format\FormatEnum;
+use common\components\FileSystem\format\formatter\Resize;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
@@ -30,9 +34,10 @@ use yii\db\ActiveRecord;
  *
  * @property-read Product $product
  */
-class ProductMedia extends ActiveRecord implements MediaInterface
+class ProductMedia extends ActiveRecord implements MediaInterface, FileFormatInterface
 {
     use MediaTrait;
+    use FileFormatTrait;
 
     /** @see getProduct() */
     const REL_PRODUCT = 'product';
@@ -43,6 +48,19 @@ class ProductMedia extends ActiveRecord implements MediaInterface
     public static function tableName(): string
     {
         return '{{%product_media}}';
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'updatedAtAttribute' => false,
+            ],
+        ];
     }
 
     /**
@@ -68,19 +86,6 @@ class ProductMedia extends ActiveRecord implements MediaInterface
     }
 
     /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            'timestamp' => [
-                'class' => TimestampBehavior::class,
-                'updatedAtAttribute' => false,
-            ],
-        ];
-    }
-
-    /**
      * @inheritdoc
      */
     public function attributeLabels(): array
@@ -97,12 +102,43 @@ class ProductMedia extends ActiveRecord implements MediaInterface
         ];
     }
 
+     /**
+     * @inheritdoc
+     */
+    public function fields(): array
+    {
+        return [
+            'url',
+            'type',
+            'formatted' => 'formattedUrls'
+        ];
+    }
+
     /**
      * @return ActiveQuery
      */
     public function getProduct(): ActiveQuery
     {
         return $this->hasOne(Product::class, ['id' => 'productId']);
+    }
+
+     /**
+     * @inheridDoc
+     */
+    public function getFormatters(): array
+    {
+        return [
+            FormatEnum::SMALL => [
+                'class' => Resize::class,
+                'width' => 150,
+                'height' => 200,
+            ],
+            FormatEnum::LARGE => [
+                'class' => Resize::class,
+                'width' => 960,
+                'height' => 1280,
+            ]
+        ];
     }
 
     /**

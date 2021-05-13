@@ -1056,6 +1056,9 @@
                     },
                     {
                         "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-product"
                     }
                 ],
                 "responses": {
@@ -2450,8 +2453,8 @@
             "streamSessionCover": {
                 "type": "object",
                 "required": [
-                    "productId",
-                    "status"
+                    "url",
+                    "type"
                 ],
                 "properties": {
                     "url": {
@@ -2536,6 +2539,14 @@
                         "items": {
                             "$ref": "#/components/schemas/productOption"
                         }
+                    },
+                    "media": {
+                        "type": "array",
+                        "description": "EXPAND",
+                        "items": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/productMedia"
+                        }
                     }
                 }
             },
@@ -2561,6 +2572,45 @@
                     "color": {
                         "type": "string",
                         "example": "MediumOrchid"
+                    }
+                }
+            },
+
+            "productMedia": {
+                "type": "object",
+                "required": [
+                    "url",
+                    "type"
+                ],
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "image",
+                            "video"
+                        ]
+                    },
+                    "formatted": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/productMediaFormatted"
+                    }
+                }
+            },
+            "productMediaFormatted": {
+                "type": "object",
+                "required": [
+                    "small",
+                    "large"
+                ],
+                "properties": {
+                    "small": {
+                        "type": "string"
+                    },
+                    "large": {
+                        "type": "string"
                     }
                 }
             },
@@ -2642,6 +2692,15 @@
                 "in": "query",
                 "name": "expand",
                 "description": "Extra Fields (coma separated). Available values: ```shop```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-product": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```media```",
                 "required": false,
                 "schema": {
                     "type": "string"

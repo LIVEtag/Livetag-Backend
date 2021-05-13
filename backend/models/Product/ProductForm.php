@@ -110,7 +110,9 @@ class ProductForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->product->setAttributes($this->getAttributes());
-            $this->product->addOption(['sku' => 'test', 'price' => '0']);
+            if (!$this->product->options) {
+                $this->product->addOption(['sku' => 'test', 'price' => '0']); //Temp solution before SKY2-944
+            }
             if (!$this->product->save()) {
                 $this->addErrors($this->product->getErrors());
                 $transaction->rollBack();

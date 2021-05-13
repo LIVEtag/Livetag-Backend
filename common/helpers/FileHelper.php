@@ -101,6 +101,17 @@ class FileHelper extends BaseFileHelper
     }
 
     /**
+     * Set content to s3 path
+     * @param string $content
+     * @param string $path
+     * @return bool
+     */
+    public static function setFileContentToPath(string $content, string $path): bool
+    {
+        return Yii::$app->fs->put($path, $content);
+    }
+
+    /**
      * Return full url by path
      * @param string $path
      * @return string
