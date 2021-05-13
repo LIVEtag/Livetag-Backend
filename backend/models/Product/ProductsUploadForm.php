@@ -54,10 +54,26 @@ class ProductsUploadForm extends Model
         Product::PRICE,
     ];
 
+    /** Update the list of products (products that are not in the uploaded CSV file will be deleted) */
+    const TYPE_UPDATE = 0;
+
+    /** Add new products to the list (existing products will remain) */
+    const TYPE_ADD = 1;
+
+    const TYPES = [
+        self::TYPE_UPDATE => 'Update the list of products (products that are not in the uploaded CSV file will be deleted)',
+        self::TYPE_ADD => 'Add new products to the list (existing products will remain)',
+    ];
+
     /**
      * @var UploadedFile|null file attribute
      */
     public $file;
+
+    /**
+     * @var bool
+     */
+    public $type = self::TYPE_UPDATE;
 
     /** @var Shop */
     protected $shop;
@@ -86,6 +102,7 @@ class ProductsUploadForm extends Model
     {
         return [
             ['file', 'required'],
+            ['type', 'in', 'range' => array_keys(self::TYPES)],
             [
                 ['file'],
                 'file',
@@ -135,7 +152,7 @@ class ProductsUploadForm extends Model
             $this->addError('file', 'Incorrect file');
             return false;
         }
-        //Extraxct file to array
+        //Extract file to array
         $rows = array_map('str_getcsv', file($this->file->tempName));
 
         //Extract and validate header
@@ -213,16 +230,18 @@ class ProductsUploadForm extends Model
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            //Mark products as deleted
-            $deleteProductQuery = Product::find()
-                ->andWhere(['shopId' => $this->shop->getId()])
-                ->andWhere(['NOT IN', Product::EXTERNAL_ID, array_keys($this->products)])
-                ->andWhere(['<>', 'status', Product::STATUS_DELETED]);
-            foreach ($deleteProductQuery->each() as $product) {
-                if (!$product->delete()) {
-                    $transaction->rollBack();
-                    $this->addErrors($product->getErrors());
-                    return false;
+            if ($this->type == self::TYPE_UPDATE) {
+                //Mark products as deleted
+                $deleteProductQuery = Product::find()
+                    ->andWhere(['shopId' => $this->shop->getId()])
+                    ->andWhere(['NOT IN', Product::EXTERNAL_ID, array_keys($this->products)])
+                    ->andWhere(['<>', 'status', Product::STATUS_DELETED]);
+                foreach ($deleteProductQuery->each() as $product) {
+                    if (!$product->delete()) {
+                        $transaction->rollBack();
+                        $this->addErrors($product->getErrors());
+                        return false;
+                    }
                 }
             }
 
