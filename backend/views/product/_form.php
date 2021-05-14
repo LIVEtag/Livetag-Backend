@@ -68,7 +68,7 @@ foreach ($productMedias as $productMedia) {
                         </div>
 
                         <div class="panel-body container-items"><!-- widgetContainer -->
-                            <?php foreach ($model->productOptions as $index => $modelOption): ?>
+                            <?php foreach ($model->productOptions as $index => $modelOption) : ?>
                                 <div class="item panel panel-default"><!-- widgetBody -->
                                     <div class="panel-heading">
                                         <button type="button" class="pull-right remove-item btn btn-danger btn-xs"><i
