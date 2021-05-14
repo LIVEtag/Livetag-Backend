@@ -122,8 +122,7 @@ class ProductController extends Controller
         if ($model->load($params)) {
             $model->files = UploadedFile::getInstances($model, 'files');
             $model->productOptions = Model::createMultiple(ProductOptionForm::class);
-            Model::loadMultiple($model->productOptions, $params);
-            if ($model->save()) {
+            if (Model::loadMultiple($model->productOptions, $params) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Product is added to the list of products.');
                 return $this->redirect(['index']);
             }
@@ -148,7 +147,6 @@ class ProductController extends Controller
         if (!$user || !$user->isSeller || !$user->shop) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
-
         $productOptions = [];
         foreach ($product->getOptions() as $option) {
             $modelProduct = new ProductOptionForm();
@@ -163,8 +161,7 @@ class ProductController extends Controller
         if ($model->load($params)) {
             $model->files = UploadedFile::getInstances($model, 'files');
             $model->productOptions = Model::createMultiple(ProductOptionForm::class);
-            Model::loadMultiple($model->productOptions, $params);
-            if ($model->save()) {
+            if (Model::loadMultiple($model->productOptions, $params) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Product is updated.');
                 return $this->redirect(['view', 'id' => $product->id]);
             }

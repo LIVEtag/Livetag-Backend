@@ -33,12 +33,13 @@ class ProductsUploadForm extends Model
      */
     const REQUIRED_HEADERS = [
         Product::EXTERNAL_ID, //@see HEADER_MAPPING
-        Product::SKU,
         Product::TITLE,
         Product::DESCRIPTION,
+        Product::SKU,
+        Product::PRICE,
+        Product::OPTION,
         Product::PHOTO,
         Product::LINK,
-        Product::PRICE,
     ];
 
     /**
@@ -52,6 +53,7 @@ class ProductsUploadForm extends Model
     const OPTION_FIELDS = [
         Product::SKU,
         Product::PRICE,
+        Product::OPTION,
     ];
 
     /** Update the list of products (products that are not in the uploaded CSV file will be deleted) */
