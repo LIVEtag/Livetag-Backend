@@ -346,13 +346,13 @@ class StreamSessionController extends Controller
         $cover = $model->streamSessionCover;
 
         if (!$cover) {
-            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have cover.');
+            Yii::$app->session->setFlash('error', 'The livestream doesn\'t have cover.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         if ($cover->delete() === false) {
-            Yii::$app->session->setFlash('error', 'Failed to remove stream session cover.');
+            Yii::$app->session->setFlash('error', 'Failed to remove livestream cover.');
             $transaction->rollBack();
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -360,7 +360,7 @@ class StreamSessionController extends Controller
         $model->save(false, []); //update model to fire update event (after transaction commit)
         $transaction->commit();
 
-        Yii::$app->session->setFlash('success', Yii::t('app', 'The stream session cover was removed.'));
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The livestream cover was removed.'));
         return $this->redirect(['view', 'id' => $model->id]);
     }
 

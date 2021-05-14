@@ -22,6 +22,19 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url'
 $this->params['breadcrumbs'][] = $this->title;
 
 $coverFile = $model->streamSession->streamSessionCover ?? null;
+$initialPreviewConfigItem = [
+    'showRemove' => false,
+    'showZoom' => true,
+    'showDrag' => false,
+];
+if ($coverFile) {
+    $initialPreviewConfigItem['type'] = $coverFile->type;
+    $initialPreviewConfigItem['caption'] = $coverFile->getOriginName();
+    $initialPreviewConfigItem['size'] = $coverFile->getSize();
+    if ($coverFile->isVideo()) {
+        $initialPreviewConfigItem['filetype'] = MediaInterface::MIME_TYPE_VIDEO_MP4;
+    }
+}
 ?>
 
 <section class="recorded-show">
@@ -46,18 +59,8 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                             ],
                             'pluginOptions' => [
                                 'initialPreview' => $coverFile ? [$coverFile->getUrl()] : [],
-                                'initialPreviewConfig' => [
-                                    [
-                                        'filetype' => ($coverFile && $coverFile->isVideo()) ? MediaInterface::VIDEO_MIME_TYPES : MediaInterface::IMAGE_MIME_TYPES,
-                                        'caption' => $coverFile ? $coverFile->getOriginName() : null,
-                                        'size' => $coverFile ? $coverFile->getSize() : null,
-                                        'showRemove' => false,
-                                        'showZoom' => true,
-                                        'showDrag' => false,
-                                    ],
-                                ],
+                                'initialPreviewConfig' => [$initialPreviewConfigItem],
                                 'initialPreviewAsData' => true,
-                                'initialPreviewFileType'=> $coverFile ? $coverFile->getType() : null,
                                 'maxFileCount' => 1,
                                 'showUpload' => false,
                                 'showRemove' => false,
