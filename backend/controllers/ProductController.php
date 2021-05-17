@@ -16,7 +16,7 @@ use backend\models\Product\ProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
 use backend\models\Product\ProductsUploadForm;
-use common\models\Model;
+use backend\models\Model;
 use Throwable;
 use Yii;
 use yii\filters\VerbFilter;

@@ -5,11 +5,16 @@
  */
 declare(strict_types = 1);
 
-namespace common\models;
+namespace backend\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
 
+/**
+ * Class Model
+ * Creates and populates a set of models based on the data that is received through the form by post
+ * @package common\models
+ */
 class Model extends \yii\base\Model
 {
     /**

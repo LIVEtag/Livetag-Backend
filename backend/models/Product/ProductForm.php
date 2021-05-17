@@ -119,15 +119,13 @@ class ProductForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->product->setAttributes($this->getAttributes());
-            if (!empty($this->productOptions)) {
-                $this->product->options = [];
-                foreach ($this->productOptions as $productOption) {
-                    $this->product->addOption([
-                        'sku' => $productOption->sku,
-                        'price' => $productOption->price,
-                        'option' => $productOption->option,
-                    ]);
-                }
+            $this->product->options = [];
+            foreach ($this->productOptions as $productOption) {
+                $this->product->addOption([
+                    'sku' => $productOption->sku,
+                    'price' => $productOption->price,
+                    'option' => $productOption->option,
+                ]);
             }
 
             if (!$this->product->save()) {
