@@ -37,20 +37,25 @@ class ProductForm extends Model
     /** @var Product */
     public $product;
 
+    /** @var ProductOptionForm[] */
+    public $productOptions;
+
     /** @var array */
     protected $medias = [];
 
     /**
      * ProductForm constructor.
      * @param Product|null $product
+     * @param ProductOptionForm[] $productOptions
      * @param array $config
      */
-    public function __construct(Product $product = null, $config = [])
+    public function __construct(Product $product = null, $productOptions = [], $config = [])
     {
         if ($product) {
             $this->setAttributes($product->getAttributes());
         }
 
+        $this->productOptions = $productOptions ?: [new ProductOptionForm()];
         $this->product = $product ?: new Product();
         $this->product->scenario = Product::SCENARIO_MANUALLY;
         parent::__construct($config);
@@ -107,17 +112,28 @@ class ProductForm extends Model
             return false;
         }
 
+        if (!Model::validateMultiple($this->productOptions)) {
+            return false;
+        }
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $this->product->setAttributes($this->getAttributes());
-            if (!$this->product->options) {
-                $this->product->addOption(['sku' => 'test', 'price' => '0']); //Temp solution before SKY2-944
+            $this->product->options = [];
+            foreach ($this->productOptions as $productOption) {
+                $this->product->addOption([
+                    'sku' => $productOption->sku,
+                    'price' => $productOption->price,
+                    'option' => $productOption->option,
+                ]);
             }
+
             if (!$this->product->save()) {
                 $this->addErrors($this->product->getErrors());
                 $transaction->rollBack();
                 return false;
             }
+
             if (!$this->uploadFiles()) {
                 $transaction->rollBack();
                 return false;
