@@ -25,13 +25,11 @@ interface MediaInterface extends FileResourceInterface
         'image/png',
     ];
 
-    const MIME_TYPE_VIDEO_MP4 = 'video/mp4';
-
     /**
      * Available Video Mime Types
      */
     const VIDEO_MIME_TYPES = [
-        self::MIME_TYPE_VIDEO_MP4,
+        'video/mp4',
     ];
 
     /**

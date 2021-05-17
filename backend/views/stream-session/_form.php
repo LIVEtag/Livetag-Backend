@@ -6,7 +6,6 @@
 use backend\models\Stream\SaveAnnouncementForm;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
-use common\components\FileSystem\media\MediaInterface;
 use kartik\widgets\DateTimePicker;
 use kartik\widgets\FileInput;
 use kartik\widgets\Select2;
@@ -27,15 +26,19 @@ $initialPreviewConfigItem = [
     'showZoom' => true,
     'showDrag' => false,
 ];
+
+$initialPreview = [];
+$initialPreviewAsData = true;
 if ($coverFile) {
     $initialPreviewConfigItem['type'] = $coverFile->type;
     $initialPreviewConfigItem['caption'] = $coverFile->getOriginName();
     $initialPreviewConfigItem['size'] = $coverFile->getSize();
+    $initialPreview = [$coverFile->getUrl()];
     if ($coverFile->isVideo()) {
-        $initialPreviewConfigItem['filetype'] = MediaInterface::MIME_TYPE_VIDEO_MP4;
+        $initialPreviewAsData = false;
+        $initialPreview = '<div style="font-size: 110px;"><i class="fa fa-file-video-o"></i></div>';
     }
 }
-
 ?>
 
 <div class="stream-session-form">
@@ -79,9 +82,9 @@ if ($coverFile) {
                             'multiple' => false,
                         ],
                         'pluginOptions' => [
-                            'initialPreview' => $coverFile ? [$coverFile->getUrl()] : [],
+                            'initialPreview' => $initialPreview,
                             'initialPreviewConfig' => [$initialPreviewConfigItem],
-                            'initialPreviewAsData' => true,
+                            'initialPreviewAsData' => $initialPreviewAsData,
                             'maxFileCount' => 1,
                             'showUpload' => false,
                             'showRemove' => false,

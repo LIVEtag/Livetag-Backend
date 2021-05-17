@@ -27,12 +27,17 @@ $initialPreviewConfigItem = [
     'showZoom' => true,
     'showDrag' => false,
 ];
+
+$initialPreview = [];
+$initialPreviewAsData = true;
 if ($coverFile) {
     $initialPreviewConfigItem['type'] = $coverFile->type;
     $initialPreviewConfigItem['caption'] = $coverFile->getOriginName();
     $initialPreviewConfigItem['size'] = $coverFile->getSize();
+    $initialPreview = [$coverFile->getUrl()];
     if ($coverFile->isVideo()) {
-        $initialPreviewConfigItem['filetype'] = MediaInterface::MIME_TYPE_VIDEO_MP4;
+        $initialPreviewAsData = false;
+        $initialPreview = '<div style="font-size: 110px;"><i class="fa fa-file-video-o"></i></div>';
     }
 }
 ?>
@@ -58,9 +63,9 @@ if ($coverFile) {
                                 'multiple' => false,
                             ],
                             'pluginOptions' => [
-                                'initialPreview' => $coverFile ? [$coverFile->getUrl()] : [],
+                                'initialPreview' => $initialPreview,
                                 'initialPreviewConfig' => [$initialPreviewConfigItem],
-                                'initialPreviewAsData' => true,
+                                'initialPreviewAsData' => $initialPreviewAsData,
                                 'maxFileCount' => 1,
                                 'showUpload' => false,
                                 'showRemove' => false,
