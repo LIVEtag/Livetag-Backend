@@ -87,7 +87,7 @@ class StreamSessionCover extends ActiveRecord implements MediaInterface
                 'file',
                 'file',
                 'mimeTypes' => self::getMimeTypes(),
-                'maxSize' => Yii::$app->params['maxUploadImageSize'],
+                'maxSize' => Yii::$app->params['maxUploadCoverSize'],
             ],
         ];
     }
@@ -144,7 +144,7 @@ class StreamSessionCover extends ActiveRecord implements MediaInterface
     {
         return [
             MediaTypeEnum::TYPE_IMAGE,
-            //MediaTypeEnum::TYPE_VIDEO, //todo
+            MediaTypeEnum::TYPE_VIDEO,
         ];
     }
 

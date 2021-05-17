@@ -120,33 +120,48 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'id',
                             'name',
                             [
-                                'label' => 'Photo (cover image)',
+                                'label' => 'Cover (can be image of video)',
                                 'visible' => $user && $user->isAdmin,
-                                'format' => ['image', ['width' => '200']],
+                                'format' => 'raw',
                                 'value' => function (StreamSession $model) {
-                                    return $model->getCoverUrl();
+                                    $url = $model->getCoverUrl();
+                                    if (!$url) {
+                                        return null;
+                                    }
+                                    if ($model->streamSessionCover->isVideo()) {
+                                        return "<video width=\"200\" controls>
+                                                <source src=\"{$url}\" type=\"video/mp4\">
+                                                <p>Your browser doesn't support video. Here is a <a href=\"{$url}\">link to the video</a> instead.</p>
+                                            </video>";
+                                    }
+                                    return Html::img($url, ['class' => 'shop-logo__image']);
                                 }
                             ],
                             [
-                                'label' => 'Photo (cover image)',
+                                'label' => 'Cover (can be image of video)',
                                 'visible' => $user && $user->isSeller,
                                 'format' => 'raw',
                                 'value' => function (StreamSession $model) {
-                                    $imageUrl = $model->getCoverUrl();
-                                    if (!$imageUrl) {
+                                    $url = $model->getCoverUrl();
+                                    if (!$url) {
                                         return null;
                                     }
+                                    $coverHtml = "<img src=\"{$url}\" class=\"shop-logo__image\">";
+                                    if ($model->streamSessionCover->isVideo()) {
+                                        $coverHtml = "<video width=\"200\" controls>
+                                                          <source src=\"{$url}\" type=\"video/mp4\">
+                                                          <p>Your browser doesn't support video. Here is a <a href=\"{$url}\">link to the video</a> instead.</p>
+                                                      </video>";
+                                    }
+                                    $action = Url::to(['/stream-session/delete-cover-file', 'id' => $model->id]);
 
-                                    $action = Url::to(['/stream-session/delete-cover-image', 'id' => $model->id]);
                                     return "<div class=\"shop-logo\">
-                                                <div class=\"shop-logo__trash\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default\"
+                                                    <a type=\"button\" class=\"btn btn-sm btn-default stream-cover-trash\"
                                                         href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                         data-confirm=\"Are you sure to delete this item?\">
                                                         <i class=\"glyphicon glyphicon-trash\"></i>
                                                     </a>
-                                                </div>
-                                                <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
+                                                {$coverHtml}
                                             </div>";
                                 }
                             ],

@@ -20,6 +20,25 @@ use yii\widgets\ActiveForm;
 /** @var User $user */
 $user = Yii::$app->user->identity ?? null;
 $coverFile = $model->streamSession->streamSessionCover ?? null;
+
+$initialPreviewConfigItem = [
+    'showRemove' => false,
+    'showZoom' => true,
+    'showDrag' => false,
+];
+
+$initialPreview = [];
+$initialPreviewAsData = true;
+if ($coverFile) {
+    $initialPreviewConfigItem['type'] = $coverFile->type;
+    $initialPreviewConfigItem['caption'] = $coverFile->getOriginName();
+    $initialPreviewConfigItem['size'] = $coverFile->getSize();
+    $initialPreview = [$coverFile->getUrl()];
+    if ($coverFile->isVideo()) {
+        $initialPreviewAsData = false;
+        $initialPreview = '<div style="font-size: 110px;"><i class="fa fa-file-video-o"></i></div>';
+    }
+}
 ?>
 
 <div class="stream-session-form">
@@ -63,24 +82,16 @@ $coverFile = $model->streamSession->streamSessionCover ?? null;
                             'multiple' => false,
                         ],
                         'pluginOptions' => [
-                            'initialPreview' => $coverFile ? [$coverFile->getUrl()] : [],
-                            'initialPreviewConfig' => [
-                                [
-                                    'caption' => $coverFile ? $coverFile->getOriginName() : null,
-                                    'size' => $coverFile ? $coverFile->getSize() : null,
-                                    'showRemove' => false,
-                                    'showZoom' => true,
-                                    'showDrag' => false,
-                                ],
-                            ],
-                            'initialPreviewAsData' => true,
+                            'initialPreview' => $initialPreview,
+                            'initialPreviewConfig' => [$initialPreviewConfigItem],
+                            'initialPreviewAsData' => $initialPreviewAsData,
                             'maxFileCount' => 1,
                             'showUpload' => false,
                             'showRemove' => false,
-                            'msgPlaceholder' => 'Add image',
-                            'maxFileSize' => (Yii::$app->params['maxUploadImageSize'] / 1024), // the maximum file size for upload in KB
+                            'msgPlaceholder' => 'Add file',
+                            'maxFileSize' => (Yii::$app->params['maxUploadCoverSize'] / 1024), // the maximum file size for upload in KB
                         ],
-                    ])->label('Photo (cover image)'); ?>
+                    ])->label('Cover (can be image or video)'); ?>
 
                     <?= $form->field($model, 'productIds')->widget(Select2::class, [
                         'data' => $productIds,

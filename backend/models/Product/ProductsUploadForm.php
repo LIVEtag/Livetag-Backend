@@ -61,8 +61,8 @@ class ProductsUploadForm extends Model
     const TYPE_ADD = 1;
 
     const TYPES = [
-        self::TYPE_UPDATE => 'Update the list of products (products that are not in the uploaded CSV file will be deleted)',
         self::TYPE_ADD => 'Add new products to the list (existing products will remain)',
+        self::TYPE_UPDATE => 'Update the list of products (products that are not in the uploaded CSV file will be deleted)',
     ];
 
     /**
@@ -73,7 +73,7 @@ class ProductsUploadForm extends Model
     /**
      * @var bool
      */
-    public $type = self::TYPE_UPDATE;
+    public $type = self::TYPE_ADD;
 
     /** @var Shop */
     protected $shop;

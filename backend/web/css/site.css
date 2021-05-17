@@ -139,6 +139,11 @@ a.desc:after {
     opacity: 1;
 }
 
+.shop-logo .stream-cover-trash {
+    display: block;
+    margin-bottom: 1px;
+}
+
 .stream-session-view .shop-logo,
 .stream-session-view .shop-logo__trash,
 .stream-session-view .shop-logo__image {
