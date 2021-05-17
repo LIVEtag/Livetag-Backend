@@ -13,7 +13,9 @@ use yii\helpers\ArrayHelper;
 /**
  * Class Model
  * Creates and populates a set of models based on the data that is received through the form by post
- * @package common\models
+ * The logic is taken from the package wbraganca/yii2-dynamicform
+ * https://github.com/wbraganca/yii2-dynamicform
+ * @package backend\models
  */
 class Model extends \yii\base\Model
 {
