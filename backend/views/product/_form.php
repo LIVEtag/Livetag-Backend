@@ -21,8 +21,8 @@ $previewConfig = [];
 foreach ($productMedias as $productMedia) {
     $imageFiles[] = $productMedia->getUrl();
     $previewConfig[] = [
-        'caption' => $productMedia->getOriginName(),
-        'size' => $productMedia->getSize(),
+        'caption' => $productMedia->originName,
+        'size' => $productMedia->size,
         'showRemove' => false,
         'showZoom' => true,
         'showDrag' => false,

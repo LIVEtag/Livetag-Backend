@@ -32,8 +32,8 @@ $initialPreview = [];
 $initialPreviewAsData = true;
 if ($coverFile) {
     $initialPreviewConfigItem['type'] = $coverFile->type;
-    $initialPreviewConfigItem['caption'] = $coverFile->getOriginName();
-    $initialPreviewConfigItem['size'] = $coverFile->getSize();
+    $initialPreviewConfigItem['caption'] = $coverFile->originName;
+    $initialPreviewConfigItem['size'] = $coverFile->size;
     $initialPreview = [$coverFile->getUrl()];
     if ($coverFile->isVideo()) {
         $initialPreviewAsData = false;
