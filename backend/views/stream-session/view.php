@@ -76,6 +76,62 @@ $this->registerJs(
             e.preventDefault();
         }
     });
+    
+    clearParentComment();
+    $(\'#comments\').on(\'click\', \'.comment-reply\', function(e) {
+        $(\'.parent-comment-reply\').css(\'display\',\'block\');
+        clearParentComment();
+        row = $(this).parents(\'tr\');
+        id = row.data(\'key\');
+        $(\'#commentform-parentcommentid\').val(id);
+        if (row.hasOwnProperty(0)) {
+            tr = row[0];
+            cells = tr.cells;
+            if (cells.hasOwnProperty(0)) {
+                idCell = cells[0];
+                $(\'.parent-comment-id\').append(idCell.textContent);
+            }
+            if (cells.hasOwnProperty(1)) {
+                nameCell = cells[1];
+                $(\'.parent-comment-name\').append(nameCell.textContent);
+            }
+            if (cells.hasOwnProperty(2)) {
+                textCell = cells[2];
+                $(\'.parent-comment-text\').append(textCell.textContent);
+            }
+            if (cells.hasOwnProperty(3)) {
+                dateTimeCell = cells[3];
+                $(\'.parent-comment-date-time\').append(dateTimeCell.textContent);
+            }      
+        }
+    });
+    
+    $(\'.parent-comment-reply .close\').on(\'click\', function(e) {
+        hideParentComment();
+    });
+    
+    $(\'.comments-content\').on(\'click\', \'button\', function(e) {
+        hideParentComment();
+    });
+    
+    $(\'#comments\').on(\'click\', \'.glyphicon-trash\', function(e) {
+        row = $(this).parents(\'tr\');
+        idFromGrid = row.data(\'key\');
+        idFromInput = $(\'#commentform-parentcommentid\').val();
+        if (idFromGrid == idFromInput) {
+            hideParentComment();
+        }
+    });
+    
+    function clearParentComment() {
+        $(\'.parent-comment-reply .parent-comment\').empty();
+        $(\'#commentform-parentcommentid\').val(\'\');
+    }
+    
+    function hideParentComment() {
+        $(\'.parent-comment-reply\').hide();
+        clearParentComment();
+    }
     '
 );
 
@@ -397,10 +453,22 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                         <?= $this->render('comment-index', [
                             'commentSearchModel' => $commentSearchModel,
                             'commentDataProvider' => $commentDataProvider,
-                            'streamSessionId' => $model->id,
                             'commentModel' => $commentModel,
+                            'streamSession' => $model,
                         ]); ?>
                         <?php if ($model->isActive()) : ?>
+                        <div class="parent-comment-reply">
+                            <span>Reply to:</span>
+                            <button type="button" class="close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div>
+                                <div class="parent-comment parent-comment-name"></div>,
+                                <div class="parent-comment parent-comment-id"></div>
+                            </div>
+                            <div class="parent-comment parent-comment-date-time"></div>
+                            <div class="parent-comment parent-comment-text"></div>
+                        </div>
                             <!--Display comment form only for active session-->
                             <?= $this->render('comment-form', [
                                 'commentModel' => $commentModel,

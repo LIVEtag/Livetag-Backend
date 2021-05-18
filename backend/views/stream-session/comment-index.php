@@ -5,6 +5,7 @@
  */
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
+use backend\models\Stream\StreamSession;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use kartik\grid\GridView;
@@ -13,7 +14,7 @@ use kartik\grid\ActionColumn;
 /* @var $this yii\web\View */
 /* @var $commentSearchModel CommentSearch */
 /* @var $commentDataProvider ActiveDataProvider */
-/* @var $streamSessionId integer */
+/* @var $streamSession StreamSession */
 
 ?>
 
@@ -53,8 +54,16 @@ use kartik\grid\ActionColumn;
         [
             'class' => ActionColumn::class,
             'vAlign' => GridView::ALIGN_TOP,
-            'template' => '{delete-comment}',
+            'template' => '{reply} {delete-comment}',
+            'visibleButtons' => [
+                'reply' => function (Comment $model) {
+                    return $model->streamSession->commentsEnabled;
+                }
+            ],
             'buttons' => [
+                'reply' => function () {
+                    return '<span class="fa fa-reply comment-reply" data-pjax=""></span>';
+                },
                 'delete-comment' => function ($url) {
                     return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
                             'data-pjax' => true,
