@@ -18,6 +18,8 @@ class CommentFixture extends ActiveFixture
     const COMMENT_1_SESSION_1_BUYER_1 = 1;
     const COMMENT_2_SESSION_1_BUYER_2 = 2;
     const COMMENT_3_SESSION_1_SELLER_10 = 3;
+    const COMMENT_11_SESSION_1_SELLER_1 = 11;
+    const COMMENT_12_SESSION_1_SELLER_1 = 12;
     //Stopped Session of Shop2
     const COMMENT_4_SESSION_2_BUYER_1 = 4;
     const COMMENT_5_SESSION_2_BUYER_2 = 5;
@@ -27,6 +29,7 @@ class CommentFixture extends ActiveFixture
     const COMMENT_8_SESSION_4_BUYER_1 = 8;
     const COMMENT_9_SESSION_4_SELLER_2 = 9;
     const COMMENT_10_SESSION_4_BUYER_2 = 10;
+    const COMMENT_13_SESSION_4_SELLER_2 = 13;
 
     public $modelClass = Comment::class;
     public $depends = [
@@ -44,6 +47,7 @@ class CommentFixture extends ActiveFixture
     {
         return [
             'message' => $this->generator->text(255),
+            'status' => Comment::STATUS_ACTIVE,
             'createdAt' => $this->generator->incrementalTime,
             'updatedAt' => $this->generator->incrementalTime,
         ];

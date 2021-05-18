@@ -3,6 +3,8 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use backend\assets\AppAsset;
 use backend\assets\HighlightAsset;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
@@ -76,65 +78,12 @@ $this->registerJs(
             e.preventDefault();
         }
     });
-    
-    clearParentComment();
-    $(\'#comments\').on(\'click\', \'.comment-reply\', function(e) {
-        $(\'.parent-comment-reply\').css(\'display\',\'block\');
-        clearParentComment();
-        row = $(this).parents(\'tr\');
-        id = row.data(\'key\');
-        $(\'#commentform-parentcommentid\').val(id);
-        if (row.hasOwnProperty(0)) {
-            tr = row[0];
-            cells = tr.cells;
-            if (cells.hasOwnProperty(0)) {
-                idCell = cells[0];
-                $(\'.parent-comment-id\').append(idCell.textContent);
-            }
-            if (cells.hasOwnProperty(1)) {
-                nameCell = cells[1];
-                $(\'.parent-comment-name\').append(nameCell.textContent);
-            }
-            if (cells.hasOwnProperty(2)) {
-                textCell = cells[2];
-                $(\'.parent-comment-text\').append(textCell.textContent);
-            }
-            if (cells.hasOwnProperty(3)) {
-                dateTimeCell = cells[3];
-                $(\'.parent-comment-date-time\').append(dateTimeCell.textContent);
-            }      
-        }
-    });
-    
-    $(\'.parent-comment-reply .close\').on(\'click\', function(e) {
-        hideParentComment();
-    });
-    
-    $(\'.comments-content\').on(\'click\', \'button\', function(e) {
-        hideParentComment();
-    });
-    
-    $(\'#comments\').on(\'click\', \'.glyphicon-trash\', function(e) {
-        row = $(this).parents(\'tr\');
-        idFromGrid = row.data(\'key\');
-        idFromInput = $(\'#commentform-parentcommentid\').val();
-        if (idFromGrid == idFromInput) {
-            hideParentComment();
-        }
-    });
-    
-    function clearParentComment() {
-        $(\'.parent-comment-reply .parent-comment\').empty();
-        $(\'#commentform-parentcommentid\').val(\'\');
-    }
-    
-    function hideParentComment() {
-        $(\'.parent-comment-reply\').hide();
-        clearParentComment();
-    }
     '
 );
 
+$this->registerJsFile('/backend/web/js/comment-reply.js', [
+    'depends' => [AppAsset::class],
+]);
 $this->registerJsFile('/backend/web/js/highlight.js', [
     'depends' => [HighlightAsset::class],
 ]);
