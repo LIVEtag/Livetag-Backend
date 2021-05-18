@@ -9,6 +9,7 @@ namespace common\models\Stream;
 
 use common\components\behaviors\TimestampBehavior;
 use common\components\db\BaseActiveRecord;
+use common\components\EventDispatcher;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
@@ -38,6 +39,11 @@ use yii\web\UploadedFile;
  * @property integer $updatedAt
  *
  * @property-read StreamSession $streamSession
+ *
+ * EVENTS:
+ * - EVENT_AFTER_COMMIT_INSERT
+ * - EVENT_AFTER_COMMIT_UPDATE
+ * @see EventDispatcher
  */
 class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
 {

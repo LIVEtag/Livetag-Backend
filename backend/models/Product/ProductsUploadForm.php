@@ -20,12 +20,14 @@ use yii\web\UploadedFile;
 class ProductsUploadForm extends Model
 {
     const ID = 'id';
+    const PHOTO = 'photo';
 
     /**
      * Mapping fields from csv with existing fields
      */
     const HEADER_MAPPING = [
-        self::ID => Product::EXTERNAL_ID
+        self::ID => Product::EXTERNAL_ID,
+        self::PHOTO => Product::PHOTOS,
     ];
 
     /**
@@ -36,7 +38,7 @@ class ProductsUploadForm extends Model
         Product::SKU,
         Product::TITLE,
         Product::DESCRIPTION,
-        Product::PHOTO,
+        Product::PHOTOS, //@see HEADER_MAPPING
         Product::LINK,
         Product::PRICE,
     ];
@@ -53,6 +55,11 @@ class ProductsUploadForm extends Model
         Product::SKU,
         Product::PRICE,
     ];
+
+    /**
+     * The separator that determines that in a string multiple entries for rows-arrays. At the moment it applies only to photos.
+     */
+    const ARRAY_SEPARATOR = ';';
 
     /** Update the list of products (products that are not in the uploaded CSV file will be deleted) */
     const TYPE_UPDATE = 0;
@@ -208,6 +215,9 @@ class ProductsUploadForm extends Model
                 unset($productAttributes[$field]);
             }
         }
+        //Now there may be some photos with the ";" separator
+        $productAttributes[Product::PHOTOS] = explode(self::ARRAY_SEPARATOR, $productAttributes[Product::PHOTOS]);
+
         $id = ArrayHelper::getValue($productAttributes, Product::EXTERNAL_ID);
         if (!array_key_exists($id, $this->products)) {
             $this->products[$id] = Product::getOrCreate($this->shop->getId(), $id);
@@ -216,7 +226,7 @@ class ProductsUploadForm extends Model
             unset($productAttributes['options']);
         }
         $this->products[$id]->setAttributes($productAttributes);
-        $this->products[$id]->status = Product::STATUS_ACTIVE;
+        $this->products[$id]->status = Product::STATUS_NEW;
         if (!$this->products[$id]->validate()) {
             $this->addError($key + 2, implode(' ', $this->products[$id]->getFirstErrors()));
         }

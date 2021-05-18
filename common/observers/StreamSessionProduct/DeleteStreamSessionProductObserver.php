@@ -27,7 +27,7 @@ class DeleteStreamSessionProductObserver
             throw new RuntimeException('Not StreamSessionProduct instance');
         }
         //Notify about delete
-        $streamSessionProduct->notify(Message::ACTION_PRODUCT_DELETE);
+        $streamSessionProduct->notify(Message::ACTION_STREAM_SESSION_PRODUCT_DELETE);
         $streamSession = $streamSessionProduct->streamSession;
         if ($streamSession && $streamSession->isActive()) {
             $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_DELETE);

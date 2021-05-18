@@ -142,6 +142,36 @@ trait FileResourceTrait
     }
 
     /**
+     * Load file from url and populate file property
+     * @param string $url
+     */
+    public function setFileFromUrl(string $url)
+    {
+        $fileName = basename($url);
+        $tempFile = tmpfile();
+
+        $metaData = stream_get_meta_data($tempFile);
+        if (!isset($metaData['uri'])) {
+            throw new Exception('Incorrect File');
+        }
+
+        $fp = fopen($metaData['uri'], 'w+b');
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_exec($ch);
+        curl_close($ch);
+
+        $file = new UploadedFile([
+            'name' => $fileName,
+            'tempName' => $metaData['uri'],
+            'size' => filesize($metaData['uri']),
+            'type' => mime_content_type($metaData['uri']),
+            'tempResource' => $tempFile,
+        ]);
+        $this->setFile($file);
+    }
+
+    /**
      * @return string
      */
     public function getPath(): ?string

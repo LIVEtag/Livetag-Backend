@@ -27,7 +27,7 @@ class UpdateStreamSessionProductObserver
             throw new RuntimeException('Not StreamSessionProduct instance');
         }
         //Notify about update
-        $streamSessionProduct->notify(Message::ACTION_PRODUCT_UPDATE);
+        $streamSessionProduct->notify(Message::ACTION_STREAM_SESSION_PRODUCT_UPDATE);
         $streamSession = $streamSessionProduct->streamSession;
         if ($streamSession && $streamSession->isActive()) {
             $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_UPDATE);

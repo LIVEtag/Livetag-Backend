@@ -107,7 +107,7 @@ trait FileFormatTrait
     {
         try {
             $result = [];
-            foreach (array_keys($this->getFormatters()) as $formatName) {
+            foreach (array_keys(self::getFormatters()) as $formatName) {
                 $result[$formatName] = $this->runFormat($path, $file, $formatName);
             }
             $this->setFormatted($result);
@@ -149,7 +149,7 @@ trait FileFormatTrait
     protected function getFormatter(string $formatName): FileFormatterInterface
     {
         /** @var FileFormatterInterface $formatter */
-        $formatter = Yii::createObject(ArrayHelper::getValue($this->getFormatters(), $formatName));
+        $formatter = Yii::createObject(ArrayHelper::getValue(self::getFormatters(), $formatName));
         if (!($formatter instanceof FileFormatterInterface)) {
             throw new RuntimeException("Invalid formatter {$formatName}");
         }

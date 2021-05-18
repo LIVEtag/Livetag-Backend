@@ -10,6 +10,9 @@ namespace common\components\FileSystem\format;
 use common\components\FileSystem\format\formatter\FileFormatterInterface;
 use yii\web\UploadedFile;
 
+/**
+ * @see FileFormatTrait default implementation
+ */
 interface FileFormatInterface
 {
 
@@ -17,7 +20,7 @@ interface FileFormatInterface
      * Return array with key as format name and class as file transformer
      * @return FileFormatterInterface[]
      */
-    public function getFormatters(): array;
+    public static function getFormatters(): array;
 
     /**
      * Get name of field, that used for storing formatted data (as array)

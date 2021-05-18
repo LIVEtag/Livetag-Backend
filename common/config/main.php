@@ -15,9 +15,6 @@ use notamedia\sentry\SentryTarget;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\log\FileTarget;
-use yii\queue\file\Queue as FileQueue;
-use yii\queue\LogBehavior;
-use yii\queue\sqs\Queue as SqsQueue;
 use yii\swiftmailer\Mailer;
 use yii\validators\BooleanValidator;
 use yii\validators\CompareValidator;
@@ -52,6 +49,7 @@ return [
     'bootstrap' => [
         'log',
         'queue',
+        'queueProduct',
         EventDispatcher::class,
     ],
     'components' => [
@@ -61,21 +59,8 @@ return [
             'datetimeFormat' => 'dd/MM/yyyy, HH:mm:ss',
             'timeZone' => 'Singapore',
         ],
-        'queue' => getenv('USE_FILE_QUEUE') ?
-            [
-                'class' => FileQueue::class,
-                'path' => '@common/queue-' . getenv('AMAZON_SQS_GENERAL') ?: 'general',
-                'as log' => LogBehavior::class
-            ] :
-            [
-                'class' => SqsQueue::class,
-                'url' => 'https://sqs.' . (getenv('AMAZON_SQS_REGION') ?: 'ap-southeast-1') . '.amazonaws.com/'
-                        . getenv('AMAZON_ACCOUNT') . '/' . ENV  . '-'. (getenv('AMAZON_SQS_GENERAL') ?: 'general'),
-                'key' => getenv('AMAZON_ACCESS_KEY') ?: '',
-                'secret' => getenv('AMAZON_SECRET_KEY') ?: '',
-                'region' => getenv('AMAZON_SQS_REGION') ?: 'ap-southeast-1',
-                'as log' => LogBehavior::class
-            ],
+        'queue' => getQueueConfigByName(getenv('AMAZON_SQS_GENERAL') ?: 'general'),
+        'queueProduct' => getQueueConfigByName(getenv('AMAZON_SQS_PRODUCT') ?: 'product'),
         'db' => [
             'class' => Connection::class,
             'dsn' => 'mysql:host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME') . ';port=' . getenv('DB_PORT') . '',

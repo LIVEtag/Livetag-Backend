@@ -118,14 +118,6 @@ trait UploadArchiveTrait
      */
     public function saveArchive(): bool
     {
-        //if upload file by url - load it, validate and populate `videoFile`
-        if ($this->isLink()) {
-            if (!$this->setFileFromUrl()) {
-                $this->addError(UploadArchiveInterface::FIELD_DIRECT_URL, 'Failed to upload file from url');
-                return false;
-            }
-        }
-        //create archive from `videoFile`
         if (!$this->uploadVideoFile()) {
             $attribute = $this->isLink() ? UploadArchiveInterface::FIELD_DIRECT_URL : UploadArchiveInterface::FIELD_VIDEO_FILE;
             $errorsList = Yii::createObject(ErrorListInterface::class);
@@ -136,48 +128,28 @@ trait UploadArchiveTrait
     }
 
     /**
-     * Load file from directUrl and populate videoFile
-     * @return bool
-     */
-    protected function setFileFromUrl(): bool
-    {
-        $fileName = basename($this->directUrl);
-        $tempFile = tmpfile();
-
-        $metaData = stream_get_meta_data($tempFile);
-        if (!isset($metaData['uri'])) {
-            return false;
-        }
-
-        $fp = fopen($metaData['uri'], 'w+b');
-        $ch = curl_init($this->directUrl);
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_exec($ch);
-        curl_close($ch);
-
-        $this->videoFile = new UploadedFile([
-            'name' => $fileName,
-            'tempName' => $metaData['uri'],
-            'size' => filesize($metaData['uri']),
-            'type' => mime_content_type($metaData['uri']),
-            'tempResource' => $tempFile,
-        ]);
-        return true;
-    }
-
-    /**
      * Create archive and save file to s3
      * @return bool
      * @throws Throwable
      */
     protected function uploadVideoFile(): bool
     {
-        $duration = FileHelper::getVideoDuration($this->videoFile->tempName);
+        $oldArchive = $this->getStreamSession()->archive;
+
+        $archive = new StreamSessionArchive(['streamSessionId' => $this->streamSession->id]);
+        if ($this->isLink()) {
+            $archive->setFileFromUrl($this->directUrl);
+        } else {
+            $archive->setFile($this->videoFile);
+        }
+
+        $duration = FileHelper::getVideoDuration($archive->getFile()->tempName);
         if (!$duration) {
             return false;
         }
+        $archive->duration = (int) $duration;
 
-        $rotate = FileHelper::getVideoRotate($this->videoFile->tempName);
+        $rotate = FileHelper::getVideoRotate($archive->getFile()->tempName);
         if ($rotate != $this->getStreamSession()->getAttribute('rotate')) {
             $this->getStreamSession()->setAttribute('rotate', $rotate);
             if (!$this->getStreamSession()->save(true, ['rotate'])) {
@@ -186,17 +158,10 @@ trait UploadArchiveTrait
             }
         }
 
-        $oldArchive = $this->getStreamSession()->archive;
+        if (!$archive->saveFile() || !$archive->save()) {
+            return false;
+        }
 
-        $archive = new StreamSessionArchive(['streamSessionId' => $this->streamSession->id]);
-        $archive->duration = (int) $duration;
-        $archive->setFile($this->videoFile);
-        if (!$archive->saveFile()) {
-            return false;
-        }
-        if (!$archive->save()) {
-            return false;
-        }
         $this->getStreamSession()->populateRelation(StreamSession::REL_ARCHIVE, $archive);
 
         // delete old archive(if exist)
