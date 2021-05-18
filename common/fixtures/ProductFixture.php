@@ -38,7 +38,7 @@ class ProductFixture extends ActiveFixture
         return [
             'externalId' => $this->generator->unique()->randomNumber(5),
             'title' => $this->generator->text(20),
-            'photo' => 'https://picsum.photos/seed/' . $this->generator->randomElement(range(1, 100)) . '/200',
+            'photos' => '["https://picsum.photos/seed/' . $this->generator->randomElement(range(1, 100)) . '/200"]',
             'link' => $this->generator->url,
             'status' => Product::STATUS_ACTIVE,
             'options' => [

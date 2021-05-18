@@ -22,7 +22,7 @@ class ProductQuery extends ActiveQuery
      */
     public function active(): self
     {
-        return $this->byStatus(Product::STATUS_ACTIVE);
+        return $this->andWhere(['<>', $this->getFieldName('status'), Product::STATUS_DELETED]);
     }
 
     /**

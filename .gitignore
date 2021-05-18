@@ -41,3 +41,4 @@ npm-debug.log
 /.php_cs.cache
 
 /common/queue-general/
+/common/queue-product/

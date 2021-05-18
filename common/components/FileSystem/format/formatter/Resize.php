@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace common\components\FileSystem\format\formatter;
 
 use Imagine\Image\ImageInterface;
-use yii\imagine\BaseImage;
 use yii\imagine\Image as ImageProcessor;
 
 /**

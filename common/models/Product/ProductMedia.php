@@ -43,6 +43,11 @@ class ProductMedia extends ActiveRecord implements MediaInterface, FileFormatInt
     const REL_PRODUCT = 'product';
 
     /**
+     * @var UploadedFile
+     */
+    public $file;
+
+    /**
      * @inheritdoc
      */
     public static function tableName(): string
@@ -125,7 +130,7 @@ class ProductMedia extends ActiveRecord implements MediaInterface, FileFormatInt
      /**
      * @inheridDoc
      */
-    public function getFormatters(): array
+    public static function getFormatters(): array
     {
         return [
             FormatEnum::SMALL => [

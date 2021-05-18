@@ -11,6 +11,7 @@ class LogHelper
 {
     const TAG_STREAM_SESSION_ID = 'streamSessionId';
     const TAG_ARCHIVE_ID = 'archiveId';
+    const TAG_PRODUCT_ID = 'productId';
 
     /**
      * log error in sentry format

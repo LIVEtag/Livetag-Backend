@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'id',
                             [
                                 'attribute' => 'externalId',
-                                'label' => Yii::t('app', 'ID of the product in the shop (external'),
+                                'label' => Yii::t('app', 'ID of the product in the shop (external)'),
                             ],
                             'title',
                             'description',
@@ -51,6 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 },
                             ],
                             [
+                                'attribute' => 'status',
+                                'value' => function (Product $model) {
+                                    return $model->getStatusName();
+                                },
+                            ],
+                            [
                                 'label' => 'Photo',
                                 'format' => 'raw',
                                 'value' => function (Product $model) {
@@ -60,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'url' => $media->getFormattedUrlByName(FormatEnum::LARGE),
                                             'src' => $media->getFormattedUrlByName(FormatEnum::SMALL),
                                             'options' => [
-                                                'title' => $media->getOriginName(),
+                                                'title' => $media->originName,
                                             ]
                                         ];
                                     }

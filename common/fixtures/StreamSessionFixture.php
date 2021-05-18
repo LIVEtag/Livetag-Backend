@@ -36,6 +36,7 @@ class StreamSessionFixture extends ActiveFixture
         $expiredTime = $this->generator->incrementalTime - 21 * 60 * 60;
         return [
             'sessionId' => '1_MX4' . $this->generator->password(64, 64) . '-QX4',
+            'name' => $this->generator->words(2, true),
             'status' => StreamSession::STATUS_STOPPED,
             'createdAt' => $expiredTime - 4 * 60 * 60,
             'announcedAt' => $expiredTime - 3 * 60 * 60,

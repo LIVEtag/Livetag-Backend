@@ -112,6 +112,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'vAlign' => GridView::ALIGN_TOP,
                             ],
                             [
+                                'attribute' => 'status',
+                                'vAlign' => GridView::ALIGN_TOP,
+                                'hAlign' => GridView::ALIGN_LEFT,
+                                'headerOptions' => ['width' => '100'],
+                                'filter' => Html::activeDropDownList($searchModel, 'status', Product::STATUSES, ['class' => 'form-control', 'prompt' => '']),
+                                'value' => function (Product $model) {
+                                    return $model->getStatusName();
+                                },
+                            ],
+                            [
                                 'attribute' => 'photo',
                                 'format' => ['image', ['width' => '75']],
                                 'vAlign' => GridView::ALIGN_TOP,
