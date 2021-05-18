@@ -6,6 +6,7 @@
 
 use backend\models\Stream\StreamSession;
 use backend\models\Stream\UploadRecordedShowForm;
+use common\components\FileSystem\media\MediaInterface;
 use kartik\widgets\FileInput;
 use kartik\widgets\Select2;
 use yii\helpers\Html;
@@ -20,6 +21,25 @@ $this->title = Yii::t('app', 'Upload recorded show');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+$coverFile = $model->streamSession->streamSessionCover ?? null;
+$initialPreviewConfigItem = [
+    'showRemove' => false,
+    'showZoom' => true,
+    'showDrag' => false,
+];
+
+$initialPreview = [];
+$initialPreviewAsData = true;
+if ($coverFile) {
+    $initialPreviewConfigItem['type'] = $coverFile->type;
+    $initialPreviewConfigItem['caption'] = $coverFile->getOriginName();
+    $initialPreviewConfigItem['size'] = $coverFile->getSize();
+    $initialPreview = [$coverFile->getUrl()];
+    if ($coverFile->isVideo()) {
+        $initialPreviewAsData = false;
+        $initialPreview = '<div style="font-size: 110px;"><i class="fa fa-file-video-o"></i></div>';
+    }
+}
 ?>
 
 <section class="recorded-show">
@@ -43,20 +63,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'multiple' => false,
                             ],
                             'pluginOptions' => [
-                                'initialPreviewConfig' => [
-                                    [
-                                        'showRemove' => false,
-                                        'showZoom' => true,
-                                        'showDrag' => false,
-                                    ],
-                                ],
-                                'initialPreviewAsData' => true,
+                                'initialPreview' => $initialPreview,
+                                'initialPreviewConfig' => [$initialPreviewConfigItem],
+                                'initialPreviewAsData' => $initialPreviewAsData,
                                 'maxFileCount' => 1,
                                 'showUpload' => false,
                                 'showRemove' => false,
                                 'browseLabel' => Yii::t('app', 'Upload'),
-                                'msgPlaceholder' => Yii::t('app', 'Add image'),
-                                'maxFileSize' => (Yii::$app->params['maxUploadImageSize'] / 1024), // the maximum file size for upload in KB
+                                'msgPlaceholder' => Yii::t('app', 'Add file'),
+                                'maxFileSize' => (Yii::$app->params['maxUploadCoverSize'] / 1024), // the maximum file size for upload in KB
                             ],
                         ]); ?>
 

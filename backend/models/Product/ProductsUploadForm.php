@@ -35,18 +35,13 @@ class ProductsUploadForm extends Model
      */
     const REQUIRED_HEADERS = [
         Product::EXTERNAL_ID, //@see HEADER_MAPPING
-        Product::SKU,
         Product::TITLE,
         Product::DESCRIPTION,
+        Product::SKU,
+        Product::PRICE,
         Product::PHOTOS, //@see HEADER_MAPPING
         Product::LINK,
-        Product::PRICE,
     ];
-
-    /**
-     * Preffix, that determinate option column (lowercase)
-     */
-    const OPTION_PREFFIX = 'option ';
 
     /**
      * required fields in options (not dynamic)
@@ -54,6 +49,7 @@ class ProductsUploadForm extends Model
     const OPTION_FIELDS = [
         Product::SKU,
         Product::PRICE,
+        Product::OPTION,
     ];
 
     /**
@@ -68,8 +64,8 @@ class ProductsUploadForm extends Model
     const TYPE_ADD = 1;
 
     const TYPES = [
-        self::TYPE_UPDATE => 'Update the list of products (products that are not in the uploaded CSV file will be deleted)',
         self::TYPE_ADD => 'Add new products to the list (existing products will remain)',
+        self::TYPE_UPDATE => 'Update the list of products (products that are not in the uploaded CSV file will be deleted)',
     ];
 
     /**
@@ -80,7 +76,7 @@ class ProductsUploadForm extends Model
     /**
      * @var bool
      */
-    public $type = self::TYPE_UPDATE;
+    public $type = self::TYPE_ADD;
 
     /** @var Shop */
     protected $shop;
@@ -173,23 +169,15 @@ class ProductsUploadForm extends Model
             $this->addError('header', 'Header has missing elements: ' . implode(',', $missingHeader));
             return false;
         }
-
-        //Detect header options
-        $headerOptions = self::OPTION_FIELDS;
-        foreach ($header as $headerItem) {
-            if (strpos($headerItem, self::OPTION_PREFFIX) === 0) {
-                $headerOptions[] = $headerItem;
-            }
-        }
-
         //Process row by row, populate and validate products
         foreach ($rows as $key => $row) {
             if (count($this->getErrors()) > 50) {
                 $this->addError('File', 'The file contains too many errors. Processing terminated.');
                 break;
             }
-            $this->processRow($row, $key, $header, $headerOptions);
+            $this->processRow($row, $key, $header);
         }
+
         return !$this->hasErrors();
     }
 
@@ -199,10 +187,9 @@ class ProductsUploadForm extends Model
      * @param array $row
      * @param string $key
      * @param array $header
-     * @param array $headerOptions
      * @return type
      */
-    protected function processRow(array $row, string $key, array $header, array $headerOptions)
+    protected function processRow(array $row, string $key, array $header)
     {
         if (count($header) !== count($row)) {
             $this->addError($key + 2, 'The string contains an incorrect number of elements.');
@@ -210,7 +197,7 @@ class ProductsUploadForm extends Model
         }
         $productAttributes = array_combine($header, $row);
         foreach ($productAttributes as $field => $value) {
-            if (in_array($field, $headerOptions)) {
+            if (in_array($field, self::OPTION_FIELDS)) {
                 $productAttributes['options'][0][$field] = $value;
                 unset($productAttributes[$field]);
             }

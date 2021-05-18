@@ -11,10 +11,12 @@ namespace backend\controllers;
 use backend\components\Controller;
 use backend\models\Product\Product;
 use backend\models\Product\ProductForm;
+use backend\models\Product\ProductOptionForm;
 use backend\models\Product\ProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
 use backend\models\Product\ProductsUploadForm;
+use backend\models\Model;
 use Throwable;
 use Yii;
 use yii\filters\VerbFilter;
@@ -112,13 +114,15 @@ class ProductController extends Controller
 
         $model = new ProductForm();
         $model->scenario = ProductForm::SCENARIO_CREATE;
+
         $params = Yii::$app->request->post();
         if ($params) { //shop and seller checked before
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
         }
         if ($model->load($params)) {
             $model->files = UploadedFile::getInstances($model, 'files');
-            if ($model->save()) {
+            $model->productOptions = Model::createMultiple(ProductOptionForm::class);
+            if (Model::loadMultiple($model->productOptions, $params) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Product is added to the list of products.');
                 return $this->redirect(['index']);
             }
@@ -143,15 +147,21 @@ class ProductController extends Controller
         if (!$user || !$user->isSeller || !$user->shop) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
-
-        $model = new ProductForm($product);
+        $productOptions = [];
+        foreach ($product->getOptions() as $option) {
+            $modelProduct = new ProductOptionForm();
+            $modelProduct->setAttributes($option);
+            $productOptions[] = $modelProduct;
+        }
+        $model = new ProductForm($product, $productOptions);
         $params = Yii::$app->request->post();
         if ($params) { //shop and seller checked before
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
         }
         if ($model->load($params)) {
             $model->files = UploadedFile::getInstances($model, 'files');
-            if ($model->save()) {
+            $model->productOptions = Model::createMultiple(ProductOptionForm::class);
+            if (Model::loadMultiple($model->productOptions, $params) && $model->save()) {
                 Yii::$app->session->setFlash('success', 'Product is updated.');
                 return $this->redirect(['view', 'id' => $product->id]);
             }

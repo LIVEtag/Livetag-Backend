@@ -105,6 +105,7 @@ class Product extends BaseActiveRecord implements ProductInterface
     const DESCRIPTION = 'description';
     const PHOTOS = 'photos';
     const LINK = 'link';
+    const OPTION = 'option';
 
     /**
      * required fields in option
@@ -162,7 +163,7 @@ class Product extends BaseActiveRecord implements ProductInterface
     public function rules(): array
     {
         return [
-            [['externalId', 'shopId', 'title', 'link'], 'required'],
+            [['externalId', 'shopId', 'title', 'link', 'options'], 'required'],
             [['photos'], 'required', 'except' => self::SCENARIO_MANUALLY],
             [['shopId', 'status'], 'integer'],
             [['shopId'], 'exist', 'skipOnError' => true, 'targetClass' => Shop::class, 'targetAttribute' => ['shopId' => 'id']],

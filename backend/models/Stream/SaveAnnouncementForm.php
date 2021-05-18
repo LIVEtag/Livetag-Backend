@@ -115,7 +115,7 @@ class SaveAnnouncementForm extends Model
                 'file',
                 'file',
                 'mimeTypes' => StreamSessionCover::getMimeTypes(),
-                'maxSize' => Yii::$app->params['maxUploadImageSize'],
+                'maxSize' => Yii::$app->params['maxUploadCoverSize'],
             ],
         ];
     }
