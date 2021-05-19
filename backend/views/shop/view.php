@@ -32,6 +32,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'method' => 'post',
                         ],
                     ]); ?>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -52,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $action = Url::to(['/shop/delete-logo', 'id' => $model->id]);
                                     return "<div class=\"shop-logo\">
                                                 <div class=\"shop-logo__trash\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default\" 
+                                                    <a type=\"button\" class=\"btn btn-sm btn-default\"
                                                         href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                         data-confirm=\"Are you sure to delete this item?\">
                                                         <i class=\"glyphicon glyphicon-trash\"></i>
@@ -84,10 +87,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-md-12">
-            <div class="box box-primary">
+            <div class="box box-default">
                 <div class="box-header">
-                    <h4 class="box-title pull-right">Sellers</h4>
                     <?= Html::a(Yii::t('app', 'Add a seller'), ['/user/create', 'shopId' => $model->id], ['class' => 'btn bg-black']) ?>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    <h4 class="box-title pull-right">Sellers</h4>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -139,5 +145,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <!-- /.col -->
     </div>
     <!-- /.row -->
+
+    <?= $this->render('shop-analytics', ['shop' => $model ]); ?>
+
 </section>
 <!-- /.section -->
