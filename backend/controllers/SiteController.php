@@ -66,23 +66,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $user = Yii::$app->user->identity;
-        $shops = [];
-        $displayHeader = false;
-        if ($user->isSeller) {
-            $shops = [$user->shop];
-        } elseif ($user->isAdmin) {
-            // I do not really understand why in the specification such a requirement
-            // that we need to display all stores with statistics immediately.
-            // This will all work if there are several stores.
-            // If there are a lot of them - it turns out to be a hell of a poorly working mixture
-            $shops = Shop::find()->all();
-            $displayHeader = true;
-        }
-        return $this->render('index', [
-            'shops' => $shops,
-            'displayHeader' => $displayHeader
-        ]);
+        return $this->render('index');
     }
 
     /**

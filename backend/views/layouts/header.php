@@ -14,7 +14,7 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
 <header class="main-header">
     <?= Html::a(
         '<span class="logo-mini">LT</span><span class="logo-lg"><img src="' . $logo . '" class="user-image" alt="' . Yii::$app->name . '"/></span>',
-        Yii::$app->homeUrl,
+        $user->isSeller ? ['shop/my'] : Yii::$app->homeUrl,
         ['class' => 'logo']
     ); ?>
     <nav class="navbar navbar-static-top" role="navigation">

@@ -18,12 +18,6 @@ $user = Yii::$app->user->identity ?? null;
                     'options' => ['class' => 'header']
                 ],
                 [
-                    'label' => 'Analytics',
-                    'icon' => 'line-chart',
-                    'url' => ['/site/index'],
-                    'visible' => $user
-                ],
-                [
                     'label' => 'Shops',
                     'icon' => 'shopping-bag',
                     'url' => ['/shop/index'],

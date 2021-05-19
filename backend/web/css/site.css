@@ -204,8 +204,3 @@ a.desc:after {
 .parent-comment-id {
     display: inline;
 }
-a.no-decoration {
-    color: #444;
-    text-decoration: none;
-    display: inline-block;
-}
