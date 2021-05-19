@@ -30,7 +30,7 @@
         "omnilight/yii2-scheduling": "^1.1",
         "notamedia/yii2-sentry": "^1.5",
         "vlucas/phpdotenv": "^5.2",
-        "opentok/opentok": "4.4.x",
+        "opentok/opentok": "^4.0",
         "kartik-v/yii2-editable": "^1.7",
         "2amigos/yii2-ckeditor-widget": "~2.1",
         "lavrentiev/yii2-toastr": "^2.0",
