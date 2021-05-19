@@ -99,7 +99,7 @@ class Vonage extends Component
             return $this->opentok->startArchive($sessionId, [
                     'name' => $name,
                     'outputMode' => OutputMode::COMPOSED, // default: OutputMode::COMPOSED
-                    'resolution' => '1280x720', // default: '640x480'
+                    'resolution' => '720x1280', // default: '640x480'
             ]);
         } catch (DomainException $e) {
             $this->processClientException($e);
