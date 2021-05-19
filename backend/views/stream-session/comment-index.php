@@ -46,6 +46,22 @@ use kartik\grid\ActionColumn;
             'hAlign' => GridView::ALIGN_LEFT,
         ],
         [
+            'attribute' => 'parentCommentId',
+            'label' => 'ID of the replied comment',
+            'format' => 'raw',
+            'value' => function (Comment $model) use ($commentSearchModel) {
+                if ($model->parentCommentId) {
+                    return Html::a($model->parentCommentId, [
+                            'view',
+                            'id' => $model->streamSessionId,
+                            'CommentSearch[id]' => $model->parentCommentId
+                        ]
+                    );
+                }
+                return null;
+            }
+        ],
+        [
             'attribute' => 'createdAt',
             'format' => 'datetime',
             'label' => 'Date&Time',
