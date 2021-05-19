@@ -99,10 +99,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            if (Yii::$app->user->login($this->user, $this->rememberMe ? 3600 * 24 * 30 : 0)) {
-                Yii::$app->user->returnUrl = Yii::$app->user->identity->isAdmin ? ['shop/index'] : ['stream-session/index'];
-                return true;
-            }
+            return Yii::$app->user->login($this->user, $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
         return false;
     }

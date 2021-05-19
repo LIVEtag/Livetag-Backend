@@ -12,9 +12,17 @@ use common\components\EventDispatcher;
 use common\components\FileSystem\FileResourceInterface;
 use common\components\FileSystem\FileResourceTrait;
 use common\helpers\FileHelper;
+use common\models\Analytics\StreamSessionEvent;
+use common\models\Analytics\StreamSessionStatistic;
+use common\models\Comment\Comment;
 use common\models\Product\Product;
+use common\models\queries\Analytics\StreamSessionEventQuery;
+use common\models\queries\Analytics\StreamSessionStatisticQuery;
+use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Shop\ShopQuery;
+use common\models\queries\Stream\StreamSessionLikeQuery;
 use common\models\Stream\StreamSession;
+use common\models\Stream\StreamSessionLike;
 use common\models\User;
 use Yii;
 use yii\behaviors\SluggableBehavior;
@@ -207,6 +215,38 @@ class Shop extends ActiveRecord implements FileResourceInterface
     public function getStreamSessions(): ActiveQuery
     {
         return $this->hasMany(StreamSession::class, ['shopId' => 'id']);
+    }
+
+    /**
+     * @return StreamSessionLikeQuery
+     */
+    public function getLikes(): StreamSessionLikeQuery
+    {
+        return $this->hasMany(StreamSessionLike::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
+    }
+
+    /**
+     * @return CommentQuery
+     */
+    public function getComments(): CommentQuery
+    {
+        return $this->hasMany(Comment::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
+    }
+
+    /**
+     * @return StreamSessionStatisticQuery
+     */
+    public function getStreamSessionStatistic(): StreamSessionStatisticQuery
+    {
+        return $this->hasOne(StreamSessionStatistic::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
+    }
+
+    /**
+     * @return StreamSessionEventQuery
+     */
+    public function getStreamSessionEvents(): StreamSessionEventQuery
+    {
+        return $this->hasMany(StreamSessionEvent::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
     }
 
     /**

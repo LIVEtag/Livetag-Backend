@@ -159,3 +159,9 @@ a.desc:after {
     margin: 2px 0;
     height: 200px;
 }
+
+a.no-decoration {
+    color: #444;
+    text-decoration: none;
+    display: inline-block;
+}

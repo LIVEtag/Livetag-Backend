@@ -584,6 +584,14 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     }
 
     /**
+     * @return StreamSessionEventQuery
+     */
+    public function getStreamSessionEvents(): StreamSessionEventQuery
+    {
+        return $this->hasMany(StreamSessionEvent::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
      * @return ProductQuery
      */
     public function getProducts(): ProductQuery
