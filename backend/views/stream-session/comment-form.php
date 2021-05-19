@@ -17,6 +17,9 @@ use yii\widgets\Pjax;
 $this->registerJs(
     '$("#new_comment").on("pjax:end", function(val) {
         $.pjax.reload({container:"#comment-list-pjax"});  //Reload GridView
+        $(\'.parent-comment-reply\').hide();
+        $(\'.parent-comment-reply .parent-comment\').empty();
+        $(\'#commentform-parentcommentid\').val(\'\');
     });'
 );
 ?>
@@ -24,6 +27,7 @@ $this->registerJs(
 <?php Pjax::begin(['id' => 'new_comment', 'enablePushState' => false]) ?>
 <?php $form = ActiveForm::begin(['action' => ['create-comment', 'id' => $streamSessionId], 'options' => ['autocomplete' => 'off', 'data-pjax' => true]]); ?>
 <?= $form->field($commentModel, 'streamSessionId')->hiddenInput()->label(false) ?>
+<?= $form->field($commentModel, 'parentCommentId')->hiddenInput()->label(false) ?>
 <?= $form->field($commentModel, 'message')->widget(CKEditor::class, [
     'options' => ['rows' => 4],
     'preset' => 'custom',
