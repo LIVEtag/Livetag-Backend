@@ -18,6 +18,23 @@ use common\components\db\ActiveQuery;
 class CommentQuery extends ActiveQuery
 {
     /**
+     * @return $this
+     */
+    public function active(): self
+    {
+        return $this->byStatus(Comment::STATUS_ACTIVE);
+    }
+
+    /**
+     * @param int|array $status
+     * @return $this
+     */
+    public function byStatus($status): self
+    {
+        return $this->andWhere([$this->getFieldName('status') => $status]);
+    }
+
+    /**
      * @param int $id
      * @return $this
      */

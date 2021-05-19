@@ -24,6 +24,7 @@ $this->registerJs(
     commentFormDisplay();
     $("#enabled_comment").on("pjax:end", function(val) {
         commentFormDisplay();
+        $.pjax.reload({container:"#comment-list-pjax"});  //Reload GridView
     });'
 );
 ?>

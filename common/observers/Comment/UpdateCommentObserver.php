@@ -26,7 +26,12 @@ class UpdateCommentObserver
         if (!($comment instanceof Comment)) {
             throw new RuntimeException('Not Comment instance');
         }
-        //Notify about update
-        $comment->notify(Message::ACTION_COMMENT_UPDATE);
+
+        $actionType = Message::ACTION_COMMENT_UPDATE;
+        if (isset($event->changedAttributes['status']) && $comment->isDeleted()) {
+            $actionType = Message::ACTION_COMMENT_DELETE;
+        }
+
+        $comment->notify($actionType);
     }
 }

@@ -160,6 +160,50 @@ a.desc:after {
     height: 200px;
 }
 
+.comment-reply {
+    color: #3c8dbc;
+    cursor: pointer;
+}
+
+.comment-reply:hover,
+.comment-reply:active,
+.comment-reply:focus {
+    color: #72afd2;
+}
+
+.parent-comment-reply {
+    background-color: #f9f9f9;
+    border: 1px solid #f4f4f4;
+    padding: 10px;
+    display: none;
+}
+
+.parent-comment-reply span {
+    color: #337ab7;
+    font-weight: bold;
+}
+
+.parent-comment-reply .close {
+    font-size: 23px;
+    line-height: 0.6;
+}
+
+.parent-comment-text {
+    margin-top: 4px;
+}
+
+.parent-comment-date-time {
+    font-style: italic;
+    font-size: 13px;
+}
+
+.parent-comment-name {
+    display: inline;
+}
+
+.parent-comment-id {
+    display: inline;
+}
 a.no-decoration {
     color: #444;
     text-decoration: none;

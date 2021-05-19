@@ -3,6 +3,8 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use backend\assets\AppAsset;
 use backend\assets\HighlightAsset;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
@@ -79,6 +81,9 @@ $this->registerJs(
     '
 );
 
+$this->registerJsFile('/backend/web/js/comment-reply.js', [
+    'depends' => [AppAsset::class],
+]);
 $this->registerJsFile('/backend/web/js/highlight.js', [
     'depends' => [HighlightAsset::class],
 ]);
@@ -397,10 +402,22 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                         <?= $this->render('comment-index', [
                             'commentSearchModel' => $commentSearchModel,
                             'commentDataProvider' => $commentDataProvider,
-                            'streamSessionId' => $model->id,
                             'commentModel' => $commentModel,
+                            'streamSession' => $model,
                         ]); ?>
                         <?php if ($model->isActive()) : ?>
+                        <div class="parent-comment-reply">
+                            <span>Reply to:</span>
+                            <button type="button" class="close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <div>
+                                <div class="parent-comment parent-comment-name"></div>,
+                                <div class="parent-comment parent-comment-id"></div>
+                            </div>
+                            <div class="parent-comment parent-comment-date-time"></div>
+                            <div class="parent-comment parent-comment-text"></div>
+                        </div>
                             <!--Display comment form only for active session-->
                             <?= $this->render('comment-form', [
                                 'commentModel' => $commentModel,

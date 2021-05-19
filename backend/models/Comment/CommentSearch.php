@@ -48,7 +48,7 @@ class CommentSearch extends Comment
      */
     public function search($params): ActiveDataProvider
     {
-        $query = Comment::find()->joinWith([self::REL_USER]);
+        $query = Comment::find()->active()->joinWith([self::REL_USER]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
