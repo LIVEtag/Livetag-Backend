@@ -49,9 +49,11 @@ use kartik\grid\ActionColumn;
             'attribute' => 'parentCommentId',
             'label' => 'ID of the replied comment',
             'format' => 'raw',
-            'value' => function (Comment $model) use ($commentSearchModel) {
+            'value' => function (Comment $model) {
                 if ($model->parentCommentId) {
-                    return Html::a($model->parentCommentId, [
+                    return Html::a(
+                        $model->parentCommentId,
+                        [
                             'view',
                             'id' => $model->streamSessionId,
                             'CommentSearch[id]' => $model->parentCommentId
