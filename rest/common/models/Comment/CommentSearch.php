@@ -82,7 +82,7 @@ class CommentSearch extends Comment
             return $this; //return errors when validation fails
         }
 
-        $query = $this->streamSession->getComments();
+        $query = $this->streamSession->getComments()->active();
 
         //join need only when expand required
         if (ArrayHelper::isIn(self::REL_USER, ExpandHelper::getExpand($params))) {
