@@ -9,6 +9,7 @@ use backend\models\Product\ProductSearch;
 use backend\models\Product\ProductsUploadForm;
 use kartik\grid\ActionColumn;
 use kartik\grid\GridView;
+use kartik\widgets\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\web\View;
@@ -55,7 +56,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <h4 class="modal-title">Upload products</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <?= $form->field($model, 'file')->fileInput()->label(false) ?>
+
+                                    <?= $form->field($model, 'file')->widget(FileInput::class, [
+                                        'options' => [
+                                            'multiple' => false,
+                                        ],
+                                        'pluginOptions' => [
+                                            'maxFileCount' => 1,
+                                            'showPreview' => false,
+                                            'showUpload' => false,
+                                            'showRemove' => false,
+                                            'browseLabel' => Yii::t('app', 'Browse ...'),
+                                            'msgPlaceholder' => Yii::t('app', 'Add file'),
+                                        ],
+                                    ])->label(false); ?>
 
                                     <?php if ($dataProvider->getTotalCount()) : ?>
                                         <?= $form->field($model, 'type', ['enableClientValidation' => false])
