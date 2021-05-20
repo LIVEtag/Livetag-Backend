@@ -61,11 +61,6 @@ class Comment extends ActiveRecord implements CommentInterface
     const REL_PARENT_COMMENT = 'parentComment';
 
     /**
-     * Active Parent Comment relation key
-     */
-    const REL_ACTIVE_PARENT_COMMENT = 'activeParentComment';
-
-    /**
      * StreamSession relation key
      */
     const REL_STREAM_SESSION = 'streamSession';
@@ -87,11 +82,6 @@ class Comment extends ActiveRecord implements CommentInterface
         self::STATUS_ACTIVE => 'Active',
         self::STATUS_DELETED => 'Deleted',
     ];
-
-    /**
-     * parent comment expand
-     */
-    const EXPAND_PARENT_COMMENT = 'parentComment';
 
     /**
      * @inheritdoc
@@ -184,7 +174,9 @@ class Comment extends ActiveRecord implements CommentInterface
     {
         return [
             self::REL_USER,
-            self::EXPAND_PARENT_COMMENT => self::REL_ACTIVE_PARENT_COMMENT,
+            self::REL_PARENT_COMMENT => function () {
+                return $this->getParentComment()->active()->one();
+            },
         ];
     }
 
@@ -209,17 +201,8 @@ class Comment extends ActiveRecord implements CommentInterface
      */
     public function getParentComment(): ActiveQuery
     {
-        return $this->hasOne(Comment::class, ['id' => 'parentCommentId']);
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getActiveParentComment(): ActiveQuery
-    {
         return $this->hasOne(Comment::class, ['id' => 'parentCommentId'])
-            ->alias('parentComment')
-            ->andOnCondition(['parentComment.status' => self::STATUS_ACTIVE]);
+            ->alias('parentComment');
     }
 
     /**

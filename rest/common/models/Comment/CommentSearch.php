@@ -89,10 +89,6 @@ class CommentSearch extends Comment
             $query->joinWith(self::REL_USER);
         }
 
-        if (ArrayHelper::isIn(self::EXPAND_PARENT_COMMENT, ExpandHelper::getExpand($params))) {
-            $query->joinWith(self::REL_ACTIVE_PARENT_COMMENT);
-        }
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
