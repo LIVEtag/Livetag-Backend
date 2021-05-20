@@ -174,7 +174,9 @@ class Comment extends ActiveRecord implements CommentInterface
     {
         return [
             self::REL_USER,
-            self::REL_PARENT_COMMENT,
+            self::REL_PARENT_COMMENT => function () {
+                return $this->getParentComment()->active()->one();
+            },
         ];
     }
 
@@ -199,7 +201,8 @@ class Comment extends ActiveRecord implements CommentInterface
      */
     public function getParentComment(): ActiveQuery
     {
-        return $this->hasOne(Comment::class, ['id' => 'parentCommentId']);
+        return $this->hasOne(Comment::class, ['id' => 'parentCommentId'])
+            ->alias('parentComment');
     }
 
     /**

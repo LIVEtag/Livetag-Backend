@@ -2476,6 +2476,7 @@
                     "id",
                     "userId",
                     "message",
+                    "parentCommentId",
                     "createdAt"
                 ],
                 "properties": {
@@ -2491,10 +2492,46 @@
                     "createdAt": {
                         "type": "integer"
                     },
+                    "parentCommentId": {
+                        "type": "integer"
+                    },
                     "user": {
                         "type": "object",
                         "description": "Available via `expand`",
                         "$ref": "#/components/schemas/user"
+                    },
+                    "parentComment": {
+                        "type": "object",
+                        "description": "Available view `expand`",
+                        "$ref": "#/components/schemas/parentComment"
+                    }
+                }
+            },
+
+            "parentComment": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "message",
+                    "parentCommentId",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "parentCommentId": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "integer"
                     }
                 }
             },
@@ -2682,7 +2719,7 @@
             "expand-comment": {
                 "in": "query",
                 "name": "expand",
-                "description": "Extra Fields (coma separated). Available values: ```user```",
+                "description": "Extra Fields (coma separated). Available values: ```user```, ```parentComment```",
                 "required": false,
                 "schema": {
                     "type": "string"
