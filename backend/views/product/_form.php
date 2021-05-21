@@ -28,6 +28,14 @@ foreach ($productMedias as $productMedia) {
         'showDrag' => false,
     ];
 }
+
+$js = <<<JS
+$('#dynamic-form').on('beforeSubmit', function() {
+    $(this).find('[type=submit]').attr('disabled', true).addClass('disabled');
+});
+JS;
+
+$this->registerJs($js);
 ?>
 
 <div class="product-form">
