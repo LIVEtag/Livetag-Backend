@@ -2272,7 +2272,9 @@
                     "uri",
                     "name",
                     "website",
-                    "logo"
+                    "logo",
+                    "iconsTheme",
+                    "productIcon"
                 ],
                 "properties": {
                     "uri": {
@@ -2285,6 +2287,12 @@
                         "type": "string"
                     },
                     "logo": {
+                        "type": "string"
+                    },
+                    "iconsTheme": {
+                        "type": "string"
+                    },
+                    "productIcon": {
                         "type": "string"
                     }
                 }

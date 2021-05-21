@@ -70,6 +70,32 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'website',
                                 'format' => ['url', ['target' => '_blank']]
                             ],
+                            [
+                                'attribute' => 'iconsTheme',
+                                'value' => function (Shop $model) {
+                                    return $model->getIconsThemeName();
+                                }
+                            ],
+                            [
+                                'label' => 'Icons color themes variants',
+                                'format' => 'raw',
+                                'value' => function () {
+                                    return Html::img(Yii::getAlias('@web') . '/images/iconsThemes.svg');
+                                }
+                            ],
+                            [
+                                'attribute' => 'productIcon',
+                                'value' => function (Shop $model) {
+                                    return $model->getProductIconName();
+                                }
+                            ],
+                            [
+                                'label' => 'Product icon options',
+                                'format' => 'raw',
+                                'value' => function () {
+                                    return Html::img(Yii::getAlias('@web') . '/images/productIcons.svg', ['class' => 'product-icons']);
+                                }
+                            ],
                             'createdAt:datetime',
                             'updatedAt:datetime',
                         ],

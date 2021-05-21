@@ -204,3 +204,9 @@ a.desc:after {
 .parent-comment-id {
     display: inline;
 }
+
+.product-icons {
+    margin-left: 35px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

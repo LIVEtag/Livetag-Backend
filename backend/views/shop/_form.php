@@ -52,6 +52,22 @@ $user = Yii::$app->user->identity;
                             'maxFileSize' => (Yii::$app->params['maxUploadLogoSize'] / 1024), // the maximum file size for upload in KB
                         ],
                     ])->label('Logo'); ?>
+
+                    <?= $form->field($model, 'iconsTheme')->dropDownList(Shop::ICONS_THEMES); ?>
+                    <div class="form-group">
+                        <label>Icons color themes variants</label>
+                        <div>
+                            <?= Html::img(Yii::getAlias('@web') . '/images/iconsThemes.svg'); ?>
+                        </div>
+                    </div>
+
+                    <?= $form->field($model, 'productIcon')->dropDownList(Shop::PRODUCT_ICONS); ?>
+                    <div class="form-group">
+                        <label>Product icon options</label>
+                        <div class="product-icons">
+                            <?= Html::img(Yii::getAlias('@web') . '/images/productIcons.svg'); ?>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
