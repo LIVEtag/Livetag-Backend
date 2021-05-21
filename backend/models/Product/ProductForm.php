@@ -74,6 +74,13 @@ class ProductForm extends Model
                     return $value == '' ? null : $value;
                 }
             ],
+            [
+                ['externalId', 'shopId'],
+                'unique',
+                'targetClass' => Product::class,
+                'targetAttribute' => ['externalId', 'shopId'],
+                'message' => Yii::t('app', '{attribute} "{value}" has already been taken.'),
+            ],
             ['files', 'file', 'skipOnEmpty' => true, 'maxFiles' => Product::MAX_NUMBER_OF_IMAGES],
             [
                 'files',
