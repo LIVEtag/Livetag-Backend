@@ -80,6 +80,9 @@ class ProductForm extends Model
                 'targetClass' => Product::class,
                 'targetAttribute' => ['externalId', 'shopId'],
                 'message' => Yii::t('app', '{attribute} "{value}" has already been taken.'),
+                'when' => function (ProductForm $model) {
+                    return $model->product->externalId != $model->externalId;
+                }
             ],
             ['files', 'file', 'skipOnEmpty' => true, 'maxFiles' => Product::MAX_NUMBER_OF_IMAGES],
             [
