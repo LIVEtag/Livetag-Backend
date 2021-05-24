@@ -307,7 +307,6 @@ class Comment extends ActiveRecord implements CommentInterface
             $actionType,
             $this->toArray([], [
                 self::REL_USER,
-                self::REL_PARENT_COMMENT,
                 self::REL_PARENT_COMMENT . '.' . self::REL_USER,
             ])
         );
