@@ -23,8 +23,8 @@ $(function () {
                 textCell = cells[2];
                 $('.parent-comment-text').append(textCell.textContent);
             }
-            if (cells.hasOwnProperty(3)) {
-                dateTimeCell = cells[3];
+            if (cells.hasOwnProperty(4)) {
+                dateTimeCell = cells[4];
                 $('.parent-comment-date-time').append(dateTimeCell.textContent);
             }
         }

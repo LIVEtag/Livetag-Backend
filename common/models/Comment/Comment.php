@@ -303,7 +303,13 @@ class Comment extends ActiveRecord implements CommentInterface
     public function notify(string $actionType)
     {
         $channel = new SessionChannel($this->getStreamSessionId());
-        $message = new Message($actionType, $this->toArray([], [self::REL_USER, self::REL_PARENT_COMMENT]));
+        $message = new Message(
+            $actionType,
+            $this->toArray([], [
+                self::REL_USER,
+                self::REL_PARENT_COMMENT . '.' . self::REL_USER,
+            ])
+        );
         if (!Yii::$app->centrifugo->publish($channel, $message)) {
             LogHelper::error('Event Failed', self::LOG_CATEGORY, [
                 'channel' => $channel->getName(),
