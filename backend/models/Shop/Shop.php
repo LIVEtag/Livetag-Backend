@@ -48,7 +48,7 @@ class Shop extends BaseModel
      */
     public function getAnalytics(): array
     {
-        $likesCount = $this->getLikes()->count();
+        $likesCount = $this->getLikes()->select(['streamSessionId','userId'])->groupBy(['streamSessionId','userId'])->count();
         $commentsCount = $this->getComments()->count();
 
         $statisticQuery = $this->getStreamSessionStatistic();
