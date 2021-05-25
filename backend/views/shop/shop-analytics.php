@@ -50,11 +50,11 @@ $analytics = $shop->getAnalytics();
                         <!-- small box -->
                         <div class="small-box bg-green">
                             <div class="inner">
-                                <h3><?= $analytics['totalAddToCartRate']; ?><sup style="font-size: 20px">%</sup></h3>
+                                <h3><?= $analytics['totalAddToCartRate']; ?></h3>
                                 <p>“Add to cart” rate</p>
                             </div>
                             <div class="icon">
-                                <i class="fa fa-percent"></i>
+                                <i class="fa fa-cart-plus"></i>
                             </div>
                         </div>
                     </div>
