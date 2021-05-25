@@ -2540,6 +2540,11 @@
                     },
                     "createdAt": {
                         "type": "integer"
+                    },
+                    "user": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/user"
                     }
                 }
             },
