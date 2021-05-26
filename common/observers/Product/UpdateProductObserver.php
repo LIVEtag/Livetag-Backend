@@ -25,9 +25,12 @@ class UpdateProductObserver
         if (!($product instanceof Product)) {
             throw new RuntimeException('Not Product instance');
         }
-        //send update event (do not send event if status changed for query processing)
-        if (!$product->isInQueue() && !$product->isProcessing()) {
-            $product->notify(Message::ACTION_PRODUCT_UPDATE);
+
+        //send to queue if new status
+        if (isset($event->changedAttributes['status']) && $product->isDeleted()) {
+            $product->notify(Message::ACTION_PRODUCT_DELETE);
+        } elseif (!$product->isInQueue() && !$product->isProcessing()) {
+            $product->notify(Message::ACTION_PRODUCT_UPDATE);  //send update event (do not send event if status changed for query processing)
         }
 
         //send to queue if new status
