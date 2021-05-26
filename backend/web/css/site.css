@@ -210,3 +210,7 @@ a.desc:after {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header {
+    height: auto !important;
+}

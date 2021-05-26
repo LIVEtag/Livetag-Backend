@@ -7,11 +7,14 @@ declare(strict_types=1);
 
 namespace common\observers\Product;
 
-use common\components\centrifugo\Message;
 use common\components\db\AfterCommitEvent;
 use common\models\Product\Product;
 use RuntimeException;
+use yii\base\Event;
 
+/**
+ * Total Product removal (shop delete scenario)
+ */
 class DeleteProductObserver
 {
 
@@ -19,7 +22,7 @@ class DeleteProductObserver
      * @param AfterCommitEvent $event
      * @throws RuntimeException
      */
-    public function execute(AfterCommitEvent $event)
+    public function execute(Event $event)
     {
         /** @var Product $product */
         $product = $event->sender;
@@ -27,7 +30,11 @@ class DeleteProductObserver
             throw new RuntimeException('Not Product instance');
         }
 
-        //send dlete event
-        $product->notify(Message::ACTION_PRODUCT_DELETE);
+        //remove cover
+        if ($product->productMedias) {
+            foreach ($product->productMedias as $media) {
+                $media->delete();
+            }
+        }
     }
 }

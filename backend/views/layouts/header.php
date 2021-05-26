@@ -39,7 +39,6 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image" style="margin:7px;"/>
                                 <?php if ($user->name) : ?>
                                     <p style="margin:0;">
                                         <?= $user->name; ?>

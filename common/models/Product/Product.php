@@ -241,7 +241,7 @@ class Product extends BaseActiveRecord implements ProductInterface
 
 
     /**
-     * Return media for selected product
+     * Return media for selected product (fallback with csv links if no media)
      * @return array
      */
     public function getMedia(): array
@@ -370,7 +370,7 @@ class Product extends BaseActiveRecord implements ProductInterface
      */
     public function getStatus(): ?int
     {
-        return $this->status ? (int) $this->status : null;
+        return isset($this->status) ? (int) $this->status : null;
     }
 
     /**
@@ -431,6 +431,15 @@ class Product extends BaseActiveRecord implements ProductInterface
     public function setFailed()
     {
         $this->setAttribute('status', self::STATUS_FAILED);
+    }
+
+    /**
+     * Check current archive is deleted
+     * @return bool
+     */
+    public function isDeleted(): bool
+    {
+        return $this->getStatus() === self::STATUS_DELETED;
     }
 
     /**

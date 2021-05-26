@@ -83,7 +83,7 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         #Product events
         Event::on(Product::class, Product::EVENT_AFTER_COMMIT_INSERT, [Yii::createObject(CreateProductObserver::class), 'execute']);
         Event::on(Product::class, Product::EVENT_AFTER_COMMIT_UPDATE, [Yii::createObject(UpdateProductObserver::class), 'execute']);
-        Event::on(Product::class, Product::EVENT_AFTER_COMMIT_DELETE, [Yii::createObject(DeleteProductObserver::class), 'execute']);
+        Event::on(Product::class, Product::EVENT_BEFORE_DELETE, [Yii::createObject(DeleteProductObserver::class), 'execute']);
 
         # Stream Session Product events
         Event::on(StreamSessionProduct::class, StreamSessionProduct::EVENT_AFTER_INSERT, [
