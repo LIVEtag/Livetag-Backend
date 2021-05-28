@@ -45,7 +45,7 @@ class ProductFixture extends ActiveFixture
                 [
                     'sku' => $this->generator->unique()->uuid,
                     'price' => $this->generator->randomFloat(2, 1, 1000),
-                    'options' => $this->generator->randomElements(['XL', 'XXL', 'L', 'S', 'M', 'XS'], 1)[0],
+                    'option' => $this->generator->randomElements(['XL', 'XXL', 'L', 'S', 'M', 'XS'], 1)[0],
                 ]
             ],
             'createdAt' => $this->generator->incrementalTime,
