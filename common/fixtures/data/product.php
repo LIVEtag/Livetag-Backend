@@ -10,50 +10,42 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XXS',
+                'option' => $this->generator->colorName . ', XXS',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XS',
+                'option' => $this->generator->colorName . ', XS',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'S',
+                'option' => $this->generator->colorName . ', S',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'M',
+                'option' => $this->generator->colorName . ', M',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'L',
+                'option' => $this->generator->colorName . ', L',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XL',
+                'option' => $this->generator->colorName . ', XL',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XXL',
+                'option' => $this->generator->colorName . ', XXL',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XXXL',
+                'option' => $this->generator->colorName . ', XXXL',
             ],
         ]
     ],
@@ -64,14 +56,12 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XS',
+                'option' => $this->generator->colorName . ', XS',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'L',
+                'option' => $this->generator->colorName . ', L',
             ]
         ]
     ],
@@ -86,20 +76,17 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XL',
+                'option' => $this->generator->colorName . ', XL',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XXL',
+                'option' => $this->generator->colorName . ', XXL',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => $this->generator->randomFloat(2, 1, 1000),
-                'color' => $this->generator->colorName,
-                'size' => 'XXXL',
+                'option' => $this->generator->colorName . ', XXXL',
             ],
         ]
     ],
@@ -129,47 +116,47 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 99.99,
-                'version' => 'S21 Phantom Pink',
+                'option' => 'S21 Phantom Pink',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 99.99,
-                'version' => 'S21 Phantom Black',
+                'option' => 'S21 Phantom Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 99.99,
-                'version' => 'S21 Phantom Violet',
+                'option' => 'S21 Phantom Violet',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 299.99,
-                'version' => 'S21+ Phantom Pink',
+                'option' => 'S21+ Phantom Pink',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 299.99,
-                'version' => 'S21+ Phantom Black',
+                'option' => 'S21+ Phantom Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 299.99,
-                'version' => 'S21+ Phantom Violet',
+                'option' => 'S21+ Phantom Violet',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 499.99,
-                'version' => 'S21 Ultra Phantom Pink',
+                'option' => 'S21 Ultra Phantom Pink',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 499.99,
-                'version' => 'S21 Ultra Phantom Black',
+                'option' => 'S21 Ultra Phantom Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 499.99,
-                'version' => 'S21 Ultra Phantom Violet',
+                'option' => 'S21 Ultra Phantom Violet',
             ]
         ]
     ],
@@ -182,32 +169,32 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 229.99,
-                'version' => '6/64G Glacier White',
+                'option' => '6/64G Glacier White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 229.99,
-                'version' => '6/64G Tropical Green',
+                'option' => '6/64G Tropical Green',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 229.99,
-                'version' => '6/64G Interstellar Grey'
+                'option' => '6/64G Interstellar Grey'
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 269.99,
-                'version' => '6/128G Glacier White',
+                'option' => '6/128G Glacier White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 269.99,
-                'version' => '6/128G Tropical Green',
+                'option' => '6/128G Tropical Green',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 269.99,
-                'version' => '6/128G Interstellar Grey',
+                'option' => '6/128G Interstellar Grey',
             ],
         ]
     ],
@@ -220,77 +207,77 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 829,
-                'version' => '64Gb Black',
+                'option' => '64Gb Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 829,
-                'version' => '64Gb Blue',
+                'option' => '64Gb Blue',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 829,
-                'version' => '64Gb Red',
+                'option' => '64Gb Red',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 829,
-                'version' => '64Gb White',
+                'option' => '64Gb White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 829,
-                'version' => '64Gb Green',
+                'option' => '64Gb Green',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 879,
-                'version' => '128Gb Black',
+                'option' => '128Gb Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 879,
-                'version' => '128Gb Blue',
+                'option' => '128Gb Blue',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 879,
-                'version' => '128Gb Red',
+                'option' => '128Gb Red',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 879,
-                'version' => '256Gb White',
+                'option' => '256Gb White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 879,
-                'version' => '128Gb Green',
+                'option' => '128Gb Green',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 979,
-                'version' => '256Gb Black',
+                'option' => '256Gb Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 979,
-                'version' => '256Gb Blue',
+                'option' => '256Gb Blue',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 979,
-                'version' => '256Gb Red',
+                'option' => '256Gb Red',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 979,
-                'version' => '256Gb White',
+                'option' => '256Gb White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 979,
-                'version' => '256Gb Green',
+                'option' => '256Gb Green',
             ],
         ]
     ],
@@ -303,77 +290,77 @@ return [
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 999,
-                'version' => '128Gb Black',
+                'option' => '128Gb Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 999,
-                'version' => '128Gb Blue',
+                'option' => '128Gb Blue',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 999,
-                'version' => '128Gb Red',
+                'option' => '128Gb Red',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 999,
-                'version' => '256Gb White',
+                'option' => '256Gb White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 999,
-                'version' => '128Gb Green',
+                'option' => '128Gb Green',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1099,
-                'version' => '256Gb Black',
+                'option' => '256Gb Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1099,
-                'version' => '256Gb Blue',
+                'option' => '256Gb Blue',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1099,
-                'version' => '256Gb Red',
+                'option' => '256Gb Red',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1099,
-                'version' => '256Gb White',
+                'option' => '256Gb White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1099,
-                'version' => '256Gb Green',
+                'option' => '256Gb Green',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1299,
-                'version' => '512Gb Black',
+                'option' => '512Gb Black',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1299,
-                'version' => '512Gb Blue',
+                'option' => '512Gb Blue',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1299,
-                'version' => '512Gb Red',
+                'option' => '512Gb Red',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1299,
-                'version' => '512Gb White',
+                'option' => '512Gb White',
             ],
             [
                 'sku' => $this->generator->unique()->uuid,
                 'price' => 1299,
-                'version' => '512Gb Green',
+                'option' => '512Gb Green',
             ],
         ]
     ],
