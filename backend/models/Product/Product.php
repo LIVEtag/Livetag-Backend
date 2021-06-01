@@ -8,12 +8,25 @@ declare(strict_types=1);
 namespace backend\models\Product;
 
 use common\models\Product\Product as BaseModel;
+use yii\helpers\ArrayHelper;
 
 /**
  * Represents the backend version of `common\models\Product\Product`.
  */
 class Product extends BaseModel
 {
+    /**
+     * Status Class Names
+     */
+    const STATUSES_CLASS_MAP = [
+        self::STATUS_DELETED => 'deleted',
+        self::STATUS_NEW => 'new',
+        self::STATUS_QUEUE => 'queue',
+        self::STATUS_PROCESSING => 'processing',
+        self::STATUS_FAILED => 'failed',
+        self::STATUS_ACTIVE => 'ready',
+    ];
+
     /**
      * get options of product in html format
      * @param array $options
@@ -71,5 +84,13 @@ class Product extends BaseModel
             $query->byShop($shopId);
         }
         return $query->column();
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusClass(): string
+    {
+        return ArrayHelper::getValue(self::STATUSES_CLASS_MAP, $this->status, 'default');
     }
 }

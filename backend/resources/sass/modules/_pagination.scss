@@ -1,0 +1,58 @@
+.wrapper {
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    margin-bottom: -27px;
+  }
+
+  .pagination > li > a,
+  .pagination > li > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    color: #292929;
+    font-size: 14px;
+    border: none;
+    background: none;
+  }
+
+  .pagination > li.active > a,
+  .pagination > li.active > span {
+    color: #fff;
+    background-color: #292929;
+  }
+
+  .pagination > li:first-child > a,
+  .pagination > li:first-child > span,
+  .pagination > li:last-child > a,
+  .pagination > li:last-child > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 0 10px;
+    font-size: 0;
+    background: none;
+
+    &::after {
+      font-size: 14px;
+    }
+  }
+
+  .pagination > li:first-child > a,
+  .pagination > li:first-child > span {
+    &::after {
+      content: 'Previous';
+    }
+  }
+
+  .pagination > li:last-child > a,
+  .pagination > li:last-child > span {
+    &::after {
+      content: 'Next';
+    }
+  }
+}

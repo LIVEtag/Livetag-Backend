@@ -1,0 +1,45 @@
+.form-control {
+  box-shadow: none;
+  height: auto;
+}
+
+.field,
+.kv-fileinput-caption,
+.select2-selection {
+  padding: 8px 16px;
+  color: #292929;
+  font-size: 20px;
+  border: 1px solid var(--color-Dark) !important;
+  border-radius: 5px !important;
+
+  &::placeholder {
+    color: #8c8c8c;
+  }
+
+  &:focus {
+    box-shadow: none !important;
+    border-color: inherit;
+  }
+}
+
+.has-error {
+  .control-label {
+    color: inherit !important;
+  }
+
+  .field {
+    border-color: var(--color-Danger) !important;
+  }
+
+  .help-block-error {
+    color: var(--color-Danger);
+  }
+
+  .form-control {
+    box-shadow: none;
+
+    &:focus {
+      border-color: var(--color-Danger) !important;
+    }
+  }
+}

@@ -20,31 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', ['alt' => Yii::$app->name]) ?>
     </div>
     <!-- /.login-logo -->
-    <div class="login-box-body">
-
-        <div class="text-center">
-            <h2 class="text-center">Reset your password</h2>
-            <p>Please set the new password for your account using the form below</p>
-            <div class="panel-body">
-
+    <div class="auth-box">
+        <div class="auth-box__body">
+            <h1 class="auth-box__title">Reset your password</h1>
+            <span class="auth-box__text-below">Please set the new password for your account using the form below</span>
                 <?php $form = ActiveForm::begin(); ?>
-                <div class="form-group">
-                    <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'New Password','class' => 'form-control'])->label(false) ?>
-                </div>
-                <div class="form-group">
-                    <?= $form->field($model, 'confirmPassword')->passwordInput(['placeholder' => 'Confirm New Password','class' => 'form-control'])->label(false) ?>
-                </div>
-                <div class="form-group">
+                    <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'New Password', 'class' => 'field form-control'])->label(false) ?>
+                    <?= $form->field($model, 'confirmPassword')->passwordInput(['placeholder' => 'Confirm New Password', 'class' => 'field form-control'])->label(false) ?>
                     <?= $form->field($model, 'resetToken')->hiddenInput()->label(false) ?>
-                </div>
-                <div class="form-group">
-                    <?= Html::submitButton(Yii::t('app', 'Set New Password'), ['class' => 'btn btn-lg btn-primary btn-block']) ?>
-                </div>
-                <div class="form-group">
-                    <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'btn btn-md btn-primary btn-block bg-black']) ?>
-                </div>
+                    <?= Html::submitButton(Yii::t('app', 'Set New Password'), ['class' => 'button button--dark button--upper auth-box__submit']) ?>
+                    <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'button button--dark button--ghost button--upper auth-box__submit']) ?>
                 <?php ActiveForm::end(); ?>
             </div>
-        </div>
     </div>
 </div>

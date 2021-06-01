@@ -1,0 +1,10 @@
+.wrapper {
+  .alert .close {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url("../images/close-light.svg");
+    font-size: 0;
+    opacity: 1;
+  }
+}

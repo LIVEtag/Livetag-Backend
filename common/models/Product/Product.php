@@ -185,16 +185,16 @@ class Product extends BaseActiveRecord implements ProductInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'externalId' => Yii::t('app', 'External ID'),
+            'id' => Yii::t('app', 'Id'),
+            'externalId' => Yii::t('app', 'External Id'),
             'shopId' => Yii::t('app', 'Shop Id'),
             'title' => Yii::t('app', 'Title'),
             'description' => Yii::t('app', 'Description'),
             'price' => Yii::t('app', 'Price'),
             'photos' => Yii::t('app', 'Photos'),
             'status' => Yii::t('app', 'Status'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 

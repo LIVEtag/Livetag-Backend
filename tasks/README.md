@@ -1,0 +1,6 @@
+- browserSync.js - node server, live reloading
+- clean.js - dist folder cleaner
+- css.js - scss compiler and minifier
+- js.js - es compiler and minifier
+- sizeReport.js - size file notifier
+- static.js - favicon generator

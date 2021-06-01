@@ -1,19 +1,128 @@
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td {
-  max-width: 500px;
+.wrapper {
+  .table-bordered {
+    border: none;
 
-  a {
-    overflow-wrap: break-word;
-    word-break: break-word;
+    thead a {
+      position: relative;
+      display: block;
+
+      &::after {
+        position: absolute;
+        top: 2px;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        background: url('../images/sort.svg');
+        content: '';
+      }
+    }
+
+    .form-control {
+      border: 1px solid #292929;
+      border-radius: 4px;
+    }
+
+    .name-cell {
+      font-weight: bold;
+    }
+
+    .action-button-cell {
+      white-space: nowrap
+    }
+
+    .action-button {
+      display: inline-block;
+      margin: 4px;
+      padding: 5px 9px;
+      color: #292929;
+      font-size: 14px;
+
+      .icon {
+        position: relative;
+        top: 2px;
+        margin-right: 1px;
+      }
+    }
   }
-}
 
-.table-responsive > .table > tbody > tr > td {
-  @media (max-width: $md) {
-    white-space: unset;
+  .status-label {
+    display: inline-block;
+    padding: 1px 6px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 12px;
+    background-color: #bababa;
+    border-radius: 4px;
+
+    &--active,
+    &--ready,
+    &--new {
+      background-color: #60cfa0;
+    }
+  }
+
+  .table-striped > tbody > tr:nth-of-type(odd) {
+    background: none;
+  }
+
+  .table-bordered > thead > tr > th,
+  .table-bordered > tbody > tr > th,
+  .table-bordered > tfoot > tr > th,
+  .table-bordered > thead > tr > td,
+  .table-bordered > tbody > tr > td,
+  .table-bordered > tfoot > tr > td {
+    border: none;
+    border-bottom: 1px solid #dee2e6;
+    color: #292929;
+    font-size: 16px;
+  }
+
+  .table > tbody > tr > th,
+  .table > tfoot > tr > th,
+  .table > thead > tr > td,
+  .table > tbody > tr > td,
+  .table > tfoot > tr > td {
+    height: 54px;
+    padding: 10px;
+    vertical-align: middle !important;
+  }
+
+  .table > thead > tr:first-child th {
+    padding-top: 10px;
+    padding-bottom: 12px;
+    border-bottom: none;
+    vertical-align: top;
+    white-space: nowrap;
+
+    a {
+      padding-right: 20px;
+      color: #292929;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+
+  .table > thead > tr.filters td {
+    padding-top: 6px;
+    padding-bottom: 8px;
+    border-bottom: none;
+  }
+
+  .table-hover > tbody > tr:hover {
+    background: none;
+  }
+
+  .table > thead > tr > th,
+  .table > tbody > tr > th,
+  .table > tfoot > tr > th,
+  .table > thead > tr > td,
+  .table > tbody > tr > td,
+  .table > tfoot > tr > td {
+    border-color: #dee2e6;
+  }
+
+  .tab-pane .box-header {
+    padding-right: 0;
+    padding-left: 0;
   }
 }

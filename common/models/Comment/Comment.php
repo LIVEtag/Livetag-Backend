@@ -142,14 +142,14 @@ class Comment extends ActiveRecord implements CommentInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'userId' => Yii::t('app', 'User ID'),
-            'streamSessionId' => Yii::t('app', 'Stream Session ID'),
+            'id' => Yii::t('app', 'Id'),
+            'userId' => Yii::t('app', 'User Id'),
+            'streamSessionId' => Yii::t('app', 'Stream session Id'),
             'message' => Yii::t('app', 'Message'),
-            'parentCommentId' => Yii::t('app', 'Parent Comment ID'),
+            'parentCommentId' => Yii::t('app', 'Parent comment Id'),
             'status' => Yii::t('app', 'Status'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 

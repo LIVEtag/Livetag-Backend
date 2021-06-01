@@ -10,9 +10,9 @@ use yii\widgets\Breadcrumbs;
 <div class="content-wrapper">
     <section class="content-header">
         <?php if (isset($this->blocks['content-header'])) { ?>
-            <h1><?= $this->blocks['content-header'] ?></h1>
+            <h1 class="page-title"><?= $this->blocks['content-header'] ?></h1>
         <?php } else { ?>
-            <h1>
+            <h1 class="page-title page-title-<?= str_replace(' ', '-', strtolower(Html::encode($this->title))) ?>">
                 <?php
                 if ($this->title !== null) {
                     echo Html::encode($this->title);

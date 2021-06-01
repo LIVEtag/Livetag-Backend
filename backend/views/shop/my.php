@@ -27,7 +27,17 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Update'), ['update-my'], ['class' => 'btn btn-primary']) ?>
+                    <div class="buttons-group">
+                        <?= Html::a(Yii::t('app', 'Update'), ['update-my'], ['class' => 'button button--dark button--upper button--lg']) ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header section-box-header box-header--no-indent">
+                    <h4 class="box-title">Details</h4>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
@@ -63,6 +73,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'uri',
                             [
                                 'attribute' => 'website',
+                                'contentOptions' => ['class' => 'link-cell'],
                                 'format' => ['url', ['target' => '_blank']]
                             ],
                             [
@@ -94,6 +105,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'createdAt:datetime',
                             [
                                 'label' => 'Documentation',
+                                'contentOptions' => ['class' => 'link-cell'],
                                 'format' => ['url', ['target' => '_blank']],
                                 'value' => function () {
                                     return Yii::$app->urlManagerSDK->getBaseUrl();
@@ -106,37 +118,29 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                 <div class="box-footer"></div>
                 <!--/.box-footer -->
             </div>
-            <!-- /.box -->
+        </div>
+        <div class="col-md-6">
+            <?= $this->render('shop-analytics', ['shop' => $model ]); ?>
+            <?php if ($snippet) : ?>
+                <div class="box box-default">
+                <div class="box-header section-box-header box-header--no-indent">
+                    <h4 class="box-title">Integration Snippet</h4>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!--/.box-header -->
+                <div class="box-body">
+                    <pre><code class="language-html"><?= $snippet; ?></code></pre>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer"></div>
+                <!--/.box-footer -->
+            </div>
+            <?php endif; ?>
         </div>
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
-    <?= $this->render('shop-analytics', ['shop' => $model ]); ?>
-
-    <?php if ($snippet) : ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box box-default">
-                    <div class="box-header">
-                        <h4 class="box-title">Integration Snippet</h4>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                        </div>
-                    </div>
-                    <!--/.box-header -->
-                    <div class="box-body">
-                        <pre><code class="language-html"><?= $snippet; ?></code></pre>
-                    </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer"></div>
-                    <!--/.box-footer -->
-                </div>
-                <!-- /.box -->
-            </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    <?php endif; ?>
 </section>
 <!-- /.section -->

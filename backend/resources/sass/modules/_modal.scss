@@ -1,0 +1,53 @@
+body {
+  .modal-header {
+    border: none;
+  }
+
+  .modal-title,
+  .bootstrap-dialog .bootstrap-dialog-title {
+    color: #292929;
+    font-weight: bold;
+    font-family: $font-Inter;
+  }
+
+  .modal-footer {
+    border: none;
+
+    .buttons-group,
+    .bootstrap-dialog-footer-buttons {
+      justify-content: flex-end;
+    }
+
+    .button,
+    .btn-default,
+    .btn-warning {
+      font-size: 16px;
+      padding: 8px 12px !important;
+      text-transform: uppercase;
+
+      .glyphicon {
+        display: none;
+      }
+    }
+  }
+
+  .btn-default {
+    color: #292929 !important;
+    border-color: #292929 !important;
+    background: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .btn-warning {
+    color: #fff !important;
+    background-color: #292929 !important;
+    border-color: #292929 !important;
+    outline: none !important;
+  }
+
+  .bootstrap-dialog.type-warning .modal-header {
+    background: none;
+    box-shadow: none !important;
+  }
+}

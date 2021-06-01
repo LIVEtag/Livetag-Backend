@@ -23,13 +23,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box box-default">
                 <div class="box-header">
                     <?php if (Yii::$app->user->identity->isAdmin && $model->isSeller) : ?>
+                    <div class="buttons-group">
                         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-                            'class' => 'btn btn-danger',
+                            'class' => 'button button--danger button--ghost button--upper button--lg',
                             'data' => [
                                 'confirm' => Yii::t('app', 'Are you sure that you want to delete this seller?'),
                                 'method' => 'post',
                             ],
                         ]); ?>
+                    </div>
                     <?php endif; ?>
                 </div>
                 <!--/.box-header -->
@@ -41,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'role',
                             'email:email',
                             [
+                                'label' => 'Shop name',
                                 'attribute' => 'shopName',
                                 'format' => 'raw',
                                 'value' => function (User $model) {

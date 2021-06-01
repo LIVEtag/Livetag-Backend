@@ -1,0 +1,40 @@
+{
+   "root": {
+      "dev": "./backend/resources",
+      "dist": "./backend/web"
+   },
+   "css": {
+      "dev": "sass/**/*.scss",
+      "dist": "css",
+      "parts": "parts",
+      "extensions": "*.+(css|scss)",
+      "uncss": false
+   },
+   "js": {
+      "dev": "js/**/*.js",
+      "dist": "js",
+      "parts": "modules",
+      "extensions": [".json", ".js"]
+   },
+   "img": {
+      "dev": "img/**/",
+      "dist": "img",
+      "extensions": "*.+(jpg|jpeg|gif|png|svg)"
+   },
+   "svg": {
+      "dev": "img/svg",
+      "dist": "img"
+   },
+   "fonts": {
+      "dev": "fonts",
+      "dist": "assets/fonts",
+      "extensions": "*.+(woff2|woff|eot|ttf|svg)"
+   },
+   "browserSync": {
+    "port": 3333,
+    "proxy": {
+      "target": "http://livetag.loc",
+      "publicPath" : ""
+    }
+   }
+}

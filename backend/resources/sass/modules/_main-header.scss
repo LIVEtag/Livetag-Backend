@@ -1,0 +1,39 @@
+.wrapper {
+  .main-header .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .main-header .sidebar-toggle {
+    color: #292929;
+
+    &:focus,
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  .main-header .sidebar-toggle {
+    padding: 0 21px;
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .user__time {
+    margin-right: 15px;
+    color: #bababa;
+  }
+
+  .user__email {
+    color: #292929;
+  }
+}

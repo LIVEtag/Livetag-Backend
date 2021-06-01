@@ -26,15 +26,15 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
             <ul class="nav navbar-nav">
                 <!-- User Account: style can be found in dropdown.less -->
                 <?php if ($user) : ?>
-                <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <li class="dropdown user user-menu">
+                        <time class="user__time">
                             <?= Yii::$app->formatter->asDatetime(time()); ?>
                             <?= Yii::$app->formatter->timeZone; ?>
-                        </a>
+                        </time>
                     </li>
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="hidden-xs"><?= $user->email ?></span>
+                            <span class="user__email hidden-xs"><?= $user->email ?></span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
@@ -51,35 +51,30 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="user-footer-row">
-                                    <div class="pull-left">
+                                    <div class="buttons-group">
                                         <?=
                                         Html::a(
                                             'Change Password',
                                             ['/user/change-password'],
-                                            ['class' => 'btn btn-default btn-flat']
+                                            ['class' => 'button button--dark button--upper']
                                         )
                                         ?>
-                                    </div>
-
-                                    <div class="pull-right">
                                         <?=
                                         Html::a(
                                             'Change Name',
                                             ['/user/change-name'],
-                                            ['class' => 'btn btn-default btn-flat']
+                                            ['class' => 'button button--dark button--upper']
                                         )
                                         ?>
                                     </div>
-                                    <div>
-                                        <?= Html::a(
-                                            'Sign out',
-                                            ['/site/logout'],
-                                            [
-                                                'data-method' => 'post',
-                                                'class' => 'btn btn-default btn-flat sign-out',
-                                            ],
-                                        ); ?>
-                                    </div>
+                                    <?= Html::a(
+                                        'Sign out',
+                                        ['/site/logout'],
+                                        [
+                                            'data-method' => 'post',
+                                            'class' => 'button button--dark button--ghost button--upper sign-out',
+                                        ],
+                                    ); ?>
                                 </div>
                             </li>
                         </ul>

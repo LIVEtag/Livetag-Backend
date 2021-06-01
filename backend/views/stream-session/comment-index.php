@@ -22,20 +22,22 @@ use kartik\grid\ActionColumn;
     'dataProvider' => $commentDataProvider,
     'hover' => true, //the grid table will highlight row on hover
     'persistResize' => true, //to store resized column state using local storage persistence
-    'options' => ['id' => 'comment-list'],
+    'options' => ['id' => 'comment-list', 'class' => 'gridview-wrapper'],
     'pjax' => true,
     'filterModel' => $commentSearchModel,
     'columns' => [
         [
+            'label' => 'Id',
             'attribute' => 'id',
             'hAlign' => GridView::ALIGN_LEFT,
             'headerOptions' => ['width' => '60'],
         ],
         [
             'attribute' => 'username',
+            'format' => 'html',
             'label' => 'Name',
             'value' => static function (Comment $model) {
-                return $model->user->isSeller ? $model->user->email : $model->user->name;
+                return HTML::tag('strong', $model->user->isSeller ? $model->user->email : $model->user->name);
             },
             'hAlign' => GridView::ALIGN_LEFT,
         ],
@@ -66,13 +68,14 @@ use kartik\grid\ActionColumn;
         [
             'attribute' => 'createdAt',
             'format' => 'datetime',
-            'label' => 'Date&Time',
+            'label' => 'Date and time',
             'hAlign' => GridView::ALIGN_LEFT,
         ],
         [
             'class' => ActionColumn::class,
             'vAlign' => GridView::ALIGN_TOP,
             'template' => '{reply} {delete-comment}',
+            'contentOptions' => ['class' => 'action-button-cell'],
             'visibleButtons' => [
                 'reply' => function (Comment $model) {
                     return $model->streamSession->commentsEnabled;
@@ -80,10 +83,10 @@ use kartik\grid\ActionColumn;
             ],
             'buttons' => [
                 'reply' => function () {
-                    return '<span class="fa fa-reply comment-reply" data-pjax=""></span>';
+                    return '<span class="icon icon-reply comment-reply" data-pjax=""></span>';
                 },
                 'delete-comment' => function ($url) {
-                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                    return Html::a('<span class="icon icon-trash"></span>', $url, [
                             'data-pjax' => true,
                             'title' => 'Delete',
                             'data-confirm' => 'Are you sure you want to delete this item?',

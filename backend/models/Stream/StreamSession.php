@@ -15,6 +15,15 @@ use yii\helpers\ArrayHelper;
  */
 class StreamSession extends BaseModel
 {
+    /**
+     * Status Class Names
+     */
+    const STATUSES_CLASS_MAP = [
+        self::STATUS_NEW => 'new',
+        self::STATUS_ACTIVE => 'active',
+        self::STATUS_STOPPED => 'stopped',
+        self::STATUS_ARCHIVED => 'archived',
+    ];
 
     /**
      * Display stream duration
@@ -53,5 +62,13 @@ class StreamSession extends BaseModel
     public function getMaximumDuration(): ?string
     {
         return ArrayHelper::getValue(self::DURATIONS, $this->duration);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusClass(): string
+    {
+        return ArrayHelper::getValue(self::STATUSES_CLASS_MAP, $this->status, 'default');
     }
 }

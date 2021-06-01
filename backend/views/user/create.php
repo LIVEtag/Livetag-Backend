@@ -29,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
 
-                        <?= $form->field($model, 'email')->textInput() ?>
+                        <?= $form->field($model, 'email')->textInput(['class' => 'field form-control']) ?>
 
-                        <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'class' => 'field form-control']) ?>
 
                         <?= $form->field($model, 'shopId')->widget(Select2::class, [
                             'data' => Shop::getIndexedArray(),
@@ -47,8 +47,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
-                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'btn bg-black']) ?>
-                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: ['index'], ['class' => 'button button--dark button--ghost button--upper button--lg']) ?>
+                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'button button--dark button--upper button--lg']) ?>
                         </div>
                     </div>
                     <!--/.box-footer -->

@@ -127,7 +127,7 @@ class SaveAnnouncementForm extends Model
     {
         return [
             'name' => 'Name of livestream',
-            'announcedAtDatetime' => 'Start At',
+            'announcedAtDatetime' => 'Start at',
             'duration' => 'Maximum duration of this show',
             'productIds' => 'Products',
             'internalCart' => 'Product details view',
