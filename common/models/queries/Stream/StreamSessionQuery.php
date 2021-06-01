@@ -98,4 +98,22 @@ class StreamSessionQuery extends ActiveQuery
     {
         return $this->andWhere([$this->getFieldName('isPublished') => true]);
     }
+
+    /**
+     * Return new session
+     * @return $this
+     */
+    public function new()
+    {
+        return $this->byStatus(StreamSession::STATUS_NEW);
+    }
+
+    /**
+     * Return all session except new
+     * @return StreamSessionQuery
+     */
+    public function notNew()
+    {
+        return $this->andWhere(['!=', $this->getFieldName('status'), StreamSession::STATUS_NEW]);
+    }
 }

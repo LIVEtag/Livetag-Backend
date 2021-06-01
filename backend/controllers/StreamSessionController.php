@@ -114,9 +114,11 @@ class StreamSessionController extends Controller
     /**
      * Lists all StreamSession models.
      * Display only sellers sessions (by shopId) for seller role
+     * @param string $type
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionIndex()
+    public function actionIndex($type = StreamSessionSearch::TYPE_UPCOMING)
     {
         /** @var User $user */
         $user = $this->getAndCheckCurrentUser();
@@ -126,7 +128,7 @@ class StreamSessionController extends Controller
         if ($user->isSeller) {
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
         }
-        $dataProvider = $searchModel->search($params);
+        $dataProvider = $searchModel->search($params, $type);
 
         return $this->render('index', [
                 'searchModel' => $searchModel,

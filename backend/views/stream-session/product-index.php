@@ -70,7 +70,7 @@ GridView::widget([
         [
             'attribute' => 'status',
             'class' => EditableColumn::class,
-            'filter' => StreamSessionProduct::STATUSES,
+            'filter' => Html::tag('div', Html::activeDropDownList($productSearchModel, 'status', StreamSessionProduct::STATUSES, ['class' => 'form-control', 'prompt' => '']), ['class' => 'select-wrapper no-label']),
             'value' => function (StreamSessionProduct $model) {
                 return $model->getStatusName();
             },
