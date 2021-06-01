@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $type = Yii::$app->request->getQueryParam('type');
 $tabTitle = 'Upcoming shows';
 $tabStatuses = [StreamSession::STATUS_NEW => 'New'];
-if ($type == StreamSessionSearch::TYPE_ACTIVE_AND_PAST)  {
+if ($type == StreamSessionSearch::TYPE_ACTIVE_AND_PAST) {
     $tabTitle = 'Active and past shows';
     $tabStatuses = array_diff(StreamSession::STATUSES, $tabStatuses);
 }
