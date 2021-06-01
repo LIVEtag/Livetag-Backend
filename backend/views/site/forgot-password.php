@@ -1,4 +1,5 @@
 <?php
+
 use backend\models\User\User;
 use kartik\widgets\ActiveForm;
 use yii\helpers\Html;
@@ -15,29 +16,21 @@ $this->title = Yii::t('app', 'Forgot Password?');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="login-box">
-    <div class="login-logo">
-        <?= Html::img(Yii::getAlias('@web') . '/images/logo.png', ['alt' => Yii::$app->name]) ?>
-    </div>
-    <div class="login-box-body">
-        <div class="text-center">
-            <h2 class="text-center">Forgot Your Password?</h2>
-            <p>Please indicate the email you are registered with. We will send the password recovery link there </p>
-            <div class="panel-body">
-                <?php $form = ActiveForm::begin(); ?>
-                <div class="box-body table-responsive">
-                    <?= $form->field($model, 'email')->textInput(['placeholder' => 'Email','class' => 'form-control'])->label(false) ?>
-                </div>
-                <div class="box-footer">
-                    <div class="form-group">
-                        <?= Html::submitButton(Yii::t('app', 'Reset Password'), ['class' => 'btn btn-lg btn-primary btn-block']) ?>
-                    </div>
-                    <div class="box-header">
-                        <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'btn btn-md btn-primary btn-block bg-black']) ?>
-                    </div>
-                </div>
-                <?php ActiveForm::end(); ?>
+<div class="forgot-template">
+    <div class="auth-box">
+        <div class="auth-box__body">
+            <h1 class="auth-box__title">Forgot your password?</h1>
+            <span class="auth-box__text-below">Please enter your account email. We will send
+                recovery link on your email.</span>
+            <?php $form = ActiveForm::begin(['options' => [
+                'class' => 'form'
+            ]]); ?>
+            <?= $form->field($model, 'email')->textInput(['placeholder' => 'Email', 'class' => 'field form-control']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Reset Password'), ['class' => 'button button--dark button--upper auth-box__submit']) ?>
+            <div class="auth-box__footer">
+                <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'back']) ?>
             </div>
+            <?php ActiveForm::end(); ?>
         </div>
     </div>
 </div>

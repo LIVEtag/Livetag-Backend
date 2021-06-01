@@ -1,0 +1,22 @@
+.sidebar {
+  .sidebar-menu {
+    margin-top: 93px;
+
+    li > a {
+      padding: 6px 15px;
+      color: #bababa;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 29px;
+      font-family: $font-Inter;
+
+      > .fa {
+        display: none;
+      }
+    }
+
+    li.active > a {
+      color: #292929;
+    }
+  }
+}

@@ -28,7 +28,7 @@ use yii\widgets\DetailView;
 /* @var $commentModel Comment */
 /* @var $isPosted bool */
 
-$this->title = 'Livestream details #' . $model->id;
+$this->title = 'Livestream details ID' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -56,7 +56,7 @@ if ($model->isPublished) {
     }
     $publishOptions = array_merge([
         'id' => 'publication-link',
-        'class' => 'btn btn-danger',
+        'class' => 'button button--dark button--upper button--lg',
         ], $publishOptionsExtra);
     $publishUrl = ['unpublish', 'id' => $model->id];
 }
@@ -91,31 +91,55 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
 ?>
 <section class="stream-session-view">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
-                    <?php if ($user && $user->isSeller) : ?>
-                        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                        <?= Html::a(
-                            Yii::t('app', $model->isPublished ? 'Unpublish' : 'Publish'),
-                            $publishUrl,
-                            $publishOptions
-                        ); ?>
-                        <?php if ($model->isActive()) : ?>
-                            <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
-                                'class' => 'btn btn-danger',
+                    <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'button button--dark button--ghost button--upper button--lg']) ?>
+
+                    <div class="buttons-group">
+                        <?php if ($user && $user->isSeller) : ?>
+                            <?= Html::a(Yii::t('app', 'Edit'), ['update', 'id' => $model->id], ['class' => 'button button--dark button--upper button--lg']) ?>
+                            <?= Html::a(
+                                Yii::t('app', $model->isPublished ? 'Unpublish' : 'Publish'),
+                                $publishUrl,
+                                $publishOptions
+                            ); ?>
+                            <?php if ($model->isActive()) : ?>
+                                <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
+                                    'class' => 'button button--danger button--ghost button--upper button--lg',
+                                    'data' => [
+                                        'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
+                                        'method' => 'post',
+                                    ],
+                                ]); ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if ($model->isStopped() || $model->isArchived()) : ?>
+                            <?= Html::a(Yii::t('app', '+ Upload record'), ['upload-record', 'id' => $model->id], ['class' => 'button button--dark button--ghost button--upper']) ?>
+                        <?php endif; ?>
+                        <?php if ($model->archive) : ?>
+                            <?= Html::a(Yii::t('app', 'Delete record'), ['delete-record', 'id' => $model->id], [
+                                'class' => 'button button--danger button--upper button--ghost',
                                 'data' => [
-                                    'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
+                                    'confirm' => Yii::t('app', 'Are you sure to delete this item?'),
                                     'method' => 'post',
                                 ],
                             ]); ?>
                         <?php endif; ?>
-                    <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header section-box-header">
+                    <h4 class="box-title">Livestream details</h4>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
-                    <h4 class="box-title pull-right">Livestream details</h4>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -143,7 +167,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 }
                             ],
                             [
-                                'label' => 'Cover (can be image of video)',
+                                'label' => 'Photo (cover image)',
                                 'visible' => $user && $user->isSeller,
                                 'format' => 'raw',
                                 'value' => function (StreamSession $model) {
@@ -161,10 +185,10 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     $action = Url::to(['/stream-session/delete-cover-file', 'id' => $model->id]);
 
                                     return "<div class=\"shop-logo\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default stream-cover-trash\"
+                                                    <a type=\"button\" class=\"action-button button button--dark button--icon stream-cover-trash\"
                                                         href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                         data-confirm=\"Are you sure to delete this item?\">
-                                                        <i class=\"glyphicon glyphicon-trash\"></i>
+                                                        <span class=\"icon icon-trash-light\"></span>
                                                     </a>
                                                 {$coverHtml}
                                             </div>";
@@ -172,8 +196,9 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             ],
                             [
                                 'attribute' => 'status',
+                                'format' => 'html',
                                 'value' => function (StreamSession $model) {
-                                    return $model->getStatusName();
+                                    return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                 },
                             ],
                             'rotate',
@@ -198,7 +223,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'startedAt:datetime',
                             'stoppedAt:datetime',
                             [
-                                'label' => 'Duration',
+                                'label' => 'Actual duration',
                                 'value' => function (StreamSession $model) {
                                     return $model->getActualDuration();
                                 }
@@ -210,8 +235,8 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 }
                             ],
                             [
-                                'label' => 'Integration Snippet',
-                                'format' => 'raw',
+                                'label' => '<span class="bordered-title">Integration Snippet</span>',
+                                'format' => 'html',
                                 'value' => function () use ($snippet) {
                                     return '<pre><code class="language-html">' . $snippet . '</code></pre>';
                                 }
@@ -228,23 +253,11 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <!-- /.col -->
         <div class="col-md-6">
             <div class="box box-default">
-                <div class="box-header">
-                    <?php if ($model->isStopped() || $model->isArchived()) : ?>
-                        <?= Html::a(Yii::t('app', 'Upload record'), ['upload-record', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?php endif; ?>
-                    <?php if ($model->archive) : ?>
-                        <?= Html::a(Yii::t('app', 'Delete record'), ['delete-record', 'id' => $model->id], [
-                            'class' => 'btn btn-danger',
-                            'data' => [
-                                'confirm' => Yii::t('app', 'Are you sure to delete this item?'),
-                                'method' => 'post',
-                            ],
-                        ]); ?>
-                    <?php endif; ?>
+                <div class="box-header section-box-header">
+                    <h4 class="box-title">Recorded video</h4>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
-                    <h4 class="box-title pull-right">Recorded video</h4>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -255,8 +268,9 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'id',
                                 [
                                     'attribute' => 'status',
+                                    'format' => 'html',
                                     'value' => function (StreamSessionArchive $model) {
-                                        return $model->getStatusName();
+                                        return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                     },
                                 ],
                                 [
@@ -268,8 +282,8 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'createdAt:datetime',
                                 'updatedAt:datetime',
                                 [
-                                    'label' => 'Recorded video link',
-                                    'format' => 'raw',
+                                    'label' => '<span class="bordered-title">Recorded video link</span>',
+                                    'format' => 'html',
                                     'value' => function ($model) {
                                         $url = $model->getUrl();
                                         if (!$url) {
@@ -279,8 +293,8 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     }
                                 ],
                                 [
-                                    'label' => 'Playlist link',
-                                    'format' => 'raw',
+                                    'label' => '<span class="bordered-title">Playlist link</span>',
+                                    'format' => 'html',
                                     'value' => function ($model) {
                                         $url = $model->getPlaylistUrl();
                                         if (!$url) {
@@ -309,7 +323,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <div class="row">
             <div class="col-md-6">
                 <div class="box box-default">
-                    <div class="box-header">
+                    <div class="box-header section-box-header">
                         <h4 class="box-title">Livestream statistic</h4>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -388,12 +402,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#comments" data-toggle="tab" aria-expanded="true">Chat</a></li>
                     <li><a href="#products" data-toggle="tab" aria-expanded="false">Products</a></li>
-                    <li class="pull-right comments-content">
+                    <li class="pull-right comments-content buttons-content">
                         <div>
-                            <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'btn btn-xs bg-black', 'id' => "reset-button"]); ?>
+                            <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'button button--dark button--upper', 'id' => "reset-button"]); ?>
                         </div>
                     </li>
-                    <li class="pull-right comments-content">
+                    <li class="pull-right comments-content buttons-content">
                         <?= $this->render('comment-enable-form', ['streamSession' => $model, 'time' => date('H:i:s'),]); ?>
                     </li>
                 </ul>
@@ -408,14 +422,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                         <?php if ($model->isActive()) : ?>
                         <div class="parent-comment-reply">
                             <span>Reply to:</span>
-                            <button type="button" class="close" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="icon icon-close-light parent-comment-reply__close" aria-label="Close"></button>
                             <div>
-                                <div class="parent-comment parent-comment-name"></div>,
-                                <div class="parent-comment parent-comment-id"></div>
+                                <strong class="parent-comment parent-comment-name"></strong>,
+                                <strong class="parent-comment parent-comment-id"></strong>
                             </div>
-                            <div class="parent-comment parent-comment-date-time"></div>
+                            <strong class="parent-comment parent-comment-date-time"></strong>
                             <div class="parent-comment parent-comment-text"></div>
                         </div>
                             <!--Display comment form only for active session-->

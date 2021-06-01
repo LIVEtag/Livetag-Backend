@@ -23,7 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Add a seller'), ['create'], ['class' => 'btn bg-black']) ?>
+                    <div class="buttons-group">
+                        <?= Html::a(Yii::t('app', 'Add a seller'), ['create'], ['class' => 'button button--dark button--upper button--lg']) ?>
+                    </div>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
@@ -31,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider' => $dataProvider,
                         'hover' => true, //the grid table will highlight row on hover
                         'persistResize' => true, //to store resized column state using local storage persistence
-                        'options' => ['id' => 'user-list'],
+                        'options' => ['id' => 'user-list', 'class' => 'gridview-wrapper'],
                         'pjax' => true,
                         'filterModel' => $searchModel,
                         'columns' => [
@@ -40,9 +42,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'hAlign' => GridView::ALIGN_LEFT,
                                 'headerOptions' => ['width' => '80'],
                             ],
-                            'name',
+                            [
+                                'label' => 'Name',
+                                'attribute' => 'name',
+                                'contentOptions' => ['class' => 'name-cell'],
+                            ],
                             'email:email',
                             [
+                                'label' => 'Shop name',
                                 'attribute' => 'shopName',
                                 'format' => 'raw',
                                 'value' => function (User $model) {
@@ -50,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                             ],
                             [
+                                'label' => 'Created at',
                                 'attribute' => 'createdAt',
                                 'format' => 'datetime',
                                 'mergeHeader' => true,
@@ -61,9 +69,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,
+                                'contentOptions' => ['class' => 'action-button-cell'],
                                 'template' => '{view} {delete}',
                                 'deleteOptions' => [
                                     'data-confirm' => Yii::t('app', 'Are you sure that you want to delete this seller?')
+                                ],
+                                'buttons' => [
+                                    'view' => function ($url) {
+                                        return Html::a("<a href='$url' class='action-button button button--darken button--ghost'><span class='icon icon-eye'></span>View</a>", $url);
+                                    },
+                                    'delete' => function ($url) {
+                                        return Html::a("<span class='icon icon-trash'></span>", $url, ['class' => 'action-button button button--link button--icon']);
+                                    },
                                 ],
                             ],
                         ],

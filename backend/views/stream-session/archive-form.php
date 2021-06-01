@@ -42,7 +42,7 @@ $form->field($model, UploadArchiveInterface::FIELD_UPLOAD_TYPE)->radio([
 
 <?=
     $form->field($model, UploadArchiveInterface::FIELD_DIRECT_URL)
-    ->textInput(['placeholder' => Yii::t('app', 'Please put the direct URL link to the file with the video')])
+    ->textInput(['placeholder' => Yii::t('app', 'Please put the direct URL link to the file with the video'), 'class' => 'field form-control'])
     ->label(false);
 ?>
 
@@ -69,6 +69,10 @@ $form->field($model, UploadArchiveInterface::FIELD_UPLOAD_TYPE)->radio([
             'maxFileCount' => 1,
             'showUpload' => false,
             'showRemove' => false,
+            'browseClass' => 'button button--dark',
+            'browseIcon' => '',
+            'browseLabel' => Yii::t('app', 'Browse'),
+            'msgPlaceholder' => Yii::t('app', 'Add video'),
             // the maximum file size for upload in KB
             'maxFileSize' => $maxVideoSizeInKB,
             'msgSizeTooLarge' => Yii::t(

@@ -10,7 +10,7 @@ $analytics = $shop->getAnalytics();
 <div class="row">
     <div class="col-md-12">
         <div class="box box-default">
-            <div class="box-header">
+            <div class="box-header section-box-header box-header--no-indent">
                 <h4 class="box-title">Summary analytics</h4>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>

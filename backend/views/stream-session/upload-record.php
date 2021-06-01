@@ -34,8 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
-                            <?= Html::a(Yii::t('app', 'Cancel'), ['view', 'id' => $model->streamSession->id], ['class' => 'btn bg-black']) ?>
-                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+                            <?= Html::a(Yii::t('app', 'Cancel'), ['view', 'id' => $model->streamSession->id], ['class' => 'button button--dark button--ghost button--upper button--lg']) ?>
+                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'button button--dark button--upper button--lg']) ?>
                         </div>
                     </div>
                     <!--/.box-footer -->

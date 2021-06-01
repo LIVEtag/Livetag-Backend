@@ -31,7 +31,7 @@ $this->registerJs(
     <?php Pjax::begin(['id' => 'enabled_comment', 'enablePushState' => false]); ?>
     <?= Html::beginForm(['enable-comment', 'id' => $streamSession->id], 'post', ['data-pjax' => '', 'class' => 'form-inline']); ?>
     <?= Html::hiddenInput('commentsEnabled', !$isEnabled); ?>
-    <?= Html::submitButton($isEnabled ? 'Disable comments' : 'Enable comments', ['class' => 'btn btn-xs bg-' . ($isEnabled ? 'red' : 'green')]) ?>
+    <?= Html::submitButton($isEnabled ? 'Disable comments' : 'Enable comments', ['class' => 'button button--ghost button--upper button--' . ($isEnabled ? 'danger' : 'success')]) ?>
     <?php
     //Execute below code only for ajax request(pjax load)
     if (Yii::$app->request->isAjax) {

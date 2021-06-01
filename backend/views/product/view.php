@@ -10,7 +10,7 @@ use yii\widgets\DetailView;
 /* @var $this View */
 /* @var $model Product */
 
-$this->title = 'Product details #' . $model->id;
+$this->title = 'Product details ID' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -21,14 +21,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Edit'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-                        'class' => 'btn btn-danger',
-                        'data' => [
-                            'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                            'method' => 'post',
-                        ],
-                    ]); ?>
+                    <div class="buttons-group">
+                        <?= Html::a(Yii::t('app', 'Edit'), ['update', 'id' => $model->id], ['class' => 'button button--dark button--upper button--lg']) ?>
+                        <?= Html::a(Yii::t('app', 'Delete product'), ['delete', 'id' => $model->id], [
+                            'class' => 'button button--danger button--ghost button--upper button--lg',
+                            'data' => [
+                                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                                'method' => 'post',
+                            ],
+                        ]); ?>
+                    </div>
                 </div>
                 <div class="box-body">
                     <?= DetailView::widget([
@@ -42,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'title',
                             'description',
                             [
-                                'label' => 'SKU, Price and Options',
+                                'label' => 'SKU, Price and options',
                                 'attribute' => 'options',
                                 'format' => 'raw',
                                 'mergeHeader' => true,
@@ -52,8 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             [
                                 'attribute' => 'status',
+                                'format' => 'html',
                                 'value' => function (Product $model) {
-                                    return $model->getStatusName();
+                                    return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                 },
                             ],
                             [
@@ -77,7 +80,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                             ],
                             [
+                                'label' => '<span class="bordered-title">Link</span>',
                                 'attribute' => 'link',
+                                'contentOptions' => ['class' => 'link-cell'],
                                 'format' => ['url', ['target' => '_blank']]
                             ],
                         ],

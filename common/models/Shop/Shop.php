@@ -216,15 +216,15 @@ class Shop extends ActiveRecord implements FileResourceInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
+            'id' => Yii::t('app', 'Id'),
             'name' => Yii::t('app', 'Name'),
             'uri' => Yii::t('app', 'Livestream URI'),
             'website' => Yii::t('app', 'Website'),
             'logo' => Yii::t('app', 'Logo'),
             'productIcon' => Yii::t('app', 'Product icon'),
             'iconsTheme' => Yii::t('app', 'Icons color theme'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 

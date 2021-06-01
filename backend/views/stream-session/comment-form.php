@@ -40,7 +40,7 @@ $this->registerJs(
         'removeButtons' => 'Anchor,Subscript,Superscript,Flash,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe',
     ]
 ])->label('Comment'); ?>
-<?= Html::submitButton(Yii::t('app', 'Send'), ['class' => 'btn btn-md btn-primary btn-block bg-black']) ?>
+<?= Html::submitButton(Yii::t('app', 'Send'), ['class' => 'button button--dark button--upper comment-send']) ?>
 <?php ActiveForm::end(); ?>
 <?php Pjax::end(); ?>
 

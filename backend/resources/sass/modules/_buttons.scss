@@ -1,0 +1,88 @@
+:root {
+  --button-color: #000;
+}
+
+@function capitalize($string) {
+  @return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
+}
+
+body {
+  .button {
+    display: inline-block;
+    padding: 8px;
+    color: #fff !important;
+    font-weight: normal;
+    font-size: 20px;
+    font-family: $font-Source-Sans-Pro;
+    background-color: var(--button-color);
+    border: 1px solid var(--button-color);
+    border-radius: 4px;
+    transition: background-color 0.4s, color 0.4s, border-color 0.4s;
+
+    $colors: primary secondary success danger warning info light dark;
+
+    > * {
+      font-family: inherit !important;
+    }
+
+    .fa::before {
+      display: none;
+    }
+
+    @each $color in $colors {
+      &--#{$color} {
+        --button-color: hsl(
+                        var(--color-#{capitalize($color)}-h),
+                        var(--color-#{capitalize($color)}-s),
+                        calc(var(--color-#{capitalize($color)}-l) - var(--color-darken))
+        );
+
+        &:hover,
+        &:hover:focus {
+          --color-darken: 10%;
+        }
+
+        &:active:focus {
+          --color-darken: 15%;
+        }
+      }
+    }
+
+    &--ghost {
+      background: none;
+      color: var(--button-color) !important;
+    }
+
+    &--dark.button--ghost {
+      color: var(--color-Dark) !important;
+    }
+
+    &--link {
+      background: none;
+      border-color: transparent;
+    }
+
+    &--upper {
+      text-transform: uppercase;
+    }
+
+    &--lg {
+      padding: 12px 16px;
+    }
+
+    &--icon {
+      position: relative;
+      top: 5px;
+      padding: 0 4px !important;
+
+      .icon {
+        margin-right: 0 !important;
+      }
+    }
+
+    &[disabled] {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+}

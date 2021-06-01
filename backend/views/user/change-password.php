@@ -26,15 +26,15 @@ $defaultCancelUrl = $user && $user->isAdmin ? ['user/index'] : ['site/index'];
                     <div class="box-header"></div>
                     <!--/.box-header -->
                     <div class="box-body table-responsive">
-                        <?= $form->field($model, 'password')->passwordInput() ?>
-                        <?= $form->field($model, 'newPassword')->passwordInput() ?>
-                        <?= $form->field($model, 'confirmPassword')->passwordInput() ?>
+                        <?= $form->field($model, 'password')->passwordInput(['class' => 'field form-control']) ?>
+                        <?= $form->field($model, 'newPassword')->passwordInput(['class' => 'field form-control']) ?>
+                        <?= $form->field($model, 'confirmPassword')->passwordInput(['class' => 'field form-control']) ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
-                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: $defaultCancelUrl, ['class' => 'btn bg-black']) ?>
-                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: $defaultCancelUrl, ['class' => 'button button--dark button--ghost button--upper button--lg']) ?>
+                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'button button--dark button--upper button-lg']) ?>
                         </div>
                     </div>
                     <!--/.box-footer -->

@@ -42,3 +42,6 @@ npm-debug.log
 
 /common/queue-general/
 /common/queue-product/
+
+/node_modules
+/package-lock.json

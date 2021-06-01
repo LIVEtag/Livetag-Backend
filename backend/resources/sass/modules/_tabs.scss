@@ -1,0 +1,46 @@
+.wrapper {
+  .nav-tabs-custom {
+    box-shadow: none;
+  }
+
+  .nav-tabs-custom > .nav-tabs {
+    margin-bottom: 40px;
+    padding: 0 12px;
+    border: none;
+  }
+
+  .nav-tabs-custom > .nav-tabs > li {
+    margin-right: 33px;
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+
+    &.buttons-content {
+      margin-right: 0;
+      margin-left: 10px;
+
+      .button {
+        padding: 6px 12px;
+        font-size: 16px;
+      }
+    }
+
+    > span {
+      padding: 10px 0;
+      color: #bababa;
+      border: none;
+      border-bottom: 3px solid transparent;
+    }
+
+    &.active > span {
+      color: #292929;
+      border-color: #292929;
+      font-family: $font-Inter;
+    }
+  }
+
+  .nav-tabs-custom > .nav-tabs > li.active > span,
+  .nav-tabs-custom > .nav-tabs > li.active:hover > span {
+    color: #292929;
+  }
+}

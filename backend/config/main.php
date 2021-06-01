@@ -44,7 +44,7 @@ return [
         'assetManager' => [
             'bundles' => [
                 AdminLteAsset::class => [
-                    'skin' => 'skin-black',
+                    'skin' => false,
                 ],
             ],
         ],

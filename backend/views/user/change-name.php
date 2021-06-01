@@ -24,13 +24,14 @@ $this->title = Yii::t('app', 'Change Name');
                         <?= $form->field($model, 'name')->textInput([
                             'placeholder' => Yii::t('app', 'Current name'),
                             'maxlength' => true,
+                            'class' => 'field form-control',
                         ]) ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
-                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: Yii::$app->homeUrl, ['class' => 'btn bg-black']) ?>
-                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+                            <?= Html::a(Yii::t('app', 'Cancel'), Yii::$app->request->referrer ?: Yii::$app->homeUrl, ['class' => 'button button--dark button--ghost button--upper button--lg']) ?>
+                            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'button button--dark button--upper button--lg']) ?>
                         </div>
                     </div>
                     <!--/.box-footer -->
