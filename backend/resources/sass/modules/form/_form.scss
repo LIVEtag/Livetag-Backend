@@ -306,6 +306,7 @@ body {
         width: 10px;
         height: 6px;
         background: url("../images/select-arrow.svg");
+        pointer-events: none;
         content: "";
       }
     }

@@ -19,20 +19,37 @@
       margin-right: 0;
       margin-left: 10px;
 
+      @media (max-width: 550px) {
+        width: 100%;
+        margin-top: 15px;
+        margin-left: 0;
+
+        #enabled_comment .button {
+          margin-left: 0;
+        }
+      }
+
+      .buttons-group {
+        display: flex;
+        align-items: center;
+        height: 49px;
+      }
+
       .button {
+        margin-left: 10px;
         padding: 6px 12px;
         font-size: 16px;
       }
     }
 
-    > span {
+    > a {
       padding: 10px 0;
       color: #bababa;
       border: none;
       border-bottom: 3px solid transparent;
     }
 
-    &.active > span {
+    &.active > a {
       color: #292929;
       border-color: #292929;
       font-family: $font-Inter;

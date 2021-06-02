@@ -1,12 +1,16 @@
-.login-template {
+.login-template,
+.auth-box {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-template {
   margin-top: 60px;
 }
 
 .auth-box {
-  display: flex;
-  justify-content: center;
   width: 100%;
   max-width: 420px;
 

@@ -80,6 +80,10 @@ body {
       }
     }
 
+    &--center {
+      text-align: center !important;
+    }
+
     &[disabled] {
       opacity: 0.3;
       cursor: not-allowed;

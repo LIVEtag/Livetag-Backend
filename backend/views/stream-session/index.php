@@ -32,14 +32,19 @@ if ($type == StreamSessionSearch::TYPE_ACTIVE_AND_PAST) {
 /** @var User $user */
 $user = Yii::$app->user->identity ?? null;
 ?>
+
 <section class="stream-session-index">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <?= Html::a('<span class="page-title">Setup</span>', ['index', 'type' => StreamSessionSearch::TYPE_UPCOMING]); ?>
-                        <?= Html::a('<span class="page-title">Moderate</span>', ['index', 'type' => StreamSessionSearch::TYPE_ACTIVE_AND_PAST]); ?>
+                    <ul id="stream-types-links" class="nav nav-tabs">
+                        <li class="<?= StreamSessionSearch::TYPE_UPCOMING; ?>-type">
+                            <?= Html::a('<span class="page-title">Setup</span>', ['index', 'type' => StreamSessionSearch::TYPE_UPCOMING]); ?>
+                        </li>
+                        <li class="<?= StreamSessionSearch::TYPE_ACTIVE_AND_PAST; ?>-type">
+                            <?= Html::a('<span class="page-title">Moderate</span>', ['index', 'type' => StreamSessionSearch::TYPE_ACTIVE_AND_PAST]); ?>
+                        </li>
                         <?php if ($user && $user->isSeller) : ?>
                             <li class="pull-right setup-content buttons-content">
                                 <div><?= Html::a(Yii::t('app', '+ Create new show'), ['create'], ['class' => 'button button--dark button--upper button--lg']) ?></div>
@@ -165,7 +170,7 @@ $user = Yii::$app->user->identity ?? null;
                                             ],
                                             'buttons' => [
                                                 'update' => function ($url) {
-                                                    return Html::a('<span class="icon icon-pen"></span> Edit', $url, ['class' => 'action-button button button--darken button--ghost']);
+                                                    return Html::a('<span class="icon icon-pen"></span> Edit', $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
                                                 },
                                                 'view' => function ($url) {
                                                     return Html::a('<span class="icon icon-eye"></span> View', $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
@@ -195,3 +200,19 @@ $user = Yii::$app->user->identity ?? null;
     </div>
     <!-- /.row -->
 </section>
+
+<script>
+    (function () {
+        const queryString = window.location.search;
+        const searchParams = new URLSearchParams(queryString);
+        const specificParam = searchParams.get('type');
+        const upcomingType = '<?= StreamSessionSearch::TYPE_UPCOMING; ?>';
+        const activeAndPastType = '<?= StreamSessionSearch::TYPE_ACTIVE_AND_PAST; ?>';
+
+        if (specificParam === upcomingType || specificParam === null) {
+            document.querySelectorAll(`.${upcomingType}-type`)[0].classList.add('active');
+        } else if (specificParam === activeAndPastType) {
+            document.querySelectorAll(`.${activeAndPastType}-type`)[0].classList.add('active');
+        }
+    })();
+</script>

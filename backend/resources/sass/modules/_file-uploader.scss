@@ -53,6 +53,10 @@
     border-radius: 4px;
   }
 
+  .input-group .btn-file > span {
+    display: block !important;
+  }
+
   .krajee-default .file-footer-buttons {
     .glyphicon-zoom-in {
       width: 24px;
@@ -73,6 +77,12 @@
   .input-group .button {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      z-index: -1;
+    }
   }
 
   .file-footer-caption {
