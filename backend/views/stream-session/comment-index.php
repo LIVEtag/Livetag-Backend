@@ -36,8 +36,9 @@ use kartik\grid\ActionColumn;
             'attribute' => 'username',
             'format' => 'html',
             'label' => 'Name',
+            'contentOptions' => ['class' => 'strong-cell'],
             'value' => static function (Comment $model) {
-                return HTML::tag('strong', $model->user->isSeller ? $model->user->email : $model->user->name);
+                return $model->user->isSeller ? $model->user->email : $model->user->name;
             },
             'hAlign' => GridView::ALIGN_LEFT,
         ],

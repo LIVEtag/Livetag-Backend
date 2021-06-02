@@ -369,7 +369,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
             <?php if ($model->archive) : ?>
                 <div class="col-md-6">
                     <div class="box box-default">
-                        <div class="box-header">
+                        <div class="box-header section-box-header">
                             <h4 class="box-title">Recorded video statistic</h4>
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
