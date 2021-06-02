@@ -76,6 +76,26 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,
+                                'contentOptions' => ['class' => 'action-button-cell'],
+                                'template' => '{view} {update} {delete}',
+                                'buttons' => [
+                                    'view' => function ($url) {
+                                        return Html::a('<span class="icon icon-eye"></span> View', $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
+                                    },
+                                    'update' => function ($url) {
+                                        return Html::a('<span class="icon icon-pen"></span> Edit', $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
+                                    },
+                                    'delete' => function ($url) {
+                                        return Html::a('<span class="icon icon-trash"></span>', $url, [
+                                            'class' => 'action-button button button--link button--icon',
+                                            'data-pjax' => '0',
+                                            'data' => [
+                                                'confirm' => 'Are you sure to delete this item?',
+                                                'method' => 'post',
+                                            ],
+                                        ]);
+                                    }
+                                ]
                             ],
                         ],
                     ]); ?>

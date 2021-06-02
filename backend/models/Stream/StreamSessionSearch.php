@@ -19,6 +19,14 @@ use yii\helpers\ArrayHelper;
  */
 class StreamSessionSearch extends StreamSession
 {
+    const TYPE_UPCOMING = 'upcoming';
+    const TYPE_ACTIVE_AND_PAST = 'active-and-past';
+
+    const TYPES = [
+        self::TYPE_UPCOMING,
+        self::TYPE_ACTIVE_AND_PAST,
+    ];
+
     /** @var int */
     public $totalViewCount;
 
@@ -67,9 +75,11 @@ class StreamSessionSearch extends StreamSession
      *
      * @param array $params
      *
+     * @param null $type
      * @return ActiveDataProvider
+     * @throws \Exception
      */
-    public function search($params): ActiveDataProvider
+    public function search($params, $type = null): ActiveDataProvider
     {
 
         $actualDurationExpression = new Expression('
@@ -95,6 +105,14 @@ class StreamSessionSearch extends StreamSession
                 $actualDurationExpression,
                 'likes',
             ]);
+
+        if ($type) {
+            if ($type == self::TYPE_ACTIVE_AND_PAST) {
+                $query->notNew();
+            } else {
+                $query->new();
+            }
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

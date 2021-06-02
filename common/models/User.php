@@ -179,6 +179,22 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'id' => Yii::t('app', 'Id'),
+            'role' => Yii::t('app', 'Role'),
+            'name' => Yii::t('app', 'Name'),
+            'email' => Yii::t('app', 'Email'),
+            'status' => Yii::t('app', 'Status'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
+        ];
+    }
+
+    /**
      * Return na,e of current user
      * @return string|null
      */

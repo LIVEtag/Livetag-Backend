@@ -21,6 +21,14 @@ use yii\web\View;
 $this->title = Yii::t('app', 'Livestreams');
 $this->params['breadcrumbs'][] = $this->title;
 
+$type = Yii::$app->request->getQueryParam('type');
+$tabTitle = 'Upcoming shows';
+$tabStatuses = [StreamSession::STATUS_NEW => 'New'];
+if ($type == StreamSessionSearch::TYPE_ACTIVE_AND_PAST) {
+    $tabTitle = 'Active and past shows';
+    $tabStatuses = array_diff(StreamSession::STATUSES, $tabStatuses);
+}
+
 /** @var User $user */
 $user = Yii::$app->user->identity ?? null;
 ?>
@@ -30,8 +38,8 @@ $user = Yii::$app->user->identity ?? null;
             <div class="box box-default">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><span class="page-title">Setup</span></li>
-                        <li><span class="page-title">Moderate</span></li>
+                        <?= Html::a('<span class="page-title">Setup</span>', ['index', 'type' => StreamSessionSearch::TYPE_UPCOMING]); ?>
+                        <?= Html::a('<span class="page-title">Moderate</span>', ['index', 'type' => StreamSessionSearch::TYPE_ACTIVE_AND_PAST]); ?>
                         <?php if ($user && $user->isSeller) : ?>
                             <li class="pull-right setup-content buttons-content">
                                 <div><?= Html::a(Yii::t('app', '+ Create new show'), ['create'], ['class' => 'button button--dark button--upper button--lg']) ?></div>
@@ -46,7 +54,7 @@ $user = Yii::$app->user->identity ?? null;
                         <div class="tab-pane active">
                             <div class="box-header box-header--no-indent">
                                 <div class="section-box-header">
-                                    <span class="box-title">Upcoming shows</span>
+                                    <span class="box-title"><?= $tabTitle ?></span>
                                 </div>
                             </div>
                             <div class="box-body table-responsive">
@@ -137,7 +145,7 @@ $user = Yii::$app->user->identity ?? null;
                                             'hAlign' => GridView::ALIGN_LEFT,
                                             'format' => 'html',
                                             'headerOptions' => ['width' => '100'],
-                                            'filter' => Html::tag('div', Html::activeDropDownList($searchModel, 'status', StreamSession::STATUSES, ['class' => 'form-control', 'prompt' => '']), ['class' => 'select-wrapper no-label']),
+                                            'filter' => Html::tag('div', Html::activeDropDownList($searchModel, 'status', $tabStatuses, ['class' => 'form-control', 'prompt' => '']), ['class' => 'select-wrapper no-label']),
                                             'value' => function (StreamSessionSearch $model) {
                                                 return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                             },

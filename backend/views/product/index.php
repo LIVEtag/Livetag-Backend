@@ -78,9 +78,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php if ($dataProvider->getTotalCount()) : ?>
                                         <?= $form->field($model, 'type', ['enableClientValidation' => false])->radioList(
                                             ProductsUploadForm::TYPES,
-                                            ['item' => function ($index, $label, $name, $checked, $value) {
+                                            [
+                                                'item' => function ($index, $label, $name, $checked, $value) {
                                                     return "<div class='radio-box'><label><div class='radio'><input type='radio' name='$name' value='$value'><div class='radio__custom'></div></div><span class='radio__label'>$label</span></label></div>";
-                                            }
+                                                }
                                             ]
                                         )->label(false);
                                         ?>

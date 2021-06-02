@@ -28,7 +28,7 @@ use yii\widgets\DetailView;
 /* @var $commentModel Comment */
 /* @var $isPosted bool */
 
-$this->title = 'Livestream details ID' . $model->id;
+$this->title = 'Livestream details ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -211,7 +211,6 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 },
                                 'visible' => $user && $user->isAdmin,
                             ],
-                            'sessionId',
                             'announcedAt:datetime',
                             [
                                 'label' => 'Maximum Duration',
@@ -232,6 +231,17 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'attribute' => 'internalCart',
                                 'value' => function (StreamSession $model) {
                                     return $model->getInternalCartText();
+                                }
+                            ],
+                            [
+                                'attribute' => 'sessionId',
+                                'label' => '<span class="bordered-title">Session ID</span>',
+                                'format' => 'html',
+                                'value' => function (StreamSession $model) {
+                                    if ($model->sessionId) {
+                                        return '<pre><code class="language-html">' . $model->sessionId . '</code></pre>';
+                                    }
+                                    return null;
                                 }
                             ],
                             [
