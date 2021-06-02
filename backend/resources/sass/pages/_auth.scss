@@ -7,12 +7,31 @@
 }
 
 .login-template {
+  position: relative;
   margin-top: 60px;
+
+  &__logo {
+    position: absolute;
+    top: -40px;
+    left: 15px;
+    width: 200px;
+  }
+
+  @media (max-width: 650px) {
+    margin-top: 30px;
+
+    &__logo {
+      position: static;
+      margin-bottom: 30px;
+    }
+  }
 }
 
 .auth-box {
   width: 100%;
   max-width: 420px;
+  padding-right: 15px;
+  padding-left: 15px;
 
   &__body {
     width: 100%;
@@ -83,5 +102,23 @@
     max-width: 275px;
     margin-right: auto;
     margin-left: auto;
+  }
+}
+
+.app-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  padding-top: 40px;
+  border-top: 1px solid #dee2e6;
+
+  &__link {
+    display: flex;
+    margin-bottom: 4px;
+  }
+
+  &__image {
+    width: 100%;
   }
 }

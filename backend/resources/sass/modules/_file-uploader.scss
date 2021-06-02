@@ -80,8 +80,8 @@
     cursor: pointer;
 
     input {
-      position: absolute;
-      z-index: -1;
+      padding: 0 100%;
+      font-size: 0;
     }
   }
 

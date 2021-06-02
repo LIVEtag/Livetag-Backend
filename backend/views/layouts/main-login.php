@@ -27,7 +27,7 @@ AdminLteAsset::register($this);
     <?php $this->head() ?>
 </head>
 <body class="login-template">
-
+<img class="login-template__logo" src="<?= Yii::getAlias('@web') . '/images/logo.svg'; ?>" alt="Livetag logo">
 <?php $this->beginBody() ?>
     <?= Alert::widget() ?>
     <?= $content ?>

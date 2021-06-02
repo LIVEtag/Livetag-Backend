@@ -31,7 +31,7 @@ $(function () {
     });
 
     // Hide parent comment block in the form by click on the close button
-    $('.parent-comment-reply .close').on('click', function () {
+    $('.parent-comment-reply .parent-comment-reply__close').on('click', function () {
         hideParentComment();
     });
 
@@ -41,7 +41,7 @@ $(function () {
     });
 
     // If seller wants to delete comment - hide this parent comment block in the form
-    $('#comments').on('click', '.glyphicon-trash', function () {
+    $('#comments').on('click', '.icon-trash', function () {
         row = $(this).parents('tr');
         idFromGrid = row.data('key');
         idFromInput = $('#commentform-parentcommentid').val();

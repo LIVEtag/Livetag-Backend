@@ -52,4 +52,14 @@ $fieldOptions2 = [
         </div>
         <?php ActiveForm::end(); ?>
     </div>
+    <div class="auto-box__footer">
+        <div class="app-links">
+            <a class="app-links__link" href="https://apps.apple.com/app/livetag-liveshopping/id1557456258">
+                <img class="app-links__image" src="<?= Yii::getAlias('@web') . '/images/appstore.svg' ?>" alt="appstore">
+            </a>
+            <a class="app-links__link" href="https://play.google.com/store/apps/details?id=com.livetag.sky">
+                <img class="app-links__image" src="<?= Yii::getAlias('@web') . '/images/google-play.svg' ?>" alt="google play">
+            </a>
+        </div>
+    </div>
 </div>
