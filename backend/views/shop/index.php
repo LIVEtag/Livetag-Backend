@@ -88,6 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'delete' => function ($url) {
                                         return Html::a('<span class="icon icon-trash"></span>', $url, [
                                             'class' => 'action-button button button--link button--icon',
+                                            'data-pjax' => '0',
                                             'data' => [
                                                 'confirm' => 'Are you sure to delete this item?',
                                                 'method' => 'post',

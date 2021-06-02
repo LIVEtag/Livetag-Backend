@@ -107,10 +107,10 @@ class StreamSessionSearch extends StreamSession
             ]);
 
         if ($type) {
-            if (!in_array($type, self::TYPES) || $type == self::TYPE_UPCOMING) {
-                $query->new();
-            } elseif ($type == self::TYPE_ACTIVE_AND_PAST) {
+            if ($type == self::TYPE_ACTIVE_AND_PAST) {
                 $query->notNew();
+            } else {
+                $query->new();
             }
         }
 
