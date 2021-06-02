@@ -67,13 +67,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     $action = Url::to(['/shop/delete-logo', 'id' => $model->id]);
                                     return "<div class=\"shop-logo\">
-                                                <div class=\"shop-logo__trash\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default\"
-                                                        href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
-                                                        data-confirm=\"Are you sure to delete this item?\">
-                                                        <i class=\"glyphicon glyphicon-trash\"></i>
-                                                    </a>
-                                                </div>
+                                                <a type=\"button\" class=\"btn btn-sm btn-default\"
+                                                    href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
+                                                    data-confirm=\"Are you sure to delete this item?\">
+                                                    <i class=\"icon icon-trash-light\"></i>
+                                                </a>
                                                 <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
                                             </div>";
                                 }
@@ -186,10 +184,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                 'buttons' => [
                                     'view' => function ($url) {
-                                        return Html::a("<a href='$url' class='action-button button button--darken button--ghost'><span class='icon icon-eye'></span>View</a>", $url);
+                                        return Html::a("<span class='icon icon-eye'></span>View", $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
                                     },
                                     'delete' => function ($url) {
-                                        return Html::a("<span class='icon icon-trash'></span>", $url, ['class' => 'action-button button button--link button--icon']);
+                                        return Html::a("<span class='icon icon-trash'></span>", $url, ['class' => 'action-button button button--link button--icon', 'data-pjax' => '0', 'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'), 'data-method' => 'post']);
                                     },
                                 ],
                                 'urlCreator' => function ($action, $model) {

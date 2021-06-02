@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= $form->field($model, 'confirmPassword')->passwordInput(['placeholder' => 'Confirm New Password', 'class' => 'field form-control'])->label(false) ?>
                     <?= $form->field($model, 'resetToken')->hiddenInput()->label(false) ?>
                     <?= Html::submitButton(Yii::t('app', 'Set New Password'), ['class' => 'button button--dark button--upper auth-box__submit']) ?>
-                    <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'button button--dark button--ghost button--upper auth-box__submit']) ?>
+                    <?= Html::a(Yii::t('app', 'Back to Login'), ['index'], ['class' => 'button button--dark button--ghost button--upper button--center auth-box__submit']) ?>
                 <?php ActiveForm::end(); ?>
             </div>
     </div>

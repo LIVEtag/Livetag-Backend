@@ -51,7 +51,7 @@
   .select2-container--krajee .select2-selection--single {
     position: relative;
     height: 46px;
-    padding: 0;
+    padding: 0 40px 0 0;
   }
 
   .select2-container--krajee .select2-selection--single .select2-selection__arrow {
@@ -68,6 +68,7 @@
       width: 100%;
       height: 6px;
       background: url("../images/select-arrow.svg");
+      pointer-events: none;
       content: '';
     }
 

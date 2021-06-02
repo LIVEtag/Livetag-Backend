@@ -17,10 +17,10 @@ $user = Yii::$app->user->identity;
 ?>
 
 <div class="shop-form">
+    <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class="col-md-6">
             <div class="box box-default">
-                <?php $form = ActiveForm::begin(); ?>
                 <div class="box-header">
                 </div>
                 <!--/.box-header -->
@@ -99,10 +99,10 @@ $user = Yii::$app->user->identity;
                     </div>
                 </div>
                 <!--/.box-footer -->
-                <?php ActiveForm::end(); ?>
             </div>
             <!-- /.box -->
         </div>
         <!-- /.col -->
     </div>
+    <?php ActiveForm::end(); ?>
 </div>

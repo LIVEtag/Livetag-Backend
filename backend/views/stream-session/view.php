@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $user = Yii::$app->user->identity ?? null;
 
 $publishOptions = [
-    'class' => 'btn btn-success',
+    'class' => 'button button--success button--upper button--lg',
 ];
 $publishUrl = ['publish', 'id' => $model->id];
 
@@ -413,12 +413,12 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                     <li class="active"><a href="#comments" data-toggle="tab" aria-expanded="true">Chat</a></li>
                     <li><a href="#products" data-toggle="tab" aria-expanded="false">Products</a></li>
                     <li class="pull-right comments-content buttons-content">
-                        <div>
-                            <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'button button--dark button--upper', 'id' => "reset-button"]); ?>
+                        <div class="buttons-group">
+                            <?= $this->render('comment-enable-form', ['streamSession' => $model, 'time' => date('H:i:s'),]); ?>
+                            <div>
+                                <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'button button--dark button--upper', 'id' => "reset-button"]); ?>
+                            </div>
                         </div>
-                    </li>
-                    <li class="pull-right comments-content buttons-content">
-                        <?= $this->render('comment-enable-form', ['streamSession' => $model, 'time' => date('H:i:s'),]); ?>
                     </li>
                 </ul>
                 <div class="tab-content">

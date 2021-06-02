@@ -76,10 +76,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                 'buttons' => [
                                     'view' => function ($url) {
-                                        return Html::a("<a href='$url' class='action-button button button--darken button--ghost'><span class='icon icon-eye'></span>View</a>", $url);
+                                        return Html::a("<span class='icon icon-eye'></span>View", $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
                                     },
                                     'delete' => function ($url) {
-                                        return Html::a("<span class='icon icon-trash'></span>", $url, ['class' => 'action-button button button--link button--icon']);
+                                        return Html::a("<span class='icon icon-trash'></span>", $url, ['class' => 'action-button button button--link button--icon', 'data-pjax' => '0', 'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'), 'data-method' => 'post']);
                                     },
                                 ],
                             ],
