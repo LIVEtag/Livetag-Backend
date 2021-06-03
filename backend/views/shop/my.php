@@ -61,7 +61,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                                 <a type=\"button\" class=\"action-button button button--dark button--icon stream-cover-trash\"
                                                     href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                     data-confirm=\"Are you sure to delete this item?\">
-                                                    <i class=\"icon  icon-trash-light\"></i>
+                                                    <i class=\"icon icon-trash-light\"></i>
                                                 </a>
                                                 <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
                                             </div>";
