@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                     $action = Url::to(['/shop/delete-logo', 'id' => $model->id]);
                                     return "<div class=\"shop-logo\">
-                                                <a type=\"button\" class=\"btn btn-sm btn-default\"
+                                                <a type=\"button\" class=\"action-button button button--dark button--icon stream-cover-trash\"
                                                     href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                     data-confirm=\"Are you sure to delete this item?\">
                                                     <i class=\"icon icon-trash-light\"></i>

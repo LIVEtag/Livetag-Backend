@@ -184,7 +184,7 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     }
                                     $action = Url::to(['/stream-session/delete-cover-file', 'id' => $model->id]);
 
-                                    return "<div class=\"shop-logo\">
+                                    return "<div class=\"shop-logo text-center\">
                                                     <a type=\"button\" class=\"action-button button button--dark button--icon stream-cover-trash\"
                                                         href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                         data-confirm=\"Are you sure to delete this item?\">
