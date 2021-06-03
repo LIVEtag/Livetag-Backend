@@ -24,9 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
 $type = Yii::$app->request->getQueryParam('type');
 $tabTitle = 'Upcoming shows';
 $tabStatuses = [StreamSession::STATUS_NEW => 'New'];
+$areUpcomingShows = true;
 if ($type == StreamSessionSearch::TYPE_ACTIVE_AND_PAST) {
     $tabTitle = 'Active and past shows';
     $tabStatuses = array_diff(StreamSession::STATUSES, $tabStatuses);
+    $areUpcomingShows = false;
 }
 
 /** @var User $user */
@@ -101,7 +103,8 @@ $user = Yii::$app->user->identity ?? null;
                                             'vAlign' => GridView::ALIGN_TOP,
                                             'hAlign' => GridView::ALIGN_LEFT,
                                             'headerOptions' => ['width' => '180'],
-                                            'filter' => false
+                                            'filter' => false,
+                                            'visible' => !$areUpcomingShows,
                                         ],
                                         [
                                             'label' => 'Actual duration',
@@ -113,7 +116,8 @@ $user = Yii::$app->user->identity ?? null;
                                             'filter' => false,
                                             'value' => function (StreamSessionSearch $model) {
                                                 return $model->getActualDuration();
-                                            }
+                                            },
+                                            'visible' => !$areUpcomingShows,
                                         ],
                                         [
                                             'label' => 'Number of views',
@@ -121,6 +125,7 @@ $user = Yii::$app->user->identity ?? null;
                                             'headerOptions' => ['width' => '150'],
                                             'vAlign' => GridView::ALIGN_TOP,
                                             'hAlign' => GridView::ALIGN_LEFT,
+                                            'visible' => !$areUpcomingShows,
                                         ],
                                         [
                                             'label' => '“Add to cart” clicks',
@@ -128,6 +133,7 @@ $user = Yii::$app->user->identity ?? null;
                                             'headerOptions' => ['width' => '150'],
                                             'vAlign' => GridView::ALIGN_TOP,
                                             'hAlign' => GridView::ALIGN_LEFT,
+                                            'visible' => !$areUpcomingShows,
                                         ],
                                         [
                                             'label' => '“Add to cart” rate',
@@ -135,6 +141,7 @@ $user = Yii::$app->user->identity ?? null;
                                             'headerOptions' => ['width' => '150'],
                                             'vAlign' => GridView::ALIGN_TOP,
                                             'hAlign' => GridView::ALIGN_LEFT,
+                                            'visible' => !$areUpcomingShows,
                                         ],
                                         [
                                             'label' => 'Likes',
@@ -143,6 +150,10 @@ $user = Yii::$app->user->identity ?? null;
                                             'mergeHeader' => true,
                                             'vAlign' => GridView::ALIGN_TOP,
                                             'hAlign' => GridView::ALIGN_LEFT,
+                                            'value' => function (StreamSessionSearch $model) {
+                                                return $model->likes ?: 0;
+                                            },
+                                            'visible' => !$areUpcomingShows,
                                         ],
                                         [
                                             'attribute' => 'status',
@@ -154,6 +165,19 @@ $user = Yii::$app->user->identity ?? null;
                                             'value' => function (StreamSessionSearch $model) {
                                                 return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                             },
+                                            'visible' => !$areUpcomingShows,
+                                        ],
+                                        [
+                                            'attribute' => 'announcedAt',
+                                            'format' => 'datetime',
+                                            'visible' => $areUpcomingShows,
+                                        ],
+                                        [
+                                            'label' => 'Maximum Duration',
+                                            'value' => function (StreamSessionSearch $model) {
+                                                return $model->getMaximumDuration();
+                                            },
+                                            'visible' => $areUpcomingShows,
                                         ],
                                         [
                                             'class' => ActionColumn::class,
