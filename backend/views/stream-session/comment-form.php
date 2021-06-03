@@ -16,10 +16,14 @@ use yii\widgets\Pjax;
 
 $this->registerJs(
     '$("#new_comment").on("pjax:end", function(val) {
-        $.pjax.reload({container:"#comment-list-pjax"});  //Reload GridView
-        $(\'.parent-comment-reply\').hide();
-        $(\'.parent-comment-reply .parent-comment\').empty();
-        $(\'#commentform-parentcommentid\').val(\'\');
+            parentCommentId = $(\'#commentform-parentcommentid\').val();
+            // If no validation errors
+            if (!parentCommentId) {
+                $.pjax.reload({container:"#comment-list-pjax"});  //Reload GridView
+                $(\'.parent-comment-reply\').hide();
+                $(\'.parent-comment-reply .parent-comment\').empty();
+                $(\'#commentform-parentcommentid\').val(\'\');
+            }
     });'
 );
 ?>
