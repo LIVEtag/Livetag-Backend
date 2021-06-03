@@ -583,7 +583,7 @@ class StreamSessionController extends Controller
         /** @var User $user */
         $user = $this->getAndCheckCurrentUser();
         $model = StreamSessionProduct::findOne($id);
-        if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
+        if (!$model || ($user->isSeller && $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
         return $model;
