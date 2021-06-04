@@ -138,9 +138,22 @@ trait MediaTrait
     }
 
     /**
+     * @return array
+     */
+    public static function getExtensions(): array
+    {
+        $extensions = [];
+        foreach (self::getMediaTypes() as $mediaType) {
+            $extensions = ArrayHelper::merge($extensions, ArrayHelper::getValue(MediaInterface::EXTENSIONS, $mediaType));
+        }
+        return $extensions;
+    }
+
+    /**
+     * @todo protected
      * @return string
      */
-    public function getType(): ?string
+    protected function getType(): ?string
     {
         $field = self::getTypeFieldName();
         return $this->$field;
@@ -149,7 +162,7 @@ trait MediaTrait
     /**
      * @param string $value
      */
-    public function setType(string $value): void
+    protected function setType(string $value): void
     {
         $field = self::getTypeFieldName();
         $this->$field = $value;
@@ -159,7 +172,7 @@ trait MediaTrait
      * Get Origin file name (if field exist in model)
      * @return string
      */
-    public function getOriginName(): ?string
+    protected function getOriginName(): ?string
     {
         $field = self::getOriginNameFieldName();
         return $field ? $this->$field : null;
@@ -169,7 +182,7 @@ trait MediaTrait
      * Set Origin file name (if field exist in model)
      * @param string $value
      */
-    public function setOriginName(string $value): void
+    protected function setOriginName(string $value): void
     {
         $field = self::getOriginNameFieldName();
         if ($field) {
@@ -181,7 +194,7 @@ trait MediaTrait
      * Get file size (if field exist in model)
      * @return int
      */
-    public function getSize(): ?int
+    protected function getSize(): ?int
     {
         $field = self::getSizeFieldName();
         return $this->$field;
@@ -191,7 +204,7 @@ trait MediaTrait
      * Set file size (if field exist in model)
      * @param int $value
      */
-    public function setSize(int $value): void
+    protected function setSize(int $value): void
     {
         $field = self::getSizeFieldName();
         if ($field) {

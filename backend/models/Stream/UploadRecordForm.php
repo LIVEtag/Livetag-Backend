@@ -55,7 +55,7 @@ class UploadRecordForm extends Model implements UploadArchiveInterface
     public function attributeLabels(): array
     {
         return [
-            'videoFile' => Yii::t('app', 'File'),
+            'videoFile' => Yii::t('app', 'Upload File'),
             'directUrl' => Yii::t('app', 'Direct URL link'),
         ];
     }

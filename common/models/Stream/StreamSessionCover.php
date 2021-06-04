@@ -15,6 +15,7 @@ use common\models\queries\Stream\StreamSessionCoverQuery;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "stream_session_cover".
@@ -86,7 +87,7 @@ class StreamSessionCover extends ActiveRecord implements MediaInterface
                 'file',
                 'file',
                 'mimeTypes' => self::getMimeTypes(),
-                'maxSize' => Yii::$app->params['maxUploadImageSize'],
+                'maxSize' => Yii::$app->params['maxUploadCoverSize'],
             ],
         ];
     }
@@ -143,7 +144,7 @@ class StreamSessionCover extends ActiveRecord implements MediaInterface
     {
         return [
             MediaTypeEnum::TYPE_IMAGE,
-            //MediaTypeEnum::TYPE_VIDEO, //todo
+            MediaTypeEnum::TYPE_VIDEO,
         ];
     }
 

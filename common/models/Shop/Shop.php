@@ -12,9 +12,17 @@ use common\components\EventDispatcher;
 use common\components\FileSystem\FileResourceInterface;
 use common\components\FileSystem\FileResourceTrait;
 use common\helpers\FileHelper;
+use common\models\Analytics\StreamSessionEvent;
+use common\models\Analytics\StreamSessionStatistic;
+use common\models\Comment\Comment;
 use common\models\Product\Product;
+use common\models\queries\Analytics\StreamSessionEventQuery;
+use common\models\queries\Analytics\StreamSessionStatisticQuery;
+use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Shop\ShopQuery;
+use common\models\queries\Stream\StreamSessionLikeQuery;
 use common\models\Stream\StreamSession;
+use common\models\Stream\StreamSessionLike;
 use common\models\User;
 use Yii;
 use yii\behaviors\SluggableBehavior;
@@ -31,6 +39,9 @@ use yii\web\UploadedFile;
  * @property string $name
  * @property string $uri
  * @property string $website
+ * @property string $logo
+ * @property string $productIcon
+ * @property string $iconsTheme
  * @property integer $createdAt
  * @property integer $updatedAt
  *
@@ -59,6 +70,46 @@ class Shop extends ActiveRecord implements FileResourceInterface
      * Scenario for seller shop update
      */
     const SCENARIO_SELLER = 'seller';
+
+    const ICONS_THEME_WHITE = 'white';
+    const ICONS_THEME_LIGHT_GRAY = 'light-gray';
+    const ICONS_THEME_GRAY = 'gray';
+    const ICONS_THEME_DARK_GRAY = 'dark-gray';
+
+    const ICONS_THEMES = [
+        self::ICONS_THEME_WHITE => 'White',
+        self::ICONS_THEME_LIGHT_GRAY => 'Light Gray',
+        self::ICONS_THEME_GRAY => 'Gray',
+        self::ICONS_THEME_DARK_GRAY => 'Dark Gray',
+    ];
+
+    const PRODUCT_ICON_MAKEUP = 'makeup';
+    const PRODUCT_ICON_CLOTHES = 'clothes';
+    const PRODUCT_ICON_BAGS = 'bags';
+    const PRODUCT_ICON_SHOES = 'shoes';
+    const PRODUCT_ICON_CUTLERY = 'cutlery';
+    const PRODUCT_ICON_FOOD = 'food';
+    const PRODUCT_ICON_COMPUTERS = 'computers';
+    const PRODUCT_ICON_DEVICES = 'devices';
+    const PRODUCT_ICON_FURNITURE = 'furniture';
+    const PRODUCT_ICON_DECOR = 'decor';
+    const PRODUCT_ICON_LIGHTING = 'lighting';
+    const PRODUCT_ICON_SHOPPING = 'shopping';
+
+    const PRODUCT_ICONS = [
+        self::PRODUCT_ICON_MAKEUP => 'Makeup',
+        self::PRODUCT_ICON_CLOTHES => 'Clothes',
+        self::PRODUCT_ICON_BAGS => 'Bags',
+        self::PRODUCT_ICON_SHOES => 'Shoes',
+        self::PRODUCT_ICON_CUTLERY => 'Cutlery',
+        self::PRODUCT_ICON_FOOD => 'Food',
+        self::PRODUCT_ICON_COMPUTERS => 'Computers',
+        self::PRODUCT_ICON_DEVICES => 'Devices',
+        self::PRODUCT_ICON_FURNITURE => 'Furniture',
+        self::PRODUCT_ICON_DECOR => 'Decor',
+        self::PRODUCT_ICON_LIGHTING => 'Lighting',
+        self::PRODUCT_ICON_SHOPPING => 'Shopping',
+    ];
 
     /**
      * @var UploadedFile
@@ -102,7 +153,8 @@ class Shop extends ActiveRecord implements FileResourceInterface
     {
         return [
             self::SCENARIO_DEFAULT => ArrayHelper::getValue(parent::scenarios(), self::SCENARIO_DEFAULT),
-            self::SCENARIO_SELLER => ['file'], // Seller can change only logo for now
+            // Seller can change only logo, iconsTheme and productIcon for now
+            self::SCENARIO_SELLER => ['file', 'iconsTheme', 'productIcon'],
         ];
     }
 
@@ -131,6 +183,10 @@ class Shop extends ActiveRecord implements FileResourceInterface
         return [
             [['name', 'website'], 'required'],
             [['name', 'uri'], 'string', 'max' => 50],
+            ['iconsTheme', 'default', 'value' => self::ICONS_THEME_WHITE],
+            ['productIcon', 'default', 'value' => self::PRODUCT_ICON_SHOPPING],
+            ['iconsTheme', 'in', 'range' => array_keys(self::ICONS_THEMES)],
+            [['productIcon'], 'in', 'range' => array_keys(self::PRODUCT_ICONS)],
             [
                 'uri',
                 'filter',
@@ -141,7 +197,6 @@ class Shop extends ActiveRecord implements FileResourceInterface
             ['uri', 'unique'],
             ['website', 'string', 'max' => 255],
             ['website', 'url', 'defaultScheme' => 'https'],
-
             [
                 'file',
                 'file',
@@ -161,12 +216,15 @@ class Shop extends ActiveRecord implements FileResourceInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
+            'id' => Yii::t('app', 'Id'),
             'name' => Yii::t('app', 'Name'),
             'uri' => Yii::t('app', 'Livestream URI'),
             'website' => Yii::t('app', 'Website'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'logo' => Yii::t('app', 'Logo'),
+            'productIcon' => Yii::t('app', 'Product icon'),
+            'iconsTheme' => Yii::t('app', 'Icons color theme'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 
@@ -181,8 +239,28 @@ class Shop extends ActiveRecord implements FileResourceInterface
             'website',
             'logo' => function () {
                 return $this->getUrl();
-            }
+            },
+            'iconsTheme',
+            'productIcon',
         ];
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getIconsThemeName(): ?string
+    {
+        return ArrayHelper::getValue(self::ICONS_THEMES, $this->iconsTheme);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getProductIconName(): ?string
+    {
+        return ArrayHelper::getValue(self::PRODUCT_ICONS, $this->productIcon);
     }
 
     /**
@@ -207,6 +285,38 @@ class Shop extends ActiveRecord implements FileResourceInterface
     public function getStreamSessions(): ActiveQuery
     {
         return $this->hasMany(StreamSession::class, ['shopId' => 'id']);
+    }
+
+    /**
+     * @return StreamSessionLikeQuery
+     */
+    public function getLikes(): StreamSessionLikeQuery
+    {
+        return $this->hasMany(StreamSessionLike::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
+    }
+
+    /**
+     * @return CommentQuery
+     */
+    public function getComments(): CommentQuery
+    {
+        return $this->hasMany(Comment::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
+    }
+
+    /**
+     * @return StreamSessionStatisticQuery
+     */
+    public function getStreamSessionStatistic(): StreamSessionStatisticQuery
+    {
+        return $this->hasOne(StreamSessionStatistic::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
+    }
+
+    /**
+     * @return StreamSessionEventQuery
+     */
+    public function getStreamSessionEvents(): StreamSessionEventQuery
+    {
+        return $this->hasMany(StreamSessionEvent::class, ['streamSessionId' => 'id'])->via(self::REL_STREAM_SESSION);
     }
 
     /**

@@ -3,12 +3,15 @@
  * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
  * See LICENSE.txt for license details.
  */
+
+use backend\assets\AppAsset;
 use backend\assets\HighlightAsset;
 use backend\models\Comment\Comment;
 use backend\models\Comment\CommentSearch;
 use backend\models\Product\StreamSessionProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
+use common\models\Analytics\StreamSessionStatistic;
 use common\models\Stream\StreamSessionArchive;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
@@ -25,7 +28,7 @@ use yii\widgets\DetailView;
 /* @var $commentModel Comment */
 /* @var $isPosted bool */
 
-$this->title = 'Livestream details #' . $model->id;
+$this->title = 'Livestream details ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Livestreams'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -33,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $user = Yii::$app->user->identity ?? null;
 
 $publishOptions = [
-    'class' => 'btn btn-success',
+    'class' => 'button button--success button--upper button--lg',
 ];
 $publishUrl = ['publish', 'id' => $model->id];
 
@@ -53,7 +56,7 @@ if ($model->isPublished) {
     }
     $publishOptions = array_merge([
         'id' => 'publication-link',
-        'class' => 'btn btn-danger',
+        'class' => 'button button--dark button--upper button--lg',
         ], $publishOptionsExtra);
     $publishUrl = ['unpublish', 'id' => $model->id];
 }
@@ -78,6 +81,9 @@ $this->registerJs(
     '
 );
 
+$this->registerJsFile('/backend/web/js/comment-reply.js', [
+    'depends' => [AppAsset::class],
+]);
 $this->registerJsFile('/backend/web/js/highlight.js', [
     'depends' => [HighlightAsset::class],
 ]);
@@ -85,27 +91,55 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
 ?>
 <section class="stream-session-view">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'btn bg-black']) ?>
-                    <?php if ($user && $user->isSeller) : ?>
-                        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                        <?= Html::a(
-                            Yii::t('app', $model->isPublished ? 'Unpublish' : 'Publish'),
-                            $publishUrl,
-                            $publishOptions
-                        ); ?>
-                        <?php if ($model->isActive()) : ?>
-                            <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
-                                'class' => 'btn btn-danger',
+                    <?= Html::a(Yii::t('app', 'Back'), ['index'], ['class' => 'button button--dark button--ghost button--upper button--lg']) ?>
+
+                    <div class="buttons-group">
+                        <?php if ($user && $user->isSeller) : ?>
+                            <?= Html::a(Yii::t('app', 'Edit'), ['update', 'id' => $model->id], ['class' => 'button button--dark button--upper button--lg']) ?>
+                            <?= Html::a(
+                                Yii::t('app', $model->isPublished ? 'Unpublish' : 'Publish'),
+                                $publishUrl,
+                                $publishOptions
+                            ); ?>
+                            <?php if ($model->isActive()) : ?>
+                                <?= Html::a(Yii::t('app', 'End livestream'), ['stop', 'id' => $model->id], [
+                                    'class' => 'button button--danger button--ghost button--upper button--lg',
+                                    'data' => [
+                                        'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
+                                        'method' => 'post',
+                                    ],
+                                ]); ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if ($model->isStopped() || $model->isArchived()) : ?>
+                            <?= Html::a(Yii::t('app', '+ Upload record'), ['upload-record', 'id' => $model->id], ['class' => 'button button--dark button--ghost button--upper']) ?>
+                        <?php endif; ?>
+                        <?php if ($model->archive) : ?>
+                            <?= Html::a(Yii::t('app', 'Delete record'), ['delete-record', 'id' => $model->id], [
+                                'class' => 'button button--danger button--upper button--ghost',
                                 'data' => [
-                                    'confirm' => Yii::t('app', 'Are you sure you want to end the livestream?'),
+                                    'confirm' => Yii::t('app', 'Are you sure to delete this item?'),
                                     'method' => 'post',
                                 ],
                             ]); ?>
                         <?php endif; ?>
-                    <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header section-box-header">
+                    <h4 class="box-title">Livestream details</h4>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -115,11 +149,21 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'id',
                             'name',
                             [
-                                'label' => 'Photo (cover image)',
+                                'label' => 'Cover (can be image of video)',
                                 'visible' => $user && $user->isAdmin,
-                                'format' => ['image', ['width' => '200']],
+                                'format' => 'raw',
                                 'value' => function (StreamSession $model) {
-                                    return $model->getCoverUrl();
+                                    $url = $model->getCoverUrl();
+                                    if (!$url) {
+                                        return null;
+                                    }
+                                    if ($model->streamSessionCover->isVideo()) {
+                                        return "<video width=\"200\" controls>
+                                                <source src=\"{$url}\" type=\"video/mp4\">
+                                                <p>Your browser doesn't support video. Here is a <a href=\"{$url}\">link to the video</a> instead.</p>
+                                            </video>";
+                                    }
+                                    return Html::img($url, ['class' => 'shop-logo__image']);
                                 }
                             ],
                             [
@@ -127,28 +171,34 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'visible' => $user && $user->isSeller,
                                 'format' => 'raw',
                                 'value' => function (StreamSession $model) {
-                                    $imageUrl = $model->getCoverUrl();
-                                    if (!$imageUrl) {
+                                    $url = $model->getCoverUrl();
+                                    if (!$url) {
                                         return null;
                                     }
+                                    $coverHtml = "<img src=\"{$url}\" class=\"shop-logo__image\">";
+                                    if ($model->streamSessionCover->isVideo()) {
+                                        $coverHtml = "<video width=\"200\" controls>
+                                                          <source src=\"{$url}\" type=\"video/mp4\">
+                                                          <p>Your browser doesn't support video. Here is a <a href=\"{$url}\">link to the video</a> instead.</p>
+                                                      </video>";
+                                    }
+                                    $action = Url::to(['/stream-session/delete-cover-file', 'id' => $model->id]);
 
-                                    $action = Url::to(['/stream-session/delete-cover-image', 'id' => $model->id]);
-                                    return "<div class=\"shop-logo\">
-                                                <div class=\"shop-logo__trash\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default\"
+                                    return "<div class=\"shop-logo text-center\">
+                                                    <a type=\"button\" class=\"action-button button button--dark button--icon stream-cover-trash\"
                                                         href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
                                                         data-confirm=\"Are you sure to delete this item?\">
-                                                        <i class=\"glyphicon glyphicon-trash\"></i>
+                                                        <span class=\"icon icon-trash-light\"></span>
                                                     </a>
-                                                </div>
-                                                <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
+                                                {$coverHtml}
                                             </div>";
                                 }
                             ],
                             [
                                 'attribute' => 'status',
+                                'format' => 'html',
                                 'value' => function (StreamSession $model) {
-                                    return $model->getStatusName();
+                                    return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                 },
                             ],
                             'rotate',
@@ -161,7 +211,6 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 },
                                 'visible' => $user && $user->isAdmin,
                             ],
-                            'sessionId',
                             'announcedAt:datetime',
                             [
                                 'label' => 'Maximum Duration',
@@ -173,28 +222,31 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'startedAt:datetime',
                             'stoppedAt:datetime',
                             [
-                                'label' => 'Number of views',
-                                'attribute' => 'streamSessionStatistic.viewsCount',
-                            ],
-                            [
-                                'label' => '“Add to cart” clicks',
-                                'attribute' => 'streamSessionStatistic.addToCartCount',
-                            ],
-                            [
-                                'label' => '“Add to cart” rate',
-                                'value' => function (StreamSession $model) {
-                                    return $model->getAddToCartRate();
-                                }
-                            ],
-                            [
-                                'label' => 'Duration',
+                                'label' => 'Actual duration',
                                 'value' => function (StreamSession $model) {
                                     return $model->getActualDuration();
                                 }
                             ],
                             [
-                                'label' => 'Integration Snippet',
-                                'format' => 'raw',
+                                'attribute' => 'internalCart',
+                                'value' => function (StreamSession $model) {
+                                    return $model->getInternalCartText();
+                                }
+                            ],
+                            [
+                                'attribute' => 'sessionId',
+                                'label' => '<span class="bordered-title">Session ID</span>',
+                                'format' => 'html',
+                                'value' => function (StreamSession $model) {
+                                    if ($model->sessionId) {
+                                        return '<pre><code class="language-html">' . $model->sessionId . '</code></pre>';
+                                    }
+                                    return null;
+                                }
+                            ],
+                            [
+                                'label' => '<span class="bordered-title">Integration Snippet</span>',
+                                'format' => 'html',
                                 'value' => function () use ($snippet) {
                                     return '<pre><code class="language-html">' . $snippet . '</code></pre>';
                                 }
@@ -209,22 +261,13 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
             <!-- /.box -->
         </div>
         <!-- /.col -->
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="box box-default">
-                <div class="box-header">
-                    <?php if ($model->isStopped() || $model->isArchived()) : ?>
-                        <?= Html::a(Yii::t('app', 'Upload record'), ['upload-record', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?php endif; ?>
-                    <?php if ($model->archive) : ?>
-                        <?= Html::a(Yii::t('app', 'Delete record'), ['delete-record', 'id' => $model->id], [
-                            'class' => 'btn btn-danger',
-                            'data' => [
-                                'confirm' => Yii::t('app', 'Are you sure to delete this item?'),
-                                'method' => 'post',
-                            ],
-                        ]); ?>
-                    <?php endif; ?>
-                    <h4 class="box-title pull-right">Recorded video </h4>
+                <div class="box-header section-box-header">
+                    <h4 class="box-title">Recorded video</h4>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -235,8 +278,9 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'id',
                                 [
                                     'attribute' => 'status',
+                                    'format' => 'html',
                                     'value' => function (StreamSessionArchive $model) {
-                                        return $model->getStatusName();
+                                        return Html::tag("span", $model->getStatusName(), ['class' => 'status-label status-label--' . $model->getStatusClass()]);
                                     },
                                 ],
                                 [
@@ -248,8 +292,8 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                 'createdAt:datetime',
                                 'updatedAt:datetime',
                                 [
-                                    'label' => 'Recorded video link',
-                                    'format' => 'raw',
+                                    'label' => '<span class="bordered-title">Recorded video link</span>',
+                                    'format' => 'html',
                                     'value' => function ($model) {
                                         $url = $model->getUrl();
                                         if (!$url) {
@@ -259,8 +303,8 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                                     }
                                 ],
                                 [
-                                    'label' => 'Playlist link',
-                                    'format' => 'raw',
+                                    'label' => '<span class="bordered-title">Playlist link</span>',
+                                    'format' => 'html',
                                     'value' => function ($model) {
                                         $url = $model->getPlaylistUrl();
                                         if (!$url) {
@@ -285,6 +329,82 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
     </div>
     <!-- /.row -->
 
+    <?php if ($model->streamSessionStatistic) : ?>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-default">
+                    <div class="box-header section-box-header">
+                        <h4 class="box-title">Livestream statistic</h4>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <!--/.box-header -->
+                    <div class="box-body">
+                        <?=
+                        DetailView::widget([
+                            'model' => $model->streamSessionStatistic,
+                            'attributes' => [
+                                'streamViewCount',
+                                'streamAddToCartCount',
+                                'streamAddToCartRate',
+                                [
+                                    'label' => 'Likes of the livestream',
+                                    'value' => function (StreamSessionStatistic $model) {
+                                        return $model->streamSession->getActiveLikes();
+                                    },
+                                ],
+                            ],
+                        ]);
+                        ?>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer"></div>
+                    <!--/.box-footer -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+
+            <?php if ($model->archive) : ?>
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header section-box-header">
+                            <h4 class="box-title">Recorded video statistic</h4>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <!--/.box-header -->
+                        <div class="box-body">
+                            <?=
+                            DetailView::widget([
+                                'model' => $model->streamSessionStatistic,
+                                'attributes' => [
+                                    'archiveViewCount',
+                                    'archiveAddToCartCount',
+                                    'archiveAddToCartRate',
+                                    [
+                                        'label' => 'Likes of the archive',
+                                        'value' => function (StreamSessionStatistic $model) {
+                                            return $model->streamSession->getArchivedLikes();
+                                        },
+                                    ],
+                                ],
+                            ]);
+                            ?>
+                        </div>
+                        <!-- /.box-body -->
+                        <div class="box-footer"></div>
+                        <!--/.box-footer -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
     <div class="row">
         <div class="col-md-12">
             <!-- Custom Tabs -->
@@ -292,13 +412,13 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#comments" data-toggle="tab" aria-expanded="true">Chat</a></li>
                     <li><a href="#products" data-toggle="tab" aria-expanded="false">Products</a></li>
-                    <li class="pull-right comments-content">
-                        <div>
-                            <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'btn btn-xs bg-black', 'id' => "reset-button"]); ?>
+                    <li class="pull-right comments-content buttons-content">
+                        <div class="buttons-group">
+                            <?= $this->render('comment-enable-form', ['streamSession' => $model, 'time' => date('H:i:s'),]); ?>
+                            <div>
+                                <?= Html::a(Yii::t('app', 'Refresh'), 'javascript:void(0);', ['class' => 'button button--dark button--upper', 'id' => "reset-button"]); ?>
+                            </div>
                         </div>
-                    </li>
-                    <li class="pull-right comments-content">
-                        <?= $this->render('comment-enable-form', ['streamSession' => $model, 'time' => date('H:i:s'),]); ?>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -306,10 +426,20 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                         <?= $this->render('comment-index', [
                             'commentSearchModel' => $commentSearchModel,
                             'commentDataProvider' => $commentDataProvider,
-                            'streamSessionId' => $model->id,
                             'commentModel' => $commentModel,
+                            'streamSession' => $model,
                         ]); ?>
                         <?php if ($model->isActive()) : ?>
+                        <div class="parent-comment-reply">
+                            <span>Reply to:</span>
+                            <button type="button" class="icon icon-close-light parent-comment-reply__close" aria-label="Close"></button>
+                            <div>
+                                <strong class="parent-comment parent-comment-name"></strong>,
+                                <strong class="parent-comment parent-comment-id"></strong>
+                            </div>
+                            <strong class="parent-comment parent-comment-date-time"></strong>
+                            <div class="parent-comment parent-comment-text"></div>
+                        </div>
                             <!--Display comment form only for active session-->
                             <?= $this->render('comment-form', [
                                 'commentModel' => $commentModel,

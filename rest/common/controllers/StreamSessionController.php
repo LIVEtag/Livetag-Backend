@@ -7,16 +7,19 @@
 namespace rest\common\controllers;
 
 use common\models\Stream\StreamSession;
-use rest\common\controllers\actions\Stream\Archive\StartAction as ArchiveStartAction;
-use rest\common\controllers\actions\Stream\Archive\StopAction as ArchiveStopAction;
 use rest\common\controllers\actions\Stream\Archive\ProductsAction as ArchiveProductsAction;
 use rest\common\controllers\actions\Stream\Archive\SnapshotsAction;
+use rest\common\controllers\actions\Stream\Archive\StartAction as ArchiveStartAction;
+use rest\common\controllers\actions\Stream\Archive\StopAction as ArchiveStopAction;
 use rest\common\controllers\actions\Stream\CommentCreateAction;
 use rest\common\controllers\actions\Stream\CommentIndexAction;
 use rest\common\controllers\actions\Stream\CreateAction;
 use rest\common\controllers\actions\Stream\CurrentAction;
 use rest\common\controllers\actions\Stream\EventAction;
 use rest\common\controllers\actions\Stream\IndexAction;
+use rest\common\controllers\actions\Stream\ProductEventAction;
+use rest\common\controllers\actions\Stream\LikeCreateAction;
+use rest\common\controllers\actions\Stream\LikesAction;
 use rest\common\controllers\actions\Stream\ProductsAction;
 use rest\common\controllers\actions\Stream\StartAction;
 use rest\common\controllers\actions\Stream\StopAction;
@@ -95,9 +98,24 @@ class StreamSessionController extends ActiveController
     const ACTION_COMMENT_CREATE = 'comment-create';
 
     /**
-     * Add to cart click event
+     * Get likes of selected session
+     */
+    const ACTION_LIKES = 'likes';
+
+    /**
+     * Create like to session
+     */
+    const ACTION_LIKE_CREATE = 'like-create';
+
+    /**
+     *  Register session event (view)
      */
     const ACTION_EVENT = 'event';
+
+    /**
+     * Register product event (Add to cart click)
+     */
+    const ACTION_PRODUCT_EVENT = 'product-event';
 
     /**
      * Start archiving
@@ -142,6 +160,8 @@ class StreamSessionController extends ActiveController
                                 self::ACTION_ARCHIVE_PRODUCTS,
                                 self::ACTION_COMMENT_INDEX,
                                 self::ACTION_COMMENT_CREATE,
+                                self::ACTION_LIKE_CREATE,
+                                self::ACTION_LIKES,
                             ],
                             'roles' => [User::ROLE_SELLER, User::ROLE_BUYER]
                         ],
@@ -149,6 +169,7 @@ class StreamSessionController extends ActiveController
                             'allow' => true,
                             'actions' => [
                                 self::ACTION_EVENT,
+                                self::ACTION_PRODUCT_EVENT,
                             ],
                             'roles' => [User::ROLE_BUYER]
                         ],
@@ -222,8 +243,26 @@ class StreamSessionController extends ActiveController
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],
                 ],
+                self::ACTION_LIKE_CREATE => [
+                    'class' => LikeCreateAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_LIKES => [
+                    'class' => LikesAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
                 self::ACTION_EVENT => [
                     'class' => EventAction::class,
+                    'modelClass' => $this->modelClass,
+                    'checkAccess' => [$this, 'checkAccess'],
+                    'findModel' => [$this, 'findModel'],
+                ],
+                self::ACTION_PRODUCT_EVENT => [
+                    'class' => ProductEventAction::class,
                     'modelClass' => $this->modelClass,
                     'checkAccess' => [$this, 'checkAccess'],
                     'findModel' => [$this, 'findModel'],

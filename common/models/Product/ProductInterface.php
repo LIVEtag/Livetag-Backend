@@ -37,6 +37,11 @@ interface ProductInterface
     /**
      * @return string|null
      */
+    public function getDescription(): ?string;
+
+    /**
+     * @return string|null
+     */
     public function getPhoto(): ?string;
 
     /**

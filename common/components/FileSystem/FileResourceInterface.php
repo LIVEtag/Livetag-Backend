@@ -33,6 +33,12 @@ interface FileResourceInterface
     public function setFile(UploadedFile $value);
 
     /**
+     * Load file from url and populate file property
+     * @param string $url
+     */
+    public function setFileFromUrl(string $url);
+
+    /**
      * Get relative path for file store
      * @return string
      */

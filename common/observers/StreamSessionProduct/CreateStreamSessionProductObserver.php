@@ -27,7 +27,7 @@ class CreateStreamSessionProductObserver
             throw new RuntimeException('Not StreamSessionProduct instance');
         }
         //Notify about create
-        $streamSessionProduct->notify(Message::ACTION_PRODUCT_CREATE);
+        $streamSessionProduct->notify(Message::ACTION_STREAM_SESSION_PRODUCT_CREATE);
         $streamSession = $streamSessionProduct->streamSession;
         if ($streamSession && $streamSession->isActive()) {
             $streamSessionProduct->saveEventToDatabase(StreamSessionProductEvent::TYPE_PRODUCT_CREATE);

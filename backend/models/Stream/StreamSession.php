@@ -15,6 +15,15 @@ use yii\helpers\ArrayHelper;
  */
 class StreamSession extends BaseModel
 {
+    /**
+     * Status Class Names
+     */
+    const STATUSES_CLASS_MAP = [
+        self::STATUS_NEW => 'new',
+        self::STATUS_ACTIVE => 'active',
+        self::STATUS_STOPPED => 'stopped',
+        self::STATUS_ARCHIVED => 'archived',
+    ];
 
     /**
      * Display stream duration
@@ -28,18 +37,6 @@ class StreamSession extends BaseModel
         $endTimestamp = $this->getStoppedAt() ?: time();
         $duration = $endTimestamp - $this->getStartedAt();
         return gmdate("H:i:s", $duration);
-    }
-
-    /**
-     * Displate Add to cart rate
-     * @return float|null
-     */
-    public function getAddToCartRate()
-    {
-        if (!$this->streamSessionStatistic || !$this->streamSessionStatistic->viewsCount) {
-            return null;
-        }
-        return round($this->streamSessionStatistic->addToCartCount / $this->streamSessionStatistic->viewsCount, 4);
     }
 
     /**
@@ -65,5 +62,13 @@ class StreamSession extends BaseModel
     public function getMaximumDuration(): ?string
     {
         return ArrayHelper::getValue(self::DURATIONS, $this->duration);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusClass(): string
+    {
+        return ArrayHelper::getValue(self::STATUSES_CLASS_MAP, $this->status, 'default');
     }
 }

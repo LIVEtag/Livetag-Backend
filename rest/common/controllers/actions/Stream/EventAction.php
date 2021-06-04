@@ -9,11 +9,8 @@ namespace rest\common\controllers\actions\Stream;
 
 use common\models\Stream\StreamSession;
 use rest\common\models\Analytics\EventForm;
-use rest\common\models\Product\Product;
 use Yii;
 use yii\rest\Action;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 
 class EventAction extends Action
 {
@@ -22,7 +19,7 @@ class EventAction extends Action
      * @param int $id
      * @param int $productId
      */
-    public function run(int $id, int $productId)
+    public function run(int $id)
     {
         /** @var StreamSession $streamSession */
         $streamSession = $this->findModel($id);
@@ -31,21 +28,12 @@ class EventAction extends Action
             call_user_func($this->checkAccess, $this->id, $streamSession);
             // phpcs:enable
         }
-        $product = Product::findOne($productId);
-        if (!$product) {
-            throw NotFoundHttpException("Product not found: $productId");
-        }
 
-        //check that session and product belongs to one shop
-        if ($product->shopId !== $streamSession->shopId) {
-            throw new ForbiddenHttpException('You cannot perform this action');
-        }
-
-        $form = new EventForm($streamSession, $product, Yii::$app->user->identity);
+        $form = new EventForm($streamSession, Yii::$app->user->identity);
         $form->setAttributes(Yii::$app->request->getBodyParams());
-        $comment = $form->create();
-        if ($comment->hasErrors()) {
-            return $comment;
+        $event = $form->create();
+        if ($event->hasErrors()) {
+            return $event;
         }
         Yii::$app->response->setStatusCode(204);
     }

@@ -33,6 +33,9 @@ class DeleteShopObserver
         foreach ($shop->streamSessions as $streamSession) {
             $streamSession->delete();
         }
-        //todo: remove shop products
+        //remove shop products
+        foreach ($shop->products as $product) {
+            $product->hardDelete();
+        }
     }
 }

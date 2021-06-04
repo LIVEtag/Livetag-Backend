@@ -7,14 +7,16 @@ declare(strict_types=1);
 
 namespace common\components\FileSystem;
 
+use common\components\FileSystem\format\FileFormatInterface;
 use common\helpers\FileHelper;
 use common\helpers\LogHelper;
 use Throwable;
+use yii\base\InvalidConfigException;
+use yii\base\Model;
 use yii\web\UploadedFile;
 
 /**
  * Trait FileResourceTrait, implements FileResourceInterface.
- * phpcs:disable PHPCS_SecurityAudit.BadFunctions
  * @see FileResourceInterface
  */
 trait FileResourceTrait
@@ -43,6 +45,9 @@ trait FileResourceTrait
      */
     public function beforeSaveFile(): bool
     {
+        if (!$this instanceof Model) {
+            throw new InvalidConfigException('Entity should extend yii\base\Model');
+        }
         $file = $this->getFile();
         if (!$file || !$file instanceof UploadedFile) {
             $this->addError(self::getFileFieldName(), 'Please specify a valid file to save.');
@@ -71,6 +76,13 @@ trait FileResourceTrait
         try {
             $path = FileHelper::uploadFileToPath($file->tempName, $this->getRelativePath());
             $this->setPath($path); //set successfully saved path to model
+            //create formatted versions if entity implements FileFormatInterface
+            if ($this instanceof FileFormatInterface) {
+                if (!$this->createFormat($path, $file)) {
+                    $this->addError(self::getFileFieldName(), $this->getFirstError(self::getFormattedFieldName()));
+                    return false;
+                }
+            }
             return true;
         } catch (Throwable $ex) {
             $this->addError(self::getFileFieldName(), 'Failed to upload file:' . $ex->getMessage());
@@ -104,6 +116,10 @@ trait FileResourceTrait
             $this->addError(self::getPathFieldName(), 'Failed to remove file');
             return false;
         }
+        //remove formatted versions if entity implements FileFormatInterface
+        if ($this instanceof FileFormatInterface) {
+            $this->removeFormattedItems();
+        }
         return true;
     }
 
@@ -123,6 +139,36 @@ trait FileResourceTrait
     {
         $field = self::getFileFieldName();
         $this->$field = $value;
+    }
+
+    /**
+     * Load file from url and populate file property
+     * @param string $url
+     */
+    public function setFileFromUrl(string $url)
+    {
+        $fileName = basename($url);
+        $tempFile = tmpfile();
+
+        $metaData = stream_get_meta_data($tempFile);
+        if (!isset($metaData['uri'])) {
+            throw new Exception('Incorrect File');
+        }
+
+        $fp = fopen($metaData['uri'], 'w+b');
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_exec($ch);
+        curl_close($ch);
+
+        $file = new UploadedFile([
+            'name' => $fileName,
+            'tempName' => $metaData['uri'],
+            'size' => filesize($metaData['uri']),
+            'type' => mime_content_type($metaData['uri']),
+            'tempResource' => $tempFile,
+        ]);
+        $this->setFile($file);
     }
 
     /**

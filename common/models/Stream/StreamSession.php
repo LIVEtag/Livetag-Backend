@@ -26,6 +26,7 @@ use common\models\queries\Analytics\StreamSessionStatisticQuery;
 use common\models\queries\Comment\CommentQuery;
 use common\models\queries\Product\ProductQuery;
 use common\models\queries\Product\StreamSessionProductQuery;
+use common\models\queries\Stream\StreamSessionLikeQuery;
 use common\models\queries\Stream\StreamSessionQuery;
 use common\models\Shop\Shop;
 use common\models\User;
@@ -34,6 +35,7 @@ use Throwable;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -44,8 +46,10 @@ use yii\web\UnprocessableEntityHttpException;
  *
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @todo: The class StreamSession has an overall complexity of 69 which is very high. The configured complexity threshold is 65.
  * @todo: The class StreamSession has 21 public methods. Consider refactoring StreamSession to keep number of public methods under 20.
+ * @todo: The class StreamSession has many lines of code. Current threshold is 1000. Avoid really long classes.
  * @todo: Rename sessionId -> externalId
  *
  * @property integer $id
@@ -61,6 +65,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $stoppedAt
  * @property boolean $isPublished
  * @property string $rotate
+ * @property boolean $internalCart
  *
  * @property-read Comment[] $comments
  * @property-read Shop $shop
@@ -76,8 +81,8 @@ use yii\web\UnprocessableEntityHttpException;
  * EVENTS:
  * - EVENT_AFTER_COMMIT_INSERT
  * - EVENT_AFTER_COMMIT_UPDATE
+ * - EVENT_BEFORE_DELETE
  * - EVENT_END_SOON
- * - EVENT_SUBSCRIBER_TOKEN_CREATED
  * @see EventDispatcher
  */
 class StreamSession extends BaseActiveRecord implements StreamSessionInterface
@@ -112,6 +117,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     /** @see getStreamSessionStatistic() */
     const REL_STREAM_SESSION_STATISTIC = 'streamSessionStatistic';
 
+    /** @see getStreamSessionLikes() */
+    const REL_STREAM_SESSION_LIKE = 'streamSessionLikes';
+
     /**
      * When my livestream has a duration of 2 h 50m. Then I want to get a LivestreamEnd10Min notification
      */
@@ -122,10 +130,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
      */
     const MAX_ANNOUNCED_AT_DAYS = 366;
 
-    /**
-     * Created vonage token for subscriber
-     */
-    const EVENT_SUBSCRIBER_TOKEN_CREATED = 'subscriberTokenCreated';
     const DURATION_30 = 1800;
     const DURATION_60 = 3600;
     const DURATION_90 = 5400;
@@ -200,6 +204,21 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
         self::ROTATE_90 => '90 degrees',
         self::ROTATE_180 => '180 degrees',
         self::ROTATE_270 => '270 degrees',
+    ];
+
+    /**
+     * Redirect to the page with the product on your website.
+     */
+    const INTERNAL_CART_FALSE = 0;
+
+    /**
+     * Product details and the cart in the livestream
+     */
+    const INTERNAL_CART_TRUE = 1;
+
+    const INTERNAL_CART_OPTIONS = [
+        self::INTERNAL_CART_FALSE => 'Redirect to the page with the product on your website.',
+        self::INTERNAL_CART_TRUE => 'Product details and the cart in the livestream.',
     ];
 
     /**
@@ -281,7 +300,8 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             ['name', 'string', 'max' => self::MAX_NAME_LENGTH],
             ['shopId', 'exist', 'skipOnError' => true, 'targetRelation' => 'shop'],
             [['commentsEnabled', 'isPublished'], 'default', 'value' => true],
-            [['commentsEnabled', 'isPublished'], 'boolean'],
+            [['commentsEnabled', 'isPublished', 'internalCart'], 'boolean'],
+            [['internalCart'], 'default', 'value' => false],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['status', 'in', 'range' => array_keys(self::STATUSES)],
             ['duration', 'default', 'value' => self::DEFAULT_DURATION],
@@ -426,19 +446,20 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
+            'id' => Yii::t('app', 'Id'),
             'name' => Yii::t('app', 'Name'),
-            'shopId' => Yii::t('app', 'Shop ID'),
+            'shopId' => Yii::t('app', 'Shop Id'),
             'status' => Yii::t('app', 'Status'),
             'commentsEnabled' => Yii::t('app', 'Comments Enabled'),
-            'sessionId' => Yii::t('app', 'Session ID'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'announcedAt' => Yii::t('app', 'Start At'),
+            'sessionId' => Yii::t('app', 'Session Id'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'announcedAt' => Yii::t('app', 'Start at'),
             'duration' => Yii::t('app', 'Duration'),
-            'startedAt' => Yii::t('app', 'Started At'),
-            'stoppedAt' => Yii::t('app', 'Stopped At'),
+            'startedAt' => Yii::t('app', 'Started at'),
+            'stoppedAt' => Yii::t('app', 'Stopped at'),
             'isPublished' => Yii::t('app', 'Is Published'),
             'rotate' => Yii::t('app', 'Rotate'),
+            'internalCart' => Yii::t('app', 'Product details view'),
         ];
     }
 
@@ -480,6 +501,9 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             },
             'rotate' => function () {
                 return $this->getRotate();
+            },
+            'internalCart' => function () {
+                return $this->getInternalCart();
             }
         ];
     }
@@ -549,6 +573,22 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     public function getStreamSessionProducts(): StreamSessionProductQuery
     {
         return $this->hasMany(StreamSessionProduct::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
+     * @return StreamSessionLikeQuery
+     */
+    public function getStreamSessionLikes(): StreamSessionLikeQuery
+    {
+        return $this->hasMany(StreamSessionLike::class, ['streamSessionId' => 'id']);
+    }
+
+    /**
+     * @return StreamSessionEventQuery
+     */
+    public function getStreamSessionEvents(): StreamSessionEventQuery
+    {
+        return $this->hasMany(StreamSessionEvent::class, ['streamSessionId' => 'id']);
     }
 
     /**
@@ -626,6 +666,23 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
     public function getCommentsEnabled(): bool
     {
         return (bool) $this->commentsEnabled;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInternalCart(): bool
+    {
+        return (bool)$this->internalCart;
+    }
+
+    /**
+     * @return string|null
+     * @throws \Exception
+     */
+    public function getInternalCartText(): ?string
+    {
+        return ArrayHelper::getValue(self::INTERNAL_CART_OPTIONS, $this->internalCart);
     }
 
     /**
@@ -774,7 +831,6 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             return $this->getPublisherToken();
         }
         $subscriberToken = $this->createSubscriberToken();
-        $this->trigger(StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, new StreamSessionSubscriberTokenCreatedEvent($user));
         return $subscriberToken;
     }
 
@@ -831,6 +887,42 @@ class StreamSession extends BaseActiveRecord implements StreamSessionInterface
             'token' => $token,
             'expiredAt' => $this->getExpiredAt(),
         ]);
+    }
+
+    /**
+     * Get number of unique likes for active period of current stream session
+     *
+     * @return int
+     */
+    public function getActiveLikes(): int
+    {
+        if (!$this->startedAt) {
+            return 0;
+        }
+
+        $query = $this->getStreamSessionLikes();
+        if ($this->stoppedAt) {
+            $query->beforeTimestamp($this->stoppedAt);
+        }
+
+        return (int)$query->select('userId')->distinct()->count();
+    }
+
+    /**
+     * Get number of unique likes for current archived stream session
+     *
+     * @return int
+     */
+    public function getArchivedLikes(): int
+    {
+        $query = $this->getStreamSessionLikes();
+        if ($this->stoppedAt) {
+            $query->afterTimestamp($this->stoppedAt);
+        } elseif ($this->startedAt) {
+            return 0;
+        }
+
+        return (int)$query->select('userId')->distinct()->count();
     }
 
     /**

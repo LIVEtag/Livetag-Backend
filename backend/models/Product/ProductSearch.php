@@ -19,7 +19,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'shopId', 'status'], 'integer'],
-            [['externalId', 'title', 'link'], 'safe'],
+            [['externalId', 'title', 'description', 'link'], 'safe'],
         ];
     }
 
@@ -59,7 +59,8 @@ class ProductSearch extends Product
 
         $query->andFilterWhere(['like', self::tableName() . '.externalId', $this->externalId])
             ->andFilterWhere(['like', self::tableName() . '.title', $this->title])
-            ->andFilterWhere(['like', self::tableName() . '.link', $this->link]);
+            ->andFilterWhere(['like', self::tableName() . '.link', $this->link])
+            ->andFilterWhere(['like', self::tableName() . '.description', $this->description]);
         return $dataProvider;
     }
 }

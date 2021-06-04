@@ -28,7 +28,7 @@ GridView::widget([
     'dataProvider' => $productDataProvider,
     'filterModel' => $productSearchModel,
     'filterUrl' => ['/stream-session/view', 'id' => $streamSessionId],
-    'options' => ['id' => 'session-product-list'],
+    'options' => ['id' => 'session-product-list', 'class' => 'gridview-wrapper'],
     'pjax' => true,
     'hover' => true, //the grid table will highlight row on hover
     'resizableColumns' => false,
@@ -54,6 +54,7 @@ GridView::widget([
             'attribute' => 'link',
             'value' => 'product.link',
             'headerOptions' => ['width' => '120'],
+            'contentOptions' => ['class' => 'link-cell'],
             'format' => ['url', ['target' => '_blank']]
         ],
         [
@@ -69,7 +70,7 @@ GridView::widget([
         [
             'attribute' => 'status',
             'class' => EditableColumn::class,
-            'filter' => StreamSessionProduct::STATUSES,
+            'filter' => Html::tag('div', Html::activeDropDownList($productSearchModel, 'status', StreamSessionProduct::STATUSES, ['class' => 'form-control', 'prompt' => '']), ['class' => 'select-wrapper no-label']),
             'value' => function (StreamSessionProduct $model) {
                 return $model->getStatusName();
             },
@@ -110,7 +111,7 @@ GridView::widget([
             'template' => '{delete-product}',
             'buttons' => [
                 'delete-product' => function ($url) {
-                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                    return Html::a('<span class="icon icon-trash"></span>', $url, [
                             'data-pjax' => true,
                             'title' => 'Delete',
                             'data-confirm' => 'Are you sure you want to delete this item?',

@@ -28,10 +28,13 @@ use yii\helpers\Json;
  * @property integer $userId
  * @property integer $streamSessionId
  * @property string $message
+ * @property integer $parentCommentId
+ * @property integer $status
  * @property integer $createdAt
  * @property integer $updatedAt
  *
  * @property-read StreamSession $streamSession
+ * @property-read Comment $parentComment
  * @property-read User $user
  *
  * EVENTS:
@@ -53,9 +56,32 @@ class Comment extends ActiveRecord implements CommentInterface
     const REL_USER = 'user';
 
     /**
+     * Comment (parent) relation key
+     */
+    const REL_PARENT_COMMENT = 'parentComment';
+
+    /**
      * StreamSession relation key
      */
     const REL_STREAM_SESSION = 'streamSession';
+
+    /**
+     * Removed comment
+     */
+    const STATUS_DELETED = 0;
+
+    /**
+     * Default active status
+     */
+    const STATUS_ACTIVE = 10;
+
+    /**
+     * Status Names
+     */
+    const STATUSES = [
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_DELETED => 'Deleted',
+    ];
 
     /**
      * @inheritdoc
@@ -91,7 +117,7 @@ class Comment extends ActiveRecord implements CommentInterface
     {
         return [
             [['userId', 'streamSessionId', 'message'], 'required'],
-            [['userId', 'streamSessionId'], 'integer'],
+            [['userId', 'streamSessionId', 'status', 'parentCommentId'], 'integer'],
             ['message', 'string'],
             [
                 'streamSessionId',
@@ -103,7 +129,10 @@ class Comment extends ActiveRecord implements CommentInterface
                     return $query->active()->commentsEnabled();
                 }
             ],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['status', 'in', 'range' => array_keys(self::STATUSES)],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetRelation' => 'user'],
+            [['parentCommentId'], 'exist', 'skipOnError' => true, 'targetClass' => Comment::class, 'targetAttribute' => ['parentCommentId' => 'id']],
         ];
     }
 
@@ -113,12 +142,14 @@ class Comment extends ActiveRecord implements CommentInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'userId' => Yii::t('app', 'User ID'),
-            'streamSessionId' => Yii::t('app', 'Stream Session ID'),
+            'id' => Yii::t('app', 'Id'),
+            'userId' => Yii::t('app', 'User Id'),
+            'streamSessionId' => Yii::t('app', 'Stream session Id'),
             'message' => Yii::t('app', 'Message'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'parentCommentId' => Yii::t('app', 'Parent comment Id'),
+            'status' => Yii::t('app', 'Status'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 
@@ -131,6 +162,7 @@ class Comment extends ActiveRecord implements CommentInterface
             'id',
             'userId',
             'message',
+            'parentCommentId',
             'createdAt'
         ];
     }
@@ -142,6 +174,9 @@ class Comment extends ActiveRecord implements CommentInterface
     {
         return [
             self::REL_USER,
+            self::REL_PARENT_COMMENT => function () {
+                return $this->getParentComment()->active()->one();
+            },
         ];
     }
 
@@ -159,6 +194,24 @@ class Comment extends ActiveRecord implements CommentInterface
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'userId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getParentComment(): ActiveQuery
+    {
+        return $this->hasOne(Comment::class, ['id' => 'parentCommentId'])
+            ->alias('parentComment');
+    }
+
+    /**
+     * Fake delete
+     */
+    public function delete()
+    {
+        $this->status = self::STATUS_DELETED;
+        return $this->save(true, ['status']);
     }
 
     /**
@@ -188,6 +241,14 @@ class Comment extends ActiveRecord implements CommentInterface
     /**
      * @inheritdoc
      */
+    public function getParentCommentId(): ?int
+    {
+        return $this->parentCommentId ? (int)$this->parentCommentId : null;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getMessage(): ?string
     {
         return $this->message;
@@ -210,13 +271,45 @@ class Comment extends ActiveRecord implements CommentInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getStatus(): int
+    {
+        return (int)$this->status;
+    }
+
+    /**
+     * Check current comment is active
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->getStatus() === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Check current comment is deleted
+     * @return bool
+     */
+    public function isDeleted(): bool
+    {
+        return $this->getStatus() === self::STATUS_DELETED;
+    }
+
+    /**
      * Send notification about comments to centrifugo
      * @param string $actionType
      */
     public function notify(string $actionType)
     {
         $channel = new SessionChannel($this->getStreamSessionId());
-        $message = new Message($actionType, $this->toArray([], [self::REL_USER]));
+        $message = new Message(
+            $actionType,
+            $this->toArray([], [
+                self::REL_USER,
+                self::REL_PARENT_COMMENT . '.' . self::REL_USER,
+            ])
+        );
         if (!Yii::$app->centrifugo->publish($channel, $message)) {
             LogHelper::error('Event Failed', self::LOG_CATEGORY, [
                 'channel' => $channel->getName(),

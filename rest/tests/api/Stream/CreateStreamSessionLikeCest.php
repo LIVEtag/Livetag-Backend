@@ -1,19 +1,24 @@
 <?php
+/**
+ * Copyright © 2021 GBKSOFT. Web and Mobile Software Development.
+ * See LICENSE.txt for license details.
+ */
+declare(strict_types=1);
 
-namespace rest\tests\api\Product;
+namespace rest\tests\api\Stream;
 
+use rest\tests\AccessTestTrait;
 use rest\tests\ActionCest;
 use rest\tests\ApiTester;
 use rest\tests\ProviderDataTrait;
 
-class ProductEventCest extends ActionCest
+class CreateStreamSessionLikeCest extends ActionCest
 {
     use ProviderDataTrait;
-    /** @var int */
-    protected $streamSessionId;
+    use AccessTestTrait;
 
     /** @var int */
-    protected $productId;
+    protected $streamSessionId;
 
     /**
      * @return string
@@ -29,7 +34,7 @@ class ProductEventCest extends ActionCest
      */
     protected function getUrl(ApiTester $I): string
     {
-        return '/stream-session/' . $this->streamSessionId . '/product/' . $this->productId . '/event';
+        return '/stream-session/' . $this->streamSessionId . '/like';
     }
 
     /**
@@ -41,9 +46,11 @@ class ProductEventCest extends ActionCest
             $this->dataComment($I, $data);
             $I->amLoggedInApiAs($data['userId']);
             $this->streamSessionId = $data['streamSessionId'];
-            $this->productId = $data['productId'];
-            $I->send($this->getMethod(), $this->getUrl($I), $data['request']['data']);
-            $I->seeResponseResultIsNoContent();
+            $I->send(
+                $this->getMethod(),
+                $this->getUrl($I)
+            );
+            $I->seeResponseResultIsCreated();
         }
     }
 }

@@ -169,7 +169,7 @@ class SiteController extends Controller
             'centrifugoUrl',
             'signEndpoint'
         ]);
-        $model->addRule(['shopUri', 'centrifugoUrl', 'signEndpoint','streamSessionId'], 'required');
+        $model->addRule(['shopUri', 'centrifugoUrl', 'signEndpoint', 'streamSessionId'], 'required');
         $model->addRule(['centrifugoToken', 'centrifugoUrl'], 'string');
         $model->addRule(['signEndpoint'], 'url');
         $model->addRule('shopUri', 'string');
@@ -178,7 +178,7 @@ class SiteController extends Controller
 
         if (!$model->load(Yii::$app->request->post())) {
             //some example default values (from fixtures for quick debug)
-            $model->shopUri = Shop::find()->select('uri')->scalar();//select some shop
+            $model->shopUri = Shop::find()->select('uri')->scalar(); //select some shop
             $model->streamSessionId = StreamSession::find()->orderBy(['id' => SORT_DESC])->select('id')->scalar(); //selet most resent session
             $model->centrifugoUrl = Yii::$app->centrifugo->ws;
             $model->signEndpoint = Yii::$app->urlManagerRest->createAbsoluteUrl('v1/centrifugo/sign');

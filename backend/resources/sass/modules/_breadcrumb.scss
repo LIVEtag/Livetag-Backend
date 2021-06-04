@@ -1,0 +1,27 @@
+.wrapper {
+  .content-header > .breadcrumb > li + li:before {
+    color: #292929;
+    content: '/';
+  }
+
+  .content-header > .breadcrumb > li > a {
+    color: #292929;
+    font-size: 13px;
+    line-height: 19px;
+  }
+
+  .breadcrumb > .active {
+    color: #bababa;
+    font-size: 13px;
+    line-height: 19px;
+  }
+
+  .content-header > .breadcrumb {
+    background: none;
+
+    @media (max-width: 991px) {
+      margin-bottom: 20px;
+      padding: 0;
+    }
+  }
+}

@@ -11,7 +11,9 @@ use common\fixtures\AccessTokenFixture;
 use common\fixtures\CommentFixture;
 use common\fixtures\ProductFixture;
 use common\fixtures\ShopFixture;
+use common\fixtures\StreamSessionArchiveFixture;
 use common\fixtures\StreamSessionFixture;
+use common\fixtures\StreamSessionLikeFixture;
 use common\fixtures\StreamSessionProductEventFixture;
 use common\fixtures\StreamSessionProductFixture;
 use common\fixtures\StreamSessionStatisticFixture;
@@ -34,11 +36,13 @@ trait BaseFixtureTrait
             'shops' => ShopFixture::class,
             'userShops' => UserShopFixture::class,
             'streamSessions' => StreamSessionFixture::class,
+            'streamSessionArchives' => StreamSessionArchiveFixture::class,
             'streamSessionTokens' => StreamSessionTokenFixture::class,
             'products' => ProductFixture::class,
             'streamSessionProducts' => StreamSessionProductFixture::class,
             'streamSessionStatistic' => StreamSessionStatisticFixture::class,
             'streamSessionProductEvent' => StreamSessionProductEventFixture::class,
+            'streamSessionLikes' => StreamSessionLikeFixture::class,
             'comments' => CommentFixture::class,
         ];
     }

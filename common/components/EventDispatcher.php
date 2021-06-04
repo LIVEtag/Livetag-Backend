@@ -10,22 +10,28 @@ namespace common\components;
 use common\models\Analytics\StreamSessionEvent;
 use common\models\Analytics\StreamSessionProductEvent;
 use common\models\Comment\Comment;
+use common\models\Product\Product;
 use common\models\Product\StreamSessionProduct;
 use common\models\Shop\Shop;
 use common\models\Stream\StreamSession;
 use common\models\Stream\StreamSessionArchive;
+use common\models\Stream\StreamSessionLike;
 use common\models\User;
 use common\observers\Analytics\CreateStreamSessionEventObserver;
 use common\observers\Analytics\CreateStreamSessionProductEventObserver;
 use common\observers\Comment\CreateCommentObserver;
 use common\observers\Comment\DeleteCommentObserver;
 use common\observers\Comment\UpdateCommentObserver;
+use common\observers\Product\CreateProductObserver;
+use common\observers\Product\UpdateProductObserver;
+use common\observers\Product\DeleteProductObserver;
 use common\observers\Shop\DeleteShopObserver;
 use common\observers\StreamSession\CreateStreamSessionArchiveObserver;
+use common\observers\StreamSession\CreateStreamSessionLikeObserver;
 use common\observers\StreamSession\CreateStreamSessionObserver;
 use common\observers\StreamSession\DeleteStreamSessionArchiveObserver;
+use common\observers\StreamSession\DeleteStreamSessionObserver;
 use common\observers\StreamSession\EndSoonStreamSessionObserver;
-use common\observers\StreamSession\SubscriberTokenCreatedObserver;
 use common\observers\StreamSession\UpdateStreamSessionArchiveObserver;
 use common\observers\StreamSession\UpdateStreamSessionObserver;
 use common\observers\StreamSessionProduct\CreateStreamSessionProductObserver;
@@ -58,10 +64,7 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_INSERT, [Yii::createObject(CreateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_AFTER_COMMIT_UPDATE, [Yii::createObject(UpdateStreamSessionObserver::class), 'execute']);
         Event::on(StreamSession::class, StreamSession::EVENT_END_SOON, [Yii::createObject(EndSoonStreamSessionObserver::class), 'execute']);
-        Event::on(StreamSession::class, StreamSession::EVENT_SUBSCRIBER_TOKEN_CREATED, [
-            Yii::createObject(SubscriberTokenCreatedObserver::class),
-            'execute'
-        ]);
+        Event::on(StreamSession::class, StreamSession::EVENT_BEFORE_DELETE, [Yii::createObject(DeleteStreamSessionObserver::class), 'execute']);
 
         # Stream Session Archive
         Event::on(StreamSessionArchive::class, StreamSessionArchive::EVENT_AFTER_COMMIT_INSERT, [
@@ -77,6 +80,11 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
             'execute'
         ]);
 
+        #Product events
+        Event::on(Product::class, Product::EVENT_AFTER_COMMIT_INSERT, [Yii::createObject(CreateProductObserver::class), 'execute']);
+        Event::on(Product::class, Product::EVENT_AFTER_COMMIT_UPDATE, [Yii::createObject(UpdateProductObserver::class), 'execute']);
+        Event::on(Product::class, Product::EVENT_BEFORE_DELETE, [Yii::createObject(DeleteProductObserver::class), 'execute']);
+
         # Stream Session Product events
         Event::on(StreamSessionProduct::class, StreamSessionProduct::EVENT_AFTER_INSERT, [
             Yii::createObject(CreateStreamSessionProductObserver::class),
@@ -89,6 +97,12 @@ class EventDispatcher extends BaseObject implements BootstrapInterface
         Event::on(StreamSessionProduct::class, StreamSessionProduct::EVENT_AFTER_DELETE, [
             Yii::createObject(DeleteStreamSessionProductObserver::class),
             'execute'
+        ]);
+
+        # Stream Session Like events
+        Event::on(StreamSessionLike::class, StreamSessionLike::EVENT_AFTER_INSERT, [
+            Yii::createObject(CreateStreamSessionLikeObserver::class),
+            'execute',
         ]);
 
         # Chat events

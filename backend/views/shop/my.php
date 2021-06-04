@@ -27,7 +27,20 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Update'), ['update-my'], ['class' => 'btn btn-primary']) ?>
+                    <div class="buttons-group">
+                        <?= Html::a(Yii::t('app', 'Update'), ['update-my'], ['class' => 'button button--dark button--upper button--lg']) ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header section-box-header box-header--no-indent">
+                    <h4 class="box-title">Details</h4>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body">
@@ -45,13 +58,11 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
 
                                     $action = Url::to(['/shop/delete-logo', 'id' => $model->id]);
                                     return "<div class=\"shop-logo\">
-                                                <div class=\"shop-logo__trash\">
-                                                    <a type=\"button\" class=\"btn btn-sm btn-default\" 
-                                                        href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
-                                                        data-confirm=\"Are you sure to delete this item?\">
-                                                        <i class=\"glyphicon glyphicon-trash\"></i>
-                                                    </a>
-                                                </div>
+                                                <a type=\"button\" class=\"action-button button button--dark button--icon stream-cover-trash\"
+                                                    href=\"{$action}\" title=\"Delete the item\" data-method=\"post\"
+                                                    data-confirm=\"Are you sure to delete this item?\">
+                                                    <i class=\"icon icon-trash-light\"></i>
+                                                </a>
                                                 <img src=\"{$imageUrl}\" class=\"shop-logo__image\">
                                             </div>";
                                 }
@@ -60,11 +71,39 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                             'uri',
                             [
                                 'attribute' => 'website',
+                                'contentOptions' => ['class' => 'link-cell'],
                                 'format' => ['url', ['target' => '_blank']]
+                            ],
+                            [
+                                'attribute' => 'iconsTheme',
+                                'value' => function (Shop $model) {
+                                    return $model->getIconsThemeName();
+                                }
+                            ],
+                            [
+                                'label' => 'Icons color themes variants',
+                                'format' => 'raw',
+                                'value' => function () {
+                                    return Html::img(Yii::getAlias('@web') . '/images/iconsThemes.svg');
+                                }
+                            ],
+                            [
+                                'attribute' => 'productIcon',
+                                'value' => function (Shop $model) {
+                                    return $model->getProductIconName();
+                                }
+                            ],
+                            [
+                                'label' => 'Product icon options',
+                                'format' => 'raw',
+                                'value' => function () {
+                                    return Html::img(Yii::getAlias('@web') . '/images/productIcons.svg', ['class' => 'product-icons']);
+                                }
                             ],
                             'createdAt:datetime',
                             [
                                 'label' => 'Documentation',
+                                'contentOptions' => ['class' => 'link-cell'],
                                 'format' => ['url', ['target' => '_blank']],
                                 'value' => function () {
                                     return Yii::$app->urlManagerSDK->getBaseUrl();
@@ -77,32 +116,29 @@ $this->registerJsFile('/backend/web/js/highlight.js', [
                 <div class="box-footer"></div>
                 <!--/.box-footer -->
             </div>
-            <!-- /.box -->
+        </div>
+        <div class="col-md-6">
+            <?= $this->render('shop-analytics', ['shop' => $model ]); ?>
+            <?php if ($snippet) : ?>
+                <div class="box box-default">
+                <div class="box-header section-box-header box-header--no-indent">
+                    <h4 class="box-title">Integration Snippet</h4>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <!--/.box-header -->
+                <div class="box-body">
+                    <pre><code class="language-html"><?= $snippet; ?></code></pre>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer"></div>
+                <!--/.box-footer -->
+            </div>
+            <?php endif; ?>
         </div>
         <!-- /.col -->
     </div>
     <!-- /.row -->
-
-    <?php if ($snippet) : ?>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <h4 class="box-title">Integration Snippet</h4>
-                    </div>
-                    <!--/.box-header -->
-                    <div class="box-body">
-                        <pre><code class="language-html"><?= $snippet; ?></code></pre>
-                            </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer"></div>
-                            <!--/.box-footer -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-    <?php endif; ?>
 </section>
 <!-- /.section -->

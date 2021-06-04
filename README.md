@@ -55,16 +55,6 @@ Environmental variables details for Gitlab CI
 -------------------
 [See here](.gitlab-ci/README.md)
 
-Swagger usage
--------------------
-[See here](swagger-ui/README.md)
-
-GIT Workflow
--------------------
-[See here](https://wiki.gbksoft.net/git:workflow:prod).
-
-
-
 Installation instructions
 -------------------
 
@@ -98,23 +88,3 @@ Copy variables from .env.example to CI/CD -> Settings -> variables
 
 Configure .gitlab-ci.yml file
 
-
-###### Functional branches
-
-**develop** - main development branch
-
-**login-by-phone** - User includes phone with ability to sign in/sign up with it
-
-**login-by-username** - User includes username with ability to sign in with it
-
-**centrifugo** - Connect centrifugo service to project with basic chat implementation
-
-**confirm-email** - Add basic functionallity of email confirmation
-
-**ext-filestorage** - File storage based on S3 with optional image resize class
-
-**pdf-generator** - Added service to create pdf from html
-
-**pdf-generator-queue** - Added service to create pdf from html via queue
-
-**GB-120-inApp-subscriptions** - In App purchases and subscriptions base version, for details see `common/components/purchase/README.md`

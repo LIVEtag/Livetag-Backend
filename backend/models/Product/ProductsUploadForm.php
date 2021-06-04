@@ -20,12 +20,14 @@ use yii\web\UploadedFile;
 class ProductsUploadForm extends Model
 {
     const ID = 'id';
+    const PHOTO = 'photo';
 
     /**
      * Mapping fields from csv with existing fields
      */
     const HEADER_MAPPING = [
-        self::ID => Product::EXTERNAL_ID
+        self::ID => Product::EXTERNAL_ID,
+        self::PHOTO => Product::PHOTOS,
     ];
 
     /**
@@ -33,17 +35,13 @@ class ProductsUploadForm extends Model
      */
     const REQUIRED_HEADERS = [
         Product::EXTERNAL_ID, //@see HEADER_MAPPING
-        Product::SKU,
         Product::TITLE,
-        Product::PHOTO,
-        Product::LINK,
+        Product::DESCRIPTION,
+        Product::SKU,
         Product::PRICE,
+        Product::PHOTOS, //@see HEADER_MAPPING
+        Product::LINK,
     ];
-
-    /**
-     * Preffix, that determinate option column (lowercase)
-     */
-    const OPTION_PREFFIX = 'option ';
 
     /**
      * required fields in options (not dynamic)
@@ -51,12 +49,34 @@ class ProductsUploadForm extends Model
     const OPTION_FIELDS = [
         Product::SKU,
         Product::PRICE,
+        Product::OPTION,
+    ];
+
+    /**
+     * The separator that determines that in a string multiple entries for rows-arrays. At the moment it applies only to photos.
+     */
+    const ARRAY_SEPARATOR = ';';
+
+    /** Update the list of products (products that are not in the uploaded CSV file will be deleted) */
+    const TYPE_UPDATE = 0;
+
+    /** Add new products to the list (existing products will remain) */
+    const TYPE_ADD = 1;
+
+    const TYPES = [
+        self::TYPE_ADD => 'Add new products to the list (existing products will remain)',
+        self::TYPE_UPDATE => 'Update the list of products (products that are not in the uploaded CSV file will be deleted)',
     ];
 
     /**
      * @var UploadedFile|null file attribute
      */
     public $file;
+
+    /**
+     * @var bool
+     */
+    public $type = self::TYPE_ADD;
 
     /** @var Shop */
     protected $shop;
@@ -85,6 +105,7 @@ class ProductsUploadForm extends Model
     {
         return [
             ['file', 'required'],
+            ['type', 'in', 'range' => array_keys(self::TYPES)],
             [
                 ['file'],
                 'file',
@@ -124,7 +145,6 @@ class ProductsUploadForm extends Model
     /**
      * Read CSV, extract and validate header and transform to array
      * populate `products` property
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      */
     public function populateProducts(): bool
     {
@@ -135,7 +155,7 @@ class ProductsUploadForm extends Model
             $this->addError('file', 'Incorrect file');
             return false;
         }
-        //Extraxct file to array
+        //Extract file to array
         $rows = array_map('str_getcsv', file($this->file->tempName));
 
         //Extract and validate header
@@ -149,23 +169,15 @@ class ProductsUploadForm extends Model
             $this->addError('header', 'Header has missing elements: ' . implode(',', $missingHeader));
             return false;
         }
-
-        //Detect header options
-        $headerOptions = self::OPTION_FIELDS;
-        foreach ($header as $headerItem) {
-            if (strpos($headerItem, self::OPTION_PREFFIX) === 0) {
-                $headerOptions[] = $headerItem;
-            }
-        }
-
         //Process row by row, populate and validate products
         foreach ($rows as $key => $row) {
             if (count($this->getErrors()) > 50) {
                 $this->addError('File', 'The file contains too many errors. Processing terminated.');
                 break;
             }
-            $this->processRow($row, $key, $header, $headerOptions);
+            $this->processRow($row, $key, $header);
         }
+
         return !$this->hasErrors();
     }
 
@@ -175,10 +187,9 @@ class ProductsUploadForm extends Model
      * @param array $row
      * @param string $key
      * @param array $header
-     * @param array $headerOptions
      * @return type
      */
-    protected function processRow(array $row, string $key, array $header, array $headerOptions)
+    protected function processRow(array $row, string $key, array $header)
     {
         if (count($header) !== count($row)) {
             $this->addError($key + 2, 'The string contains an incorrect number of elements.');
@@ -186,11 +197,14 @@ class ProductsUploadForm extends Model
         }
         $productAttributes = array_combine($header, $row);
         foreach ($productAttributes as $field => $value) {
-            if (in_array($field, $headerOptions)) {
+            if (in_array($field, self::OPTION_FIELDS)) {
                 $productAttributes['options'][0][$field] = $value;
                 unset($productAttributes[$field]);
             }
         }
+        //Now there may be some photos with the ";" separator
+        $productAttributes[Product::PHOTOS] = explode(self::ARRAY_SEPARATOR, $productAttributes[Product::PHOTOS]);
+
         $id = ArrayHelper::getValue($productAttributes, Product::EXTERNAL_ID);
         if (!array_key_exists($id, $this->products)) {
             $this->products[$id] = Product::getOrCreate($this->shop->getId(), $id);
@@ -199,7 +213,7 @@ class ProductsUploadForm extends Model
             unset($productAttributes['options']);
         }
         $this->products[$id]->setAttributes($productAttributes);
-        $this->products[$id]->status = Product::STATUS_ACTIVE;
+        $this->products[$id]->status = Product::STATUS_NEW;
         if (!$this->products[$id]->validate()) {
             $this->addError($key + 2, implode(' ', $this->products[$id]->getFirstErrors()));
         }
@@ -213,16 +227,18 @@ class ProductsUploadForm extends Model
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            //Mark products as deleted
-            $deleteProductQuery = Product::find()
-                ->andWhere(['shopId' => $this->shop->getId()])
-                ->andWhere(['NOT IN', Product::EXTERNAL_ID, array_keys($this->products)])
-                ->andWhere(['<>', 'status', Product::STATUS_DELETED]);
-            foreach ($deleteProductQuery->each() as $product) {
-                if (!$product->delete()) {
-                    $transaction->rollBack();
-                    $this->addErrors($product->getErrors());
-                    return false;
+            if ($this->type == self::TYPE_UPDATE) {
+                //Mark products as deleted
+                $deleteProductQuery = Product::find()
+                    ->andWhere(['shopId' => $this->shop->getId()])
+                    ->andWhere(['NOT IN', Product::EXTERNAL_ID, array_keys($this->products)])
+                    ->andWhere(['<>', 'status', Product::STATUS_DELETED]);
+                foreach ($deleteProductQuery->each() as $product) {
+                    if (!$product->delete()) {
+                        $transaction->rollBack();
+                        $this->addErrors($product->getErrors());
+                        return false;
+                    }
                 }
             }
 

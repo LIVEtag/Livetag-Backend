@@ -26,44 +26,55 @@ $logo = $user->shop->url ?? Yii::getAlias('@web') . '/images/logo.png';
             <ul class="nav navbar-nav">
                 <!-- User Account: style can be found in dropdown.less -->
                 <?php if ($user) : ?>
-                <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <li class="dropdown user user-menu">
+                        <time class="user__time">
                             <?= Yii::$app->formatter->asDatetime(time()); ?>
                             <?= Yii::$app->formatter->timeZone; ?>
-                        </a>
+                        </time>
                     </li>
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="hidden-xs"><?= $user->email ?></span>
+                            <span class="user__email hidden-xs"><?= $user->email ?></span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-                                <p>
+                                <?php if ($user->name) : ?>
+                                    <p style="margin:0;">
+                                        <?= $user->name; ?>
+                                    </p>
+                                <?php endif; ?>
+                                <p style="margin:0">
                                     <?= $user->email ?>
-                                    <small>Member since <?= Yii::$app->formatter->asDate($user->createdAt) ?></small>
                                 </p>
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
-                                <div class="pull-left">
-                                    <?=
-                                    Html::a(
-                                        'Change Password',
-                                        ['/user/change-password'],
-                                        ['class' => 'btn btn-default btn-flat']
-                                    )
-                                    ?>
-                                </div>
-                                <div class="pull-right">
-                                    <?=
-                                    Html::a(
+                                <div class="user-footer-row">
+                                    <div class="buttons-group">
+                                        <?=
+                                        Html::a(
+                                            'Change Password',
+                                            ['/user/change-password'],
+                                            ['class' => 'button button--dark button--upper']
+                                        )
+                                        ?>
+                                        <?=
+                                        Html::a(
+                                            'Change Name',
+                                            ['/user/change-name'],
+                                            ['class' => 'button button--dark button--upper']
+                                        )
+                                        ?>
+                                    </div>
+                                    <?= Html::a(
                                         'Sign out',
                                         ['/site/logout'],
-                                        ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
-                                    )
-                                    ?>
+                                        [
+                                            'data-method' => 'post',
+                                            'class' => 'button button--dark button--ghost button--upper sign-out',
+                                        ],
+                                    ); ?>
                                 </div>
                             </li>
                         </ul>

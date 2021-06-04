@@ -30,15 +30,21 @@ class CommentForm extends Model
     public $streamSessionId;
 
     /**
+     * @var integer
+     */
+    public $parentCommentId;
+
+    /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
             [['message', 'streamSessionId', 'userId'], 'required'],
-            [['userId', 'streamSessionId'], 'integer'],
+            [['userId', 'streamSessionId', 'parentCommentId'], 'integer'],
             [['message'], 'string', 'max' => 255],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['userId' => 'id']],
+            [['parentCommentId'], 'exist', 'skipOnError' => true, 'targetClass' => Comment::class, 'targetAttribute' => ['parentCommentId' => 'id']],
         ];
     }
 
@@ -50,6 +56,9 @@ class CommentForm extends Model
         $comment = new Comment();
         $comment->userId = $this->userId;
         $comment->streamSessionId = $this->streamSessionId;
+        if ($this->parentCommentId) {
+            $comment->parentCommentId = (int)$this->parentCommentId;
+        }
         $comment->message = $this->message;
         if (!$comment->save()) {
             $this->addErrors($comment->getErrors());

@@ -1,0 +1,57 @@
+.icon-pen {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url("../images/pen.svg");
+}
+
+.icon-eye {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url("../images/eye.svg");
+}
+
+.icon-trash,
+.icon-trash-light {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url("../images/trash.svg");
+}
+
+.icon-trash-light {
+  background: url("../images/trash-light.svg");
+}
+
+.icon-reply {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url("../images/reply.svg");
+  cursor: pointer;
+}
+
+.icon-download {
+  position: relative;
+  top: 5px;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-top: -3px;
+  margin-right: 3px;
+  background: url("../images/download.svg");
+}
+
+.icon-close,
+.icon-close-light {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background: url("../images/close.svg");
+}
+
+.icon-close-light {
+  background: url("../images/close-light.svg");
+}
+

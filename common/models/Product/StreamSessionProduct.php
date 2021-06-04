@@ -117,12 +117,12 @@ class StreamSessionProduct extends ActiveRecord implements StreamSessionProductI
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'streamSessionId' => Yii::t('app', 'Stream Session ID'),
-            'productId' => Yii::t('app', 'Product ID'),
+            'id' => Yii::t('app', 'Id'),
+            'streamSessionId' => Yii::t('app', 'Stream session Id'),
+            'productId' => Yii::t('app', 'Product Id'),
             'status' => Yii::t('app', 'Status'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 

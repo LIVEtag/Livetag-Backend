@@ -93,7 +93,7 @@ class ApiTester extends \Codeception\Actor
             [
                 'code' => 'integer:=201',
                 'status' => 'string:=success',
-                'result' => 'array'
+                'result' => 'array|null'
             ]
         );
     }
@@ -263,13 +263,25 @@ class ApiTester extends \Codeception\Actor
     /**
      * @return array
      */
+    public function getLikes(): array
+    {
+        return [
+            'timestamp' => 'integer',
+            'count' => 'integer',
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public function getProductResponse(): array
     {
         return [
             'id' => 'integer',
             'externalId' => 'string',
             'title' => 'string',
-            'photo' => 'string',
+            'description' => 'string|null',
+            'photo' => 'string|null',
             'link' => 'string',
             'options' => 'array'
         ];

@@ -7,9 +7,7 @@ declare(strict_types=1);
 
 namespace rest\common\models\Analytics;
 
-use common\models\Analytics\StreamSessionProductEvent;
-use common\models\Comment\Comment;
-use common\models\Product\Product;
+use common\models\Analytics\StreamSessionEvent;
 use common\models\Stream\StreamSession;
 use common\models\User;
 use Yii;
@@ -27,9 +25,6 @@ class EventForm extends Model
     /** @var StreamSession */
     private $streamSession;
 
-    /** @var Product */
-    private $product;
-
     /** @var User */
     private $user;
 
@@ -37,11 +32,10 @@ class EventForm extends Model
      * @param StreamSession $streamSession
      * @param User $user
      */
-    public function __construct(StreamSession $streamSession, Product $product, User $user)
+    public function __construct(StreamSession $streamSession, User $user)
     {
         parent::__construct([]);
         $this->streamSession = $streamSession;
-        $this->product = $product;
         $this->user = $user;
     }
 
@@ -68,7 +62,7 @@ class EventForm extends Model
     }
 
     /**
-     * @return Comment|self
+     * @return StreamSessionEvent|self
      */
     public function create()
     {
@@ -76,15 +70,12 @@ class EventForm extends Model
             return $this;
         }
 
-        /** @var StreamSessionProductEvent $event */
-        $event = new StreamSessionProductEvent();
-        $event->scenario = StreamSessionProductEvent::SCENARIO_USER;
+        /** @var StreamSessionEvent $event */
+        $event = new StreamSessionEvent();
         $event->userId = $this->user->getId();
         $event->streamSessionId = $this->streamSession->getId();
-        $event->productId = $this->product->getId();
         $event->type = $this->type;
-        $event->payload =  $this->payload;
-
+        $event->payload = $this->payload;
         $event->save();
         return $event; //return model or errors
     }

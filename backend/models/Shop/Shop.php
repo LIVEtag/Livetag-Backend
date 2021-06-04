@@ -41,4 +41,30 @@ class Shop extends BaseModel
     {
         return self::find()->select(['name', 'uri'])->indexBy('uri')->column();
     }
+
+    /**
+     * Get shop analytics for display
+     * @return array
+     */
+    public function getAnalytics(): array
+    {
+        $likesCount = $this->getLikes()->select(['streamSessionId','userId'])->groupBy(['streamSessionId','userId'])->count();
+        $commentsCount = $this->getComments()->count();
+
+        $statisticQuery = $this->getStreamSessionStatistic();
+        $totalViewCount = $statisticQuery->sum('totalViewCount') ?: 0;
+        $totalAddToCartCount = $statisticQuery->sum('totalAddToCartCount') ?: 0;
+        $totalAddToCartRate = $totalViewCount ? round($totalAddToCartCount / $totalViewCount, 2) : 0;
+
+        $uniqueViews = $this->getStreamSessionEvents()->select(['userId'])->distinct()->count();
+
+        return [
+            'likesCount' => $likesCount,
+            'commentsCount' => $commentsCount,
+            'totalViewCount' => $totalViewCount,
+            'totalAddToCartCount' => $totalAddToCartCount,
+            'totalAddToCartRate' => $totalAddToCartRate,
+            'uniqueViews' => $uniqueViews,
+        ];
+    }
 }

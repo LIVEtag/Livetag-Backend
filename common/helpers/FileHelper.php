@@ -9,9 +9,6 @@ use Throwable;
 use Yii;
 use yii\helpers\FileHelper as BaseFileHelper;
 
-/**
- * phpcs:disable PHPCS_SecurityAudit.BadFunctions
- */
 class FileHelper extends BaseFileHelper
 {
 
@@ -104,6 +101,17 @@ class FileHelper extends BaseFileHelper
     }
 
     /**
+     * Set content to s3 path
+     * @param string $content
+     * @param string $path
+     * @return bool
+     */
+    public static function setFileContentToPath(string $content, string $path): bool
+    {
+        return Yii::$app->fs->put($path, $content);
+    }
+
+    /**
      * Return full url by path
      * @param string $path
      * @return string
@@ -171,14 +179,12 @@ class FileHelper extends BaseFileHelper
     {
         $ffprobe = Yii::$app->params['ffprobe'];
         // Returns video duration string that contains seconds like '15.021667'
-        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
         $duration = exec(
             $ffprobe
             . ' -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "'
             . $path
             . '"'
         );
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
         // Can be 'N/A' for image, '' for wrong paths or for 0 secs video
         if (!$duration || !(int) $duration) {
             return 0;
@@ -196,14 +202,12 @@ class FileHelper extends BaseFileHelper
     public static function getVideoRotate($path): int
     {
         $ffprobe = Yii::$app->params['ffprobe'];
-        // phpcs:disable PHPCS_SecurityAudit.BadFunctions
         $rotate = exec(
             $ffprobe
             . ' -loglevel error -select_streams v:0 -show_entries stream_tags=rotate -of default=nw=1:nk=1 -i "'
             . $path
             . '"'
         );
-        // phpcs:enable PHPCS_SecurityAudit.BadFunctions
         if (!$rotate || !(int) $rotate) {
             return 0;
         }

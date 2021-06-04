@@ -1,0 +1,43 @@
+:root {
+  --color-darken: 0%;
+
+  --color-Primary-h: 202;
+  --color-Primary-s: 52%;
+  --color-Primary-l: 49%;
+  --color-Primary: hsl(var(--color-Primary-h), var(--color-Primary-s), var(--color-Primary-l));
+
+  --color-Secondary-h: 208;
+  --color-Secondary-s: 7%;
+  --color-Secondary-l: 46%;
+  --color-Secondary: hsl(var(--color-Secondary-h), var(--color-Secondary-s), var(--color-Secondary-l));
+
+  --color-Success-h: 153;
+  --color-Success-s: 100%;
+  --color-Success-l: 33%;
+  --color-Success: hsl(var(--color-Success-h), var(--color-Success-s), var(--color-Success-l));
+
+  --color-Danger-h: 349;
+  --color-Danger-s: 77%;
+  --color-Danger-l: 60%;
+  --color-Danger: hsl(var(--color-Danger-h), var(--color-Danger-s), var(--color-Danger-l));
+
+  --color-Warning-h: 37;
+  --color-Warning-s: 90%;
+  --color-Warning-l: 51%;
+  --color-Warning: hsl(var(--color-Warning-h), var(--color-Warning-s), var(--color-Warning-l));
+
+  --color-Info-h: 192;
+  --color-Info-s: 100%;
+  --color-Info-l: 47%;
+  --color-Info: hsl(var(--color-Info-h), var(--color-Info-s), var(--color-Info-l));
+
+  --color-Light-h: 210;
+  --color-Light-s: 14%;
+  --color-Light-l: 83%;
+  --color-Light: hsl(var(--color-Light-h), var(--color-Light-s), var(--color-Light-l));
+
+  --color-Dark-h: 0;
+  --color-Dark-s: 0%;
+  --color-Dark-l: 16%;
+  --color-Dark: hsl(var(--color-Dark-h), var(--color-Dark-s), var(--color-Dark-l));
+}

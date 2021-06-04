@@ -12,6 +12,7 @@ use backend\models\User\CreateUserForm;
 use backend\models\User\User;
 use backend\models\User\UserSearch;
 use common\models\forms\User\ChangePasswordForm;
+use common\models\forms\User\UserProfileForm;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -38,7 +39,7 @@ class UserController extends Controller
                             'roles' => [User::ROLE_ADMIN],
                         ],
                         [
-                            'actions' => ['change-password', 'view'],
+                            'actions' => ['change-password', 'view', 'change-name'],
                             'allow' => true,
                             'roles' => [User::ROLE_ADMIN, User::ROLE_SELLER],
                         ],
@@ -121,6 +122,31 @@ class UserController extends Controller
 
         return $this->render('change-password', [
                 'model' => $model,
+        ]);
+    }
+
+    /**
+     * Updates an existing User model (current profile)
+     * For now only user name changing allowed
+     * If update is successful, the browser will be redirected to the previous page.
+     * @return mixed
+     */
+    public function actionChangeName()
+    {
+        $user = Yii::$app->user->identity;
+        $model = new UserProfileForm($user);
+        $model->setAttributes($user->getAttributes());
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model->save();
+            if (!$model->hasErrors()) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Your name has been successfully changed!'));
+                return $this->refresh();
+            }
+        }
+
+        return $this->render('change-name', [
+            'model' => $model,
         ]);
     }
 

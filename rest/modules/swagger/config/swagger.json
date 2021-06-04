@@ -56,8 +56,16 @@
             "description": "Stream Comments"
         },
         {
+            "name": "Likes",
+            "description": "Stream Likes"
+        },
+        {
             "name": "Archives",
             "description": "Manage Archives in Stream Session"
+        },
+        {
+            "name": "Analytics",
+            "description": "Collect Events for Analytics"
         }
     ],
     "paths": {
@@ -1019,7 +1027,6 @@
             }
         },
 
-
         "/v1/stream-session/{streamSessionid}/archive/product": {
             "get": {
                 "tags": [
@@ -1049,6 +1056,9 @@
                     },
                     {
                         "$ref": "#/components/parameters/fields"
+                    },
+                    {
+                        "$ref": "#/components/parameters/expand-product"
                     }
                 ],
                 "responses": {
@@ -1089,6 +1099,75 @@
             }
         },
 
+        "/v1/stream-session/{streamSessionid}/event": {
+            "post": {
+                "security": [
+                    {
+                        "Basic": []
+                    }
+                ],
+                "tags": [
+                    "Stream Session",
+                    "Analytics",
+                    "Buyer"
+                ],
+                "summary": "Events with Stream Session",
+                "operationId": "streamSessionEvent",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "example": 4,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "type",
+                                    "payload"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "view"
+                                        ],
+                                        "example": "view"
+                                    },
+                                    "payload": {
+                                        "type": "string",
+                                        "example": null,
+                                        "description": "Any payload to save (JSON)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
         "/v1/stream-session/{streamSessionid}/product/{productId}/event": {
             "post": {
                 "security": [
@@ -1099,6 +1178,7 @@
                 "tags": [
                     "Stream Session",
                     "Product",
+                    "Analytics",
                     "Buyer"
                 ],
                 "summary": "Events with Stream Session Products",
@@ -1342,6 +1422,111 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+
+        "/v1/stream-session/{streamSessionid}/like": {
+            "get": {
+                "tags": [
+                    "Likes",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Get likes of selected archived Stream Session",
+                "operationId": "streamSessionLikes",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/perPage"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/status200DataProvider"
+                                        },
+                                        {
+                                            "properties": {
+                                                "result": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/likes"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Likes",
+                    "Seller",
+                    "Buyer"
+                ],
+                "summary": "Create new like",
+                "operationId": "likeCreateNew",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "streamSessionid",
+                        "description": "Stream Session Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4
+                    },
+                    {
+                        "$ref": "#/components/parameters/fields"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404"
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -2087,7 +2272,9 @@
                     "uri",
                     "name",
                     "website",
-                    "logo"
+                    "logo",
+                    "iconsTheme",
+                    "productIcon"
                 ],
                 "properties": {
                     "uri": {
@@ -2100,6 +2287,12 @@
                         "type": "string"
                     },
                     "logo": {
+                        "type": "string"
+                    },
+                    "iconsTheme": {
+                        "type": "string"
+                    },
+                    "productIcon": {
                         "type": "string"
                     }
                 }
@@ -2168,6 +2361,10 @@
                     "rotate": {
                         "type": "integer",
                         "example": 90
+                    },
+                    "internalCart": {
+                        "type": "boolean",
+                        "example": true
                     },
                     "archive": {
                         "type": "object",
@@ -2242,11 +2439,30 @@
                     }
                 }
             },
+
+            "likes": {
+                "type": "object",
+                "required": [
+                    "timestamp",
+                    "count"
+                ],
+                "properties": {
+                    "timestamp": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                }
+            },
+
             "streamSessionCover": {
                 "type": "object",
                 "required": [
-                    "productId",
-                    "status"
+                    "url",
+                    "type"
                 ],
                 "properties": {
                     "url": {
@@ -2268,6 +2484,7 @@
                     "id",
                     "userId",
                     "message",
+                    "parentCommentId",
                     "createdAt"
                 ],
                 "properties": {
@@ -2279,6 +2496,47 @@
                     },
                     "message": {
                         "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    },
+                    "parentCommentId": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "type": "object",
+                        "description": "Available via `expand`",
+                        "$ref": "#/components/schemas/user"
+                    },
+                    "parentComment": {
+                        "type": "object",
+                        "description": "Available view `expand`",
+                        "$ref": "#/components/schemas/parentComment"
+                    }
+                }
+            },
+
+            "parentComment": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "userId",
+                    "message",
+                    "parentCommentId",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "userId": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "parentCommentId": {
+                        "type": "integer"
                     },
                     "createdAt": {
                         "type": "integer"
@@ -2314,6 +2572,10 @@
                         "type": "string",
                         "example": "In quas molestiae."
                     },
+                    "description": {
+                        "type": "string",
+                        "example": "Some description"
+                    },
                     "photo": {
                         "type": "string",
                         "example": "https://picsum.photos/200"
@@ -2326,6 +2588,14 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/productOption"
+                        }
+                    },
+                    "media": {
+                        "type": "array",
+                        "description": "EXPAND",
+                        "items": {
+                            "type": "object",
+                            "$ref": "#/components/schemas/productMedia"
                         }
                     }
                 }
@@ -2352,6 +2622,45 @@
                     "color": {
                         "type": "string",
                         "example": "MediumOrchid"
+                    }
+                }
+            },
+
+            "productMedia": {
+                "type": "object",
+                "required": [
+                    "url",
+                    "type"
+                ],
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "image",
+                            "video"
+                        ]
+                    },
+                    "formatted": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/productMediaFormatted"
+                    }
+                }
+            },
+            "productMediaFormatted": {
+                "type": "object",
+                "required": [
+                    "small",
+                    "large"
+                ],
+                "properties": {
+                    "small": {
+                        "type": "string"
+                    },
+                    "large": {
+                        "type": "string"
                     }
                 }
             },
@@ -2423,7 +2732,7 @@
             "expand-comment": {
                 "in": "query",
                 "name": "expand",
-                "description": "Extra Fields (coma separated). Available values: ```user```",
+                "description": "Extra Fields (coma separated). Available values: ```user```, ```parentComment```",
                 "required": false,
                 "schema": {
                     "type": "string"
@@ -2433,6 +2742,15 @@
                 "in": "query",
                 "name": "expand",
                 "description": "Extra Fields (coma separated). Available values: ```shop```",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "expand-product": {
+                "in": "query",
+                "name": "expand",
+                "description": "Extra Fields (coma separated). Available values: ```media```",
                 "required": false,
                 "schema": {
                     "type": "string"

@@ -24,7 +24,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header">
-                    <?= Html::a(Yii::t('app', 'Create a shop'), ['create'], ['class' => 'btn bg-black']) ?>
+                    <div class="buttons-group">
+                        <?= Html::a(Yii::t('app', 'Create a shop'), ['create'], ['class' => 'button button--dark button--upper button--lg']) ?>
+                    </div>
                 </div>
                 <!--/.box-header -->
                 <div class="box-body table-responsive">
@@ -32,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider' => $dataProvider,
                         'hover' => true, //the grid table will highlight row on hover
                         'persistResize' => true, //to store resized column state using local storage persistence
-                        'options' => ['id' => 'shop-list'],
+                        'options' => ['id' => 'shop-list', 'class' => 'gridview-wrapper'],
                         'pjax' => true,
                         'filterModel' => $searchModel,
                         'columns' => [
@@ -51,11 +53,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                     return $model->getUrl();
                                 }
                             ],
-                            'name',
+                            [
+                                'label' => 'Name',
+                                'attribute' => 'name',
+                                'contentOptions' => ['class' => 'name-cell'],
+                            ],
                             'uri',
                             [
                                 'attribute' => 'website',
-                                'format' => ['url', ['target' => '_blank']]
+                                'format' => ['url', ['target' => '_blank']],
+                                'contentOptions' => ['class' => 'link-cell'],
                             ],
                             [
                                 'attribute' => 'createdAt',
@@ -69,6 +76,26 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'class' => ActionColumn::class,
                                 'vAlign' => GridView::ALIGN_TOP,
+                                'contentOptions' => ['class' => 'action-button-cell'],
+                                'template' => '{view} {update} {delete}',
+                                'buttons' => [
+                                    'view' => function ($url) {
+                                        return Html::a('<span class="icon icon-eye"></span> View', $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
+                                    },
+                                    'update' => function ($url) {
+                                        return Html::a('<span class="icon icon-pen"></span> Edit', $url, ['class' => 'action-button button button--darken button--ghost', 'data-pjax' => '0']);
+                                    },
+                                    'delete' => function ($url) {
+                                        return Html::a('<span class="icon icon-trash"></span>', $url, [
+                                            'class' => 'action-button button button--link button--icon',
+                                            'data-pjax' => '0',
+                                            'data' => [
+                                                'confirm' => 'Are you sure to delete this item?',
+                                                'method' => 'post',
+                                            ],
+                                        ]);
+                                    }
+                                ]
                             ],
                         ],
                     ]); ?>

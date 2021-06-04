@@ -33,7 +33,12 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
      */
     public function __construct($config = array())
     {
-        $this->streamSession = new StreamSession(['status' => StreamSession::STATUS_STOPPED]);
+        // If the specified property is not set,
+        // the default value will be overwritten via setAttributes in the parent constructor
+        $this->streamSession = new StreamSession([
+            'status' => StreamSession::STATUS_STOPPED,
+            'internalCart' => StreamSession::INTERNAL_CART_FALSE,
+        ]);
         $this->streamSession->scenario = StreamSession::SCENARIO_UPLOAD_SHOW;
         parent::__construct($this->streamSession, $config);
     }
@@ -46,7 +51,8 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
         $archiveRules = $this->getArchiveValidationRules();
         return ArrayHelper::merge(
             [
-                [['name', 'shopId'], 'required'],
+                [['name', 'shopId', 'internalCart'], 'required'],
+                [['internalCart'], 'boolean'],
                 ['name', 'string', 'max' => StreamSession::MAX_NAME_LENGTH],
                 [
                     'productIds', //validate in main model. select2 do not return null on empty select
@@ -59,7 +65,7 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
                     'file',
                     'file',
                     'mimeTypes' => StreamSessionCover::getMimeTypes(),
-                    'maxSize' => Yii::$app->params['maxUploadImageSize'],
+                    'maxSize' => Yii::$app->params['maxUploadCoverSize'],
                 ],
             ],
             $archiveRules
@@ -73,10 +79,11 @@ class UploadRecordedShowForm extends SaveAnnouncementForm implements UploadArchi
     {
         return [
             'name' => Yii::t('app', 'Name of livestream'),
-            'videoFile' => Yii::t('app', 'File'),
+            'videoFile' => Yii::t('app', 'Upload File'),
             'directUrl' => Yii::t('app', 'Direct URL link'),
             'productIds' => Yii::t('app', 'Products'),
-            'file' => Yii::t('app', 'Photo (cover image)'),
+            'file' => Yii::t('app', 'Cover (can be image or video)'),
+            'internalCart' => Yii::t('app', 'Product details view'),
         ];
     }
 

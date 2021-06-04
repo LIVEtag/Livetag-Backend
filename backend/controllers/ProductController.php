@@ -10,10 +10,13 @@ namespace backend\controllers;
 
 use backend\components\Controller;
 use backend\models\Product\Product;
+use backend\models\Product\ProductForm;
+use backend\models\Product\ProductOptionForm;
 use backend\models\Product\ProductSearch;
 use backend\models\Stream\StreamSession;
 use backend\models\User\User;
 use backend\models\Product\ProductsUploadForm;
+use backend\models\Model;
 use Throwable;
 use Yii;
 use yii\filters\VerbFilter;
@@ -92,6 +95,92 @@ class ProductController extends Controller
             'dataProvider' => $dataProvider,
             'model' => $model,
             'activeStreamSessionExists' => $activeStreamSessionExists
+        ]);
+    }
+
+    /**
+     * Add product
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionCreate()
+    {
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || !$user->isSeller || !$user->shop) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        $model = new ProductForm();
+        $model->scenario = ProductForm::SCENARIO_CREATE;
+
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->files = UploadedFile::getInstances($model, 'files');
+            $model->productOptions = Model::createMultiple(ProductOptionForm::class);
+            if (Model::loadMultiple($model->productOptions, $params) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Product is added to the list of products.');
+                return $this->redirect(['index']);
+            }
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     */
+    public function actionUpdate(int $id)
+    {
+        $product = $this->findModel($id);
+        /** @var User $user */
+        $user = Yii::$app->user->identity ?? null;
+        if (!$user || !$user->isSeller || !$user->shop) {
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+        $productOptions = [];
+        foreach ($product->getOptions() as $option) {
+            $modelProduct = new ProductOptionForm();
+            $modelProduct->setAttributes($option);
+            $productOptions[] = $modelProduct;
+        }
+        $model = new ProductForm($product, $productOptions);
+        $params = Yii::$app->request->post();
+        if ($params) { //shop and seller checked before
+            $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($model)) => ['shopId' => $user->shop->id]]);
+        }
+        if ($model->load($params)) {
+            $model->files = UploadedFile::getInstances($model, 'files');
+            $model->productOptions = Model::createMultiple(ProductOptionForm::class);
+            if (Model::loadMultiple($model->productOptions, $params) && $model->save()) {
+                Yii::$app->session->setFlash('success', 'Product is updated.');
+                return $this->redirect(['view', 'id' => $product->id]);
+            }
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionView(int $id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
         ]);
     }
 

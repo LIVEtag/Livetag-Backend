@@ -9,6 +9,7 @@ namespace common\models\Stream;
 
 use common\components\behaviors\TimestampBehavior;
 use common\components\db\BaseActiveRecord;
+use common\components\EventDispatcher;
 use common\components\FileSystem\media\MediaInterface;
 use common\components\FileSystem\media\MediaTrait;
 use common\components\FileSystem\media\MediaTypeEnum;
@@ -38,6 +39,11 @@ use yii\web\UploadedFile;
  * @property integer $updatedAt
  *
  * @property-read StreamSession $streamSession
+ *
+ * EVENTS:
+ * - EVENT_AFTER_COMMIT_INSERT
+ * - EVENT_AFTER_COMMIT_UPDATE
+ * @see EventDispatcher
  */
 class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
 {
@@ -85,6 +91,17 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
         self::STATUS_PROCESSING => 'Processing',
         self::STATUS_FAILED => 'Failed',
         self::STATUS_READY => 'Ready',
+    ];
+
+    /**
+     * Status Class Names
+     */
+    const STATUSES_CLASS_MAP = [
+        self::STATUS_NEW => 'new',
+        self::STATUS_QUEUE => 'queue',
+        self::STATUS_PROCESSING => 'processing',
+        self::STATUS_FAILED => 'failed',
+        self::STATUS_READY => 'ready',
     ];
 
     /**
@@ -154,18 +171,18 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'streamSessionId' => Yii::t('app', 'Stream Session ID'),
-            'externalId' => Yii::t('app', 'External ID'),
+            'id' => Yii::t('app', 'Id'),
+            'streamSessionId' => Yii::t('app', 'Stream Session Id'),
+            'externalId' => Yii::t('app', 'External Id'),
             'path' => Yii::t('app', 'Path'),
             'playlist' => Yii::t('app', 'Playlist'),
-            'originName' => Yii::t('app', 'Origin Name'),
+            'originName' => Yii::t('app', 'Origin name'),
             'size' => Yii::t('app', 'Size'),
             'type' => Yii::t('app', 'Type'),
             'duration' => Yii::t('app', 'Duration'),
             'status' => Yii::t('app', 'Status'),
-            'createdAt' => Yii::t('app', 'Created At'),
-            'updatedAt' => Yii::t('app', 'Updated At'),
+            'createdAt' => Yii::t('app', 'Created at'),
+            'updatedAt' => Yii::t('app', 'Updated at'),
         ];
     }
 
@@ -377,7 +394,6 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
      * All playlist files stored in separate folder
      * Used format: `{id}-playlist` format
      * For example `stream-archive/37/1-playlist/6082630a9b57c681084333.m3u8`
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @return bool
      */
     public function deletePlaylist(): bool
@@ -391,5 +407,13 @@ class StreamSessionArchive extends BaseActiveRecord implements MediaInterface
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusClass(): string
+    {
+        return ArrayHelper::getValue(self::STATUSES_CLASS_MAP, $this->status, 'default');
     }
 }

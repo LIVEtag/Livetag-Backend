@@ -61,6 +61,11 @@ class SaveAnnouncementForm extends Model
     public $productIds;
 
     /**
+     * @var bool
+     */
+    public $internalCart = StreamSession::INTERNAL_CART_FALSE;
+
+    /**
      * @var StreamSession
      */
     public $streamSession;
@@ -88,9 +93,10 @@ class SaveAnnouncementForm extends Model
     public function rules(): array
     {
         return [
-            [['name', 'shopId', 'announcedAtDatetime', 'duration'], 'required'],
+            [['name', 'shopId', 'announcedAtDatetime', 'duration', 'internalCart'], 'required'],
+            [['internalCart'], 'boolean'],
             [
-                'productIds', //validate in main model. select2 do not return null on empty select
+                ['productIds'], //validate in main model. select2 do not return null on empty select
                 'filter',
                 'filter' => function ($value) {
                     return $value == '' ? null : $value;
@@ -109,7 +115,7 @@ class SaveAnnouncementForm extends Model
                 'file',
                 'file',
                 'mimeTypes' => StreamSessionCover::getMimeTypes(),
-                'maxSize' => Yii::$app->params['maxUploadImageSize'],
+                'maxSize' => Yii::$app->params['maxUploadCoverSize'],
             ],
         ];
     }
@@ -121,9 +127,10 @@ class SaveAnnouncementForm extends Model
     {
         return [
             'name' => 'Name of livestream',
-            'announcedAtDatetime' => 'Start At',
+            'announcedAtDatetime' => 'Start at',
             'duration' => 'Maximum duration of this show',
-            'productIds' => 'Products'
+            'productIds' => 'Products',
+            'internalCart' => 'Product details view',
         ];
     }
 

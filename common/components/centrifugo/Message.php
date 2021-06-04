@@ -25,10 +25,16 @@ class Message extends BaseObject implements MessageInterface
     const ACTION_PRODUCT_CREATE = 'productCreate';
     const ACTION_PRODUCT_UPDATE = 'productUpdate';
     const ACTION_PRODUCT_DELETE = 'productDelete';
+    //StreamSessionProduct
+    const ACTION_STREAM_SESSION_PRODUCT_CREATE = 'productCreate';
+    const ACTION_STREAM_SESSION_PRODUCT_UPDATE = 'productUpdate';
+    const ACTION_STREAM_SESSION_PRODUCT_DELETE = 'productDelete';
     //Messages
     const ACTION_COMMENT_CREATE = 'commentCreate';
     const ACTION_COMMENT_UPDATE = 'commentUpdate';
     const ACTION_COMMENT_DELETE = 'commentDelete';
+    //Like
+    const ACTION_LIKE_CREATE = 'likeCreate';
 
     /**
      * Allowed actions by type
@@ -40,9 +46,13 @@ class Message extends BaseObject implements MessageInterface
         self::ACTION_PRODUCT_CREATE,
         self::ACTION_PRODUCT_UPDATE,
         self::ACTION_PRODUCT_DELETE,
+        self::ACTION_STREAM_SESSION_PRODUCT_CREATE,
+        self::ACTION_STREAM_SESSION_PRODUCT_UPDATE,
+        self::ACTION_STREAM_SESSION_PRODUCT_DELETE,
         self::ACTION_COMMENT_CREATE,
         self::ACTION_COMMENT_UPDATE,
         self::ACTION_COMMENT_DELETE,
+        self::ACTION_LIKE_CREATE,
     ];
 
     /** @var string */

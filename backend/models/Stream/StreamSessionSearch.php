@@ -7,8 +7,8 @@ declare(strict_types=1);
 
 namespace backend\models\Stream;
 
-use backend\models\Stream\StreamSession;
 use common\models\Analytics\StreamSessionStatistic;
+use common\models\Stream\StreamSessionLike;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\db\Expression;
@@ -19,11 +19,26 @@ use yii\helpers\ArrayHelper;
  */
 class StreamSessionSearch extends StreamSession
 {
-    /** @var int */
-    public $viewsCount;
+    const TYPE_UPCOMING = 'upcoming';
+    const TYPE_ACTIVE_AND_PAST = 'active-and-past';
+
+    const TYPES = [
+        self::TYPE_UPCOMING,
+        self::TYPE_ACTIVE_AND_PAST,
+    ];
 
     /** @var int */
-    public $addToCartCount;
+    public $totalViewCount;
+
+    /** @var int */
+    public $totalAddToCartCount;
+
+    /**
+     * “Add to cart” rate =
+     * Number of clicks on the “Add to cart” button during the session/the number of customers of the livestream
+     * @var float
+     */
+    public $totalAddToCartRate;
 
     /**
      * Duration in seconds
@@ -31,12 +46,8 @@ class StreamSessionSearch extends StreamSession
      */
     public $actualDuration;
 
-    /**
-     * “Add to cart” rate =
-     * Number of clicks on the “Add to cart” button during the session/the number of customers of the livestream
-     * @var float
-     */
-    public $addToCartRate;
+    /** @var int */
+    public $likes;
 
     /**
      * @inheritdoc
@@ -44,8 +55,8 @@ class StreamSessionSearch extends StreamSession
     public function rules(): array
     {
         return [
-            [['id', 'shopId', 'status', 'viewsCount', 'addToCartCount', 'duration'], 'integer'],
-            ['addToCartRate', 'number'],
+            [['id', 'shopId', 'status', 'totalViewCount', 'totalAddToCartCount', 'duration', 'likes'], 'integer'],
+            ['totalAddToCartRate', 'number'],
             [['sessionId', 'name'], 'string'],
         ];
     }
@@ -64,14 +75,12 @@ class StreamSessionSearch extends StreamSession
      *
      * @param array $params
      *
+     * @param null $type
      * @return ActiveDataProvider
+     * @throws \Exception
      */
-    public function search($params): ActiveDataProvider
+    public function search($params, $type = null): ActiveDataProvider
     {
-        $addToCartRateExpression = new Expression(
-            StreamSessionStatistic::tableName() . '.addToCartCount/'
-            . 'NULLIF(' . StreamSessionStatistic::tableName() . '.viewsCount,0) AS addToCartRate'
-        );
 
         $actualDurationExpression = new Expression('
             CASE WHEN ' . self::tableName() . '.startedAt IS NOT NULL
@@ -79,14 +88,31 @@ class StreamSessionSearch extends StreamSession
                 ELSE NULL
             END AS actualDuration');
 
+        $likeSubQuery = StreamSessionLike::find()
+            ->select([
+                'streamSessionId',
+                new Expression('COUNT(DISTINCT(' . StreamSessionLike::tableName() . '.`userId`)) as likes'),
+            ])
+            ->groupBy(['streamSessionId']);
+
         $query = self::find()
             ->joinWith(self::REL_STREAM_SESSION_STATISTIC)
+            ->leftJoin(['l' => $likeSubQuery], self::tableName() . '.`id` = `l`.`streamSessionId`')
             ->select([self::tableName() . '.*',
-                StreamSessionStatistic::tableName() . '.addToCartCount',
-                StreamSessionStatistic::tableName() . '.viewsCount',
-                $addToCartRateExpression,
-                $actualDurationExpression
+                StreamSessionStatistic::tableName() . '.totalAddToCartCount',
+                StreamSessionStatistic::tableName() . '.totalViewCount',
+                StreamSessionStatistic::tableName() . '.totalAddToCartRate',
+                $actualDurationExpression,
+                'likes',
             ]);
+
+        if ($type) {
+            if ($type == self::TYPE_ACTIVE_AND_PAST) {
+                $query->notNew();
+            } else {
+                $query->new();
+            }
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -105,21 +131,25 @@ class StreamSessionSearch extends StreamSession
             return $dataProvider;
         }
 
-        $dataProvider->sort->attributes['addToCartCount'] = [
-            'asc' => [StreamSessionStatistic::tableName() . '.addToCartCount' => SORT_ASC],
-            'desc' => [StreamSessionStatistic::tableName() . '.addToCartCount' => SORT_DESC],
+        $dataProvider->sort->attributes['totalAddToCartCount'] = [
+            'asc' => [StreamSessionStatistic::tableName() . '.totalAddToCartCount' => SORT_ASC],
+            'desc' => [StreamSessionStatistic::tableName() . '.totalAddToCartCount' => SORT_DESC],
         ];
-        $dataProvider->sort->attributes['viewsCount'] = [
-            'asc' => [StreamSessionStatistic::tableName() . '.viewsCount' => SORT_ASC],
-            'desc' => [StreamSessionStatistic::tableName() . '.viewsCount' => SORT_DESC],
+        $dataProvider->sort->attributes['totalViewCount'] = [
+            'asc' => [StreamSessionStatistic::tableName() . '.totalViewCount' => SORT_ASC],
+            'desc' => [StreamSessionStatistic::tableName() . '.totalViewCount' => SORT_DESC],
         ];
-        $dataProvider->sort->attributes['addToCartRate'] = [
-            'asc' => ['addToCartRate' => SORT_ASC],
-            'desc' => ['addToCartRate' => SORT_DESC],
+        $dataProvider->sort->attributes['totalAddToCartRate'] = [
+            'asc' => [StreamSessionStatistic::tableName() . '.totalAddToCartRate' => SORT_ASC],
+            'desc' => [StreamSessionStatistic::tableName() . '.totalAddToCartRate' => SORT_DESC],
         ];
         $dataProvider->sort->attributes['actualDuration'] = [
             'asc' => ['actualDuration' => SORT_ASC],
             'desc' => ['actualDuration' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['likes'] = [
+            'asc' => ['likes' => SORT_ASC],
+            'desc' => ['likes' => SORT_DESC],
         ];
 
         // grid filtering conditions
@@ -128,8 +158,9 @@ class StreamSessionSearch extends StreamSession
             self::tableName() . '.shopId' => $this->shopId,
             self::tableName() . '.status' => $this->status,
             self::tableName() . '.duration' => $this->duration,
-            StreamSessionStatistic::tableName() . '.viewsCount' => $this->viewsCount,
-            StreamSessionStatistic::tableName() . '.addToCartCount' => $this->addToCartCount,
+            StreamSessionStatistic::tableName() . '.totalViewCount' => $this->totalViewCount,
+            StreamSessionStatistic::tableName() . '.totalAddToCartCount' => $this->totalAddToCartCount,
+            StreamSessionStatistic::tableName() . '.totalAddToCartRate' => $this->totalAddToCartRate,
         ]);
 
         $query->andFilterWhere(['like', self::tableName() . '.sessionId', $this->sessionId]);

@@ -61,7 +61,7 @@ class StreamSessionController extends Controller
                                 'update',
                                 'publish',
                                 'unpublish',
-                                'delete-cover-image',
+                                'delete-cover-file',
                                 'upload-recorded-show', //create stream + archive
                                 'upload-record', // create archive inside stream
                                 'delete-record',
@@ -90,7 +90,7 @@ class StreamSessionController extends Controller
                     'actions' => [
                         'stop' => ['POST'],
                         'delete' => ['POST'],
-                        'delete-cover-image' => ['POST'],
+                        'delete-cover-file' => ['POST'],
                     ],
                 ]
             ]
@@ -114,9 +114,11 @@ class StreamSessionController extends Controller
     /**
      * Lists all StreamSession models.
      * Display only sellers sessions (by shopId) for seller role
+     * @param string $type
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionIndex()
+    public function actionIndex($type = StreamSessionSearch::TYPE_UPCOMING)
     {
         /** @var User $user */
         $user = $this->getAndCheckCurrentUser();
@@ -126,7 +128,7 @@ class StreamSessionController extends Controller
         if ($user->isSeller) {
             $params = ArrayHelper::merge($params, [StringHelper::basename(get_class($searchModel)) => ['shopId' => $user->shop->id]]);
         }
-        $dataProvider = $searchModel->search($params);
+        $dataProvider = $searchModel->search($params, $type);
 
         return $this->render('index', [
                 'searchModel' => $searchModel,
@@ -185,8 +187,8 @@ class StreamSessionController extends Controller
         }
 
         return $this->render('upload-recorded-show', [
-                'model' => $model,
-                'productIds' => Product::getIndexedArray($user->shop->id),
+            'model' => $model,
+            'productIds' => Product::getIndexedArray($user->shop->id),
         ]);
     }
 
@@ -273,7 +275,6 @@ class StreamSessionController extends Controller
 
     /**
      * Displays a single StreamSession model.
-     * phpcs:disable PHPCS_SecurityAudit.BadFunctions
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -341,19 +342,19 @@ class StreamSessionController extends Controller
      * @throws NotFoundHttpException
      * @throws Throwable
      */
-    public function actionDeleteCoverImage(int $id)
+    public function actionDeleteCoverFile(int $id)
     {
         $model = $this->findModel($id);
         $cover = $model->streamSessionCover;
 
         if (!$cover) {
-            Yii::$app->session->setFlash('error', 'The stream session doesn\'t have cover image.');
+            Yii::$app->session->setFlash('error', 'The livestream doesn\'t have cover.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
         $transaction = Yii::$app->db->beginTransaction();
         if ($cover->delete() === false) {
-            Yii::$app->session->setFlash('error', 'Failed to remove cover image.');
+            Yii::$app->session->setFlash('error', 'Failed to remove livestream cover.');
             $transaction->rollBack();
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -361,7 +362,7 @@ class StreamSessionController extends Controller
         $model->save(false, []); //update model to fire update event (after transaction commit)
         $transaction->commit();
 
-        Yii::$app->session->setFlash('success', Yii::t('app', 'The cover image was removed.'));
+        Yii::$app->session->setFlash('success', Yii::t('app', 'The livestream cover was removed.'));
         return $this->redirect(['view', 'id' => $model->id]);
     }
 
@@ -582,7 +583,7 @@ class StreamSessionController extends Controller
         /** @var User $user */
         $user = $this->getAndCheckCurrentUser();
         $model = StreamSessionProduct::findOne($id);
-        if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
+        if (!$model || ($user->isSeller && $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
         return $model;
@@ -602,7 +603,7 @@ class StreamSessionController extends Controller
         /** @var User $user */
         $user = $this->getAndCheckCurrentUser();
         $model = Comment::findOne($id);
-        if (!$model || ($user->isSeller & $model->streamSession->shopId != $user->shop->id)) {
+        if (!$model || ($user->isSeller && $model->streamSession->shopId != $user->shop->id)) {
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
         return $model;
