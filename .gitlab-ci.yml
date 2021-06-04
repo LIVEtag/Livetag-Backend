@@ -416,6 +416,12 @@ prod:deploy:
            --diff \
            --timeout 900 \
            --deregister
+       echo "Deploy supervisor"
+       ecs deploy livetag supervisor \
+           --tag ${CI_COMMIT_SHORT_SHA} \
+           --diff \
+           --timeout 900 \
+           --deregister
        echo "Deploy cron"
        ecs deploy livetag cron \
            --tag ${CI_COMMIT_SHORT_SHA} \
