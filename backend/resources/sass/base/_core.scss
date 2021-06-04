@@ -291,6 +291,10 @@ body {
     .main-sidebar,
     .main-header .logo {
       width: 150px;
+
+      img {
+        max-width: 100% !important;
+      }
     }
 
     .content-wrapper,
@@ -305,6 +309,10 @@ body {
 
     .table-bordered .action-button {
       white-space: nowrap;
+    }
+
+    .sidebar .sidebar-menu {
+      white-space: normal;
     }
   }
 }
