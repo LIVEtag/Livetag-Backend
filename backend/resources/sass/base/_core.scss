@@ -78,7 +78,7 @@ body {
   .stream-session-view .box-body .table a:not(.stream-cover-trash),
   .link-cell a:not(.stream-cover-trash) {
     display: block;
-    min-width: 300px;
+    min-width: 100px;
     padding: 20px;
     color: #fff;
     font-family: $font-Source-Sans-Pro;
@@ -285,5 +285,34 @@ body {
 
   .strong-cell {
     font-weight: 700;
+  }
+
+  @media (max-width: 1500px) {
+    .main-sidebar,
+    .main-header .logo {
+      width: 150px;
+
+      img {
+        max-width: 100% !important;
+      }
+    }
+
+    .content-wrapper,
+    .main-footer,
+    .main-header .navbar {
+      margin-left: 150px;
+    }
+
+    .table-bordered .action-button-cell {
+      white-space: normal !important;
+    }
+
+    .table-bordered .action-button {
+      white-space: nowrap;
+    }
+
+    .sidebar .sidebar-menu {
+      white-space: normal;
+    }
   }
 }
